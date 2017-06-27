@@ -30,10 +30,12 @@ import org.andengine.util.system.SystemUtils;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.FrameLayout.LayoutParams;
 
 /**
