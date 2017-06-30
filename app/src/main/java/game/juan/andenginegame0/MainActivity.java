@@ -18,8 +18,6 @@ import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.handler.IUpdateHandler;
-import org.andengine.engine.handler.timer.ITimerCallback;
-import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
@@ -37,8 +35,14 @@ import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+
+import game.juan.andenginegame0.YGameMap.GameMap;
+import game.juan.andenginegame0.YGameUnits.EntityData;
+import game.juan.andenginegame0.YGameUnits.GameAI;
+import game.juan.andenginegame0.YGameUnits.GameBullet;
+import game.juan.andenginegame0.YGameUnits.GamePlayer;
+import game.juan.andenginegame0.YGameUnits.IGameEntity;
 
 
 public class MainActivity extends BaseGameActivity {
@@ -58,7 +62,8 @@ public class MainActivity extends BaseGameActivity {
 
     BitmapTextureAtlas playerTexture;
     TiledTextureRegion playerTextureRegion;
-    PlayerUnit player;
+    //PlayerUnit player;
+    GamePlayer player;
 
     BitmapTextureAtlas aiTexture;
     TiledTextureRegion aiTextureRegion;
@@ -66,7 +71,7 @@ public class MainActivity extends BaseGameActivity {
 
     BitmapTextureAtlas bulletTexture;
     TiledTextureRegion bulletTextureRegion;
-    Bullet bullet;
+    GameBullet bullet;
 
 
     PhysicsWorld physicsWorld;
@@ -81,6 +86,7 @@ public class MainActivity extends BaseGameActivity {
    // Iterator<Body> bodies;
 
     List<Body> bodies;
+    boolean cool = false;
 
     @Override
     public EngineOptions onCreateEngineOptions() {
@@ -113,21 +119,21 @@ public class MainActivity extends BaseGameActivity {
     }
     private void loadGraphics(){
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-        playerTexture = new BitmapTextureAtlas(getTextureManager(),128,64);
+        playerTexture = new BitmapTextureAtlas(getTextureManager(),320,64);
         playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.
-                createTiledFromAsset(playerTexture,this.getAssets(),"player.png",0,0,COLUMN,ROWS);
+                createTiledFromAsset(playerTexture,this.getAssets(),"player.png",0,0,5,1);
         playerTexture.load();
 
         //AI units
-        aiTexture = new BitmapTextureAtlas(getTextureManager(),128,64);
+        aiTexture = new BitmapTextureAtlas(getTextureManager(),320,64);
         aiTextureRegion = BitmapTextureAtlasTextureRegionFactory.
-                createTiledFromAsset(aiTexture , this.getAssets(),"player.png",0,0,COLUMN,ROWS);
+                createTiledFromAsset(aiTexture , this.getAssets(),"player.png",0,0,5,1);
         aiTexture.load();
 
         //Bullet
         bulletTexture = new BitmapTextureAtlas(getTextureManager(),64,64);
         bulletTextureRegion = BitmapTextureAtlasTextureRegionFactory.
-                createTiledFromAsset(bulletTexture,this.getAssets(),"bullet.png",0,0,1,1);
+                createTiledFromAsset(bulletTexture,this.getAssets(),"player_bullet.png",0,0,1,1);
         bulletTexture.load();
 
         //Set move Controller
@@ -154,28 +160,73 @@ public class MainActivity extends BaseGameActivity {
 
     @Override
     public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws Exception {
+        createMap();
         this.mEngine.registerUpdateHandler(new FPSLogger());
 
         this.scene = new Scene();
         this.scene.setBackground(new Background(0,125,48));
 
         physicsWorld = new PhysicsWorld(new Vector2(0, 0),false);
-
-
-        physicsWorld.setContactListener(createContextLister());
+        physicsWorld.setContactListener(createContactLister());
         this.scene.registerUpdateHandler(physicsWorld);
         gameMap.createMap(physicsWorld,this.scene,this.mEngine);
 
+        createAI();
+        createPlayer();
+        createUI();
+        this.scene.registerUpdateHandler(getCollisionUpdateHandler());
 
-        player = new PlayerUnit(CAMERA_WIDTH/2,CAMERA_HEIGHT/2,playerTextureRegion,this.getVertexBufferObjectManager());
-        player.createBody(physicsWorld,scene);
-        player.setupData(10,10);
+        pOnCreateSceneCallback.onCreateSceneFinished(this.scene);
+    }
+
+    private IUpdateHandler getCollisionUpdateHandler(){
+        return new IUpdateHandler() {
+            @Override
+            public void onUpdate(float pSecondsElapsed) {
+                if(!cool)
+                    return;
+                if(cool)
+                    player.bulletReset();
+            }
+
+            @Override
+            public void reset() {
+
+            }
+        };
+    }
+    /* create things in conCreate Scene*/
+    private void createMap(){
+
+
+
+    }
+
+    private void createAI(){
+        aiunit = new GameAI(CAMERA_WIDTH/2 -50,CAMERA_HEIGHT/2 - 50,aiTextureRegion, this.getVertexBufferObjectManager());
+        aiunit.createEntity(physicsWorld,scene,new EntityData(IGameEntity.TYPE_AI,10,10,10));
+    }
+
+    private void createPlayer(){
+        player = new GamePlayer(CAMERA_WIDTH/2,CAMERA_HEIGHT/2,playerTextureRegion,this.getVertexBufferObjectManager());
+        player.createEntity(physicsWorld,scene,new EntityData(IGameEntity.TYPE_PLAYER,10,10,10));
         player.setCamera(mCamera);
 
-        bullet = new Bullet(CAMERA_WIDTH/2,CAMERA_HEIGHT/2, bulletTextureRegion,this.getVertexBufferObjectManager());
-        bullet.createBody(physicsWorld,scene);
+        bullet = new GameBullet(CAMERA_WIDTH/2,CAMERA_HEIGHT/2, bulletTextureRegion,this.getVertexBufferObjectManager());
+        bullet.createEntity(physicsWorld,scene ,new EntityData(IGameEntity.TYPE_PLAYER_BULLET,10,10,10) );
 
+        player.setBullet(bullet);
 
+        bodies = new ArrayList<>();
+        for(int i=0;i<1;i++){
+            bodies.add(aiunit.getBody());
+        }
+        player.setAibodies(bodies);
+
+    }
+    private void createUI(){
+
+        // Move Controller
         final AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(
                 0, CAMERA_HEIGHT - this.moveControlBaseTextureRegion.getHeight()
                 , this.mCamera, this.moveControlBaseTextureRegion, this.moveControlKnobTextureRegion, 0.1f, 200,
@@ -183,9 +234,9 @@ public class MainActivity extends BaseGameActivity {
             @Override
             public void onControlClick(AnalogOnScreenControl pAnalogOnScreenControl) {
             }
-                @Override
+            @Override
             public void onControlChange(BaseOnScreenControl pBaseOnScreenControl, float pValueX, float pValueY) {
-                    player.move(pValueX,pValueY);
+                player.move(pValueX*10,pValueY*10);
             }
         });
         analogOnScreenControl.getControlBase().setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
@@ -194,21 +245,18 @@ public class MainActivity extends BaseGameActivity {
         analogOnScreenControl.getControlBase().setScale(1.25f);
         analogOnScreenControl.getControlKnob().setScale(1.25f);
         analogOnScreenControl.refreshControlKnobPosition();
-
         scene.setChildScene(analogOnScreenControl);
 
-
+        // Attack Controller
         final Sprite attackButton = new Sprite(CAMERA_WIDTH-attackButtonTextureRegion.getWidth(),CAMERA_HEIGHT-attackButtonTextureRegion.getHeight(),100,100,attackButtonTextureRegion,
                 this.mEngine.getVertexBufferObjectManager()){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y)
             {
                 if (pSceneTouchEvent.isActionUp()) {
-                    player.animate(PlayerUnit.BASE_ATTACK);
-
-                    bullet.fire( player.getBody().getPosition(),
-                            player.getCloseAIPosition(bodies));
-
+                    cool = false;
+                    player.baseAttack();
+                  //  player.bullet.trans(new Vector2(-1,0));
                 }
                 return true;
             };
@@ -216,54 +264,12 @@ public class MainActivity extends BaseGameActivity {
         HUD hud = new HUD();
         hud.registerTouchArea(attackButton);
         hud.attachChild(attackButton);
-
         mCamera.setHUD(hud);
 
-
-        /*
-        scene.registerUpdateHandler(new IUpdateHandler() {
-            public void reset() {
-            }
-            public void onUpdate(float pSecondsElapsed) {
-
-            }
-        });
-*/
-
-        aiunit = new GameAI(CAMERA_WIDTH/2 -50,CAMERA_HEIGHT/2 - 50,aiTextureRegion, this.getVertexBufferObjectManager());
-        aiunit.createBody(physicsWorld,scene);
-        aiunit.setupData(1,10);
-
-       // scene.attachChild(aiunit);
-        bodies = new ArrayList<>();
-        for(int i=0;i<1;i++){
-            bodies.add(aiunit.getBody());
-        }
-
-/*
-        scene.registerUpdateHandler(new IUpdateHandler() {
-            @Override
-            public void onUpdate(float pSecondsElapsed) {
-                if(bullet.collidesWith(aiunit)){
-                    Log.d("HIT ","HIT!!");
-                }
-            }
-
-            @Override
-            public void reset() {
-
-            }
-        });*/
-        pOnCreateSceneCallback.onCreateSceneFinished(this.scene);
-    }
-
-    public void setupPlayerUnit(){
+        //Player Hp bar
 
     }
 
-    public void setupAiUnit(){
-
-    }
 
 
 
@@ -283,7 +289,6 @@ public class MainActivity extends BaseGameActivity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE);
     }
-
     @Override
     public void onCreate(final Bundle pSavedInstanceState){
         super.onCreate(pSavedInstanceState);
@@ -296,26 +301,28 @@ public class MainActivity extends BaseGameActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE);
     }
 
-    private ContactListener createContextLister(){
+    private ContactListener createContactLister(){
         ContactListener contactListener=new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
-                final Fixture fixtureA = contact.getFixtureA();
-                final Body bodyA = fixtureA.getBody();
-                final String userDataA = (String) bodyA.getUserData();
+                Fixture fixtureA = contact.getFixtureA();
+                Body bodyA = fixtureA.getBody();
+                Object oa = bodyA.getUserData();
 
-                final Fixture fixtureB = contact.getFixtureB();
-                final Body bodyB = fixtureB.getBody();
-                final String userDataB = (String) bodyB.getUserData();
+                Fixture fixtureB = contact.getFixtureB();
+                Body bodyB = fixtureB.getBody();
+                Object ob = bodyB.getUserData();
 
+                if(oa instanceof  EntityData && ob instanceof  EntityData) {
 
-                if("pbullet".equals(userDataA) && "monster".equals(userDataB)){
-                    bullet.makeDisappear();
-                }else if("pbullet".equals(userDataA)&&"wall".equals(userDataB)){
-                    bullet.makeDisappear();
+                    if (((EntityData) oa).getType() + ((EntityData) ob).getType() == 3) {
+                        player.bulletReset();
+                        cool = true;
+                        // Log.d("TEST", "dddd");
+                    }
                 }
 
-                //플
+
             }
 
             @Override
@@ -335,5 +342,7 @@ public class MainActivity extends BaseGameActivity {
         };
         return contactListener;
     }
+
+
 
 }
