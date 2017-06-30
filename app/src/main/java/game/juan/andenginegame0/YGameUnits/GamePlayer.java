@@ -17,7 +17,8 @@ public class GamePlayer extends GameUnit{
     List<Body> aibodies;
 
     Vector2 minv = new Vector2(0,0);
-    float range = 40.0f;
+    Vector2 target;
+   // float range = 40.0f;
 
     public GameBullet bullet;
 
@@ -34,10 +35,17 @@ public class GamePlayer extends GameUnit{
     public void setBullet(GameBullet bullet){
         this.bullet = bullet;
         this.bullet.body.setBullet(true);
+        this.bulletReset();
+        range = 40.f;
+        target = new Vector2(0,0);
     }
 
     public void baseAttack(){
-        bullet.bulletFire(body.getPosition(),getCloseAIPosition(aibodies),10);
+        target.set(getCloseAIPosition(aibodies));
+        if(target.len()!=0) {
+            setDirection(body.getPosition(), target);
+            bullet.bulletFire(body.getPosition(), target, 10);
+        }
     }
     public void bulletReset(){
         bullet.bulletReset();;
@@ -47,6 +55,9 @@ public class GamePlayer extends GameUnit{
     }
     public void Skill2(){
 
+    }
+    public Vector2 getBodyPos(){
+        return body.getPosition();
     }
 
     public Vector2 getCloseAIPosition(List<Body> ai_bodies) {

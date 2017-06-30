@@ -19,6 +19,7 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 public class GameEntity extends AnimatedSprite{
     protected Body body;
+    protected float range;
 
     public GameEntity(float pX, float pY, ITiledTextureRegion pTiledTextureRegion,
                       VertexBufferObjectManager pVertexBufferObjectManager) {

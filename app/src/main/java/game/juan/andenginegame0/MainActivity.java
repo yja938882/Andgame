@@ -21,6 +21,7 @@ import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.juan.andenginegame0.YGameMap.GameMap;
+import game.juan.andenginegame0.YGameUI.HealthBar;
 import game.juan.andenginegame0.YGameUnits.EntityData;
 import game.juan.andenginegame0.YGameUnits.GameAI;
 import game.juan.andenginegame0.YGameUnits.GameBullet;
@@ -174,6 +176,9 @@ public class MainActivity extends BaseGameActivity {
         createAI();
         createPlayer();
         createUI();
+
+        aiunit.setPlayer(player);
+
         this.scene.registerUpdateHandler(getCollisionUpdateHandler());
 
         pOnCreateSceneCallback.onCreateSceneFinished(this.scene);
@@ -261,9 +266,15 @@ public class MainActivity extends BaseGameActivity {
                 return true;
             };
         };
+        final HealthBar HPbar = new HealthBar(0,0,
+                CAMERA_WIDTH/3,CAMERA_HEIGHT/20,this.mEngine.getVertexBufferObjectManager());
+
         HUD hud = new HUD();
         hud.registerTouchArea(attackButton);
         hud.attachChild(attackButton);
+
+        hud.attachChild(HPbar);
+
         mCamera.setHUD(hud);
 
         //Player Hp bar

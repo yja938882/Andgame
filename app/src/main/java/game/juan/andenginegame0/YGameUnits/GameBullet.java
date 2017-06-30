@@ -25,6 +25,7 @@ public class GameBullet extends GameUnit{
         Vector2 v = new Vector2(40,0);
         //body.setBullet();
         body.setTransform(v,0);
+        body.setLinearVelocity(0,0);
     }
 
 
