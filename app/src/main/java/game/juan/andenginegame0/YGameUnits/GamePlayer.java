@@ -14,14 +14,13 @@ import java.util.List;
  */
 
 public class GamePlayer extends GameUnit{
-    List<Body> aibodies;
+    final long walk_ani[] ={100,100,100,100,100,100,100,100};
+    final int walk_i[] = {0,1,2,3,4,5,6,7};
 
-    Vector2 minv = new Vector2(0,0);
-    Vector2 target;
-   // float range = 40.0f;
-
-    public GameBullet bullet;
-
+    final long attack_ani[] = {100,100,100,100,100,100};
+    final int attack_i[] = {8,9,10,11,12,0};
+    boolean ani = false;
+    public boolean stop = true;
     public GamePlayer(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
@@ -29,55 +28,35 @@ public class GamePlayer extends GameUnit{
     public void setCamera(Camera c){
         c.setChaseEntity(this);
     }
-    public void setAibodies(List<Body> list){
-        aibodies = list;
-    }
-    public void setBullet(GameBullet bullet){
-        this.bullet = bullet;
-        this.bullet.body.setBullet(true);
-        this.bulletReset();
-        range = 40.f;
-        target = new Vector2(0,0);
-    }
 
-    public void baseAttack(){
-        target.set(getCloseAIPosition(aibodies));
-        if(target.len()!=0) {
-            setDirection(body.getPosition(), target);
-            bullet.bulletFire(body.getPosition(), target, 10);
-        }
-    }
-    public void bulletReset(){
-        bullet.bulletReset();;
-    }
+
     public void Skill1(){
 
     }
     public void Skill2(){
 
     }
-    public Vector2 getBodyPos(){
-        return body.getPosition();
+    @Override
+    public void move(final int m){
+        super.move(m);
+        if(isAnimationRunning())
+            return;
+        animate(walk_ani ,walk_i,true);
+
     }
 
-    public Vector2 getCloseAIPosition(List<Body> ai_bodies) {
-        minv.set(0, 0);
-        if (ai_bodies == null || ai_bodies.size() == 0)
-            return minv;
-        float min = body.getPosition().dst2(ai_bodies.get(0).getPosition());
-        minv.set(ai_bodies.get(0).getPosition());
-        for (int i = 0; i < ai_bodies.size(); i++) {
-            if (min > body.getPosition().dst2(ai_bodies.get(i).getPosition())) {
-                minv.set(ai_bodies.get(i).getPosition());
-                min = body.getPosition().dst2(ai_bodies.get(i).getPosition());
-            }
+    @Override
+    public void stop(){
+        super.stop();
+        stopAnimation(0);
+        stop = true;
 
+    }
 
+    @Override
+    public void attack(){
+        super.attack();
 
-        }
-        if(min>range)
-            minv.set(0,0);
-
-        return minv;
+        animate(attack_ani , attack_i , false);
     }
 }

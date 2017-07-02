@@ -1,5 +1,6 @@
 package game.juan.andenginegame0.YGameMap;
 
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
@@ -30,28 +31,33 @@ public class GameMap {
         FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,0.0f);
         WALL_FIX.filter.categoryBits = IGameEntity.WALL_CATG_BITS;
         WALL_FIX.filter.maskBits = IGameEntity.WALL_MASK_BITS;
+        //WALL_FIX.isSensor= true;
        // UnitData wallData= new UnitData(UnitData.TYPE_WALL,0,0,0);
 
         Rectangle bottom = new Rectangle(0,MAP_HEIGHT-15,MAP_WIDTH,15,engine.getVertexBufferObjectManager());
         bottom.setColor(new Color(15,50,0));
-        bottom.setUserData(new EntityData(4,0,0,0));
+//        bottom.setUserData(new EntityData(7,0,0,0));
+
 
         Rectangle left = new Rectangle(0,0,15,MAP_HEIGHT-15,engine.getVertexBufferObjectManager());
         left.setColor(new Color(15,50,0));
-        left.setUserData(new EntityData(4,0,0,0));
+ //       left.setUserData(new EntityData(7,0,0,0));
 
         Rectangle right = new Rectangle(MAP_WIDTH-15,0,15,MAP_HEIGHT-15,engine.getVertexBufferObjectManager());
         right.setColor(new Color(15,50,0));
-        right.setUserData(new EntityData(4,0,0,0));
+   //     right.setUserData(new EntityData(7,0,0,0));
 
         Rectangle top = new Rectangle(0,0,MAP_WIDTH,15,engine.getVertexBufferObjectManager());
         top.setColor(new Color(15,50,0));
-        top.setUserData(new EntityData(4,0,0,0));
+     //   top.setUserData(new EntityData(7,0,0,0));
 
-        PhysicsFactory.createBoxBody(physicsWorld,bottom, BodyDef.BodyType.StaticBody,WALL_FIX);
-        PhysicsFactory.createBoxBody(physicsWorld,left,BodyDef.BodyType.StaticBody,WALL_FIX);
-        PhysicsFactory.createBoxBody(physicsWorld,right, BodyDef.BodyType.StaticBody,WALL_FIX);
-        PhysicsFactory.createBoxBody(physicsWorld,top, BodyDef.BodyType.StaticBody,WALL_FIX);
+
+        Body b =PhysicsFactory.createBoxBody(physicsWorld,bottom, BodyDef.BodyType.StaticBody,WALL_FIX);
+        Body l=PhysicsFactory.createBoxBody(physicsWorld,left,BodyDef.BodyType.StaticBody,WALL_FIX);
+        Body r = PhysicsFactory.createBoxBody(physicsWorld,right, BodyDef.BodyType.StaticBody,WALL_FIX);
+        Body t =PhysicsFactory.createBoxBody(physicsWorld,top, BodyDef.BodyType.StaticBody,WALL_FIX);
+
+        b.setUserData(new EntityData(7,0,0,0));
 
         scene.attachChild(bottom);
         scene.attachChild(left);

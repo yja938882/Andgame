@@ -20,7 +20,16 @@ public interface IGameEntity {
     int TYPE_PLAYER=0;
     int TYPE_PLAYER_BULLET=1;
     int TYPE_AI =2;
-    int TYPE_AI_BULLET = 3;
+    int TYPE_AI_BULLET = 6;
+    int TYPE_GROUND = 7;
+
+    int LEFT = 0;
+    int RIGHT = 1;
+    int JUMP = 2;
+
+    void stop();
+    void move(final int way);
+    void attack();
 
 
 
