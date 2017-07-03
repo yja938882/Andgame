@@ -17,7 +17,7 @@ import org.andengine.util.Constants;
  * Created by juan on 2017. 6. 29..
  */
 
-public class GameAI extends GameUnit {
+public class GameAI extends GameEntity {
     private final int MODE_LONLY=0;
     private final int MODE_FINDOUT =1;
     private final int MODE_ATTACK=2;

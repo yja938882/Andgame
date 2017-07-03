@@ -22,7 +22,15 @@ import static game.juan.andenginegame0.YGameUnits.IGameEntity.RIGHT;
 
 public class GameEntity extends AnimatedSprite implements IGameEntity{
     protected Body body;
-    public boolean in_the_air = true;
+    protected boolean in_the_air = true;
+    protected boolean moving = false;
+    protected boolean attacking = false;
+
+    private long attack_frame_du[];
+    private int attack_frame_i[];
+
+    private  long moving_frame_du[];
+    private int moving_frame_i[];
 
     public GameEntity(float pX, float pY, ITiledTextureRegion pTiledTextureRegion,
                       VertexBufferObjectManager pVertexBufferObjectManager) {
@@ -57,12 +65,22 @@ public class GameEntity extends AnimatedSprite implements IGameEntity{
         physicsWorld.registerPhysicsConnector(new PhysicsConnector(this,body,true,false));
     }
 
-    public void stop(){
+    public void setAttackFrame(long framedu[] , int framei[]){
+        this.attack_frame_du = framedu;
+        this.attack_frame_i = framei;
+    }
+    public void setMovingFrame(long framedu[], int framei[]){
+        this.moving_frame_du = framedu;
+        this.moving_frame_i = framei;
+    }
+    public synchronized void stop(){
+        stopAnimation(0);
+        moving = false;
         this.body.setLinearVelocity(0,body.getLinearVelocity().y);
     }
 
 
-    public void move(final int w){
+    public synchronized void move(final int w){
         switch (w){
             case IGameEntity.RIGHT:
                 body.setLinearVelocity(5,body.getLinearVelocity().y);
@@ -72,21 +90,45 @@ public class GameEntity extends AnimatedSprite implements IGameEntity{
                 body.setLinearVelocity(-5,body.getLinearVelocity().y);
                 this.setFlippedHorizontal(true);
                 break;
-            case IGameEntity.JUMP:
-                if(in_the_air)
-                    return;
-                body.setLinearVelocity(body.getLinearVelocity().x,-7);
-                break;
-
+        }
+        if(!moving){
+            animate(moving_frame_du,moving_frame_i,true);
+            moving = true;
         }
     }
 
-    @Override
-    public void attack() {
-
+    public synchronized void jump(){
+        if(in_the_air)
+            return;
+        body.setLinearVelocity(body.getLinearVelocity().x,-7);
     }
 
+    @Override
+    public synchronized void attack() {
+        stop();
+        animate(attack_frame_du, attack_frame_i, false, new IAnimationListener() {
+            @Override
+            public void onAnimationStarted(AnimatedSprite pAnimatedSprite, int pInitialLoopCount) {
 
+            }
 
+            @Override
+            public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite, int pOldFrameIndex, int pNewFrameIndex) {
+
+            }
+
+            @Override
+            public void onAnimationLoopFinished(AnimatedSprite pAnimatedSprite, int pRemainingLoopCount, int pInitialLoopCount) {
+
+            }
+
+            @Override
+            public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
+            }
+        });
+    }
+    public void setIn_the_air(boolean air){
+        this.in_the_air = air;
+    }
 
 }

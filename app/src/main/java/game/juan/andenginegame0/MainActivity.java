@@ -79,13 +79,14 @@ public class MainActivity extends BaseGameActivity{
     ITextureRegion upTextureRegion;
     BitmapTextureAtlas upControlTexture;
 
-    ITextureRegion downTextureRegion;
-    BitmapTextureAtlas downControlTexture;
-
-
-
     BitmapTextureAtlas attackButtonTexture;
     ITextureRegion attackButtonTextureRegion;
+
+    ITextureRegion skill1TextureRegion;
+    BitmapTextureAtlas skill1ControlTexture;
+
+    ITextureRegion skill2TextureRegion;
+    BitmapTextureAtlas skill2ControlTexture;
 
 
     private static final int CAMERA_WIDTH = 800;
@@ -129,31 +130,39 @@ public class MainActivity extends BaseGameActivity{
         playerTexture.load();
 
 
-        leftControlTexture = new BitmapTextureAtlas(getTextureManager(),76,61, TextureOptions.BILINEAR);
+        leftControlTexture = new BitmapTextureAtlas(getTextureManager(),80,80, TextureOptions.BILINEAR);
         leftTextureRegion =BitmapTextureAtlasTextureRegionFactory.
                 createFromAsset(this.leftControlTexture,this,"left.png",0,0);
         leftControlTexture.load();
 
-        rightControlTexture = new BitmapTextureAtlas(getTextureManager(),76,61, TextureOptions.BILINEAR);
+        rightControlTexture = new BitmapTextureAtlas(getTextureManager(),80,80, TextureOptions.BILINEAR);
         rightTextureRegion =BitmapTextureAtlasTextureRegionFactory.
                 createFromAsset(this.rightControlTexture,this,"right.png",0,0);
         rightControlTexture.load();
 
-        upControlTexture = new BitmapTextureAtlas(getTextureManager(),61,76, TextureOptions.BILINEAR);
+        upControlTexture = new BitmapTextureAtlas(getTextureManager(),80,80, TextureOptions.BILINEAR);
         upTextureRegion =BitmapTextureAtlasTextureRegionFactory.
                 createFromAsset(this.upControlTexture,this,"up.png",0,0);
         upControlTexture.load();
 
-        downControlTexture = new BitmapTextureAtlas(getTextureManager(),61,76, TextureOptions.BILINEAR);
-        downTextureRegion =BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(this.downControlTexture,this,"down.png",0,0);
-        downControlTexture.load();
 
         //set Attack button
         attackButtonTexture = new BitmapTextureAtlas(getTextureManager(),128,128,TextureOptions.BILINEAR);
         attackButtonTextureRegion = BitmapTextureAtlasTextureRegionFactory.
                 createFromAsset(this.attackButtonTexture,this,"attack_btn.png",0,0);
         attackButtonTexture.load();
+
+
+        skill1ControlTexture = new BitmapTextureAtlas(getTextureManager(), 80,80,TextureOptions.BILINEAR );
+        skill1TextureRegion = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(this.skill1ControlTexture,this,"skill1.png",0,0);
+        skill1ControlTexture.load();
+
+        skill2ControlTexture = new BitmapTextureAtlas(getTextureManager(), 80,80,TextureOptions.BILINEAR );
+        skill2TextureRegion = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(this.skill2ControlTexture,this,"skill2.png",0,0);
+        skill2ControlTexture.load();
+
 
     }
     private void loadFonts(){
@@ -198,10 +207,11 @@ public class MainActivity extends BaseGameActivity{
                 if(oa!=null && ob!=null){
                     if(((EntityData)oa).getType()==IGameEntity.TYPE_GROUND &&
                             ((EntityData)ob).getType()==IGameEntity.TYPE_PLAYER)
-                        player.in_the_air = false;
+                        player.setIn_the_air(false);
+
                     else if(((EntityData)ob).getType()==IGameEntity.TYPE_GROUND &&
                             ((EntityData)oa).getType()==IGameEntity.TYPE_PLAYER)
-                        player.in_the_air = false;
+                        player.setIn_the_air(false);
                 }
 
             }
@@ -220,10 +230,10 @@ public class MainActivity extends BaseGameActivity{
                 if(oa!=null && ob!=null){
                     if(((EntityData)oa).getType()==IGameEntity.TYPE_GROUND &&
                             ((EntityData)ob).getType()==IGameEntity.TYPE_PLAYER)
-                        player.in_the_air = true;
+                        player.setIn_the_air(true);
                     else if(((EntityData)ob).getType()==IGameEntity.TYPE_GROUND &&
                             ((EntityData)oa).getType()==IGameEntity.TYPE_PLAYER)
-                        player.in_the_air = true;
+                        player.setIn_the_air(true);
                 }
 
             }
@@ -264,44 +274,9 @@ public class MainActivity extends BaseGameActivity{
         player.setCamera(mCamera);
     }
     private void createUI(){
-/*
-        // Move Controller
-        final AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(
-                0, CAMERA_HEIGHT - this.moveControlBaseTextureRegion.getHeight()
-                , this.mCamera, this.moveControlBaseTextureRegion, this.moveControlKnobTextureRegion, 0.1f, 200,
-                this.getVertexBufferObjectManager(), new AnalogOnScreenControl.IAnalogOnScreenControlListener() {
-            @Override
-            public void onControlClick(AnalogOnScreenControl pAnalogOnScreenControl) {
-            }
-            @Override
-            public void onControlChange(BaseOnScreenControl pBaseOnScreenControl, float pValueX, float pValueY) {
-              //  player.move(pValueX*10,pValueY*10);
-                if(pValueX==0 && pValueY==0&& !player.stop)
-                    player.stop();
-                double tan =Math.toDegrees(Math.atan(-pValueY/pValueX));
-                if(tan<45){
-                    if(pValueX>0){
-                        player.move(IGameEntity.RIGHT);
-                    }else{
-                        player.move(IGameEntity.LEFT);
-                    }
-                }else if(tan >=45){
-                    player.move(IGameEntity.JUMP);
-                }
-              //  player.move(IGameEntity.RIGHT);
-            }
-        });
-        analogOnScreenControl.getControlBase().setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-        analogOnScreenControl.getControlBase().setAlpha(0.5f);
-        analogOnScreenControl.getControlBase().setScaleCenter(0, 128);
-        analogOnScreenControl.getControlBase().setScale(1.25f);
-        analogOnScreenControl.getControlKnob().setScale(1.25f);
-        analogOnScreenControl.refreshControlKnobPosition();
-        scene.setChildScene(analogOnScreenControl);
-*/
         /// Controller
         final Sprite leftButton = new Sprite(10,CAMERA_HEIGHT-(leftTextureRegion.getHeight()+leftTextureRegion.getWidth())
-                ,76,61,leftTextureRegion,
+                ,80,80,leftTextureRegion,
                 this.mEngine.getVertexBufferObjectManager()){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y)
@@ -319,8 +294,8 @@ public class MainActivity extends BaseGameActivity{
             };
         };
 
-        final Sprite rightButton = new Sprite(10+rightTextureRegion.getWidth(),CAMERA_HEIGHT-(rightTextureRegion.getHeight()+rightTextureRegion.getWidth())
-                ,76,61,rightTextureRegion,
+        final Sprite rightButton = new Sprite(20+rightTextureRegion.getWidth(),CAMERA_HEIGHT-(rightTextureRegion.getHeight()+rightTextureRegion.getWidth())
+                ,80,80,rightTextureRegion,
                 this.mEngine.getVertexBufferObjectManager()){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y)
@@ -338,25 +313,6 @@ public class MainActivity extends BaseGameActivity{
             };
         };
 
-        final Sprite jumpButton = new Sprite(10+upTextureRegion.getHeight() - upTextureRegion.getWidth()/2,
-                CAMERA_HEIGHT-2*upTextureRegion.getHeight()-upTextureRegion.getWidth()/2,61,76,upTextureRegion,
-                this.mEngine.getVertexBufferObjectManager()){
-            @Override
-            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y)
-            {
-                if (pSceneTouchEvent.isActionDown()) {
-                    player.move(IGameEntity.JUMP);
-                }
-                return true;
-            }
-        };
-
-        final Sprite downButton = new Sprite(10+downTextureRegion.getHeight() - downTextureRegion.getWidth()/2,
-                CAMERA_HEIGHT - downTextureRegion.getHeight()-downTextureRegion.getWidth()/2,61,76,downTextureRegion,
-                this.mEngine.getVertexBufferObjectManager()){
-
-        };
-
 
 
         // Attack Controller
@@ -366,13 +322,45 @@ public class MainActivity extends BaseGameActivity{
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y)
             {
                 if (pSceneTouchEvent.isActionUp()) {
-                    Log.d("PLAYER"," air "+player.in_the_air);
                    // player.setFlippedHorizontal(true);
                     player.attack();
                 }
                 return true;
             };
         };
+        final Sprite jumpButton = new Sprite(CAMERA_WIDTH-(upTextureRegion.getWidth()),
+                CAMERA_HEIGHT-upTextureRegion.getHeight()-attackButtonTexture.getHeight(),80,80,upTextureRegion,
+                this.mEngine.getVertexBufferObjectManager()){
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y)
+            {
+                if (pSceneTouchEvent.isActionDown()) {
+                    player.jump();
+                }
+                return true;
+            }
+        };
+
+        final Sprite skil1Button = new Sprite(CAMERA_WIDTH - (attackButtonTextureRegion.getWidth()+attackButtonTextureRegion.getWidth()/2),
+                CAMERA_HEIGHT -attackButtonTextureRegion.getHeight()-skill1ControlTexture.getHeight(),
+                80,80,skill1TextureRegion,this.mEngine.getVertexBufferObjectManager()){
+
+        };
+
+        final Sprite skil2Button = new Sprite(CAMERA_WIDTH - (attackButtonTextureRegion.getWidth() + skill2TextureRegion.getWidth()+10),
+                CAMERA_HEIGHT -attackButtonTextureRegion.getHeight(),
+                80,80,skill2TextureRegion,this.mEngine.getVertexBufferObjectManager()){
+
+        };
+
+
+
+       // final Sprite skill1Button = new Sprite(CAMERA_WIDTH)
+
+
+
+
+
         HUD hud = new HUD();
         hud.registerTouchArea(attackButton);
         hud.attachChild(attackButton);
@@ -386,8 +374,11 @@ public class MainActivity extends BaseGameActivity{
         hud.registerTouchArea(jumpButton);
         hud.attachChild(jumpButton);
 
-        hud.registerTouchArea(downButton);
-        hud.attachChild(downButton);
+        hud.registerTouchArea(skil1Button);
+        hud.attachChild(skil1Button);
+
+        hud.registerTouchArea(skil2Button);
+        hud.attachChild(skil2Button);
 
         mCamera.setHUD(hud);
 
