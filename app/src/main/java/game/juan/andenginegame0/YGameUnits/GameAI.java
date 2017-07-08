@@ -18,10 +18,17 @@ import org.andengine.util.Constants;
  */
 
 public class GameAI extends GameEntity {
+    public final static int TYPE_STOP=0;
+    public final static int TYPE_MOVE=1;
+
+    private int ai_type;
+
     private final int MODE_LONLY=0;
     private final int MODE_FINDOUT =1;
     private final int MODE_ATTACK=2;
 
+
+    protected Body playerBody;
 
 
     private int mode = MODE_LONLY;
@@ -30,38 +37,22 @@ public class GameAI extends GameEntity {
     public GameAI(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
-
+    public void setAI_Type(final int type){
+        this.ai_type = type;
+        if(type ==TYPE_STOP)
+            setSpeed(0,0);
+    }
 
     @Override
-    public void createEntity(PhysicsWorld physicsWorld, Scene scene,
-                             EntityData data){
-        super.createEntity(physicsWorld,scene,data);
-        this.registerUpdateHandler(new IUpdateHandler() {
-            @Override
-            public void onUpdate(float pSecondsElapsed) {
-                switch (mode){
-                    case MODE_LONLY:
+    public void createRectEntity(PhysicsWorld physicsWorld, Scene scene,
+                             EntityData data,final float rx,final float ry){
+        super.createRectEntity(physicsWorld,scene,data,rx,ry);
 
-                        break;
-                    case MODE_FINDOUT:
-
-                        break;
-                    case MODE_ATTACK:
-
-
-                        break;
-                }
-            }
-            @Override
-            public void reset() {
-            }
-        });
     }
 
-
-
-    public Body getBody(){
-        return body;
+    public void setPlayerBody(Body body){
+        playerBody= body;
     }
+
 
 }

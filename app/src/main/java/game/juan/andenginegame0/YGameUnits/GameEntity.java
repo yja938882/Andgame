@@ -26,6 +26,11 @@ public class GameEntity extends AnimatedSprite implements IGameEntity{
     protected boolean moving = false;
     protected boolean attacking = false;
 
+    protected int direction = IGameEntity.RIGHT;
+
+    private float walk_speed;
+    private float jump_speed;
+
     private long attack_frame_du[];
     private int attack_frame_i[];
 
@@ -37,32 +42,24 @@ public class GameEntity extends AnimatedSprite implements IGameEntity{
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
 
     }
-
-    public void createEntity(PhysicsWorld physicsWorld, Scene scene,
-                             EntityData data){
-        final FixtureDef FIX = PhysicsFactory.createFixtureDef(10.0F ,0.0F, 0.0F);
-        switch (data.getType()){
-            case IGameEntity.TYPE_PLAYER:
-                FIX.filter.maskBits = IGameEntity.PLAYER_MASK_BITS;
-                FIX.filter.categoryBits=IGameEntity.PLAYER_CATG_BITS;
-                break;
-            case IGameEntity.TYPE_PLAYER_BULLET:
-                FIX.filter.maskBits=IGameEntity.PLAYER_BULLET_MASK_BITS;
-                FIX.filter.categoryBits = IGameEntity.PLAYER_BULLET_CATG_BITS;
-                break;
-            case IGameEntity.TYPE_AI:
-                FIX.filter.maskBits = IGameEntity.AI_MASK_BITS;
-                FIX.filter.categoryBits = IGameEntity.AI_CATG_BITS;
-                break;
-            case IGameEntity.TYPE_AI_BULLET:
-                FIX.filter.maskBits = IGameEntity.AI_BULLET_MASK_BITS;
-                break;
-        }
-
-        body = PhysicsFactory.createCircleBody(physicsWorld,this,BodyDef.BodyType.DynamicBody,FIX);
+    public void createRectEntity(PhysicsWorld physicsWorld, Scene scene,
+                             EntityData data,final float ratiox, final float ratioy){
+        final FixtureDef FIX = PhysicsFactory.createFixtureDef(1.0F ,0.0F, 0.0F);
+        FIX.filter.maskBits=getMaskBits(data.getType());
+        FIX.filter.categoryBits=getCatgBits(data.getType());
+        body = PhysicsFactory.createBoxBody(physicsWorld,
+                getX() + (getWidth()*(1.0f-ratiox)/2.0f),
+                getY() + (getHeight()*(1.0f-ratioy)),
+                getWidth()*ratiox,
+                getHeight()*ratioy,
+                BodyDef.BodyType.DynamicBody,FIX);
         body.setUserData(data);
+       // body.setFixedRotation(true);
+        body.setAngularDamping(200);
         scene.attachChild(this);
         physicsWorld.registerPhysicsConnector(new PhysicsConnector(this,body,true,false));
+
+
     }
 
     public void setAttackFrame(long framedu[] , int framei[]){
@@ -72,6 +69,10 @@ public class GameEntity extends AnimatedSprite implements IGameEntity{
     public void setMovingFrame(long framedu[], int framei[]){
         this.moving_frame_du = framedu;
         this.moving_frame_i = framei;
+    }
+    public void setSpeed(float ws , float js){
+        this.walk_speed = ws;
+        this.jump_speed=js;
     }
     public synchronized void stop(){
         stopAnimation(0);
@@ -83,14 +84,13 @@ public class GameEntity extends AnimatedSprite implements IGameEntity{
     public synchronized void move(final int w){
         switch (w){
             case IGameEntity.RIGHT:
-                body.setLinearVelocity(5,body.getLinearVelocity().y);
-                this.setFlippedHorizontal(false);
+                body.setLinearVelocity(walk_speed,body.getLinearVelocity().y);
                 break;
             case IGameEntity.LEFT:
-                body.setLinearVelocity(-5,body.getLinearVelocity().y);
-                this.setFlippedHorizontal(true);
+                body.setLinearVelocity(-walk_speed,body.getLinearVelocity().y);
                 break;
         }
+        setDirection(w);
         if(!moving){
             animate(moving_frame_du,moving_frame_i,true);
             moving = true;
@@ -100,7 +100,7 @@ public class GameEntity extends AnimatedSprite implements IGameEntity{
     public synchronized void jump(){
         if(in_the_air)
             return;
-        body.setLinearVelocity(body.getLinearVelocity().x,-7);
+        body.setLinearVelocity(body.getLinearVelocity().x,-jump_speed);
     }
 
     @Override
@@ -131,4 +131,50 @@ public class GameEntity extends AnimatedSprite implements IGameEntity{
         this.in_the_air = air;
     }
 
+    public void setDirection(final int direction){
+        if(direction == IGameEntity.RIGHT)
+            this.setFlippedHorizontal(false);
+        else{
+            this.setFlippedHorizontal(true);
+        }
+        this.direction = direction;
+    }
+
+
+    public Body getBody(){
+        return body;
+    }
+
+    private static short getMaskBits(final int type){
+        switch(type){
+            case IGameEntity.TYPE_PLAYER:
+                return IGameEntity.PLAYER_MASK_BITS;
+
+            case IGameEntity.TYPE_PLAYER_BULLET:
+                return IGameEntity.PLAYER_BULLET_MASK_BITS;
+
+            case IGameEntity.TYPE_AI:
+                return IGameEntity.AI_MASK_BITS;
+
+            case IGameEntity.TYPE_AI_BULLET:
+                return IGameEntity.AI_BULLET_MASK_BITS;
+        }
+        return -1;
+    }
+    private static short getCatgBits(final int type){
+        switch(type){
+            case IGameEntity.TYPE_PLAYER:
+                return IGameEntity.PLAYER_CATG_BITS;
+
+            case IGameEntity.TYPE_PLAYER_BULLET:
+                return IGameEntity.PLAYER_BULLET_CATG_BITS;
+
+            case IGameEntity.TYPE_AI:
+                return IGameEntity.AI_CATG_BITS;
+
+            case IGameEntity.TYPE_AI_BULLET:
+                return IGameEntity.AI_BULLET_CATG_BITS;
+        }
+        return -1;
+    }
 }

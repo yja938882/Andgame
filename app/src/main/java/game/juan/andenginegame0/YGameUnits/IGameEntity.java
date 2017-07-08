@@ -13,7 +13,7 @@ public interface IGameEntity {
 
     short PLAYER_MASK_BITS=PLAYER_CATG_BITS|WALL_CATG_BITS|AI_CATG_BITS|AI_BULLET_CATG_BITS;
     short PLAYER_BULLET_MASK_BITS = AI_CATG_BITS;
-    short WALL_MASK_BITS = AI_CATG_BITS|PLAYER_CATG_BITS;
+    short WALL_MASK_BITS = AI_CATG_BITS |PLAYER_CATG_BITS;
     short AI_MASK_BITS =PLAYER_CATG_BITS|PLAYER_BULLET_CATG_BITS|WALL_CATG_BITS;
     short AI_BULLET_MASK_BITS=PLAYER_CATG_BITS;
 
@@ -30,7 +30,6 @@ public interface IGameEntity {
     void stop();
     void move(final int way);
     void attack();
-
 
 
 }

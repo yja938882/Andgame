@@ -1,5 +1,6 @@
 package game.juan.andenginegame0;
 
+import android.hardware.SensorManager;
 import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.bitmap.BitmapTexture;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.util.GLState;
@@ -53,11 +55,12 @@ import game.juan.andenginegame0.YGameUnits.EntityData;
 import game.juan.andenginegame0.YGameUnits.GameAI;
 import game.juan.andenginegame0.YGameUnits.GameBullet;
 import game.juan.andenginegame0.YGameUnits.GamePlayer;
+import game.juan.andenginegame0.YGameUnits.GameRangerAI;
 import game.juan.andenginegame0.YGameUnits.IGameEntity;
 
 
 public class MainActivity extends BaseGameActivity{
-
+    private final static String TAG="MainActivity";
 
     PhysicsWorld physicsWorld;
 
@@ -69,6 +72,14 @@ public class MainActivity extends BaseGameActivity{
     TiledTextureRegion playerTextureRegion;
 
 
+    GameRangerAI ai;
+    BitmapTextureAtlas aiTexture;
+    TiledTextureRegion aiTextureRegion;
+
+
+    GameBullet bullet;
+    BitmapTextureAtlas bulletTexture;
+    TiledTextureRegion bulletTextureRegion;
 
     ITextureRegion leftTextureRegion;
     BitmapTextureAtlas leftControlTexture;
@@ -163,7 +174,15 @@ public class MainActivity extends BaseGameActivity{
                 createFromAsset(this.skill2ControlTexture,this,"skill2.png",0,0);
         skill2ControlTexture.load();
 
+        aiTexture = new BitmapTextureAtlas(getTextureManager() ,640,320);
+        aiTextureRegion = BitmapTextureAtlasTextureRegionFactory.
+                createTiledFromAsset(aiTexture , this.getAssets(),"ranger_ai0.png",0,0,10,5);
+        aiTexture.load();
 
+        bulletTexture = new BitmapTextureAtlas(getTextureManager(),32,32);
+        bulletTextureRegion = BitmapTextureAtlasTextureRegionFactory.
+                    createTiledFromAsset(bulletTexture,this.getAssets(),"bullet.png",0,0,1,1);
+        bulletTexture.load();
     }
     private void loadFonts(){
     }
@@ -178,13 +197,15 @@ public class MainActivity extends BaseGameActivity{
         this.scene = new Scene();
         this.scene.setBackground(new Background(0,125,48));
 
-        physicsWorld = new PhysicsWorld(new Vector2(0, 9.8f),false);
+        physicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH),false);
+
         physicsWorld.setContactListener(createContactLister());
         this.scene.registerUpdateHandler(physicsWorld);
         gameMap.createMap(physicsWorld,this.scene,this.mEngine);
 
         createPlayer();
         createUI();
+        createAI();
 
        this.scene.registerUpdateHandler(getCollisionUpdateHandler());
 
@@ -270,7 +291,9 @@ public class MainActivity extends BaseGameActivity{
 
     private void createPlayer(){
         player = new GamePlayer(CAMERA_WIDTH/2,CAMERA_HEIGHT/2,playerTextureRegion,this.getVertexBufferObjectManager());
-        player.createEntity(physicsWorld,scene,new EntityData(IGameEntity.TYPE_PLAYER,10,10,10));
+     //   player.createEntity(physicsWorld,scene,new EntityData(IGameEntity.TYPE_PLAYER,10,10,10));
+        player.createRectEntity(physicsWorld,scene,new EntityData(IGameEntity.TYPE_PLAYER,10,10,10),0.3f,1);
+        player.setSpeed(5,7);
         player.setCamera(mCamera);
     }
     private void createUI(){
@@ -324,6 +347,11 @@ public class MainActivity extends BaseGameActivity{
                 if (pSceneTouchEvent.isActionUp()) {
                    // player.setFlippedHorizontal(true);
                     player.attack();
+                    Log.d(TAG," body x : "+player.getBody().getPosition().x+" body y : "+player.getBody().getPosition().y);
+                    Log.d(TAG," sprite x : "+player.getX()+" sprite y : "+player.getY());
+                    Log.d(TAG," sprite(scale) x : "+player.getScaleX()+" sprite y : "+player.getScaleY());
+                    Log.d(TAG," phy constant :");
+
                 }
                 return true;
             };
@@ -383,6 +411,17 @@ public class MainActivity extends BaseGameActivity{
         mCamera.setHUD(hud);
 
 
+    }
+    private void createAI(){
+        ai = new GameRangerAI(CAMERA_WIDTH/2+100,CAMERA_HEIGHT/2,aiTextureRegion,this.getVertexBufferObjectManager());
+        ai.createRectEntity(physicsWorld,scene,new EntityData(IGameEntity.TYPE_AI, 10,10,10),1,1);
+        ai.setAI_Type(GameAI.TYPE_STOP);
+        ai.setPlayerBody(player.getBody());
+
+        bullet = new GameBullet(CAMERA_WIDTH/2+100,CAMERA_HEIGHT/2-100,bulletTextureRegion,this.getVertexBufferObjectManager());
+        bullet.createRectEntity(physicsWorld,scene,new EntityData(IGameEntity.TYPE_AI_BULLET,10,10,10),1,1);
+        bullet.setSpeed(1f,0);
+        ai.setBullet(bullet);
     }
 
 
