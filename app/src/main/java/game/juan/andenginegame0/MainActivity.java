@@ -81,6 +81,8 @@ public class MainActivity extends BaseGameActivity{
     BitmapTextureAtlas bulletTexture;
     TiledTextureRegion bulletTextureRegion;
 
+    boolean bulletreset=false;
+
     ITextureRegion leftTextureRegion;
     BitmapTextureAtlas leftControlTexture;
 
@@ -99,6 +101,8 @@ public class MainActivity extends BaseGameActivity{
     ITextureRegion skill2TextureRegion;
     BitmapTextureAtlas skill2ControlTexture;
 
+
+    HealthBar healthBar;
 
     private static final int CAMERA_WIDTH = 800;
     private static final int CAMERA_HEIGHT = 480;
@@ -174,9 +178,9 @@ public class MainActivity extends BaseGameActivity{
                 createFromAsset(this.skill2ControlTexture,this,"skill2.png",0,0);
         skill2ControlTexture.load();
 
-        aiTexture = new BitmapTextureAtlas(getTextureManager() ,640,320);
+        aiTexture = new BitmapTextureAtlas(getTextureManager() ,512,512);
         aiTextureRegion = BitmapTextureAtlasTextureRegionFactory.
-                createTiledFromAsset(aiTexture , this.getAssets(),"ranger_ai0.png",0,0,10,5);
+                createTiledFromAsset(aiTexture , this.getAssets(),"ranger_ai0.png",0,0,8,8);
         aiTexture.load();
 
         bulletTexture = new BitmapTextureAtlas(getTextureManager(),32,32);
@@ -233,6 +237,12 @@ public class MainActivity extends BaseGameActivity{
                     else if(((EntityData)ob).getType()==IGameEntity.TYPE_GROUND &&
                             ((EntityData)oa).getType()==IGameEntity.TYPE_PLAYER)
                         player.setIn_the_air(false);
+                    else if(((EntityData)ob).getType()==IGameEntity.TYPE_AI_BULLET &&
+                            ((EntityData)oa).getType()==IGameEntity.TYPE_PLAYER){
+                        healthBar.decHp(10);
+                        //bullet.reset();
+                        bulletreset = true;
+                    }
                 }
 
             }
@@ -255,6 +265,8 @@ public class MainActivity extends BaseGameActivity{
                     else if(((EntityData)ob).getType()==IGameEntity.TYPE_GROUND &&
                             ((EntityData)oa).getType()==IGameEntity.TYPE_PLAYER)
                         player.setIn_the_air(true);
+
+
                 }
 
             }
@@ -276,7 +288,10 @@ public class MainActivity extends BaseGameActivity{
         return new IUpdateHandler() {
             @Override
             public void onUpdate(float pSecondsElapsed) {
-
+                if(bulletreset){
+                    bullet.reset();
+                    bulletreset = false;
+                }
             }
 
             @Override
@@ -385,7 +400,8 @@ public class MainActivity extends BaseGameActivity{
 
        // final Sprite skill1Button = new Sprite(CAMERA_WIDTH)
 
-
+        healthBar = new HealthBar(CAMERA_WIDTH/20,CAMERA_HEIGHT/20,CAMERA_WIDTH/3,CAMERA_WIDTH/40,mEngine.getVertexBufferObjectManager());
+        healthBar.setMaxHP(100);
 
 
 
@@ -408,20 +424,22 @@ public class MainActivity extends BaseGameActivity{
         hud.registerTouchArea(skil2Button);
         hud.attachChild(skil2Button);
 
+        hud.attachChild(healthBar);
         mCamera.setHUD(hud);
 
 
     }
     private void createAI(){
         ai = new GameRangerAI(CAMERA_WIDTH/2+100,CAMERA_HEIGHT/2,aiTextureRegion,this.getVertexBufferObjectManager());
-        ai.createRectEntity(physicsWorld,scene,new EntityData(IGameEntity.TYPE_AI, 10,10,10),1,1);
+        ai.createRectEntity(physicsWorld,scene,new EntityData(IGameEntity.TYPE_AI, 10,10,10),0.75f,1f);
         ai.setAI_Type(GameAI.TYPE_STOP);
         ai.setPlayerBody(player.getBody());
 
         bullet = new GameBullet(CAMERA_WIDTH/2+100,CAMERA_HEIGHT/2-100,bulletTextureRegion,this.getVertexBufferObjectManager());
         bullet.createRectEntity(physicsWorld,scene,new EntityData(IGameEntity.TYPE_AI_BULLET,10,10,10),1,1);
-        bullet.setSpeed(1f,0);
+        bullet.setSpeed(2f,0);
         ai.setBullet(bullet);
+        bullet.reset();
     }
 
 

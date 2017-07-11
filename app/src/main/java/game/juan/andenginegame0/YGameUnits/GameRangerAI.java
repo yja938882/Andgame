@@ -55,8 +55,10 @@ public class GameRangerAI extends GameAI{
         this.bullet = bullet;
         long a[]={100};
         int b[]={0};
-        setAttackFrame(a,b);
-        setMovingFrame(a,b);
+        long aa[]={100,100,100,100,100,100,100};
+        int ba[]={16,17,18,19,20,21,0};
+        setAttackFrame(aa,ba);
+        setMovingFrame(aa,ba);
         bullet.setAttackFrame(a,b);
         bullet.setMovingFrame(a,b);
     }
@@ -65,7 +67,7 @@ public class GameRangerAI extends GameAI{
     public synchronized void attack(){
         super.attack();
         bullet.fire(direction,body.getPosition());
-    };
+    }
 
 
 }

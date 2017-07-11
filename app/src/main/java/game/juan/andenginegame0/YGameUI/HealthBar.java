@@ -13,7 +13,7 @@ import org.andengine.util.color.Color;
 public class HealthBar extends Rectangle{
     private float maxHP;
     private float maxWidth;
-
+    private float hp;
 
     public HealthBar(float pX, float pY, float pWidth, float pHeight, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pWidth, pHeight, pVertexBufferObjectManager);
@@ -22,8 +22,15 @@ public class HealthBar extends Rectangle{
     }
     public void setMaxHP(int hp){
         this.maxHP = hp;
+        this.hp =hp;
     }
-    public void updateBar(float hp){
+    private void updateBar(){
         this.setWidth(maxWidth*(hp)/(maxHP));
+    }
+    public void decHp(float hp){
+            this.hp -=hp;
+        if(this.hp<=0)
+            this.hp=0;
+        updateBar();
     }
 }

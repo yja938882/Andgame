@@ -56,7 +56,8 @@ public class GameBullet extends GameEntity{
     }
 
     public void reset(){
-        setVisible(false);
+        //setVisible(false);
+        body.setTransform(new Vector2(-1,-1),0);
     }
 
 
