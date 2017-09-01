@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.YGameUnits;
 
+import android.graphics.Rect;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -36,6 +38,10 @@ public class GameEntity extends AnimatedSprite implements IGameEntity{
 
     private  long moving_frame_du[];
     private int moving_frame_i[];
+
+
+    private boolean attack_damage_on = false;
+
 
     public GameEntity(float pX, float pY, ITiledTextureRegion pTiledTextureRegion,
                       VertexBufferObjectManager pVertexBufferObjectManager) {
@@ -139,6 +145,7 @@ public class GameEntity extends AnimatedSprite implements IGameEntity{
         }
         this.direction = direction;
     }
+
 
 
     public Body getBody(){

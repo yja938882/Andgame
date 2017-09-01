@@ -160,7 +160,6 @@ public class MainActivity extends BaseGameActivity{
                 createFromAsset(this.upControlTexture,this,"up.png",0,0);
         upControlTexture.load();
 
-
         //set Attack button
         attackButtonTexture = new BitmapTextureAtlas(getTextureManager(),128,128,TextureOptions.BILINEAR);
         attackButtonTextureRegion = BitmapTextureAtlasTextureRegionFactory.

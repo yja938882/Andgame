@@ -20,8 +20,8 @@ public class GamePlayer extends GameEntity{
 
     final long attack_frame_du[] = {50,50,50,50,50,50};
     final int attack_frame_i[] = {8,9,10,11,12,0};
-    boolean ani = false;
-    public boolean stop = true;
+
+
     public GamePlayer(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
         setAttackFrame(attack_frame_du,attack_frame_i);
