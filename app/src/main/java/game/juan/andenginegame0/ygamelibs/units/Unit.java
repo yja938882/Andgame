@@ -73,7 +73,9 @@ public class Unit extends AnimatedSprite {
                 BodyDef.BodyType.DynamicBody,FIX);
         body.setUserData(data);
         body.setAngularDamping(200);
+        body.setFixedRotation(true);
         scene.attachChild(this);
+        //DebugRenderer();
         physicsWorld.registerPhysicsConnector(new PhysicsConnector(this,body,true,false));
     }
 
@@ -149,10 +151,11 @@ public class Unit extends AnimatedSprite {
             case 2:
                 break;
         }
-
-
-
     }
+    public void hitted(){
+        ((UnitData)getBody().getUserData()).setHitted(false,0);
+    }
+
     public void die(){
         stop();
         is_alive = false;
@@ -175,6 +178,10 @@ public class Unit extends AnimatedSprite {
         switch(type){
               }
         return -1;
+    }
+
+    public Body getBody(){
+        return this.body;
     }
 
 

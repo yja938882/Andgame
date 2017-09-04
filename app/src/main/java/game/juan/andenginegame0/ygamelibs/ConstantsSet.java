@@ -5,8 +5,10 @@ package game.juan.andenginegame0.ygamelibs;
  */
 
 public interface ConstantsSet {
+
     short PLAYER_CATG_BITS =0x0001;
 
+    short WALL_CATG_BITS = 0x0004;
 
 
 
@@ -19,8 +21,7 @@ public interface ConstantsSet {
     int SKILL_2=2;
 
     int TYPE_PLAYER=0;
-    int TYPE_PLAYER_BULLET=1;
-    int TYPE_AI =2;
-    int TYPE_AI_BULLET = 6;
-    int TYPE_GROUND = 7;
+    int TYPE_GROUND=1;
+    int TYPE_WALL =2;
+    int TYPE_OBSTACLE = 3;
 }

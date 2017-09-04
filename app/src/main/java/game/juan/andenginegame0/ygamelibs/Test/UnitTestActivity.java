@@ -34,6 +34,7 @@ import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.Constants;
 import org.andengine.util.color.Color;
 
+import debugdraw.DebugRenderer;
 import game.juan.andenginegame0.R;
 import game.juan.andenginegame0.YGameUnits.EntityData;
 import game.juan.andenginegame0.YGameUnits.IGameEntity;
@@ -93,7 +94,7 @@ public class UnitTestActivity extends BaseGameActivity {
         createUnits();
         createMap();
         createUI();
-
+       // scene.attachChild(new DebugRenderer(world.getWorld(),getVertexBufferObjectManager()));
         pOnCreateSceneCallback.onCreateSceneFinished(this.scene);
     }
 
@@ -108,7 +109,7 @@ public class UnitTestActivity extends BaseGameActivity {
         final TiledTextureRegion textureRegion  = BitmapTextureAtlasTextureRegionFactory.
                 createTiledFromAsset(textureAtlas,this.getAssets(),"player.png",0,0,8,2);
         textureAtlas.load();
-        testUnit = new Unit(400,240,textureRegion,this.getVertexBufferObjectManager() );
+        testUnit = new Unit(200,240,textureRegion,this.getVertexBufferObjectManager() );
 
 
 
@@ -146,7 +147,7 @@ public class UnitTestActivity extends BaseGameActivity {
 
     }
     private void createUnits(){
-        testUnit.createRectUnit(world.getWorld(),scene,new UnitData(ConstantsSet.TYPE_PLAYER,10,10,10,10.0f,10.0f),0.3f,1);
+        testUnit.createRectUnit(world.getWorld(),scene,new UnitData(ConstantsSet.TYPE_PLAYER,5,5,10,10.0f,10.0f),0.3f,1);
         mCamera.setChaseEntity(testUnit);
 
 
@@ -156,6 +157,7 @@ public class UnitTestActivity extends BaseGameActivity {
         final int attack_frame_i[] = {8,9,10,11,12,0};
         testUnit.setMovingFrame(walk_frame_du,walk_frame_i);
         testUnit.setAttackFrame(attack_frame_du,attack_frame_i);
+        world.addUnit(testUnit);
 
     }
     private void createUI(){
@@ -217,6 +219,6 @@ public class UnitTestActivity extends BaseGameActivity {
     private void createMap(){
            /*Create Ground*/
         world.createMap(this,scene);
-
+        scene.registerUpdateHandler(world.getCollisionUpdateHandler());
     }
 }

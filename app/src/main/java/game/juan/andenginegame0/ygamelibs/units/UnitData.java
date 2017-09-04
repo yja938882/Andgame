@@ -1,10 +1,13 @@
 package game.juan.andenginegame0.ygamelibs.units;
 
+import android.util.Log;
+
 /**
  * Created by juan on 2017. 8. 28..
  */
 
 public class UnitData{
+    private String TAG ="UnitData";
     private int type;
     private int damage;
     private int max_hp;
@@ -12,6 +15,9 @@ public class UnitData{
     private float speed;
     private float jump_speed;
     boolean in_the_air;
+    boolean is_hitted=false;
+    int hitted_damage=0;
+
 
     public UnitData(int type, int damage, int max_hp, int hp, float speed, float jump_speed){
         this.type = type;
@@ -30,6 +36,16 @@ public class UnitData{
     public void setIn_the_air(boolean air){
         this.in_the_air = air;
     }
-
+    public void setHitted(boolean hit , int damage){
+        is_hitted = hit;
+        hitted_damage = damage;
+        if(damage>0){
+            hp-=damage;
+            Log.d(TAG," hp :"+hp);
+        }
+    }
+    public boolean isHitted(){
+        return is_hitted;
+    }
 }
 
