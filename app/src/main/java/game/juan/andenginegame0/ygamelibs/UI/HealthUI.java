@@ -1,0 +1,61 @@
+package game.juan.andenginegame0.ygamelibs.UI;
+
+import android.util.Log;
+
+import org.andengine.engine.Engine;
+import org.andengine.engine.camera.hud.HUD;
+import org.andengine.entity.sprite.AnimatedSprite;
+import org.andengine.entity.sprite.Sprite;
+import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.ITiledTextureRegion;
+import org.andengine.opengl.texture.region.TextureRegion;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
+import org.andengine.opengl.vbo.VertexBufferObjectManager;
+
+import game.juan.andenginegame0.ygamelibs.Controller.AttackController;
+import game.juan.andenginegame0.ygamelibs.units.Unit;
+import game.juan.andenginegame0.ygamelibs.units.UnitData;
+
+/**
+ * Created by juan on 2017. 9. 15..
+ */
+
+public class HealthUI{
+    final private String TAG = "HealthUI";
+    final long frame_duration[]={100,100};
+    AnimatedSprite animatedSprite[];
+    //Sprite sprite[];
+
+    int curheart;
+    int sx,sy,w,h,inv;
+
+    public HealthUI(int max_heart, int sx, int sy, int w, int h, int inv){
+        this.curheart = max_heart;
+        animatedSprite = new AnimatedSprite[max_heart];
+        this.sx=sx;
+        this.sy=sy;
+        this.w = w;
+        this.h=h;
+        this.inv=inv;
+    }
+    public void setup(ITiledTextureRegion textureRegion, Engine mEngine, HUD hud) {
+        for (int i = 0; i < curheart; i++) {
+            animatedSprite[i] = new AnimatedSprite(sx + w * i + inv, sy, w, h,
+                    textureRegion, mEngine.getVertexBufferObjectManager());
+            hud.attachChild(animatedSprite[i]);
+        }
+    }
+
+    public void update(int newhp){
+        Log.d(TAG,"update");
+        if(curheart<=0)
+            return;
+
+        for(int i=curheart-1;i>newhp-1;i--){
+            animatedSprite[i].animate(frame_duration,false);
+        }
+        curheart = newhp;
+        Log.d(TAG,"new hp : "+newhp);
+    }
+
+}

@@ -3,6 +3,7 @@ package game.juan.andenginegame0.ygamelibs.units;
 import android.content.Context;
 import android.util.Log;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -18,10 +19,20 @@ import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.BaseGameActivity;
+import org.andengine.util.Constants;
 
 import game.juan.andenginegame0.YGameUnits.EntityData;
 import game.juan.andenginegame0.YGameUnits.IGameEntity;
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
+import game.juan.andenginegame0.ygamelibs.UI.HealthUI;
+
+import static game.juan.andenginegame0.ygamelibs.ConstantsSet.ACTION_ATTACK;
+import static game.juan.andenginegame0.ygamelibs.ConstantsSet.ACTION_JUMP;
+import static game.juan.andenginegame0.ygamelibs.ConstantsSet.ACTION_MOVE_LEFT;
+import static game.juan.andenginegame0.ygamelibs.ConstantsSet.ACTION_MOVE_RIGHT;
+import static game.juan.andenginegame0.ygamelibs.ConstantsSet.ACTION_STOP;
+import static game.juan.andenginegame0.ygamelibs.ConstantsSet.LEFT;
+import static game.juan.andenginegame0.ygamelibs.ConstantsSet.RIGHT;
 
 /**
  * Created by juan on 2017. 8. 27..
@@ -30,8 +41,7 @@ import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 public class Unit extends AnimatedSprite {
     private String TAG = "UNIT";
 
-
-    private Body body;
+    public Body body;
 
 
     private float MOVING_SPEED;
@@ -40,8 +50,6 @@ public class Unit extends AnimatedSprite {
 
     private boolean is_moving = false;
     private boolean is_alive = true;
-    private boolean is_intheair = false;
-
     private long attack_frame_duration[];
     private int attack_frame_img_index[];
 
@@ -50,6 +58,17 @@ public class Unit extends AnimatedSprite {
 
     private long moving_frame_duration[];
     private int moving_frame_img_index[];
+
+    private long hitted_frame_duration[];
+    private int hitted_frame_img_index[];
+    //boolean hitted_animprotector = false;
+
+    //public  boolean lock =false;
+    boolean action_lock=false;
+
+    public int action = ACTION_STOP;
+
+
 
     // Constructor
     public Unit(float pX, float pY, ITiledTextureRegion pTiledTextureRegion,
@@ -61,7 +80,7 @@ public class Unit extends AnimatedSprite {
                                UnitData data, final float ratiox, final float ratioy){
         this.MOVING_SPEED = data.getSpeed();
         this.JUMP_SPEED = data.getJumpSpeed();
-        final FixtureDef FIX = PhysicsFactory.createFixtureDef(1.0F ,0.0F, 0.0F);
+        final FixtureDef FIX = PhysicsFactory.createFixtureDef(2.0F ,0.0f, 0.2F);
         FIX.filter.maskBits=getMaskBits(data.getType());
         FIX.filter.categoryBits=getCatgBits(data.getType());
 
@@ -75,10 +94,8 @@ public class Unit extends AnimatedSprite {
         body.setAngularDamping(200);
         body.setFixedRotation(true);
         scene.attachChild(this);
-        //DebugRenderer();
         physicsWorld.registerPhysicsConnector(new PhysicsConnector(this,body,true,false));
     }
-
 
 
     /* Setting Frame Infomations
@@ -103,6 +120,12 @@ public class Unit extends AnimatedSprite {
         this.moving_frame_duration=frame_duration;
         this.moving_frame_img_index=frame_index;
     }
+    public void setHittedFrame(long frame_duration[], int frame_index[]) {
+        if (frame_duration == null || frame_index == null)
+            Log.d(TAG, "setHittedFrame : params are null...");
+        this.hitted_frame_duration = frame_duration;
+        this.hitted_frame_img_index = frame_index;
+    }
 
     /*  About Actions
 
@@ -110,6 +133,7 @@ public class Unit extends AnimatedSprite {
     public void move(int direction){
         if(!is_alive)
             return;
+
 
         switch(direction){
             case ConstantsSet.RIGHT:
@@ -123,28 +147,78 @@ public class Unit extends AnimatedSprite {
             case ConstantsSet.JUMP:
                 if(((UnitData)(body.getUserData())).in_the_air)
                     break;
-                body.setLinearVelocity(body.getLinearVelocity().x,-JUMP_SPEED);
-                break;
+                    body.setLinearVelocity(body.getLinearVelocity().x, -JUMP_SPEED);
+                    break;
 
         }
         this.direction = direction;
         if(!is_moving) {
             is_moving = true;
-            animate(moving_frame_duration, moving_frame_img_index, true);
+            Log.d(TAG,"Moving");
+            animate(moving_frame_duration, moving_frame_img_index, true, new IAnimationListener() {
+                @Override
+                public void onAnimationStarted(AnimatedSprite pAnimatedSprite, int pInitialLoopCount) {
+                    Log.d(TAG,"--Animation Start");
+
+                }
+
+                @Override
+                public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite, int pOldFrameIndex, int pNewFrameIndex) {
+                    Log.d(TAG,"--Animation Changed :"+pOldFrameIndex+" -> "+pNewFrameIndex);
+                }
+
+                @Override
+                public void onAnimationLoopFinished(AnimatedSprite pAnimatedSprite, int pRemainingLoopCount, int pInitialLoopCount) {
+                    Log.d(TAG,"--Animation LoopFinished");
+                }
+
+                @Override
+                public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
+                    Log.d(TAG,"--Animation Finished");
+
+                }
+            });
         }
     }
     public void stop(){
+        if(((UnitData)body.getUserData()).in_the_air) return;
         is_moving = false;
         stopAnimation(0);
         this.body.setLinearVelocity(0,body.getLinearVelocity().y);
     }
     public void attack(int num){
+        Log.d(TAG,"Attack");
         if(!is_alive)
             return;
         stop();
+        action=ACTION_STOP;
         switch(num){
             case 0:
-                animate(attack_frame_duration,attack_frame_img_index,false);
+                    animate(attack_frame_duration, attack_frame_img_index, false, new IAnimationListener() {
+                    @Override
+                    public void onAnimationStarted(AnimatedSprite pAnimatedSprite, int pInitialLoopCount) {
+                        Log.d(TAG,"--Animation Start");
+                        action_lock = true;
+                    }
+
+                    @Override
+                    public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite, int pOldFrameIndex, int pNewFrameIndex) {
+                        Log.d(TAG,"--Animation Changed :"+pOldFrameIndex+" -> "+pNewFrameIndex);
+                        if(pNewFrameIndex>=6)
+                            action_lock = false;
+                    }
+
+                    @Override
+                    public void onAnimationLoopFinished(AnimatedSprite pAnimatedSprite, int pRemainingLoopCount, int pInitialLoopCount) {
+
+                    }
+
+                    @Override
+                    public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
+                        Log.d(TAG,"--Animation finished");
+
+                    }
+                });
                 break;
             case 1:
                 break;
@@ -152,8 +226,40 @@ public class Unit extends AnimatedSprite {
                 break;
         }
     }
-    public void hitted(){
-        ((UnitData)getBody().getUserData()).setHitted(false,0);
+    public synchronized void hitted(){
+        Log.d(TAG,"hitted");
+        if(((UnitData)body.getUserData()).getPushWay()==ConstantsSet.RIGHT){
+            body.setLinearVelocity(5,body.getLinearVelocity().y);
+        }else{
+            body.setLinearVelocity(-5,body.getLinearVelocity().y);
+        }
+        animate(hitted_frame_duration, hitted_frame_img_index, false, new IAnimationListener() {
+            @Override
+            public void onAnimationStarted(AnimatedSprite pAnimatedSprite, int pInitialLoopCount) {
+                Log.d("onanim","start");
+                Log.d("onanim", "actionlock lock");
+                action_lock = true;
+            }
+
+            @Override
+            public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite, int pOldFrameIndex, int pNewFrameIndex) {
+                Log.d("onanim","changed : "+pOldFrameIndex+"->"+pNewFrameIndex);
+                if(pNewFrameIndex>=8){
+                    Log.d("onanim", "actionlock release");
+                   action_lock=false;
+                }
+            }
+
+            @Override
+            public void onAnimationLoopFinished(AnimatedSprite pAnimatedSprite, int pRemainingLoopCount, int pInitialLoopCount) {
+                Log.d("onanim","loopfinished");
+            }
+
+            @Override
+            public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
+                Log.d("onanim","finished");
+            }
+        });
     }
 
     public void die(){
@@ -161,8 +267,6 @@ public class Unit extends AnimatedSprite {
         is_alive = false;
         animate(die_frame_duration,die_frame_img_index,false);
     }
-
-
 
     /* Unit Data
 
@@ -184,5 +288,63 @@ public class Unit extends AnimatedSprite {
         return this.body;
     }
 
+    int count=0;
+    public void update(){
+        UnitData ud = (UnitData)getBody().getUserData();
+
+        if(!action_lock) {
+            switch (action) {
+                case ACTION_MOVE_RIGHT:
+                    move(ConstantsSet.RIGHT);
+                    break;
+                case ACTION_MOVE_LEFT:
+                    move(ConstantsSet.LEFT);
+                    break;
+                case ACTION_JUMP:
+                    move(ConstantsSet.JUMP);
+                    break;
+                case ACTION_ATTACK:
+                    Log.d(TAG,"ACTON ATK");
+
+                 //   body.applyLinearImpulse(new Vector2(100,0),body.getWorldCenter());
+                    attack(0);
+
+                    break;
+                case ACTION_STOP:
+                    stop();
+                    break;
+            }
+            if(ud.isNeedToStop()){
+                this.stop();
+                ud.setNeedToStop(false);
+            }
+        }
+
+        if(ud.isInvincible()){
+            ud.setNeedToHitted(false);
+            if(!action_lock) {
+                count++;
+                if(count>=20){
+                    ud.setInvincibile(false);
+                    count=0;
+                }
+            }
+        }else {
+            if (ud.isNeedToHitted()) {
+                if(!action_lock) {
+                    Log.d(TAG, "isNeedToHitted");
+                    ud.setInvincibile(true);
+                    this.hitted();
+
+                }
+                ud.setNeedToHitted(false);
+            }
+        }
+
+
+    }
+    public void setAction(int a){
+        this.action = a;
+    }
 
 }

@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
+import org.andengine.engine.Engine;
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.options.EngineOptions;
@@ -19,6 +20,7 @@ import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.input.touch.TouchEvent;
@@ -27,6 +29,7 @@ import org.andengine.opengl.texture.atlas.TextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.IGameInterface;
@@ -41,7 +44,9 @@ import game.juan.andenginegame0.YGameUnits.IGameEntity;
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Controller.AttackController;
 import game.juan.andenginegame0.ygamelibs.Controller.OneWayMoveController;
+import game.juan.andenginegame0.ygamelibs.UI.HealthUI;
 import game.juan.andenginegame0.ygamelibs.World.HorizontalWorld;
+import game.juan.andenginegame0.ygamelibs.units.PlayerUnit;
 import game.juan.andenginegame0.ygamelibs.units.Unit;
 import game.juan.andenginegame0.ygamelibs.units.UnitData;
 
@@ -52,11 +57,11 @@ public class UnitTestActivity extends BaseGameActivity {
 
 
     HorizontalWorld world;
-
+    boolean scheduleEngineStart;
     private SmoothCamera mCamera;
     private Scene scene;
 
-    private Unit testUnit;
+    private PlayerUnit testUnit;
     private ITextureRegion leftTextureRegion;
 
     ITextureRegion rightTextureRegion;
@@ -65,9 +70,12 @@ public class UnitTestActivity extends BaseGameActivity {
     ITextureRegion skill1TextureRegion;
     ITextureRegion skill2TextureRegion;
 
+    ITiledTextureRegion heartTextureRegion;
+
     @Override
     public EngineOptions onCreateEngineOptions() {
         mCamera = new SmoothCamera(0,0,800,480,400,400,0);
+
         EngineOptions engineOptions = new EngineOptions(true
                 , ScreenOrientation.LANDSCAPE_FIXED,
                 new RatioResolutionPolicy(800,480)
@@ -102,14 +110,32 @@ public class UnitTestActivity extends BaseGameActivity {
     public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) throws Exception {
         pOnPopulateSceneCallback.onPopulateSceneFinished();
     }
+    @Override
+    public Engine onCreateEngine(EngineOptions pEngineOptions) {
+        Engine engine = new Engine(pEngineOptions);
+        if(scheduleEngineStart){
+            engine.start();
+            scheduleEngineStart = !scheduleEngineStart;
+        }
+        return engine;
+    }
 
+
+
+    @Override
+    public synchronized void onResumeGame() {
+        if(mEngine != null) {
+            super.onResumeGame();
+            scheduleEngineStart = true;
+        }
+    }
     private void loadGraphics(){
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-        final BitmapTextureAtlas textureAtlas = new BitmapTextureAtlas(getTextureManager(),512,128);
+        final BitmapTextureAtlas textureAtlas = new BitmapTextureAtlas(getTextureManager(),1024,1024);
         final TiledTextureRegion textureRegion  = BitmapTextureAtlasTextureRegionFactory.
-                createTiledFromAsset(textureAtlas,this.getAssets(),"player.png",0,0,8,2);
+                createTiledFromAsset(textureAtlas,this.getAssets(),"player.png",0,0,16,16);
         textureAtlas.load();
-        testUnit = new Unit(200,240,textureRegion,this.getVertexBufferObjectManager() );
+        testUnit = new PlayerUnit(200,440,textureRegion,this.getVertexBufferObjectManager() );
 
 
 
@@ -145,19 +171,33 @@ public class UnitTestActivity extends BaseGameActivity {
                 createFromAsset(skill2ControlTexture,this,"skill2.png",0,0);
         skill2ControlTexture.load();
 
+
+        final BitmapTextureAtlas heartTextureAtlas = new BitmapTextureAtlas(getTextureManager(),96,48);
+        heartTextureRegion  = BitmapTextureAtlasTextureRegionFactory.
+                createTiledFromAsset(heartTextureAtlas,this.getAssets(),"heart.png",0,0,2,1);
+
+        heartTextureAtlas.load();
+
+
     }
     private void createUnits(){
-        testUnit.createRectUnit(world.getWorld(),scene,new UnitData(ConstantsSet.TYPE_PLAYER,5,5,10,10.0f,10.0f),0.3f,1);
+        testUnit.createRectUnit(world.getWorld(),scene,new UnitData(ConstantsSet.TYPE_PLAYER,3,3,3,3.0f,6.0f),0.3f,1);
         mCamera.setChaseEntity(testUnit);
 
 
         final long walk_frame_du[] ={100,100,100,100,100,100,100,100};
-        final int walk_frame_i[] = {0,1,2,3,4,5,6,7};
-        final long attack_frame_du[] = {50,50,50,50,50,50};
-        final int attack_frame_i[] = {8,9,10,11,12,0};
+        final int walk_frame_i[] = {0+16,1+16,2+16,3+16,4+16,5+16,6+16,7+16};
+
+        final long attack_frame_du[] = {50,50,50,50,50,50,50};
+        final int attack_frame_i[] = {0+16*6,1+16*6,2+16*6,3+16*6,4+16*6,5+16*6,0+16*6};
+
+        final long hitted_frame_du[]={50,50,50,50,50,50,50,50,50};
+        final int hitted_frame_i[] ={1+16*4,2+16*4,3+16*4,4+16*4,5+16*4,6+16*4,7+16*4,8+16*4,0+16*4};
+
         testUnit.setMovingFrame(walk_frame_du,walk_frame_i);
         testUnit.setAttackFrame(attack_frame_du,attack_frame_i);
-        world.addUnit(testUnit);
+        testUnit.setHittedFrame(hitted_frame_du,hitted_frame_i);
+        world.addPlayerUnit(testUnit);
 
     }
     private void createUI(){
@@ -186,33 +226,18 @@ public class UnitTestActivity extends BaseGameActivity {
                 CAMERA_HEIGHT -attackButtonTextureRegion.getHeight(),
                 80,80,skill2TextureRegion,this.mEngine.getVertexBufferObjectManager()){
         };
-
-        attackButton.setup(testUnit, ConstantsSet.BASE_ATTACK);
-        leftButton.setup(testUnit,ConstantsSet.LEFT);
-        rightButton.setup(testUnit,ConstantsSet.RIGHT);
-        jumpButton.setup(testUnit,ConstantsSet.JUMP);
-        skil1Button.setup(testUnit,ConstantsSet.SKILL_1);
-        skil2Button.setup(testUnit,ConstantsSet.SKILL_2);
+        final HealthUI healthUI = new HealthUI(3,10,10,36,36,4);
 
         HUD hud = new HUD();
-        hud.registerTouchArea(leftButton);
-        hud.attachChild(leftButton);
+        attackButton.setup(testUnit, ConstantsSet.BASE_ATTACK,hud);
+        leftButton.setup(testUnit,ConstantsSet.LEFT, hud);
+        rightButton.setup(testUnit,ConstantsSet.RIGHT,hud);
+        jumpButton.setup(testUnit,ConstantsSet.JUMP,hud);
+        skil1Button.setup(testUnit,ConstantsSet.SKILL_1,hud);
+        skil2Button.setup(testUnit,ConstantsSet.SKILL_2,hud);
+        healthUI.setup(heartTextureRegion,this.mEngine,hud);
 
-        hud.registerTouchArea(rightButton);
-        hud.attachChild(rightButton);
-
-        hud.registerTouchArea(jumpButton);
-        hud.attachChild(jumpButton);
-
-        hud.registerTouchArea(attackButton);
-        hud.attachChild(attackButton);
-
-        hud.registerTouchArea(skil1Button);
-        hud.attachChild(skil1Button);
-
-        hud.registerTouchArea(skil2Button);
-        hud.attachChild(skil2Button);
-
+        testUnit.setupHealthUI(healthUI);
         this.mCamera.setHUD(hud);
     }
 
@@ -221,4 +246,9 @@ public class UnitTestActivity extends BaseGameActivity {
         world.createMap(this,scene);
         scene.registerUpdateHandler(world.getCollisionUpdateHandler());
     }
+    public void onResume(){
+        super.onResume();
+    }
+
+
 }

@@ -2,6 +2,7 @@ package game.juan.andenginegame0.ygamelibs.Controller;
 
 import android.util.Log;
 
+import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
@@ -22,21 +23,29 @@ public class OneWayMoveController extends Sprite{
         super(pX, pY, pWidth, pHeight, pTextureRegion, pVertexBufferObjectManager);
     }
 
-    public void setup(Unit unit, int way){
+    public void setup(Unit unit, int way,HUD hud){
         this.unit = unit;
         this.way = way;
+        hud.registerTouchArea(this);
+        hud.attachChild(this);
     }
     @Override
     public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y)
     {
-
         Log.d("TOUCH:"," "+pSceneTouchEvent.getAction());
-        if (pSceneTouchEvent.isActionDown()) {
-            unit.move(way);
-        }else if(pSceneTouchEvent.isActionUp()){
-            unit.stop();
-        }else if(pSceneTouchEvent.isActionOutside()){
-            unit.stop();
+        if (pSceneTouchEvent.isActionDown()||pSceneTouchEvent.isActionMove()) {
+            //unit.move(way);
+            if(way ==ConstantsSet.LEFT){
+                unit.setAction(ConstantsSet.ACTION_MOVE_LEFT);
+            }else if(way==ConstantsSet.RIGHT){
+                unit.setAction(ConstantsSet.ACTION_MOVE_RIGHT);
+            }else if(way==ConstantsSet.JUMP){
+                unit.setAction(ConstantsSet.ACTION_JUMP);
+            }
+
+        }else{
+           // unit.stop();
+            unit.setAction(ConstantsSet.ACTION_STOP);
         }
         return true;
     };

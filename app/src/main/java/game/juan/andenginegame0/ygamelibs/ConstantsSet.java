@@ -7,9 +7,10 @@ package game.juan.andenginegame0.ygamelibs;
 public interface ConstantsSet {
 
     short PLAYER_CATG_BITS =0x0001;
+    short PASSABLE_OBSTACLE_CATG_BITS = 0x0002;
 
-    short WALL_CATG_BITS = 0x0004;
-
+    short PLAYER_MASK_BITS = PLAYER_CATG_BITS;
+    short PASSABLE_OBSTACLE_MASK_BITS = 0x0000;
 
 
     int LEFT =0;
@@ -20,8 +21,14 @@ public interface ConstantsSet {
     int SKILL_1=1;
     int SKILL_2=2;
 
-    int TYPE_PLAYER=0;
-    int TYPE_GROUND=1;
-    int TYPE_WALL =2;
-    int TYPE_OBSTACLE = 3;
+    int ACTION_MOVE_RIGHT =0;
+    int ACTION_MOVE_LEFT = 1;
+    int ACTION_JUMP =2;
+    int ACTION_STOP = 3;
+    int ACTION_ATTACK = 4;
+    int ACTION_HITTED =5;
+
+    short TYPE_PLAYER =0x7777;
+    short TYPE_GROUND = 0x0001;
+    short TYPE_OBSTACLE = 0x0002;
 }

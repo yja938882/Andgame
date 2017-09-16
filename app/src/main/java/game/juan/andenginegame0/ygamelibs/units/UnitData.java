@@ -8,18 +8,22 @@ import android.util.Log;
 
 public class UnitData{
     private String TAG ="UnitData";
-    private int type;
+    private short type;
     private int damage;
     private int max_hp;
     private int hp;
     private float speed;
     private float jump_speed;
     boolean in_the_air;
-    boolean is_hitted=false;
+    private int push_way;
+
     int hitted_damage=0;
+    boolean invincibile = false;
 
+    boolean needtostop = false;
+    boolean needtohitted = false;
 
-    public UnitData(int type, int damage, int max_hp, int hp, float speed, float jump_speed){
+    public UnitData(short type, int damage, int max_hp, int hp, float speed, float jump_speed){
         this.type = type;
         this.damage = damage;
         this.max_hp = max_hp;
@@ -27,7 +31,7 @@ public class UnitData{
         this.speed = speed;
         this.jump_speed = jump_speed;
     }
-    public int getType(){return this.type;}
+    public short getType(){return this.type;}
     public int getDamage(){return this.damage;}
     public int getMax_hp(){return this.max_hp;}
     public int getHp(){return this.hp;}
@@ -36,16 +40,33 @@ public class UnitData{
     public void setIn_the_air(boolean air){
         this.in_the_air = air;
     }
-    public void setHitted(boolean hit , int damage){
-        is_hitted = hit;
-        hitted_damage = damage;
+
+
+
+
+    public boolean isInvincible(){return this.invincibile;}
+    public void setInvincibile(boolean i){this.invincibile = i;}
+
+    public boolean isNeedToStop(){return needtostop;}
+    public void setNeedToStop(boolean n){this.needtostop = n;}
+
+    public boolean isNeedToHitted(){return needtohitted;}
+    public void setNeedToHitted(boolean n, int way){
+        this.push_way = way;
+        this.needtohitted = n;}
+    public void setNeedToHitted(boolean n){
+        this.needtohitted = n;
+       }
+
+    public void setHitted(int damage){
+        //hitted_damage = damage;
         if(damage>0){
             hp-=damage;
-            Log.d(TAG," hp :"+hp);
+            if(hp<=0){
+                hp=0;
+            }
         }
     }
-    public boolean isHitted(){
-        return is_hitted;
-    }
+    public int getPushWay(){return this.push_way;}
 }
 
