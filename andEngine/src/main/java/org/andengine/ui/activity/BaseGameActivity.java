@@ -77,6 +77,7 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 
 		super.onCreate(pSavedInstanceState);
 
+
 		this.mGamePaused = true;
 
 		this.mEngine = this.onCreateEngine(this.onCreateEngineOptions());

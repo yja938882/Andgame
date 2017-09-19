@@ -9,18 +9,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".StartActivity" />
-        <activity android:name=".ygamelibs.Test.UnitTestActivity">
-
-        </activity>
-        <activity android:name=".ygamelibs.Test.StartTestActivity">
+        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".StartActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
+        <activity android:name=".ygamelibs.Test.UnitTestActivity" />
+        <activity
+            android:name=".ygamelibs.Test.StartTestActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ygamelibs.Test.SpriteBatchTestActivity" />
+        <activity android:name=".ygamelibs.Test.DataTestActivity"></activity>
     </application>
 
 </manifest>

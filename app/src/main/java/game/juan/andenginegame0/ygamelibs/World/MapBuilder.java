@@ -1,5 +1,8 @@
 package game.juan.andenginegame0.ygamelibs.World;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.util.Log;
 
 import com.badlogic.gdx.math.Vector2;
@@ -15,13 +18,20 @@ import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.sprite.TiledSprite;
+import org.andengine.entity.sprite.batch.SpriteBatch;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.color.Color;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
+import game.juan.andenginegame0.ygamelibs.Utils.DataManager;
 import game.juan.andenginegame0.ygamelibs.units.UnitData;
 
 /**
@@ -30,6 +40,12 @@ import game.juan.andenginegame0.ygamelibs.units.UnitData;
 
 public class MapBuilder {
     private static String TAG ="MapBuilder";
+
+    String mapDataFile;
+    int stage;
+
+
+
     public static void createTrap(Scene scene, PhysicsWorld physicsWorld, BaseGameActivity activity,
                                   int sx,int sy, int w,int h){
         final Rectangle trapRectangle = new Rectangle(sx,sy,w,h,activity.getVertexBufferObjectManager());
@@ -116,7 +132,7 @@ public class MapBuilder {
 
     public static void createMovingGround(Scene scene, PhysicsWorld physicsWorld, BaseGameActivity activity){
 
-        final Rectangle groundRectangle = new Rectangle(500, 800, 100, 50, activity.getVertexBufferObjectManager());
+        final Rectangle groundRectangle = new Rectangle(500, 800, 320, 50, activity.getVertexBufferObjectManager());
         groundRectangle.setColor(Color.BLACK);
         scene.attachChild(groundRectangle);
 
@@ -213,6 +229,50 @@ public class MapBuilder {
         final Body barBody3 = PhysicsFactory.createBoxBody(physicsWorld, rect1, BodyDef.BodyType.DynamicBody, PhysicsFactory.createFixtureDef(0.2f, 0.2f, 0.2f));
         physicsWorld.registerPhysicsConnector(new PhysicsConnector(rect1, barBody3, true, true));*/
     }
+
+    public static void createMapFromData(Context context, int stage){
+        final SpriteBatch staticSpriteBatch;
+        DataManager dm = new DataManager();
+        dm.loadMapData(context,stage);
+        int size = dm.getStaticSize();
+        for(int i=0;i<size;i++){
+
+        }
+    }
+/*
+        final Sprite faceSprite1 = new Sprite(-50, 0, this.mFaceTextureRegion, this.getVertexBufferObjectManager());
+        final Sprite faceSprite2 = new Sprite(50, 0, this.mFaceTextureRegion, this.getVertexBufferObjectManager());
+
+
+        faceSprite1.setScale(2);
+        faceSprite2.setRotation(45);
+
+        final SpriteBatch dynamicSpriteBatch = new DynamicSpriteBatch(this.mFaceTexture, 2, this.getVertexBufferObjectManager()) {
+            @Override
+            public boolean onUpdateSpriteBatch() {
+                this.draw(faceSprite1);
+                this.draw(faceSprite2);
+
+                return true;
+            }
+        };
+
+        final SpriteBatch staticSpriteBatch = new SpriteBatch(this.mFaceTexture, 2, this.getVertexBufferObjectManager());
+        staticSpriteBatch.draw(faceSprite1);
+        staticSpriteBatch.draw(faceSprite2);
+        staticSpriteBatch.submit();
+        final float centerX = CAMERA_WIDTH / 2-300;
+        final float centerY = CAMERA_HEIGHT / 2-100;
+        dynamicSpriteBatch.setPosition(centerX, centerY+450 - 70);
+        staticSpriteBatch.setPosition(centerX, centerY+450 + 70);
+
+        FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(1.0f,0.0f,1.0f);
+
+        Body b = PhysicsFactory.createBoxBody(world.getWorld(),100f,570f,100f,50f, BodyDef.BodyType.StaticBody,WALL_FIX);
+
+*/
+
+
 }
 
 

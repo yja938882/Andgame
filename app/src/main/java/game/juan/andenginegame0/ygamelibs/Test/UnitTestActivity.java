@@ -1,14 +1,18 @@
 package game.juan.andenginegame0.ygamelibs.Test;
 
+import android.graphics.Bitmap;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Shape;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.SmoothCamera;
@@ -19,18 +23,29 @@ import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.scene.background.ParallaxBackground;
+import org.andengine.entity.scene.background.SpriteBackground;
+import org.andengine.entity.shape.IAreaShape;
+import org.andengine.entity.shape.IShape;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.sprite.batch.DynamicSpriteBatch;
+import org.andengine.entity.sprite.batch.SpriteBatch;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
+import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.opengl.texture.ITexture;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.TextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.bitmap.AssetBitmapTexture;
+import org.andengine.opengl.texture.bitmap.BitmapTexture;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.texture.region.TextureRegion;
+import org.andengine.opengl.texture.region.TextureRegionFactory;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.IGameInterface;
 import org.andengine.ui.activity.BaseGameActivity;
@@ -69,40 +84,97 @@ public class UnitTestActivity extends BaseGameActivity {
     ITextureRegion attackButtonTextureRegion;
     ITextureRegion skill1TextureRegion;
     ITextureRegion skill2TextureRegion;
+    ITextureRegion bgTextureRegion;
 
     ITiledTextureRegion heartTextureRegion;
 
+    private View 	decorView;
+    private int	uiOption;
+
+
+    private BitmapTextureAtlas mFaceTexture;
+    private ITextureRegion mFaceTextureRegion;
+
+
+
+
     @Override
     public EngineOptions onCreateEngineOptions() {
-        mCamera = new SmoothCamera(0,0,800,480,400,400,0);
+        mCamera = new SmoothCamera(0,0,900,480,400,400,0);
+      //  mCamera.setCenter(500,500);
+
+/*
+        decorView = getWindow().getDecorView();
+        uiOption = getWindow().getDecorView().getSystemUiVisibility();
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH )
+            uiOption |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN )
+            uiOption |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT )
+            uiOption |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+
+*/
+
 
         EngineOptions engineOptions = new EngineOptions(true
                 , ScreenOrientation.LANDSCAPE_FIXED,
-                new RatioResolutionPolicy(800,480)
+                new RatioResolutionPolicy(2560,1440)
                 ,mCamera);
+
         engineOptions.getTouchOptions().setNeedsMultiTouch(true);
         return engineOptions;
     }
 
     @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        // TODO Auto-generated method stub
+         super.onWindowFocusChanged(hasFocus);
+
+        decorView = getWindow().getDecorView();
+        uiOption = getWindow().getDecorView().getSystemUiVisibility();
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH )
+            uiOption |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN )
+            uiOption |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT )
+            uiOption |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        if( hasFocus ) {
+            decorView.setSystemUiVisibility( uiOption );
+        }
+    }
+
+    @Override
     public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws Exception {
         loadGraphics();
+
+
+
+
         pOnCreateResourcesCallback.onCreateResourcesFinished();
     }
 
     @Override
     public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws Exception {
         this.scene = new Scene();
-        this.scene.setBackground(new Background(0,125,48));
+       // this.scene.setBackground(new Background(0,125,48));
         world = new HorizontalWorld();
         world.createWorld(new Vector2(0, SensorManager.GRAVITY_EARTH),false);
 
         this.scene.registerUpdateHandler(world.getWorld());
 
+        final BitmapTextureAtlas bgTexture = new BitmapTextureAtlas(getTextureManager(),1024,576,TextureOptions.BILINEAR);
+        bgTextureRegion = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(bgTexture,this,"background.png",0,0);
+        bgTexture.load();
+
+        ParallaxBackground background = new ParallaxBackground(0,0,0);
+        background.attachParallaxEntity(new ParallaxBackground.ParallaxEntity(0,new Sprite(0,0,bgTextureRegion,getVertexBufferObjectManager())));
+        scene.setBackground(background);
         createUnits();
         createMap();
         createUI();
-       // scene.attachChild(new DebugRenderer(world.getWorld(),getVertexBufferObjectManager()));
+
+
         pOnCreateSceneCallback.onCreateSceneFinished(this.scene);
     }
 
@@ -112,11 +184,15 @@ public class UnitTestActivity extends BaseGameActivity {
     }
     @Override
     public Engine onCreateEngine(EngineOptions pEngineOptions) {
+
+
+
         Engine engine = new Engine(pEngineOptions);
         if(scheduleEngineStart){
             engine.start();
             scheduleEngineStart = !scheduleEngineStart;
         }
+
         return engine;
     }
 
@@ -134,6 +210,7 @@ public class UnitTestActivity extends BaseGameActivity {
         final BitmapTextureAtlas textureAtlas = new BitmapTextureAtlas(getTextureManager(),1024,1024);
         final TiledTextureRegion textureRegion  = BitmapTextureAtlasTextureRegionFactory.
                 createTiledFromAsset(textureAtlas,this.getAssets(),"player.png",0,0,16,16);
+
         textureAtlas.load();
         testUnit = new PlayerUnit(200,440,textureRegion,this.getVertexBufferObjectManager() );
 
@@ -157,7 +234,7 @@ public class UnitTestActivity extends BaseGameActivity {
         //set Attack button
         final BitmapTextureAtlas attackButtonTexture = new BitmapTextureAtlas(getTextureManager(),128,128,TextureOptions.BILINEAR);
         attackButtonTextureRegion = BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(attackButtonTexture,this,"attack_btn.png",0,0);
+                createFromAsset(attackButtonTexture,this,"ui/attack_btn.png",0,0);
         attackButtonTexture.load();
 
 
@@ -179,6 +256,11 @@ public class UnitTestActivity extends BaseGameActivity {
         heartTextureAtlas.load();
 
 
+        this.mFaceTexture = new BitmapTextureAtlas(getTextureManager(),80,80,TextureOptions.BILINEAR);
+        mFaceTextureRegion = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(mFaceTexture,this.getAssets(),"left.png",0,0);
+
+        mFaceTexture.load();
     }
     private void createUnits(){
         testUnit.createRectUnit(world.getWorld(),scene,new UnitData(ConstantsSet.TYPE_PLAYER,3,3,3,3.0f,6.0f),0.3f,1);
