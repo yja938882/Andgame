@@ -25,7 +25,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".ygamelibs.Test.SpriteBatchTestActivity" />
-        <activity android:name=".ygamelibs.Test.DataTestActivity"></activity>
+        <activity android:name=".ygamelibs.Test.DataTestActivity" />
+        <activity android:name=".ygamelibs.Test.AttractionTestActivity" />
+        <activity android:name=".ygamelibs.Test.BuildMapTestActivity" />
+        <activity android:name=".ygamelibs.Test.ObstacleTestActivity" />
+        <activity android:name=".GameSettingDialogActivity" />
+        <activity android:name=".ygamelibs.GameSettingActivity"></activity>
     </application>
 
 </manifest>

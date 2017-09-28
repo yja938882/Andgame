@@ -32,19 +32,9 @@ public class OneWayMoveController extends Sprite{
     @Override
     public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y)
     {
-        Log.d("TOUCH:"," "+pSceneTouchEvent.getAction());
         if (pSceneTouchEvent.isActionDown()||pSceneTouchEvent.isActionMove()) {
-            //unit.move(way);
-            if(way ==ConstantsSet.LEFT){
-                unit.setAction(ConstantsSet.ACTION_MOVE_LEFT);
-            }else if(way==ConstantsSet.RIGHT){
-                unit.setAction(ConstantsSet.ACTION_MOVE_RIGHT);
-            }else if(way==ConstantsSet.JUMP){
-                unit.setAction(ConstantsSet.ACTION_JUMP);
-            }
-
+            unit.setAction(way);
         }else{
-           // unit.stop();
             unit.setAction(ConstantsSet.ACTION_STOP);
         }
         return true;

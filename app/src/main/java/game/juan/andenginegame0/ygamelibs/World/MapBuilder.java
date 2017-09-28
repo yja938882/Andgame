@@ -18,11 +18,23 @@ import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.TiledSprite;
 import org.andengine.entity.sprite.batch.SpriteBatch;
+import org.andengine.entity.sprite.batch.SpriteGroup;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
+import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
+import org.andengine.opengl.texture.ITexture;
+import org.andengine.opengl.texture.Texture;
+import org.andengine.opengl.texture.TextureOptions;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.ITiledTextureRegion;
+import org.andengine.opengl.texture.region.TextureRegion;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.color.Color;
 import org.json.JSONObject;
@@ -41,9 +53,15 @@ import game.juan.andenginegame0.ygamelibs.units.UnitData;
 public class MapBuilder {
     private static String TAG ="MapBuilder";
 
+    SpriteBatch staticBatch[];
+
+
     String mapDataFile;
     int stage;
 
+    public void test(){
+
+    }
 
 
     public static void createTrap(Scene scene, PhysicsWorld physicsWorld, BaseGameActivity activity,
@@ -218,59 +236,57 @@ public class MapBuilder {
         revoluteJointDef.collideConnected = false;
 
 
+        Sprite sprite;
 
         physicsWorld.createJoint(revoluteJointDef);
 
-/*
-        final Rectangle rect3 = new Rectangle(centerX, centerY, barWidth, barHeight, activity.getVertexBufferObjectManager());
-        rect1.setColor(Color.RED);
-        scene.attachChild(rect1);
-
-        final Body barBody3 = PhysicsFactory.createBoxBody(physicsWorld, rect1, BodyDef.BodyType.DynamicBody, PhysicsFactory.createFixtureDef(0.2f, 0.2f, 0.2f));
-        physicsWorld.registerPhysicsConnector(new PhysicsConnector(rect1, barBody3, true, true));*/
     }
 
-    public static void createMapFromData(Context context, int stage){
-        final SpriteBatch staticSpriteBatch;
+    public static void createMapFromData(Scene scene, PhysicsWorld physicsWorld, BaseGameActivity activity,String imgfile, String jfile){
         DataManager dm = new DataManager();
-        dm.loadMapData(context,stage);
-        int size = dm.getStaticSize();
-        for(int i=0;i<size;i++){
+        dm.loadMapData(activity,jfile);
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+
+       final BitmapTextureAtlas textureAtlas = new BitmapTextureAtlas(activity.getTextureManager(),512,256);
+        ITiledTextureRegion tiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.
+                createTiledFromAsset(textureAtlas,activity,"map/"+imgfile,0,0,8,4);;
+        textureAtlas.load();
+
+        int capacity = dm.getCapacity();
+        Log.d(TAG," cap : "+capacity);
+        Log.d(TAG," ptom :"+PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT);
+        SpriteBatch batch = new SpriteBatch(textureAtlas,capacity,activity.getVertexBufferObjectManager());
+
+        for(int i=0;i<dm.getStaticSize();i++){
+            float sx = dm.getStaticX(i);
+            float sy = dm.getStaticY(i);
+            float w = dm.getStaticW(i);
+            float h =dm.getStaticH(i);
+
+            FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,0.5f);
+            Body b = PhysicsFactory.createBoxBody(physicsWorld,sx+w/2,sy+h/2,w,h,BodyDef.BodyType.StaticBody,WALL_FIX);
+            b.setUserData(new UnitData(ConstantsSet.TYPE_GROUND,0,0,0,0,0));
+            Log.d("BODY 2 ",b.getPosition().x +" "+b.getPosition().y);
+            String ix = dm.getTileIndex(i);
+            for(int k=0;k<ix.length();k++) {
+
+                int type = Integer.parseInt(ix.substring(k,k+1));
+                Log.d("LENGHT","type :"+type);
+                batch.draw(tiledTextureRegion.getTextureRegion(type),
+                        (int)sx+k*32,(int)sy,32,32,1,1,1,1);
+
+            }
 
         }
+        batch.submit();
+
+        scene.attachChild(batch);
     }
-/*
-        final Sprite faceSprite1 = new Sprite(-50, 0, this.mFaceTextureRegion, this.getVertexBufferObjectManager());
-        final Sprite faceSprite2 = new Sprite(50, 0, this.mFaceTextureRegion, this.getVertexBufferObjectManager());
+    public void loadStaticGraphics(BaseGameActivity activity){
+      //  staticBatch = new SpriteBatch[5];
+        //staticBatch[0] = new SpriteBatch(this.mFaceTexture, 2, activity.getVertexBufferObjectManager());
+    }
 
-
-        faceSprite1.setScale(2);
-        faceSprite2.setRotation(45);
-
-        final SpriteBatch dynamicSpriteBatch = new DynamicSpriteBatch(this.mFaceTexture, 2, this.getVertexBufferObjectManager()) {
-            @Override
-            public boolean onUpdateSpriteBatch() {
-                this.draw(faceSprite1);
-                this.draw(faceSprite2);
-
-                return true;
-            }
-        };
-
-        final SpriteBatch staticSpriteBatch = new SpriteBatch(this.mFaceTexture, 2, this.getVertexBufferObjectManager());
-        staticSpriteBatch.draw(faceSprite1);
-        staticSpriteBatch.draw(faceSprite2);
-        staticSpriteBatch.submit();
-        final float centerX = CAMERA_WIDTH / 2-300;
-        final float centerY = CAMERA_HEIGHT / 2-100;
-        dynamicSpriteBatch.setPosition(centerX, centerY+450 - 70);
-        staticSpriteBatch.setPosition(centerX, centerY+450 + 70);
-
-        FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(1.0f,0.0f,1.0f);
-
-        Body b = PhysicsFactory.createBoxBody(world.getWorld(),100f,570f,100f,50f, BodyDef.BodyType.StaticBody,WALL_FIX);
-
-*/
 
 
 }

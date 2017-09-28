@@ -21,8 +21,6 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.Constants;
 
-import game.juan.andenginegame0.YGameUnits.EntityData;
-import game.juan.andenginegame0.YGameUnits.IGameEntity;
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.UI.HealthUI;
 
@@ -80,9 +78,10 @@ public class Unit extends AnimatedSprite {
                                UnitData data, final float ratiox, final float ratioy){
         this.MOVING_SPEED = data.getSpeed();
         this.JUMP_SPEED = data.getJumpSpeed();
-        final FixtureDef FIX = PhysicsFactory.createFixtureDef(2.0F ,0.0f, 0.2F);
+        final FixtureDef FIX = PhysicsFactory.createFixtureDef(2.0F ,0.0f, 0.0F);
         FIX.filter.maskBits=getMaskBits(data.getType());
         FIX.filter.categoryBits=getCatgBits(data.getType());
+
 
         body = PhysicsFactory.createBoxBody(physicsWorld,
                 getX() + (getWidth()*(1.0f-ratiox)/2.0f),
@@ -138,9 +137,12 @@ public class Unit extends AnimatedSprite {
         switch(direction){
             case ConstantsSet.RIGHT:
                     body.setLinearVelocity(MOVING_SPEED,body.getLinearVelocity().y);
+                   // body.applyLinearImpulse(new Vector2(MOVING_SPEED/2,0),body.getWorldCenter());
+               // body.applyForce(new Vector2(MOVING_SPEED/2,0),body.getWorldCenter());
                     this.setFlippedHorizontal(false);
                     break;
             case ConstantsSet.LEFT:
+              //  body.applyLinearImpulse(new Vector2(-MOVING_SPEED/2,0),body.getWorldCenter());
                     body.setLinearVelocity(-MOVING_SPEED,body.getLinearVelocity().y);
                     this.setFlippedHorizontal(true);
                     break;
@@ -184,6 +186,7 @@ public class Unit extends AnimatedSprite {
         if(((UnitData)body.getUserData()).in_the_air) return;
         is_moving = false;
         stopAnimation(0);
+
         this.body.setLinearVelocity(0,body.getLinearVelocity().y);
     }
     public void attack(int num){
@@ -246,6 +249,7 @@ public class Unit extends AnimatedSprite {
                 Log.d("onanim","changed : "+pOldFrameIndex+"->"+pNewFrameIndex);
                 if(pNewFrameIndex>=8){
                     Log.d("onanim", "actionlock release");
+                    body.setLinearVelocity(0,0);
                    action_lock=false;
                 }
             }
@@ -291,7 +295,7 @@ public class Unit extends AnimatedSprite {
     int count=0;
     public void update(){
         UnitData ud = (UnitData)getBody().getUserData();
-
+        
         if(!action_lock) {
             switch (action) {
                 case ACTION_MOVE_RIGHT:
@@ -314,10 +318,6 @@ public class Unit extends AnimatedSprite {
                     stop();
                     break;
             }
-            if(ud.isNeedToStop()){
-                this.stop();
-                ud.setNeedToStop(false);
-            }
         }
 
         if(ud.isInvincible()){
@@ -335,7 +335,6 @@ public class Unit extends AnimatedSprite {
                     Log.d(TAG, "isNeedToHitted");
                     ud.setInvincibile(true);
                     this.hitted();
-
                 }
                 ud.setNeedToHitted(false);
             }

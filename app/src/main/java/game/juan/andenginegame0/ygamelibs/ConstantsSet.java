@@ -13,6 +13,7 @@ public interface ConstantsSet {
     short PASSABLE_OBSTACLE_MASK_BITS = 0x0000;
 
 
+
     int LEFT =0;
     int RIGHT =1;
     int JUMP=2;
@@ -31,4 +32,7 @@ public interface ConstantsSet {
     short TYPE_PLAYER =0x7777;
     short TYPE_GROUND = 0x0001;
     short TYPE_OBSTACLE = 0x0002;
+
+    int AI_TYPE_STOPPER = 0;
+    int AI_TYPE_MOVER =1;
 }

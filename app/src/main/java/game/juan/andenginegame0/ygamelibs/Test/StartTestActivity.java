@@ -47,12 +47,22 @@ public class StartTestActivity extends Activity {
     public void onClickUnitTest(View v){
         Intent i = new Intent(StartTestActivity.this,UnitTestActivity.class);
         startActivity(i);
-        finish();
+      //  finish();
     }
-
-    public void onClickSpriteBatchTest(View v){
+    public void onClickBuildMapTest(View v){
+        Intent i = new Intent(StartTestActivity.this,BuildMapTestActivity.class);
+        startActivity(i);
+        //finish();
+    }
+    public void onClickObstacleTest(View v){
+        Intent i = new Intent(StartTestActivity.this,ObstacleTestActivity.class);
+        startActivity(i);
+        //finish();
+    }
+    public void onClickLoadDataTest(View v){
         Intent i = new Intent(StartTestActivity.this,DataTestActivity.class);
         startActivity(i);
-        finish();
+        //finish();
     }
+
 }

@@ -37,6 +37,6 @@ public class AttackController extends Sprite {
             unit.setAction(ConstantsSet.ACTION_ATTACK);
         }
         return true;
-    };
+    }
 
 }

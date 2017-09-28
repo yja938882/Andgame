@@ -1,5 +1,6 @@
 package game.juan.andenginegame0.ygamelibs.World;
 
+import android.app.Activity;
 import android.util.Log;
 
 import com.badlogic.gdx.math.Vector2;
@@ -10,28 +11,26 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.Joint;
-import com.badlogic.gdx.physics.box2d.JointDef;
+
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.joints.PrismaticJointDef;
-import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
-import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
-import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
-import org.andengine.extension.physics.box2d.PhysicsConnector;
+import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.scene.background.ParallaxBackground;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
+import org.andengine.opengl.texture.TextureOptions;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.color.Color;
 
 import java.util.ArrayList;
 
-import game.juan.andenginegame0.MainActivity;
-import game.juan.andenginegame0.YGameUnits.EntityData;
-import game.juan.andenginegame0.YGameUnits.IGameEntity;
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.units.PlayerUnit;
 import game.juan.andenginegame0.ygamelibs.units.Unit;
@@ -43,6 +42,8 @@ import game.juan.andenginegame0.ygamelibs.units.UnitData;
 
 public class HorizontalWorld {
     private String TAG="HorizontalWorld";
+    ITextureRegion bgTextureRegion;
+
     private PhysicsWorld physicsWorld;
     ArrayList<Unit> unitsList = new ArrayList<>();
     PlayerUnit playerUnit;
@@ -99,10 +100,10 @@ public class HorizontalWorld {
                             Log.d(TAG,"with TYPE_GROUND");
                             if(a==ConstantsSet.TYPE_PLAYER){
                                 ((UnitData) oa).setIn_the_air(false);
-                                ((UnitData) oa).setNeedToStop(true);
+                               // ((UnitData) oa).setNeedToStop(true);
                             }else if(b==ConstantsSet.TYPE_PLAYER) {
                                 ((UnitData) ob).setIn_the_air(false);
-                                ((UnitData) ob).setNeedToStop(true);
+                                //((UnitData) ob).setNeedToStop(true);
                             }
                             break;
                         case ConstantsSet.TYPE_OBSTACLE:
@@ -169,44 +170,27 @@ public class HorizontalWorld {
         };
         return contactListener;
     }
-    public void createMap(BaseGameActivity activity, Scene scene){
-        final int MAP_WIDTH = 800;
-        final int MAP_HEIGHT = 800;
+    public void createMap(BaseGameActivity activity, Scene scene,String imgfile, String jfile){
 
-          /* Create Wall - bounds*/
-        FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,1.0f);
-        WALL_FIX.filter.categoryBits = IGameEntity.WALL_CATG_BITS;
-        WALL_FIX.filter.maskBits = IGameEntity.WALL_MASK_BITS;
+        ParallaxBackground background = new ParallaxBackground(0,0,0);
+        background.attachParallaxEntity(new ParallaxBackground.ParallaxEntity(0,new Sprite(0,0,bgTextureRegion,activity.getVertexBufferObjectManager())));
+        scene.setBackground(new Background(Color.WHITE));
 
-        Rectangle bottom = new Rectangle(0,MAP_HEIGHT-15,MAP_WIDTH/2,15,activity.getVertexBufferObjectManager());
-        bottom.setColor(new Color(15,50,0));
-
-       // Rectangle left = new Rectangle(0,0,15,MAP_HEIGHT-15,activity.getVertexBufferObjectManager());
-       // left.setColor(new Color(15,50,0));
-
-        Rectangle right = new Rectangle(MAP_WIDTH-15,0,15,MAP_HEIGHT-15,activity.getVertexBufferObjectManager());
-        right.setColor(new Color(15,50,0));
-
-       // Rectangle top = new Rectangle(0,0,MAP_WIDTH,15,activity.getVertexBufferObjectManager());
-       // top.setColor(new Color(15,50,0));
-
-        Body b =PhysicsFactory.createBoxBody(physicsWorld,bottom, BodyDef.BodyType.StaticBody,WALL_FIX);
-       // Body l=PhysicsFactory.createBoxBody(physicsWorld,left,BodyDef.BodyType.StaticBody,WALL_FIX);
-        Body r = PhysicsFactory.createBoxBody(physicsWorld,right, BodyDef.BodyType.StaticBody,WALL_FIX);
-       // Body t =PhysicsFactory.createBoxBody(physicsWorld,top, BodyDef.BodyType.StaticBody,WALL_FIX);
-
-        b.setUserData(new UnitData(ConstantsSet.TYPE_GROUND,0,0,0,0,0));
-        scene.attachChild(bottom);
-       // scene.attachChild(left);
-        scene.attachChild(right);
-        //scene.attachChild(top);
-        MapBuilder.createTrap(scene,physicsWorld,activity,30,MAP_HEIGHT-15-30,30,30);
         MapBuilder.createPendulum(scene,physicsWorld,activity
                 ,400,500,40,40
                 ,4,200,40,40
                 );
         MapBuilder.createMovingGround(scene,physicsWorld,activity);
-      //  MapBuilder.createTriObstacle(scene,physicsWorld,activity,140,650,100,20);
 
+        //MapBuilder.createTriObstacle(scene,physicsWorld,activity,140,300,100,20);
+        MapBuilder.createTrap(scene,physicsWorld,activity,250,400,50,50);
+        MapBuilder.createMapFromData(scene,physicsWorld,activity,imgfile,jfile);
+    }
+    public void loadBgGraphics(BaseGameActivity activity){
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/bg/");
+        final BitmapTextureAtlas bgTexture = new BitmapTextureAtlas(activity.getTextureManager(),1024,576, TextureOptions.BILINEAR);
+        bgTextureRegion = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(bgTexture,activity,"background.png",0,0);
+        bgTexture.load();
     }
 }

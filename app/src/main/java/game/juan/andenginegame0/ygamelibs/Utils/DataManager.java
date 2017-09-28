@@ -13,19 +13,46 @@ import java.io.InputStream;
  */
 
 public class DataManager {
-    private final float STATIC_UNIT=64.0f;
-    private JSONArray staticMapData;
+    private final float STATIC_UNIT=32.0f;
+
     private String backgroundImg="";
     private String tileImg="";
-    public void loadMapData(Context context, int stage){
+    private int total_length=0;
+
+    int static_x[];
+    int static_y[];
+    float static_w[];
+    float static_h[];
+    String static_index[];
+    int static_length;
+    public void loadMapData(Context context, String file){
         try{
-            JSONObject mapObject = loadJSONFromAsset(context,"map_json.json").getJSONObject("map");
+            JSONArray staticMapData;
+            JSONObject mapObject = loadJSONFromAsset(context,file).getJSONObject("map");
             staticMapData = mapObject.getJSONArray("statics");
             backgroundImg = mapObject.getString("bg");
             tileImg = mapObject.getString("src");
+             static_length= staticMapData.length();
+
+            static_x = new int[static_length];
+            static_y = new int[static_length];
+            static_w = new float[static_length];
+            static_h = new float[static_length];
+            static_index = new String[static_length];
+            for(int i=0;i<static_length;i++){
+                total_length+=(staticMapData.getJSONObject(i).getInt("w"));
+                static_x[i] = (staticMapData.getJSONObject(i).getInt("x"));
+                static_y[i] = (staticMapData.getJSONObject(i).getInt("y"));
+                static_w[i] = STATIC_UNIT*(staticMapData.getJSONObject(i).getInt("w"));
+                static_h[i] = STATIC_UNIT*(staticMapData.getJSONObject(i).getInt("h"));
+                static_index[i] = (staticMapData.getJSONObject(i).getString("index"));
+            }
+
         }catch (Exception e){
             e.printStackTrace();
         }
+
+
         return;
     }
 
@@ -36,43 +63,26 @@ public class DataManager {
         return tileImg;
     }
     public int getStaticSize(){
-        return staticMapData.length();
+        return static_length;
     }
+    public int getCapacity(){
+        return total_length;
+    }
+
     public float getStaticX(int index){
-        float ret=-1f;
-        try {
-            ret=(float)staticMapData.getJSONObject(index).getInt("x");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return ret;
+    return static_x[index];
     }
     public float getStaticY(int index){
-        float ret=-1f;
-        try {
-            ret=(float)staticMapData.getJSONObject(index).getInt("y");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return ret;
+        return static_y[index];
     }
     public float getStaticW(int index){
-        float ret=-1f;
-        try {
-            ret=(float)(staticMapData.getJSONObject(index).getInt("w")*STATIC_UNIT);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return ret;
+        return static_w[index];
     }
     public float getStaticH(int index){
-        float ret=-1f;
-        try {
-            ret=(float)(staticMapData.getJSONObject(index).getInt("h")*STATIC_UNIT);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return ret;
+        return static_h[index];
+    }
+    public String getTileIndex(int index){
+        return static_index[index];
     }
 
    private static JSONObject loadJSONFromAsset(Context context, String filename){
