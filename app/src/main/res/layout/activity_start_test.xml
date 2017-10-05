@@ -15,11 +15,24 @@
             android:layout_height="50dp"
             android:text="unit test"
             android:onClick="onClickUnitTest"/>
-        <Button
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:text="map build test"
-            android:onClick="onClickBuildMapTest"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <EditText
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:inputType="number"
+                android:id="@+id/build_map_test"
+                android:text="0"/>
+            <Button
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:text="map build test"
+                android:onClick="onClickBuildMapTest"/>
+
+        </LinearLayout>
+
         <Button
             android:layout_width="200dp"
             android:layout_height="50dp"

@@ -20,14 +20,15 @@ import game.juan.andenginegame0.ygamelibs.units.PlayerUnit;
 
 /**
  * Created by juan on 2017. 9. 24..
+ * UIManager
  */
 
 public class UIManager {
     private int CAMERA_WIDTH;
     private int CAMERA_HEIGHT;
 
-    ITiledTextureRegion heartTextureRegion;
-    ITextureRegion settingTextureRegion;
+    private ITiledTextureRegion heartTextureRegion;
+    private ITextureRegion settingTextureRegion;
 
     public UIManager(int cam_width, int cam_height){
         this.CAMERA_WIDTH = cam_width;

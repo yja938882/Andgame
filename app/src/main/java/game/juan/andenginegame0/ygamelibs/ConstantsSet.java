@@ -6,12 +6,6 @@ package game.juan.andenginegame0.ygamelibs;
 
 public interface ConstantsSet {
 
-    short PLAYER_CATG_BITS =0x0001;
-    short PASSABLE_OBSTACLE_CATG_BITS = 0x0002;
-
-    short PLAYER_MASK_BITS = PLAYER_CATG_BITS;
-    short PASSABLE_OBSTACLE_MASK_BITS = 0x0000;
-
 
 
     int LEFT =0;
@@ -35,4 +29,35 @@ public interface ConstantsSet {
 
     int AI_TYPE_STOPPER = 0;
     int AI_TYPE_MOVER =1;
+    float DEG_TO_RAD = 0.017453292f;
+
+    interface Collision{
+        short PLAYER_CATG_BITS =0x0001;
+        short PLAYER_JUMP_CATG_BITS = 0x0002;
+        short GROUND_CATG_BITS = 0x0004;
+
+        short PASSABLE_OBSTACLE_CATG_BITS = 0x0008;
+
+
+
+        short PLAYER_MASK_BITS = PLAYER_CATG_BITS|GROUND_CATG_BITS;
+        short PLAYER_JUMP_MASK_BITS = PLAYER_JUMP_CATG_BITS;
+        short GROUND_MASK_BITS = PLAYER_CATG_BITS|GROUND_CATG_BITS;
+
+        short PASSABLE_OBSTACLE_MASK_BITS = 0x0000;
+
+    }
+
+    interface MapBuilder{
+        char TYPE_FLAT=0;
+        char TYPE_UPHILL = 1;
+        char TYPE_DOWNHILL = 2;
+    }
+    interface Physics{
+        float DENSITY_HUMAN=1.0f;
+        float FRICTION_RUBBER = 0.8f;
+        float FRICTION_ASPHALT = 0.65f;
+        float FRICTION_ICE = 0.15f;
+    }
+
 }

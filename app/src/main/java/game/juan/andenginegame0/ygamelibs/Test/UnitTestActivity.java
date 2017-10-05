@@ -96,6 +96,7 @@ public class UnitTestActivity extends BaseGameActivity {
     }
     private void loadGraphics(){
         unitManager.loadPlayerGraphics(this);
+        unitManager.loadAIGraphics(this);
         controllerManager.loadGraphics(this);
         uiManager.loadGraphics(this);
         world.loadBgGraphics(this);
@@ -138,6 +139,8 @@ public class UnitTestActivity extends BaseGameActivity {
     private void createUnits(){
         unitManager.createPlayer(this,world,scene,mCamera);
         world.addPlayerUnit(unitManager.getPlayerUnit());
+       // unitManager.createAI(this,world,scene);
+        world.addUnit(unitManager.getAiUnit());
 
     }
     private void createUI(){
@@ -150,7 +153,7 @@ public class UnitTestActivity extends BaseGameActivity {
 
     private void createMap(){
         /*Create Ground*/
-        world.createMap(this,scene,"map.png","map_json.json");
+        world.createMap(this,scene,"map0.png","map0.json",unitManager);
         scene.registerUpdateHandler(world.getCollisionUpdateHandler());
     }
     public void onResume(){

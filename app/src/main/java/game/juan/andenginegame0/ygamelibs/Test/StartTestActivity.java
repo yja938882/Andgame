@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 
 import game.juan.andenginegame0.R;
 
@@ -50,9 +51,12 @@ public class StartTestActivity extends Activity {
       //  finish();
     }
     public void onClickBuildMapTest(View v){
+        String map = "map";
+        map+=((EditText)findViewById(R.id.build_map_test)).getText();
+        map+=".json";
         Intent i = new Intent(StartTestActivity.this,BuildMapTestActivity.class);
+        i.putExtra("file",map);
         startActivity(i);
-        //finish();
     }
     public void onClickObstacleTest(View v){
         Intent i = new Intent(StartTestActivity.this,ObstacleTestActivity.class);

@@ -32,6 +32,8 @@ import org.andengine.util.color.Color;
 import java.util.ArrayList;
 
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
+import game.juan.andenginegame0.ygamelibs.Managers.UnitManager;
+import game.juan.andenginegame0.ygamelibs.Utils.DataManager;
 import game.juan.andenginegame0.ygamelibs.units.PlayerUnit;
 import game.juan.andenginegame0.ygamelibs.units.Unit;
 import game.juan.andenginegame0.ygamelibs.units.UnitData;
@@ -67,7 +69,8 @@ public class HorizontalWorld {
         return new IUpdateHandler() {
             @Override
             public void onUpdate(float pSecondsElapsed) {
-                playerUnit.update();
+                if(playerUnit!=null)
+                    playerUnit.update();
             }
 
             @Override
@@ -99,11 +102,11 @@ public class HorizontalWorld {
                         case ConstantsSet.TYPE_GROUND:
                             Log.d(TAG,"with TYPE_GROUND");
                             if(a==ConstantsSet.TYPE_PLAYER){
-                                ((UnitData) oa).setIn_the_air(false);
-                               // ((UnitData) oa).setNeedToStop(true);
+                                ((UnitData) oa).contactWithGround(true);
+                                //((UnitData) oa).setIn_the_air(false);
                             }else if(b==ConstantsSet.TYPE_PLAYER) {
-                                ((UnitData) ob).setIn_the_air(false);
-                                //((UnitData) ob).setNeedToStop(true);
+                                //((UnitData) ob).setIn_the_air(false);
+                                ((UnitData) ob).contactWithGround(true);
                             }
                             break;
                         case ConstantsSet.TYPE_OBSTACLE:
@@ -149,10 +152,11 @@ public class HorizontalWorld {
                     if(((UnitData)oa).getType()==ConstantsSet.TYPE_GROUND &&
                             ((UnitData)ob).getType()==ConstantsSet.TYPE_PLAYER) {
                         Log.d(TAG,"Set in the Air - True");
-                        ((UnitData) ob).setIn_the_air(true);
+                       //((UnitData) ob).setIn_the_air(true);
+                        ((UnitData) ob).contactWithGround(false);
                     }else if(((UnitData)ob).getType()==ConstantsSet.TYPE_GROUND &&
                             ((UnitData)oa).getType()==ConstantsSet.TYPE_PLAYER) {
-                        ((UnitData) oa).setIn_the_air(true);
+                        ((UnitData) oa).contactWithGround(false);
                         Log.d(TAG,"Set in the Air - True");
                     }
                 }
@@ -170,27 +174,37 @@ public class HorizontalWorld {
         };
         return contactListener;
     }
-    public void createMap(BaseGameActivity activity, Scene scene,String imgfile, String jfile){
+    public void createMap(BaseGameActivity activity, Scene scene, String imgfile, String jfile, UnitManager unitManager){
 
         ParallaxBackground background = new ParallaxBackground(0,0,0);
         background.attachParallaxEntity(new ParallaxBackground.ParallaxEntity(0,new Sprite(0,0,bgTextureRegion,activity.getVertexBufferObjectManager())));
-        scene.setBackground(new Background(Color.WHITE));
+        //scene.setBackground(new Background(Color.WHITE));
+        scene.setBackground(background);
+    /*    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/test/");
+        ITextureRegion centerTextureRegion;
+        final BitmapTextureAtlas centerTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(),64,64);
+        centerTextureRegion  = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(centerTextureAtlas,activity.getAssets(),"center.png",0,0);
+        centerTextureAtlas.load();
 
-        MapBuilder.createPendulum(scene,physicsWorld,activity
-                ,400,500,40,40
-                ,4,200,40,40
-                );
-        MapBuilder.createMovingGround(scene,physicsWorld,activity);
-
-        //MapBuilder.createTriObstacle(scene,physicsWorld,activity,140,300,100,20);
-        MapBuilder.createTrap(scene,physicsWorld,activity,250,400,50,50);
-        MapBuilder.createMapFromData(scene,physicsWorld,activity,imgfile,jfile);
+        ITextureRegion barTextureRegion;
+        final BitmapTextureAtlas barTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(),160,32);
+        barTextureRegion  = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(barTextureAtlas,activity.getAssets(),"bar.png",0,0);
+        barTextureAtlas.load();
+*/
+        MapBuilder.createHorizontalMovingGround(scene,physicsWorld,activity,200,600,400,50,50);
+        MapBuilder.createMapFromData(scene,physicsWorld,activity,imgfile,jfile,unitManager);
     }
+
     public void loadBgGraphics(BaseGameActivity activity){
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/bg/");
-        final BitmapTextureAtlas bgTexture = new BitmapTextureAtlas(activity.getTextureManager(),1024,576, TextureOptions.BILINEAR);
+        final BitmapTextureAtlas bgTexture = new BitmapTextureAtlas(activity.getTextureManager(),950,382, TextureOptions.BILINEAR);
         bgTextureRegion = BitmapTextureAtlasTextureRegionFactory.
                 createFromAsset(bgTexture,activity,"background.png",0,0);
         bgTexture.load();
+
+
+
     }
 }

@@ -18,7 +18,5 @@ public class AIUnit extends Unit {
 
     public void update(){
         super.update();
-
-
     }
 }

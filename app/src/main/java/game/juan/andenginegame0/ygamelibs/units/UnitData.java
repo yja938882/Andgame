@@ -14,10 +14,11 @@ public class UnitData{
     private int hp;
     private float speed;
     private float jump_speed;
-    boolean in_the_air;
+   // boolean in_the_air;
     private int push_way;
 
     int hitted_damage=0;
+    int contact_counter=0;
     boolean invincibile = false;
 
     boolean needtostop = false;
@@ -37,11 +38,18 @@ public class UnitData{
     public int getHp(){return this.hp;}
     public float getSpeed(){return this.speed;}
     public float getJumpSpeed(){return this.jump_speed;}
-    public void setIn_the_air(boolean air){
+  /*  public void setIn_the_air(boolean air){
         this.in_the_air = air;
+    }*/
+
+    public synchronized void contactWithGround(boolean c){
+        if(c){
+            contact_counter++;
+        }else{
+            contact_counter--;
+        }
     }
-
-
+    public boolean isIntheAir(){return contact_counter<=0;}
 
 
     public boolean isInvincible(){return this.invincibile;}

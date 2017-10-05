@@ -6,7 +6,9 @@ import android.util.Log;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.MassData;
 
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
@@ -40,6 +42,7 @@ public class Unit extends AnimatedSprite {
     private String TAG = "UNIT";
 
     public Body body;
+    public Body foot;
 
 
     private float MOVING_SPEED;
@@ -63,8 +66,13 @@ public class Unit extends AnimatedSprite {
 
     //public  boolean lock =false;
     boolean action_lock=false;
+    FixtureDef FIX;
 
     public int action = ACTION_STOP;
+
+    Filter normFilter;
+    Filter jumpFilter;
+
 
 
 
@@ -78,9 +86,20 @@ public class Unit extends AnimatedSprite {
                                UnitData data, final float ratiox, final float ratioy){
         this.MOVING_SPEED = data.getSpeed();
         this.JUMP_SPEED = data.getJumpSpeed();
-        final FixtureDef FIX = PhysicsFactory.createFixtureDef(2.0F ,0.0f, 0.0F);
-        FIX.filter.maskBits=getMaskBits(data.getType());
-        FIX.filter.categoryBits=getCatgBits(data.getType());
+
+        normFilter = new Filter();
+        normFilter.categoryBits = ConstantsSet.Collision.PLAYER_CATG_BITS;
+        normFilter.maskBits = ConstantsSet.Collision.PLAYER_MASK_BITS;
+
+        jumpFilter = new Filter();
+        jumpFilter.categoryBits = ConstantsSet.Collision.PLAYER_JUMP_CATG_BITS;
+        jumpFilter.maskBits =ConstantsSet.Collision.PLAYER_JUMP_MASK_BITS;
+
+
+        FIX = PhysicsFactory.createFixtureDef(ConstantsSet.Physics.DENSITY_HUMAN ,0.0f, ConstantsSet.Physics.FRICTION_RUBBER);
+        FIX.filter.maskBits=ConstantsSet.Collision.PLAYER_MASK_BITS;
+        FIX.filter.categoryBits=ConstantsSet.Collision.PLAYER_CATG_BITS;
+
 
 
         body = PhysicsFactory.createBoxBody(physicsWorld,
@@ -97,10 +116,6 @@ public class Unit extends AnimatedSprite {
     }
 
 
-    /* Setting Frame Infomations
-
-
-     */
     public void setAttackFrame(long frame_duration[], int frame_index[]){
         if(frame_duration==null || frame_index==null)
             Log.d(TAG,"setAttackFrame : params are null...");
@@ -126,9 +141,6 @@ public class Unit extends AnimatedSprite {
         this.hitted_frame_img_index = frame_index;
     }
 
-    /*  About Actions
-
-    */
     public void move(int direction){
         if(!is_alive)
             return;
@@ -136,27 +148,25 @@ public class Unit extends AnimatedSprite {
 
         switch(direction){
             case ConstantsSet.RIGHT:
-                    body.setLinearVelocity(MOVING_SPEED,body.getLinearVelocity().y);
-                   // body.applyLinearImpulse(new Vector2(MOVING_SPEED/2,0),body.getWorldCenter());
-               // body.applyForce(new Vector2(MOVING_SPEED/2,0),body.getWorldCenter());
-                    this.setFlippedHorizontal(false);
-                    break;
+                body.setLinearVelocity(MOVING_SPEED,body.getLinearVelocity().y);
+                this.setFlippedHorizontal(false);
+                break;
             case ConstantsSet.LEFT:
-              //  body.applyLinearImpulse(new Vector2(-MOVING_SPEED/2,0),body.getWorldCenter());
-                    body.setLinearVelocity(-MOVING_SPEED,body.getLinearVelocity().y);
-                    this.setFlippedHorizontal(true);
-                    break;
+               // body.applyLinearImpulse(new Vector2(-MOVING_SPEED/3,0),body.getWorldCenter());
+                body.setLinearVelocity(-MOVING_SPEED,body.getLinearVelocity().y);
+                this.setFlippedHorizontal(true);
+                break;
             case ConstantsSet.JUMP:
-                if(((UnitData)(body.getUserData())).in_the_air)
+                if(((UnitData)(body.getUserData())).isIntheAir()) {
                     break;
-                    body.setLinearVelocity(body.getLinearVelocity().x, -JUMP_SPEED);
-                    break;
+                }
+                body.setLinearVelocity(body.getLinearVelocity().x, -JUMP_SPEED);
+                break;
 
         }
         this.direction = direction;
         if(!is_moving) {
             is_moving = true;
-            Log.d(TAG,"Moving");
             animate(moving_frame_duration, moving_frame_img_index, true, new IAnimationListener() {
                 @Override
                 public void onAnimationStarted(AnimatedSprite pAnimatedSprite, int pInitialLoopCount) {
@@ -183,7 +193,7 @@ public class Unit extends AnimatedSprite {
         }
     }
     public void stop(){
-        if(((UnitData)body.getUserData()).in_the_air) return;
+        if(((UnitData)body.getUserData()).isIntheAir()) return;
         is_moving = false;
         stopAnimation(0);
 
@@ -207,7 +217,7 @@ public class Unit extends AnimatedSprite {
                     @Override
                     public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite, int pOldFrameIndex, int pNewFrameIndex) {
                         Log.d(TAG,"--Animation Changed :"+pOldFrameIndex+" -> "+pNewFrameIndex);
-                        if(pNewFrameIndex>=6)
+                        if(pNewFrameIndex>=5)
                             action_lock = false;
                     }
 
@@ -247,7 +257,7 @@ public class Unit extends AnimatedSprite {
             @Override
             public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite, int pOldFrameIndex, int pNewFrameIndex) {
                 Log.d("onanim","changed : "+pOldFrameIndex+"->"+pNewFrameIndex);
-                if(pNewFrameIndex>=8){
+                if(pNewFrameIndex>=7){
                     Log.d("onanim", "actionlock release");
                     body.setLinearVelocity(0,0);
                    action_lock=false;
@@ -272,21 +282,6 @@ public class Unit extends AnimatedSprite {
         animate(die_frame_duration,die_frame_img_index,false);
     }
 
-    /* Unit Data
-
-     */
-
-
-    private static short getMaskBits(final int type){
-        switch(type){
-               }
-        return -1;
-    }
-    private static short getCatgBits(final int type){
-        switch(type){
-              }
-        return -1;
-    }
 
     public Body getBody(){
         return this.body;
@@ -295,7 +290,15 @@ public class Unit extends AnimatedSprite {
     int count=0;
     public void update(){
         UnitData ud = (UnitData)getBody().getUserData();
-        
+        Log.d(TAG,"Action : "+action+" Lock : "+action_lock+" air :"+ud.isIntheAir());
+        if(ud.isIntheAir()){
+            if(getBody().getLinearVelocity().y<0) {
+                getBody().getFixtureList().get(0).setFilterData(jumpFilter);
+                Log.d(TAG, "Jumping up!!");
+            }else{
+                getBody().getFixtureList().get(0).setFilterData(normFilter);
+            }
+        }
         if(!action_lock) {
             switch (action) {
                 case ACTION_MOVE_RIGHT:
@@ -305,20 +308,18 @@ public class Unit extends AnimatedSprite {
                     move(ConstantsSet.LEFT);
                     break;
                 case ACTION_JUMP:
+                    Log.d(TAG,"IT's Jump!!");
                     move(ConstantsSet.JUMP);
                     break;
                 case ACTION_ATTACK:
-                    Log.d(TAG,"ACTON ATK");
-
-                 //   body.applyLinearImpulse(new Vector2(100,0),body.getWorldCenter());
                     attack(0);
-
                     break;
                 case ACTION_STOP:
                     stop();
                     break;
             }
         }
+
 
         if(ud.isInvincible()){
             ud.setNeedToHitted(false);
@@ -344,6 +345,19 @@ public class Unit extends AnimatedSprite {
     }
     public void setAction(int a){
         this.action = a;
+    }
+
+    private short getBodyMaskBits(int type){
+        return -1;
+    }
+    private short getBodyCatgBits(int type){
+        return -1;
+    }
+    private short getFootMaskBits(int type){
+        return -1;
+    }
+    private short getFootCatgBits(int type){
+        return -1;
     }
 
 }

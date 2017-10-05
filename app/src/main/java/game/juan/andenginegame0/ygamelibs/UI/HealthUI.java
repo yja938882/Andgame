@@ -22,7 +22,7 @@ import game.juan.andenginegame0.ygamelibs.units.UnitData;
 
 public class HealthUI{
     final private String TAG = "HealthUI";
-    final long frame_duration[]={100,100};
+    private final long frame_duration[]={100,100};
     AnimatedSprite animatedSprite[];
     //Sprite sprite[];
 
@@ -47,15 +47,12 @@ public class HealthUI{
     }
 
     public void update(int newhp){
-        Log.d(TAG,"update");
         if(curheart<=0)
             return;
-
         for(int i=curheart-1;i>newhp-1;i--){
             animatedSprite[i].animate(frame_duration,false);
         }
         curheart = newhp;
-        Log.d(TAG,"new hp : "+newhp);
     }
 
 }

@@ -18,9 +18,10 @@ public class DataTestActivity extends AppCompatActivity {
     //    String data = MapBuilder.loadJSONFromAsset(this,"map_json.json");
         String data ="";
         DataManager dm = new DataManager();
-        dm.loadMapData(this,"map_json.json");
-        data=" start x : "+dm.getStaticX(0)+"\n start y : "+dm.getStaticY(0)+"\n width : "+dm.getStaticW(0)+"\n height : "+dm.getStaticH(0);
-        data+="\n src : "+dm.getTileName()+"\n bg : "+dm.getBackgroundName();
+        //dm.loadMapData(this,"map_json.json");
+        dm.loadStageData(this,1);
+        data=" start x : "+dm.getObstacleNum()+"";
         ((TextView)findViewById(R.id.data_test)).setText(data);
     }
+
 }

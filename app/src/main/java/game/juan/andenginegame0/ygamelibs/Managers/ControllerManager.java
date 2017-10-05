@@ -21,12 +21,12 @@ import game.juan.andenginegame0.ygamelibs.units.PlayerUnit;
 
 public class ControllerManager {
     private String TAG="ControllerManager";
-    ITextureRegion rightTextureRegion;
-    ITextureRegion upTextureRegion;
-    ITextureRegion attackButtonTextureRegion;
-    ITextureRegion skill1TextureRegion;
-    ITextureRegion skill2TextureRegion;
-    ITextureRegion leftTextureRegion;
+    private ITextureRegion rightTextureRegion;
+    private ITextureRegion upTextureRegion;
+    private ITextureRegion attackButtonTextureRegion;
+    private ITextureRegion skill1TextureRegion;
+    private ITextureRegion skill2TextureRegion;
+    private ITextureRegion leftTextureRegion;
     private int CAMERA_WIDTH;
     private int CAMERA_HEIGHT;
 
@@ -34,6 +34,7 @@ public class ControllerManager {
         this.CAMERA_WIDTH = cam_width;
         this.CAMERA_HEIGHT = cam_height;
     }
+
     public void loadGraphics(BaseGameActivity activity){
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/ui/");
         final BitmapTextureAtlas leftControlTexture = new BitmapTextureAtlas(activity.getTextureManager(),80,80, TextureOptions.BILINEAR);
@@ -68,7 +69,6 @@ public class ControllerManager {
                 createFromAsset(skill2ControlTexture,activity,"skill2.png",0,0);
         skill2ControlTexture.load();
     }
-
 
     public void createController(BaseGameActivity activity , HUD hud, PlayerUnit playerUnit){
         final AttackController attackButton = new AttackController(CAMERA_WIDTH-50,CAMERA_HEIGHT-attackButtonTextureRegion.getHeight()
