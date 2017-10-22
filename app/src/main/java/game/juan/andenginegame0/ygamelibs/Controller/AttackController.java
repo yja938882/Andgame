@@ -9,9 +9,10 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
-import game.juan.andenginegame0.ygamelibs.units.Unit;
+import game.juan.andenginegame0.ygamelibs.Unit.Unit;
 
 /**
+ *
  * Created by juan on 2017. 9. 2..
  */
 
@@ -32,9 +33,7 @@ public class AttackController extends Sprite {
     public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y)
     {
         if (pSceneTouchEvent.isActionDown()) {
-           // unit.attack(num);
-            Log.d(TAG,"isActionDown");
-            unit.setAction(ConstantsSet.ACTION_ATTACK);
+            unit.setAction(num);
         }
         return true;
     }

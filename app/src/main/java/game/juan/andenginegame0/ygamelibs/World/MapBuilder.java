@@ -52,8 +52,8 @@ import java.util.List;
 
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Managers.UnitManager;
+import game.juan.andenginegame0.ygamelibs.Unit.UnitData;
 import game.juan.andenginegame0.ygamelibs.Utils.DataManager;
-import game.juan.andenginegame0.ygamelibs.units.UnitData;
 
 /**
  * Created by juan on 2017. 9. 2..
@@ -72,17 +72,16 @@ public class MapBuilder {
         scene.attachChild(trapRectangle);
 
         final Body trapBody = PhysicsFactory.createBoxBody(physicsWorld,trapRectangle, BodyDef.BodyType.StaticBody,PhysicsFactory.createFixtureDef(0.2f,0.2f,0.2f));
-        trapBody.setUserData(new UnitData(ConstantsSet.TYPE_OBSTACLE,1,0,0,0,0));
+        trapBody.setUserData(new UnitData(ConstantsSet.Type.OBSTACLE,1,0,0,0,0));
         physicsWorld.registerPhysicsConnector(new PhysicsConnector(trapRectangle, trapBody, true, true));
 
 
     }
     public static void createPendulum(Scene scene, PhysicsWorld physicsWorld, BaseGameActivity activity
                                      ,int std_x, int std_y,int std_w, int std_h, int bar_w, int bar_h, int end_w, int end_h){
-       final Rectangle stdRectangle = new Rectangle(std_x, std_y, std_w, std_h, activity.getVertexBufferObjectManager());
+        final Rectangle stdRectangle = new Rectangle(std_x, std_y, std_w, std_h, activity.getVertexBufferObjectManager());
         stdRectangle.setColor(Color.BLACK);
         scene.attachChild(stdRectangle);
-
 
         final Rectangle barRectangle = new Rectangle(std_x+std_w/2-bar_w/2, std_y+std_h/2-bar_w/2, bar_w, bar_h, activity.getVertexBufferObjectManager());
          barRectangle.setColor(Color.BLACK);
@@ -103,7 +102,7 @@ public class MapBuilder {
         physicsWorld.registerPhysicsConnector(new PhysicsConnector(barRectangle, barBody, true, true));
 
         final Body endBody = PhysicsFactory.createBoxBody(physicsWorld,endRectangle, BodyDef.BodyType.DynamicBody,PhysicsFactory.createFixtureDef(0.2f,0.2f,0.2f));
-        endBody.setUserData(new UnitData(ConstantsSet.TYPE_OBSTACLE,1,0,0,0,0));
+        endBody.setUserData(new UnitData(ConstantsSet.Type.OBSTACLE,1,0,0,0,0));
         physicsWorld.registerPhysicsConnector(new PhysicsConnector(endRectangle, endBody, true, true));
 
 
@@ -146,7 +145,6 @@ public class MapBuilder {
                 }
             }
         });
-
     }
 
     public static void createHorizontalMovingGround(Scene scene, PhysicsWorld physicsWorld, BaseGameActivity activity,
@@ -157,7 +155,7 @@ public class MapBuilder {
         scene.attachChild(groundRectangle);
 
         final Body groundBody = PhysicsFactory.createBoxBody(physicsWorld, groundRectangle, BodyDef.BodyType.KinematicBody, PhysicsFactory.createFixtureDef(0.2f, 0.0f, 0.7f));
-        groundBody.setUserData(new UnitData(ConstantsSet.TYPE_GROUND,10,0,0,0,0));
+        groundBody.setUserData(new UnitData(ConstantsSet.Type.GROUND,10,0,0,0,0));
         physicsWorld.registerPhysicsConnector(new PhysicsConnector(groundRectangle, groundBody, true, true));
         groundBody.setLinearVelocity(1.0f,0);
         physicsWorld.registerPhysicsConnector(new PhysicsConnector(groundRectangle,groundBody,true,false){
@@ -265,7 +263,7 @@ public class MapBuilder {
                 createTiledFromAsset(textureAtlas,activity,"map/"+imgfile,0,0,8,8);;
         textureAtlas.load();
 
-        final FixtureDef FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,ConstantsSet.Physics.FRICTION_ICE);
+        final FixtureDef FIX = PhysicsFactory.createFixtureDef(2.0f,0.0f,ConstantsSet.Physics.FRICTION_ICE);
         FIX.filter.categoryBits = ConstantsSet.Collision.GROUND_CATG_BITS;
         FIX.filter.maskBits = ConstantsSet.Collision.GROUND_MASK_BITS;
 
@@ -281,20 +279,41 @@ public class MapBuilder {
             float h =dm.getStaticH(i);
             char t = dm.getStaticType(i);
             Rectangle debugRect;
+            Rectangle debugRectL;
+            Rectangle debugRectR;
             Body b;
+            Body bl;
+            Body br;
             switch(t){
                 case ConstantsSet.MapBuilder.TYPE_FLAT:
-                    debugRect = new Rectangle(sx,sy,w,1,activity.getVertexBufferObjectManager());
+                    debugRect = new Rectangle(sx+4,sy,w-8,32,activity.getVertexBufferObjectManager());
                     b= PhysicsFactory.createBoxBody(physicsWorld,debugRect,BodyDef.BodyType.StaticBody,FIX);
-                    b.setUserData(new UnitData(ConstantsSet.TYPE_GROUND,0,0,0,0,0));
+                    b.setUserData(new UnitData(ConstantsSet.Type.GROUND,0,0,0,0,0));
                     debugRect.setColor(Color.RED);
+
+                    debugRectL = new Rectangle(sx,sy,4,32,activity.getVertexBufferObjectManager());
+                    bl= PhysicsFactory.createBoxBody(physicsWorld,debugRectL, BodyDef.BodyType.StaticBody,FIX);
+                    debugRectL.setColor(Color.YELLOW);
+
+                    debugRectR = new Rectangle(sx+4+w-8,sy,4,32,activity.getVertexBufferObjectManager());
+                    br = PhysicsFactory.createBoxBody(physicsWorld,debugRectR, BodyDef.BodyType.StaticBody,FIX);
+                    debugRectR.setColor(Color.YELLOW);
+
+
                     physicsWorld.registerPhysicsConnector(new PhysicsConnector(debugRect,b));
+                    physicsWorld.registerPhysicsConnector(new PhysicsConnector(debugRectL,bl));
+                    physicsWorld.registerPhysicsConnector(new PhysicsConnector(debugRectR,br));
+
                     scene.attachChild(debugRect);
+                    scene.attachChild(debugRectL);
+                    scene.attachChild(debugRectR);
+
+
                     break;
                 case ConstantsSet.MapBuilder.TYPE_DOWNHILL:
-                    debugRect = new Rectangle(sx,sy,w,1,activity.getVertexBufferObjectManager());
+                    debugRect = new Rectangle(sx,sy+32,w,32,activity.getVertexBufferObjectManager());
                     b = PhysicsFactory.createBoxBody(physicsWorld,debugRect,BodyDef.BodyType.StaticBody,FIX);
-                    b.setUserData(new UnitData(ConstantsSet.TYPE_GROUND,0,0,0,0,0));
+                    b.setUserData(new UnitData(ConstantsSet.Type.GROUND,0,0,0,0,0));
                     debugRect.setColor(Color.BLUE);
                     physicsWorld.registerPhysicsConnector(new PhysicsConnector(debugRect,b));
                     scene.attachChild(debugRect);
@@ -302,12 +321,12 @@ public class MapBuilder {
                 case ConstantsSet.MapBuilder.TYPE_UPHILL:
                     float tw= (float)Math.sqrt(w*w + 128f*128f);
                     sx-= (tw-w)/2.0f;
-                    debugRect = new Rectangle(sx,sy+64,tw,1,activity.getVertexBufferObjectManager());
+                    debugRect = new Rectangle(sx,sy+96+4,tw,32,activity.getVertexBufferObjectManager());
                     b = PhysicsFactory.createBoxBody(physicsWorld,debugRect,BodyDef.BodyType.StaticBody,FIX);
-                    b.setUserData(new UnitData(ConstantsSet.TYPE_GROUND,0,0,0,0,0));
+                    b.setUserData(new UnitData(ConstantsSet.Type.GROUND,0,0,0,0,0));
                     debugRect.setColor(Color.BLUE);
                     physicsWorld.registerPhysicsConnector(new PhysicsConnector(debugRect,b));
-                    b.setTransform(b.getPosition(),-(float)Math.atan(0.5));
+                    b.setTransform(b.getPosition(),-(float)Math.atan(0.2));
                     scene.attachChild(debugRect);
                     break;
             }
@@ -330,7 +349,7 @@ public class MapBuilder {
         FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,2f);
 
 Body b = PhysicsFactory.createPolygonBody(physicsWorld,rectangle,vertices, BodyDef.BodyType.StaticBody,WALL_FIX);
-        b.setUserData(new UnitData(ConstantsSet.TYPE_GROUND,0,0,0,0,0));
+        b.setUserData(new UnitData(ConstantsSet.Type.GROUND,0,0,0,0,0));
       //  physicsWorld.registerPhysicsConnector(new PhysicsConnector(rectangle,b));
         b.setTransform(b.getPosition(),-10);
         scene.attachChild(rectangle);

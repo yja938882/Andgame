@@ -12,7 +12,8 @@ import org.andengine.ui.activity.BaseGameActivity;
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Controller.AttackController;
 import game.juan.andenginegame0.ygamelibs.Controller.OneWayMoveController;
-import game.juan.andenginegame0.ygamelibs.units.PlayerUnit;
+import game.juan.andenginegame0.ygamelibs.Unit.PlayerUnit;
+
 
 /**
  * Created by juan on 2017. 9. 24..
@@ -98,12 +99,12 @@ public class ControllerManager {
                 80,80,skill2TextureRegion,
                 activity.getEngine().getVertexBufferObjectManager()){
         };
-        attackButton.setup(playerUnit, ConstantsSet.BASE_ATTACK,hud);
+        attackButton.setup(playerUnit, ConstantsSet.ACTION_ATTACK,hud);
         leftButton.setup(playerUnit,ConstantsSet.ACTION_MOVE_LEFT, hud);
         rightButton.setup(playerUnit,ConstantsSet.ACTION_MOVE_RIGHT,hud);
         jumpButton.setup(playerUnit,ConstantsSet.ACTION_JUMP,hud);
-        skil1Button.setup(playerUnit,ConstantsSet.SKILL_1,hud);
-        skil2Button.setup(playerUnit,ConstantsSet.SKILL_2,hud);
+        skil1Button.setup(playerUnit,ConstantsSet.ACTION_SKILL1,hud);
+        skil2Button.setup(playerUnit,ConstantsSet.ACTION_SKILL2,hud);
     }
 
 }

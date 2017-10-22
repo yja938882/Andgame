@@ -89,7 +89,8 @@ public class UnitTestActivity extends BaseGameActivity {
         unitManager = new UnitManager();
         this.scene = new Scene();
         world = new HorizontalWorld();
-        world.createWorld(new Vector2(0, SensorManager.GRAVITY_EARTH),false);
+        world.createWorld(new Vector2(0, 0),false);
+
         loadGraphics();
 
         pOnCreateResourcesCallback.onCreateResourcesFinished();
@@ -140,7 +141,7 @@ public class UnitTestActivity extends BaseGameActivity {
         unitManager.createPlayer(this,world,scene,mCamera);
         world.addPlayerUnit(unitManager.getPlayerUnit());
        // unitManager.createAI(this,world,scene);
-        world.addUnit(unitManager.getAiUnit());
+        //world.addUnit(unitManager.getAiUnit());
 
     }
     private void createUI(){
@@ -154,7 +155,7 @@ public class UnitTestActivity extends BaseGameActivity {
     private void createMap(){
         /*Create Ground*/
         world.createMap(this,scene,"map0.png","map0.json",unitManager);
-        scene.registerUpdateHandler(world.getCollisionUpdateHandler());
+      //  scene.registerUpdateHandler(world.getCollisionUpdateHandler());
     }
     public void onResume(){
         super.onResume();

@@ -1,0 +1,21 @@
+{"ai":
+{
+  "type0":
+  {
+    "moving_frame_du":"000",
+    "moving_frame_id":"111",
+
+    "attack_frame_du":"000",
+    "attack_frame_id":"000",
+
+    "hitted_frame_du":"000",
+    "hitted_frame_id":"000",
+
+    "jump_frame_du":"000",
+    "jump_frame_id":"000",
+
+    "die_frame_du":"000",
+    "die_frame_id":"000"
+  }
+}
+}

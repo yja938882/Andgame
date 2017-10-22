@@ -13,8 +13,7 @@ import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import game.juan.andenginegame0.ygamelibs.Controller.AttackController;
-import game.juan.andenginegame0.ygamelibs.units.Unit;
-import game.juan.andenginegame0.ygamelibs.units.UnitData;
+
 
 /**
  * Created by juan on 2017. 9. 15..

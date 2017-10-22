@@ -144,7 +144,7 @@ public class ObstacleTestActivity extends BaseGameActivity {
     private void createMap(){
         /*Create Ground*/
        // world.createMap(this,scene,"map.png","obstacle_test.json");
-        scene.registerUpdateHandler(world.getCollisionUpdateHandler());
+        //scene.registerUpdateHandler(world.getCollisionUpdateHandler());
     }
     public void onResume(){
         super.onResume();

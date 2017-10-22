@@ -19,17 +19,29 @@ public class DataManager {
     private String tileImg="";
     private int total_length=0;
 
-    int static_length;
-    int static_x[];
-    int static_y[];
-    float static_w[];
-    float static_h[];
-    char static_type[];
-    String static_index[];
+    private int static_length;
+    private int static_x[];
+    private int static_y[];
+    private float static_w[];
+    private float static_h[];
+    private char static_type[];
+    private String static_index[];
 
-    int ai_num;
-    int ai_x[];
-    int ai_y[];
+    private int ai_num;
+    private int ai_x[];
+    private int ai_y[];
+
+
+
+    private int obstacleNum;
+    private int obstaclesType[];
+    private int obstaclesX[];
+    private int obstaclesY[];
+
+    private int germNum;
+    private int germsType[];
+    private int germsX[];
+    private int germsY[];
 
 
 
@@ -75,7 +87,6 @@ public class DataManager {
 
         return;
     }
-
     public String getBackgroundName(){
         return backgroundImg;
     }
@@ -128,15 +139,6 @@ public class DataManager {
         return object;
     }
 
-    int obstacleNum;
-    int obstaclesType[];
-    int obstaclesX[];
-    int obstaclesY[];
-
-    int germNum;
-    int germsType[];
-    int germsX[];
-    int germsY[];
     public void loadStageData(Context context, int stage){
         try{
             String file = "stage"+stage+".json";

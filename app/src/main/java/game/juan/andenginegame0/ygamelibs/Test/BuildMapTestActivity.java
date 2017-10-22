@@ -265,7 +265,7 @@ public class BuildMapTestActivity extends BaseGameActivity {
         Intent intent = getIntent();
         String file = intent.getStringExtra("file");
        // world.createMap(this,scene,"map0.png",file);
-        scene.registerUpdateHandler(world.getCollisionUpdateHandler());
+      //  scene.registerUpdateHandler(world.getCollisionUpdateHandler());
     }
     public void onResume(){
         super.onResume();

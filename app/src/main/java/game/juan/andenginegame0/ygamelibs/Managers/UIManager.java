@@ -16,7 +16,7 @@ import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Controller.AttackController;
 import game.juan.andenginegame0.ygamelibs.UI.HealthUI;
 import game.juan.andenginegame0.ygamelibs.UI.SettingButton;
-import game.juan.andenginegame0.ygamelibs.units.PlayerUnit;
+import game.juan.andenginegame0.ygamelibs.Unit.PlayerUnit;
 
 /**
  * Created by juan on 2017. 9. 24..
@@ -29,6 +29,7 @@ public class UIManager {
 
     private ITiledTextureRegion heartTextureRegion;
     private ITextureRegion settingTextureRegion;
+    private ITextureRegion invenTextureRegion;
 
     public UIManager(int cam_width, int cam_height){
         this.CAMERA_WIDTH = cam_width;
@@ -47,18 +48,26 @@ public class UIManager {
                 createFromAsset(settingTextureAtlas,activity.getAssets(),"icon_setting.png",0,0);
         settingTextureAtlas.load();
 
+        final BitmapTextureAtlas invenTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(),192,64);
+        invenTextureRegion = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(invenTextureAtlas,activity.getAssets(),"bottom_inven.png",0,0);
+        invenTextureAtlas.load();
 
 
     }
     public void createUI(BaseGameActivity activity , HUD hud, PlayerUnit playerUnit, Scene scene){
         final HealthUI healthUI = new HealthUI(3,10,10,36,36,4);
         healthUI.setup(heartTextureRegion,activity.getEngine(),hud);
-        playerUnit.setupHealthUI(healthUI);
-
+        //playerUnit.setupHealthUI(healthUI);
 
         final SettingButton settingButton = new SettingButton(CAMERA_WIDTH-50,20,24,24,settingTextureRegion,activity.getVertexBufferObjectManager());
         settingButton.setup(scene, activity);
         hud.registerTouchArea(settingButton);
         hud.attachChild(settingButton);
+
+        final Sprite inven = new Sprite(128,CAMERA_HEIGHT-64,invenTextureRegion,activity.getVertexBufferObjectManager());
+        hud.attachChild(inven);
+
+
     }
 }

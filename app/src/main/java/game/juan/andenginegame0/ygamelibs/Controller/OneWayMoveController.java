@@ -9,7 +9,7 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
-import game.juan.andenginegame0.ygamelibs.units.Unit;
+import game.juan.andenginegame0.ygamelibs.Unit.Unit;
 
 /**
  * Created by juan on 2017. 9. 1..
@@ -37,7 +37,7 @@ public class OneWayMoveController extends Sprite{
         }else{
             unit.setAction(ConstantsSet.ACTION_STOP);
         }
-        return true;
+     return true;
     };
 
 }

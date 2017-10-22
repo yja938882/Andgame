@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 import com.badlogic.gdx.physics.box2d.Manifold;
 
+import org.andengine.engine.Engine;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
@@ -33,10 +34,10 @@ import java.util.ArrayList;
 
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Managers.UnitManager;
-import game.juan.andenginegame0.ygamelibs.Utils.DataManager;
-import game.juan.andenginegame0.ygamelibs.units.PlayerUnit;
-import game.juan.andenginegame0.ygamelibs.units.Unit;
-import game.juan.andenginegame0.ygamelibs.units.UnitData;
+import game.juan.andenginegame0.ygamelibs.Unit.AIUnit;
+import game.juan.andenginegame0.ygamelibs.Unit.PlayerUnit;
+import game.juan.andenginegame0.ygamelibs.Unit.Unit;
+import game.juan.andenginegame0.ygamelibs.Unit.UnitData;
 
 /**
  * Created by juan on 2017. 9. 2..
@@ -47,39 +48,21 @@ public class HorizontalWorld {
     ITextureRegion bgTextureRegion;
 
     private PhysicsWorld physicsWorld;
-    ArrayList<Unit> unitsList = new ArrayList<>();
-    PlayerUnit playerUnit;
+   PlayerUnit playerUnit;
+    AIUnit aiUnit;
+ //   public static ArrayList<AIUnit> deadAIs = new ArrayList<>();
 
     public PhysicsWorld getWorld(){
         return physicsWorld;
     }
     public void createWorld(Vector2 gravity, boolean bol){
         physicsWorld = new PhysicsWorld(gravity,bol);
-        physicsWorld.setContactListener(createContactLister());
+       physicsWorld.setContactListener(createContactLister());
 
     }
     public void addPlayerUnit(PlayerUnit playerUnit){
         this.playerUnit = playerUnit;
     }
-    public void addUnit(Unit unit){
-        unitsList.add(unit);
-    }
-
-    public IUpdateHandler getCollisionUpdateHandler(){
-        return new IUpdateHandler() {
-            @Override
-            public void onUpdate(float pSecondsElapsed) {
-                if(playerUnit!=null)
-                    playerUnit.update();
-            }
-
-            @Override
-            public void reset() {
-
-            }
-        };
-    }
-
 
     private ContactListener createContactLister(){
         final String TAG = "ContactListenr";
@@ -96,43 +79,8 @@ public class HorizontalWorld {
                 Object ob = bodyB.getUserData();
 
                 if(oa!=null && ob!=null){
-                    short a =((UnitData)oa).getType() ;
-                    short b= ((UnitData)ob).getType() ;
-                    switch (a&b){
-                        case ConstantsSet.TYPE_GROUND:
-                            Log.d(TAG,"with TYPE_GROUND");
-                            if(a==ConstantsSet.TYPE_PLAYER){
-                                ((UnitData) oa).contactWithGround(true);
-                                //((UnitData) oa).setIn_the_air(false);
-                            }else if(b==ConstantsSet.TYPE_PLAYER) {
-                                //((UnitData) ob).setIn_the_air(false);
-                                ((UnitData) ob).contactWithGround(true);
-                            }
-                            break;
-                        case ConstantsSet.TYPE_OBSTACLE:
-                            Log.d(TAG,"with TYPE_OBSTACLE");
-                            if(a==ConstantsSet.TYPE_PLAYER){
-                                    ((UnitData) oa).setHitted(1);
-                                    if(bodyA.getWorldCenter().x<bodyB.getWorldCenter().x){
-                                        ((UnitData) oa).setNeedToHitted(true,ConstantsSet.LEFT);
-                                    }else{
-                                        ((UnitData) oa).setNeedToHitted(true,ConstantsSet.RIGHT);
-                                    }
-                                    ((UnitData) oa).setNeedToStop(true);
-
-                            }else if(b==ConstantsSet.TYPE_PLAYER) {
-                                    ((UnitData) ob).setHitted(1);
-                                    if(bodyB.getWorldCenter().x<bodyA.getWorldCenter().x){
-                                        ((UnitData) ob).setNeedToHitted(true,ConstantsSet.LEFT);
-                                     }else{
-                                         ((UnitData) ob).setNeedToHitted(true,ConstantsSet.RIGHT);
-                                    }
-                                    ((UnitData) ob).setNeedToStop(true);
-                            }
-                            break;
-                        default:
-                            break;
-                    }
+                    ((UnitData)oa).beginContactWith(((UnitData)ob).getType());
+                    ((UnitData)ob).beginContactWith(((UnitData)oa).getType());
                 }
 
             }
@@ -147,18 +95,9 @@ public class HorizontalWorld {
                 Fixture fixtureB = contact.getFixtureB();
                 Body bodyB = fixtureB.getBody();
                 Object ob = bodyB.getUserData();
-
                 if(oa!=null && ob!=null){
-                    if(((UnitData)oa).getType()==ConstantsSet.TYPE_GROUND &&
-                            ((UnitData)ob).getType()==ConstantsSet.TYPE_PLAYER) {
-                        Log.d(TAG,"Set in the Air - True");
-                       //((UnitData) ob).setIn_the_air(true);
-                        ((UnitData) ob).contactWithGround(false);
-                    }else if(((UnitData)ob).getType()==ConstantsSet.TYPE_GROUND &&
-                            ((UnitData)oa).getType()==ConstantsSet.TYPE_PLAYER) {
-                        ((UnitData) oa).contactWithGround(false);
-                        Log.d(TAG,"Set in the Air - True");
-                    }
+                    ((UnitData)oa).endContactWith(((UnitData)ob).getType());
+                    ((UnitData)ob).endContactWith(((UnitData)oa).getType());
                 }
             }
 
@@ -180,31 +119,17 @@ public class HorizontalWorld {
         background.attachParallaxEntity(new ParallaxBackground.ParallaxEntity(0,new Sprite(0,0,bgTextureRegion,activity.getVertexBufferObjectManager())));
         //scene.setBackground(new Background(Color.WHITE));
         scene.setBackground(background);
-    /*    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/test/");
-        ITextureRegion centerTextureRegion;
-        final BitmapTextureAtlas centerTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(),64,64);
-        centerTextureRegion  = BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(centerTextureAtlas,activity.getAssets(),"center.png",0,0);
-        centerTextureAtlas.load();
-
-        ITextureRegion barTextureRegion;
-        final BitmapTextureAtlas barTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(),160,32);
-        barTextureRegion  = BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(barTextureAtlas,activity.getAssets(),"bar.png",0,0);
-        barTextureAtlas.load();
-*/
-        MapBuilder.createHorizontalMovingGround(scene,physicsWorld,activity,200,600,400,50,50);
+        //MapBuilder.createHorizontalMovingGround(scene,physicsWorld,activity,200,600,400,50,50);
         MapBuilder.createMapFromData(scene,physicsWorld,activity,imgfile,jfile,unitManager);
     }
 
     public void loadBgGraphics(BaseGameActivity activity){
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/bg/");
-        final BitmapTextureAtlas bgTexture = new BitmapTextureAtlas(activity.getTextureManager(),950,382, TextureOptions.BILINEAR);
+        final BitmapTextureAtlas bgTexture = new BitmapTextureAtlas(activity.getTextureManager(),800,480, TextureOptions.BILINEAR);
         bgTextureRegion = BitmapTextureAtlasTextureRegionFactory.
                 createFromAsset(bgTexture,activity,"background.png",0,0);
         bgTexture.load();
 
-
-
     }
+
 }

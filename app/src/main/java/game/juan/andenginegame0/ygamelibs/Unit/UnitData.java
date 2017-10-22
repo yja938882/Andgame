@@ -1,12 +1,14 @@
-package game.juan.andenginegame0.ygamelibs.units;
+package game.juan.andenginegame0.ygamelibs.Unit;
 
 import android.util.Log;
+
+import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 
 /**
  * Created by juan on 2017. 8. 28..
  */
 
-public class UnitData{
+public class UnitData {
     private String TAG ="UnitData";
     private short type;
     private int damage;
@@ -19,6 +21,7 @@ public class UnitData{
 
     int hitted_damage=0;
     int contact_counter=0;
+    boolean jumping = false;
     boolean invincibile = false;
 
     boolean needtostop = false;
@@ -42,14 +45,17 @@ public class UnitData{
         this.in_the_air = air;
     }*/
 
-    public synchronized void contactWithGround(boolean c){
+    private synchronized void contactWithGround(boolean c){
         if(c){
+            needtostop=true;
             contact_counter++;
         }else{
             contact_counter--;
         }
     }
-    public boolean isIntheAir(){return contact_counter<=0;}
+    public boolean isIntheAir(){
+        return contact_counter<=0;
+    }
 
 
     public boolean isInvincible(){return this.invincibile;}
@@ -76,5 +82,36 @@ public class UnitData{
         }
     }
     public int getPushWay(){return this.push_way;}
+    public void beginContactWith(short t){
+        switch (t){
+            case ConstantsSet.Type.GROUND:
+                contactWithGround(true);
+                break;
+            case ConstantsSet.Type.PLAYER_BULLET:
+                Log.d("begincontact","pb");
+
+                break;
+            case ConstantsSet.Type.AI_BULLET:
+                break;
+        }
+    }
+    public void endContactWith(short t){
+        switch (t){
+            case ConstantsSet.Type.GROUND:
+                contactWithGround(false);
+                break;
+            case ConstantsSet.Type.PLAYER_BULLET:
+                if(type==ConstantsSet.Type.AI || type == ConstantsSet.Type.PLAYER){
+                    setNeedToHitted(true,1);
+                }
+                break;
+            case ConstantsSet.Type.AI_BULLET:
+                break;
+        }
+
+    }
+
+
+
 }
 
