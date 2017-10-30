@@ -7,6 +7,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.util.Constants;
 
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Unit.Unit;
@@ -33,7 +34,10 @@ public class OneWayMoveController extends Sprite{
     public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y)
     {
         if (pSceneTouchEvent.isActionDown()||pSceneTouchEvent.isActionMove()) {
-            unit.setAction(way);
+          //  if(way== ConstantsSet.ACTION_JUMP)
+            //    unit.jump();
+            //else
+                unit.setAction(way);
         }else{
             unit.setAction(ConstantsSet.ACTION_STOP);
         }

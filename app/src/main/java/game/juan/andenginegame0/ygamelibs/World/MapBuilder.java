@@ -331,6 +331,35 @@ public class MapBuilder {
                     break;
             }
         }
+        /*
+        *
+
+        background_layer1 = new BitmapTextureAtlas(activity.getTextureManager(),1600,2560);
+        backgroundTexture1 = BitmapTextureAtlasTextureRegionFactory
+                .createFromAsset(background_layer1, activity,"bg_"+stage+"_1.jpg",0,0 );
+        background_layer1.load();
+
+        final SpriteBatch staticSpriteBatch = new SpriteBatch(this.background_layer1, 3, activity.getVertexBufferObjectManager());
+        staticSpriteBatch.draw(backgroundTexture1, 0, 2560*2, backgroundTexture1.getWidth(), backgroundTexture1.getHeight(), 1, 1, 1, 1, 1, 1);
+        staticSpriteBatch.draw(backgroundTexture1, 0, 2560*4, backgroundTexture1.getWidth(), backgroundTexture1.getHeight(), 1, 1, 1, 1, 1,1);
+        staticSpriteBatch.draw(backgroundTexture1, 0, 2560*6, backgroundTexture1.getWidth(), backgroundTexture1.getHeight(), 1, 1, 1, 1, 1,1);
+        staticSpriteBatch.submit();
+        scene.attachChild(staticSpriteBatch);
+
+        * */
+
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/map/");
+        BitmapTextureAtlas textureAtlas1 = new BitmapTextureAtlas(activity.getTextureManager(),1024,512);
+        ITiledTextureRegion textureRegion = BitmapTextureAtlasTextureRegionFactory
+                .createTiledFromAsset(textureAtlas1,activity,"map.png",0,0,8,4);
+        textureAtlas1.load();
+        final SpriteBatch staticSpriteBatch = new SpriteBatch(textureAtlas1,2,activity.getVertexBufferObjectManager());
+        staticSpriteBatch.draw(textureRegion.getTextureRegion(0),0,500,textureRegion.getWidth(0),textureRegion.getHeight(0),1,1,1,1);
+        staticSpriteBatch.draw(textureRegion.getTextureRegion(0),128,500,textureRegion.getWidth(0),textureRegion.getHeight(0),1,1,1,1);
+
+        staticSpriteBatch.submit();
+        scene.attachChild(staticSpriteBatch);
+
 
         int ai_num = dm.getAiNum();
         for(int i=0;i<ai_num;i++){

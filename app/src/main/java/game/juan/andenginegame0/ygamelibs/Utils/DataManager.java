@@ -38,10 +38,6 @@ public class DataManager {
     private int obstaclesX[];
     private int obstaclesY[];
 
-    private int germNum;
-    private int germsType[];
-    private int germsX[];
-    private int germsY[];
 
 
 
@@ -112,8 +108,12 @@ public class DataManager {
     public float getStaticH(int index){
         return static_h[index];
     }
-    public String getTileIndex(int index){
-        return static_index[index];
+    public int[] getTileIndex(int index){
+        int[] indexs = new int[static_index[index].length()];
+        for(int i=0;i<indexs.length;i++){
+            indexs[i] = Integer.parseInt(static_index[index].substring(i,i+1));
+        }
+        return indexs;
     }
     public char getStaticType(int index){return static_type[index];}
 
@@ -139,36 +139,7 @@ public class DataManager {
         return object;
     }
 
-    public void loadStageData(Context context, int stage){
-        try{
-            String file = "stage"+stage+".json";
-            JSONObject stageObject = loadJSONFromAsset(context,file);
-            JSONArray obstacles= stageObject.getJSONArray("obstacle");
-            JSONArray germs = stageObject.getJSONArray("germ");
-            obstacleNum = obstacles.length();
-            obstaclesType = new int[obstacleNum];
-            obstaclesX = new int[obstacleNum];
-            obstaclesY = new int[obstacleNum];
 
-            germNum = germs.length();
-            germsType = new int[germNum ];
-            germsX = new int[germNum ];
-            germsY = new int[germNum ];
-            for(int i=0;i<obstacleNum;i++){
-                obstaclesType[i] = obstacles.getJSONObject(i).getInt("type");
-                obstaclesX[i] = obstacles.getJSONObject(i).getInt("x");
-                obstaclesY[i] = obstacles.getJSONObject(i).getInt("y");
-            }
-            for(int i=0;i<germs.length();i++){
-                germsType[i] = germs.getJSONObject(i).getInt("type");
-                germsX[i] = germs.getJSONObject(i).getInt("x");
-                germsY[i] = germs.getJSONObject(i).getInt("y");
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return;
-    }
     public int getObstacleNum(){
         return obstacleNum;
     }
@@ -182,17 +153,7 @@ public class DataManager {
         return obstaclesY[i];
     }
 
-    public int getGermNum(){
-        return germNum;
-    }
-    public int getGermType(int i){
-        return germsType[i];
-    }
-    public int getGermX(int i){
-        return germsX[i];
-    }
-    public int getGermY(int i){
-        return germsY[i];
-    }
+
+
 
 }

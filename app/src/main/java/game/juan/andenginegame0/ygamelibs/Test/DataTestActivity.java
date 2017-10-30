@@ -19,7 +19,7 @@ public class DataTestActivity extends AppCompatActivity {
         String data ="";
         DataManager dm = new DataManager();
         //dm.loadMapData(this,"map_json.json");
-        dm.loadStageData(this,1);
+        //dm.loadStageData(this,1);
         data=" start x : "+dm.getObstacleNum()+"";
         ((TextView)findViewById(R.id.data_test)).setText(data);
     }

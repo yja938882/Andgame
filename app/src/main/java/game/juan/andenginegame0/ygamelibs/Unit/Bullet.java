@@ -44,6 +44,8 @@ public class Bullet extends Sprite {
         scene.attachChild(this);
     }
     public void shot(float sx,float sy, float dx, float dy){
+        this.setVisible(true);
+        body.setActive(true);
         body.setTransform(sx,sy,0);
         body.setAngularVelocity(3.0f);
         body.setLinearVelocity(dx,0);
@@ -70,6 +72,14 @@ public class Bullet extends Sprite {
     @Override
     protected void onManagedUpdate(float pSecondsElapsed) {
         super.onManagedUpdate(pSecondsElapsed);
-
+        if(((UnitData)body.getUserData()).isNeedToDisappear()){
+            body.setTransform(-1,20,0);
+            body.setLinearVelocity(0,0);
+            body.setActive(false);
+            setVisible(false);
+            ((UnitData)body.getUserData()).setNeedToDisappear(false);
+        }
     }
+
+
 }

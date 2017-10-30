@@ -52,6 +52,7 @@ public abstract class Unit extends AnimatedSprite {
 
     private int action = ConstantsSet.ACTION_STOP;
     int direction = ConstantsSet.ACTION_MOVE_RIGHT;
+    int push_direction = ConstantsSet.ACTION_MOVE_RIGHT;
 
     protected boolean moving = false;
 
@@ -61,6 +62,7 @@ public abstract class Unit extends AnimatedSprite {
     PhysicsWorld pw;
     Scene sc;
     boolean die = false;
+    int i=10;
 
     public Unit(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
@@ -122,7 +124,20 @@ public abstract class Unit extends AnimatedSprite {
         }
 
     }
+    public void jump(){
+        if(!((UnitData)(foot.getUserData())).isIntheAir()) {
+            Log.d(TAG,"JUMP!!!");
+            // body.applyLinearImpulse(new Vector2(0,-10),body.getWorldCenter());
+         //   body.setLinearVelocity(0,0);
+       //     body.applyForce(new Vector2(0,0),body.getWorldCenter());
+          //  body.applyLinearImpulse(new Vector2(0,-15),body.getWorldCenter());
+            //  body.setLinearVelocity(body.getLinearVelocity().x, -JUMP_SPEED);
+           // onActionAnimate(action);
 
+            //body.setLinearVelocity(body.getLinearVelocity().x, -JUMP_SPEED);
+
+        }
+    }
     public void update(){
         UnitData footData = (UnitData)foot.getUserData();
         UnitData bodyData = (UnitData)body.getUserData();
@@ -131,25 +146,34 @@ public abstract class Unit extends AnimatedSprite {
             footData.needtostop = false;
         }
         if(bodyData.isNeedToHitted()){
+          //  Log.d(TAG,"nth true");
+            push_direction = bodyData.getPushWay();
             action = ConstantsSet.ACTION_HITTED;
+            bodyData.setNeedToHitted(false);
         }
 
         if(actionLock){
+           // Log.d(TAG,"al true");
           //  Log.d(TAG,"ACTIONLOCK IS TRUE");
             return;
         }
 
         switch (action){
             case ConstantsSet.ACTION_MOVE_RIGHT:
-                if(body.getLinearVelocity().x<=SPEED) {
-                    body.applyForce(new Vector2(40, 0), body.getWorldCenter());
-                }
+               // if(body.getLinearVelocity().x<=SPEED) {
+                 //   body.applyForce(new Vector2(40, 0), body.getWorldCenter());
+                //}
                 this.setFlippedHorizontal(false);
                 this.direction = action;
                 if(footData.isIntheAir()){
+                 //   body.applyForce(new Vector2(0, 4*SensorManager.GRAVITY_EARTH),body.getWorldCenter());
+
                     Log.d(TAG,"speed :"+body.getLinearVelocity().y);
-                    onActionAnimate(ConstantsSet.ACTION_JUMP);
+                   onActionAnimate(ConstantsSet.ACTION_JUMP);
                 }else{
+                    if(body.getLinearVelocity().x<=SPEED) {
+                        body.applyForce(new Vector2(40, 0), body.getWorldCenter());
+                    }
                     onActionAnimate(action);
                 }
                 break;
@@ -161,7 +185,9 @@ public abstract class Unit extends AnimatedSprite {
                 this.setFlippedHorizontal(true);
                 this.direction = action;
                 if(footData.isIntheAir()){
-                    Log.d(TAG,"speed :"+body.getLinearVelocity().y);
+                  //  Log.d(TAG,"speed :"+body.getLinearVelocity().y);
+               //     body.applyForce(new Vector2(0, 4*SensorManager.GRAVITY_EARTH),body.getWorldCenter());
+
                     onActionAnimate(ConstantsSet.ACTION_JUMP);
                 }else{
                     onActionAnimate(action);
@@ -169,14 +195,26 @@ public abstract class Unit extends AnimatedSprite {
                 break;
             case ConstantsSet.ACTION_JUMP:
                 if(!((UnitData)(foot.getUserData())).isIntheAir()) {
+
                   // body.applyLinearImpulse(new Vector2(0,-10),body.getWorldCenter());
-                     body.setLinearVelocity(body.getLinearVelocity().x, -JUMP_SPEED);
+                    if(i<=0) {
+                        Log.d(TAG,"JUMP!!!");
+                        i=10;
+                        body.applyLinearImpulse(new Vector2(0, -20), body.getWorldCenter());
+                        // body.setLinearVelocity(body.getLinearVelocity().x, -JUMP_SPEED);
+                    }else{
+                        Log.d(TAG,"JUMP PRENET");
+                    }
                     onActionAnimate(action);
                 }
                 break;
             case ConstantsSet.ACTION_STOP:
                 if(!((UnitData)(foot.getUserData())).isIntheAir()) {
-                    this.body.setLinearVelocity(0,body.getLinearVelocity().y+0.1f);
+                   // Log.d(TAG,"STOP!!!");
+                  //  body.applyForce(new Vector2(0, 4*SensorManager.GRAVITY_EARTH),body.getWorldCenter());
+
+
+                    //this.body.setLinearVelocity(0,body.getLinearVelocity().y);
                     onActionAnimate(action);
                 }
                 break;
@@ -191,6 +229,7 @@ public abstract class Unit extends AnimatedSprite {
                 break;
             case ConstantsSet.ACTION_HITTED:
                 onActionAnimate(action);
+                setActionLock(true);
                 break;
             case ConstantsSet.ACTION_DIE:
                 break;
@@ -255,9 +294,12 @@ public abstract class Unit extends AnimatedSprite {
     protected void onManagedUpdate(float pSecondsElapsed) {
         super.onManagedUpdate(pSecondsElapsed);
         update();
-        body.applyForce(new Vector2(0, 4*SensorManager.GRAVITY_EARTH),body.getWorldCenter());
-       // body.applyLinearImpulse(new Vector2(0, SensorManager.GRAVITY_EARTH),body.getWorldCenter());
 
+        if(i>0){
+            i--;
+        }
+
+       // body.applyForce(new Vector2(0, 4*SensorManager.GRAVITY_EARTH),body.getWorldCenter());
     }
 
 

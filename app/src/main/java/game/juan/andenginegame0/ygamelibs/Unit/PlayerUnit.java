@@ -43,7 +43,13 @@ public class PlayerUnit extends Unit{
                 animate(attack_frame_duration,attack_frame_img_index,false,attackAnimationListener);
                 break;
             case ConstantsSet.ACTION_HITTED:
-                animate(hitted_frame_duration,hitted_frame_img_index,false);
+                Log.d(TAG,"ACTION_HITTED");
+                if(push_direction==ConstantsSet.ACTION_MOVE_RIGHT){
+                    getBody().setLinearVelocity(5,0);
+                }else{
+                    getBody().setLinearVelocity(-5,0);
+                }
+                animate(hitted_frame_duration,hitted_frame_img_index,false,hittedAnimationListener);
                 break;
             case ConstantsSet.ACTION_JUMP:
                 animate(jump_frame_duration, jump_frame_img_index,false);
@@ -96,7 +102,11 @@ public class PlayerUnit extends Unit{
 
             @Override
             public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite, int pOldFrameIndex, int pNewFrameIndex) {
-
+                if(pNewFrameIndex>=hitted_frame_img_index.length-1){
+                    Log.d(TAG,"Lock free");
+                    setActionLock(false);
+                    setAction(ConstantsSet.ACTION_STOP);
+                }
             }
 
             @Override

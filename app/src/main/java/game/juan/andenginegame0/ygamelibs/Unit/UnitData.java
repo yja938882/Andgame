@@ -72,6 +72,7 @@ public class UnitData {
         this.needtohitted = n;
        }
 
+
     public void setHitted(int damage){
         //hitted_damage = damage;
         if(damage>0){
@@ -93,6 +94,10 @@ public class UnitData {
                 break;
             case ConstantsSet.Type.AI_BULLET:
                 break;
+            case ConstantsSet.Type.AI:
+                break;
+            case ConstantsSet.Type.PLAYER:
+                break;
         }
     }
     public void endContactWith(short t){
@@ -101,16 +106,37 @@ public class UnitData {
                 contactWithGround(false);
                 break;
             case ConstantsSet.Type.PLAYER_BULLET:
-                if(type==ConstantsSet.Type.AI || type == ConstantsSet.Type.PLAYER){
+                if(type==ConstantsSet.Type.AI){
                     setNeedToHitted(true,1);
                 }
                 break;
             case ConstantsSet.Type.AI_BULLET:
+                if(type==ConstantsSet.Type.PLAYER){
+                    setNeedToHitted(true,1);
+                }
                 break;
+            case ConstantsSet.Type.PLAYER:
+                if(type==ConstantsSet.Type.AI_BULLET){
+                    is_need_to_disappear = true;
+                }
+                break;
+            case ConstantsSet.Type.AI:
+                if(type==ConstantsSet.Type.PLAYER_BULLET){
+                    is_need_to_disappear = true;
+                }
+                break;
+
         }
 
     }
 
+    private boolean is_need_to_disappear = false;
+    public boolean isNeedToDisappear(){
+        return is_need_to_disappear;
+    }
+    public void setNeedToDisappear(boolean b){
+        this.is_need_to_disappear = b;
+    }
 
 
 }

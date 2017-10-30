@@ -1,11 +1,15 @@
 package game.juan.andenginegame0.ygamelibs.Managers;
 
+import android.graphics.Color;
 import android.util.Log;
 
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.opengl.font.Font;
+import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
@@ -31,6 +35,8 @@ public class UIManager {
     private ITextureRegion settingTextureRegion;
     private ITextureRegion invenTextureRegion;
 
+    private Font font;
+
     public UIManager(int cam_width, int cam_height){
         this.CAMERA_WIDTH = cam_width;
         this.CAMERA_HEIGHT = cam_height;
@@ -54,6 +60,16 @@ public class UIManager {
         invenTextureAtlas.load();
 
 
+    }
+    public void loadFont(BaseGameActivity activity){
+      //  BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/font/");
+        font = FontFactory.createFromAsset(activity.getFontManager(),activity.getTextureManager(),256,256,activity.getAssets(),
+        "gfx/font/gamefont.ttf",46,true, Color.BLACK);
+        font.load();
+    }
+    public void createText(BaseGameActivity activity,Scene scene){
+        Text text = new Text(400,500,font,"aaa",activity.getVertexBufferObjectManager());
+        scene.attachChild(text);
     }
     public void createUI(BaseGameActivity activity , HUD hud, PlayerUnit playerUnit, Scene scene){
         final HealthUI healthUI = new HealthUI(3,10,10,36,36,4);

@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
 import org.andengine.engine.Engine;
+import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
@@ -58,6 +59,7 @@ public class HorizontalWorld {
     public void createWorld(Vector2 gravity, boolean bol){
         physicsWorld = new PhysicsWorld(gravity,bol);
        physicsWorld.setContactListener(createContactLister());
+        physicsWorld.setContinuousPhysics(true);
 
     }
     public void addPlayerUnit(PlayerUnit playerUnit){
