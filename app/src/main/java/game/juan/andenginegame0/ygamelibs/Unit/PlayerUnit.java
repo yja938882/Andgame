@@ -9,6 +9,7 @@ import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
+import game.juan.andenginegame0.ygamelibs.Managers.UIManager;
 
 /**
  * Created by juan on 2017. 10. 8..
@@ -16,7 +17,7 @@ import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 
 public class PlayerUnit extends Unit{
     private final String TAG="PlayerUnit";
-
+    UIManager uiManager;
     public PlayerUnit(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
@@ -25,8 +26,12 @@ public class PlayerUnit extends Unit{
         super.createUnit(world,scene,data,efw,efh);
     }
 
-
-
+    public void registerUI(UIManager uiManager){
+        this.uiManager = uiManager;
+    }
+    public void getCoin(int c){
+        uiManager.addCoinNum(c);
+    }
 
         @Override
     void onActionAnimate(int action) {

@@ -1,5 +1,6 @@
 package game.juan.andenginegame0.ygamelibs.Managers;
 
+import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.entity.scene.Scene;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
@@ -51,7 +52,7 @@ public class UnitManager {
         textureAtlas.load();
     }
 
-    public void createPlayer(BaseGameActivity activity, HorizontalWorld world, Scene scene , SmoothCamera camera){
+    public void createPlayer(BaseGameActivity activity, HorizontalWorld world, Scene scene , Camera camera){
         Bullet bullet = new Bullet(0,0,bulletTextureRegion,activity.getVertexBufferObjectManager());
         bullet.createBullet(world.getWorld(),scene,new UnitData(ConstantsSet.Type.PLAYER_BULLET,3,3,3,5.0f,10.0f),32,16);
 

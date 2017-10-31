@@ -263,7 +263,7 @@ public class MapBuilder {
                 createTiledFromAsset(textureAtlas,activity,"map/"+imgfile,0,0,8,8);;
         textureAtlas.load();
 
-        final FixtureDef FIX = PhysicsFactory.createFixtureDef(2.0f,0.0f,ConstantsSet.Physics.FRICTION_ICE);
+        final FixtureDef FIX = PhysicsFactory.createFixtureDef(2.0f,0.0f,0.0f);
         FIX.filter.categoryBits = ConstantsSet.Collision.GROUND_CATG_BITS;
         FIX.filter.maskBits = ConstantsSet.Collision.GROUND_MASK_BITS;
 

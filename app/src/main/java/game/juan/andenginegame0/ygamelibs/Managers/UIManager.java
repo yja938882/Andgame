@@ -18,6 +18,7 @@ import org.andengine.ui.activity.BaseGameActivity;
 
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Controller.AttackController;
+import game.juan.andenginegame0.ygamelibs.UI.CoinUI;
 import game.juan.andenginegame0.ygamelibs.UI.HealthUI;
 import game.juan.andenginegame0.ygamelibs.UI.SettingButton;
 import game.juan.andenginegame0.ygamelibs.Unit.PlayerUnit;
@@ -34,8 +35,10 @@ public class UIManager {
     private ITiledTextureRegion heartTextureRegion;
     private ITextureRegion settingTextureRegion;
     private ITextureRegion invenTextureRegion;
+    private ITextureRegion coinTextureRegion;
 
     private Font font;
+    CoinUI coinUI;
 
     public UIManager(int cam_width, int cam_height){
         this.CAMERA_WIDTH = cam_width;
@@ -59,22 +62,21 @@ public class UIManager {
                 createFromAsset(invenTextureAtlas,activity.getAssets(),"bottom_inven.png",0,0);
         invenTextureAtlas.load();
 
+        final BitmapTextureAtlas coinTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 32,32);
+        coinTextureRegion = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(coinTextureAtlas,activity.getAssets(),"coin.png",0,0);
+        coinTextureAtlas.load();
+
+        font = FontFactory.createFromAsset(activity.getFontManager(),activity.getTextureManager(),256,256,activity.getAssets(),
+                "gfx/font/gamefont.ttf",46,true, Color.BLACK);
+        font.load();
 
     }
-    public void loadFont(BaseGameActivity activity){
-      //  BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/font/");
-        font = FontFactory.createFromAsset(activity.getFontManager(),activity.getTextureManager(),256,256,activity.getAssets(),
-        "gfx/font/gamefont.ttf",46,true, Color.BLACK);
-        font.load();
-    }
-    public void createText(BaseGameActivity activity,Scene scene){
-        Text text = new Text(400,500,font,"aaa",activity.getVertexBufferObjectManager());
-        scene.attachChild(text);
-    }
+
+
     public void createUI(BaseGameActivity activity , HUD hud, PlayerUnit playerUnit, Scene scene){
         final HealthUI healthUI = new HealthUI(3,10,10,36,36,4);
         healthUI.setup(heartTextureRegion,activity.getEngine(),hud);
-        //playerUnit.setupHealthUI(healthUI);
 
         final SettingButton settingButton = new SettingButton(CAMERA_WIDTH-50,20,24,24,settingTextureRegion,activity.getVertexBufferObjectManager());
         settingButton.setup(scene, activity);
@@ -84,6 +86,10 @@ public class UIManager {
         final Sprite inven = new Sprite(128,CAMERA_HEIGHT-64,invenTextureRegion,activity.getVertexBufferObjectManager());
         hud.attachChild(inven);
 
-
+        coinUI = new CoinUI();
+        coinUI.setup(coinTextureRegion,font,activity.getEngine(),hud);
+    }
+    public void addCoinNum(int add){
+        coinUI.addCoinNum(add);
     }
 }

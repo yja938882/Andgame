@@ -160,50 +160,48 @@ public abstract class Unit extends AnimatedSprite {
 
         switch (action){
             case ConstantsSet.ACTION_MOVE_RIGHT:
-               // if(body.getLinearVelocity().x<=SPEED) {
-                 //   body.applyForce(new Vector2(40, 0), body.getWorldCenter());
-                //}
+
                 this.setFlippedHorizontal(false);
                 this.direction = action;
                 if(footData.isIntheAir()){
-                 //   body.applyForce(new Vector2(0, 4*SensorManager.GRAVITY_EARTH),body.getWorldCenter());
-
-                    Log.d(TAG,"speed :"+body.getLinearVelocity().y);
+                    if(body.getLinearVelocity().x<=SPEED) {
+                        body.applyForce(new Vector2(50, 0), body.getWorldCenter());
+                        //body.setLinearVelocity(5,body.getLinearVelocity().y+0.01f);
+                       // body.setLinearVelocity();
+                    // body.setLinearVelocity(SPEED,body.getLinearVelocity().y);
+                    }
                    onActionAnimate(ConstantsSet.ACTION_JUMP);
                 }else{
                     if(body.getLinearVelocity().x<=SPEED) {
-                        body.applyForce(new Vector2(40, 0), body.getWorldCenter());
+                        body.applyForce(new Vector2(50, 0), body.getWorldCenter());
+                       // body.setLinearVelocity(5,body.getLinearVelocity().y+0.01f);
                     }
-                    onActionAnimate(action);
+                   // setPosition(this.getPositionX()+2,this.getY());
+                   // body.setLinearVelocity(SPEED,body.getLinearVelocity().y);
+                    //onActionAnimate(ConstantsSet.ACTION_JUMP);
+                     onActionAnimate(action);
                 }
                 break;
             case ConstantsSet.ACTION_MOVE_LEFT:
-                if(body.getLinearVelocity().x>=-SPEED) {
-                    body.applyForce(new Vector2(-40, 0), body.getWorldCenter());
-                    //foot.applyLinearImpulse(new Vector2(-1, 0), body.getWorldCenter());
-                }
                 this.setFlippedHorizontal(true);
                 this.direction = action;
                 if(footData.isIntheAir()){
-                  //  Log.d(TAG,"speed :"+body.getLinearVelocity().y);
-               //     body.applyForce(new Vector2(0, 4*SensorManager.GRAVITY_EARTH),body.getWorldCenter());
-
+                    if(body.getLinearVelocity().x>=-SPEED) {
+                        body.applyForce(new Vector2(-50, 0), body.getWorldCenter());
+                    }
                     onActionAnimate(ConstantsSet.ACTION_JUMP);
                 }else{
+                    if(body.getLinearVelocity().x>=-SPEED) {
+                        body.applyForce(new Vector2(-50, 0), body.getWorldCenter());
+                    }
                     onActionAnimate(action);
                 }
                 break;
             case ConstantsSet.ACTION_JUMP:
                 if(!((UnitData)(foot.getUserData())).isIntheAir()) {
-
-                  // body.applyLinearImpulse(new Vector2(0,-10),body.getWorldCenter());
                     if(i<=0) {
-                        Log.d(TAG,"JUMP!!!");
                         i=10;
-                        body.applyLinearImpulse(new Vector2(0, -20), body.getWorldCenter());
-                        // body.setLinearVelocity(body.getLinearVelocity().x, -JUMP_SPEED);
-                    }else{
-                        Log.d(TAG,"JUMP PRENET");
+                        body.applyLinearImpulse(new Vector2(0, -25), body.getWorldCenter());
                     }
                     onActionAnimate(action);
                 }
@@ -214,7 +212,7 @@ public abstract class Unit extends AnimatedSprite {
                   //  body.applyForce(new Vector2(0, 4*SensorManager.GRAVITY_EARTH),body.getWorldCenter());
 
 
-                    //this.body.setLinearVelocity(0,body.getLinearVelocity().y);
+                    this.body.setLinearVelocity(0,body.getLinearVelocity().y);
                     onActionAnimate(action);
                 }
                 break;
@@ -248,17 +246,17 @@ public abstract class Unit extends AnimatedSprite {
             case ConstantsSet.Type.PLAYER:
                 switch (u){
                     case ConstantsSet.Unit.BODY:
-                        fixtureDef = PhysicsFactory.createFixtureDef(ConstantsSet.Physics.DENSITY_HUMAN,0f, ConstantsSet.Physics.FRICTION_RUBBER);
+                        fixtureDef = PhysicsFactory.createFixtureDef(ConstantsSet.Physics.DENSITY_HUMAN,0f, 0f);
                         fixtureDef.filter.categoryBits = ConstantsSet.Collision.PLAYER_BODY_CATG_BITS;
                         fixtureDef.filter.maskBits = ConstantsSet.Collision.PLAYER_BODY_MASK_BITS;
                         break;
                     case ConstantsSet.Unit.FOOT:
-                        fixtureDef = PhysicsFactory.createFixtureDef(ConstantsSet.Physics.DENSITY_HUMAN,0f, ConstantsSet.Physics.FRICTION_RUBBER);
+                        fixtureDef = PhysicsFactory.createFixtureDef(ConstantsSet.Physics.DENSITY_HUMAN,0f, 0f);
                         fixtureDef.filter.categoryBits = ConstantsSet.Collision.PLAYER_FOOT_CATG_BITS;
                         fixtureDef.filter.maskBits = ConstantsSet.Collision.PLAYER_FOOT_MASK_BITS;
                         break;
                     case ConstantsSet.Unit.HEAD:
-                        fixtureDef = PhysicsFactory.createFixtureDef(0.1f,0.0f, ConstantsSet.Physics.FRICTION_RUBBER);
+                        fixtureDef = PhysicsFactory.createFixtureDef(0.1f,0.0f, 0f);
                         fixtureDef.filter.categoryBits = ConstantsSet.Collision.PLAYER_FOOT_CATG_BITS;
                         fixtureDef.filter.maskBits = ConstantsSet.Collision.PLAYER_FOOT_MASK_BITS;
                         break;
@@ -272,7 +270,7 @@ public abstract class Unit extends AnimatedSprite {
                         fixtureDef.filter.maskBits = ConstantsSet.Collision.AI_BODY_MASK_BITS;
                         break;
                     case ConstantsSet.Unit.FOOT:
-                        fixtureDef = PhysicsFactory.createFixtureDef(ConstantsSet.Physics.DENSITY_HUMAN,0f, ConstantsSet.Physics.FRICTION_RUBBER);
+                        fixtureDef = PhysicsFactory.createFixtureDef(ConstantsSet.Physics.DENSITY_HUMAN,0f, 0f);
                         fixtureDef.filter.categoryBits = ConstantsSet.Collision.PLAYER_FOOT_CATG_BITS;
                         fixtureDef.filter.maskBits = ConstantsSet.Collision.PLAYER_FOOT_MASK_BITS;
                         break;
@@ -294,6 +292,7 @@ public abstract class Unit extends AnimatedSprite {
     protected void onManagedUpdate(float pSecondsElapsed) {
         super.onManagedUpdate(pSecondsElapsed);
         update();
+        body.applyForce(new Vector2(0,40f),body.getWorldCenter());
 
         if(i>0){
             i--;

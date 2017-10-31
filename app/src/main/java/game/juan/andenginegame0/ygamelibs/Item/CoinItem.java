@@ -1,5 +1,6 @@
 package game.juan.andenginegame0.ygamelibs.Item;
 
+import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.IUpdateHandler;
@@ -18,7 +19,7 @@ import game.juan.andenginegame0.ygamelibs.Unit.UnitData;
 public class CoinItem extends AnimatedSpriteItem {
 
     PlayerUnit playerUnit;
-    SmoothCamera camera;
+    Camera camera;
     boolean moving = false;
     float al=0;
 
@@ -29,7 +30,7 @@ public class CoinItem extends AnimatedSpriteItem {
     public void setPlayer(PlayerUnit player){
         this.playerUnit = player;
     }
-    public void setCamera(SmoothCamera camera){
+    public void setCamera(Camera camera){
         this.camera = camera;
     }
     @Override
@@ -41,6 +42,7 @@ public class CoinItem extends AnimatedSpriteItem {
         if(this.isVisible()&&!moving){
             if (this.collidesWith(playerUnit)){
                 moving = true;
+                playerUnit.getCoin(10);
               //  sc.pushToDetach(this);
               //  sc.attachToHud(this);
             }

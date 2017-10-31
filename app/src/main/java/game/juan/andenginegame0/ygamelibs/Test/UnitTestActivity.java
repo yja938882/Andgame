@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.badlogic.gdx.math.Vector2;
 import org.andengine.engine.Engine;
+import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.options.EngineOptions;
@@ -31,7 +32,7 @@ public class UnitTestActivity extends BaseGameActivity {
     boolean scheduleEngineStart;
 
     private GameScene scene;
-    private SmoothCamera mCamera;
+    private Camera mCamera;
 
     private View 	decorView;
     private int	uiOption;
@@ -51,7 +52,7 @@ public class UnitTestActivity extends BaseGameActivity {
 
         @Override
     public EngineOptions onCreateEngineOptions() {
-            mCamera = new SmoothCamera(0,0,CAMERA_WIDTH,CAMERA_HEIGHT,400,400,0);
+            mCamera = new Camera(0,0,CAMERA_WIDTH,CAMERA_HEIGHT);
             EngineOptions engineOptions = new EngineOptions(true
                     , ScreenOrientation.LANDSCAPE_FIXED,
                     new RatioResolutionPolicy(2560,1440),mCamera);
@@ -122,7 +123,7 @@ public class UnitTestActivity extends BaseGameActivity {
     public void onResume(){
         super.onResume();
     }
-    public SmoothCamera getCamera(){return mCamera;}
+    public Camera getCamera(){return mCamera;}
 
 
 
