@@ -41,13 +41,13 @@ public interface ConstantsSet {
     interface Collision{
         /*player - catg*/
         short PLAYER_BODY_CATG_BITS = 0x0001;
-        short PLAYER_FOOT_CATG_BITS = 0x0002;
 
         /*ai - catg*/
         short AI_BODY_CATG_BITS = 0x0004;
-        short AI_FOOT_CATG_BITS = 0x0008;
 
         short GROUND_CATG_BITS = 0x0010;
+
+        short OBSTACLE_BULLET_CATG_BITS = 0x0008;
 
         short PASSABLE_OBSTACLE_CATG_BITS = 0x0011;
 
@@ -57,11 +57,12 @@ public interface ConstantsSet {
 
 
         short PLAYER_BODY_MASK_BITS = AI_BULLET_CATG_BITS;
-        short PLAYER_FOOT_MASK_BITS = GROUND_CATG_BITS;
-        short AI_BODY_MASK_BITS = PLAYER_BODY_CATG_BITS|PLAYER_BULLET_CATG_BITS;
-        short AI_FOOT_MASK_BITS = GROUND_CATG_BITS;
 
-        short GROUND_MASK_BITS = PLAYER_FOOT_CATG_BITS| AI_FOOT_CATG_BITS;
+        short AI_BODY_MASK_BITS = PLAYER_BODY_CATG_BITS|PLAYER_BULLET_CATG_BITS;
+
+        short GROUND_MASK_BITS = PLAYER_BODY_CATG_BITS| AI_BODY_CATG_BITS;
+
+        short OBSTACLE_BULLET_MASK_BITS = PLAYER_BODY_CATG_BITS|GROUND_CATG_BITS;
 
         short ITEM_MASK_BITS = GROUND_CATG_BITS;
         short PASSABLE_OBSTACLE_MASK_BITS = 0x0000;
@@ -74,6 +75,15 @@ public interface ConstantsSet {
         char TYPE_FLAT=0;
         char TYPE_UPHILL = 1;
         char TYPE_DOWNHILL = 2;
+        char TYPE_RIGHT_SIDE_WALL = 3;
+        char TYPE_LEFT_SIDE_WALL = 4;
+    }
+    interface MapBuilderObstacle{
+        char TYPE_MOVING_GROUND = 0;
+        char TYPE_TRAP = 1;
+        char TYPE_PENDULUM =2;
+        char TYPE_FALL_OBSTACLE = 3;
+        char TYPE_SHOTTER_TRAP = 4;
     }
     interface Physics{
         float DENSITY_HUMAN=2.0f;

@@ -5,15 +5,23 @@
   "bg" : "background.png",
   "statics":
   [
-    {"t":0, "x": 0  ,   "y":  704 , "w" : 3, "h" : 1 ,"index":"000"},
-    {"t":0, "x": 384,   "y":  640 , "w" : 2, "h" : 1 ,"index":"00"},
-    {"t":1, "x": 640,   "y":  512, "w":2 ,"h":1,"index":"00"},
-    {"t":0, "x": 896,   "y":  512,  "w":2,  "h":1, "index":"00"},
-    {"t":0, "x": 1152,   "y":  448,  "w":3,  "h":1, "index":"000"}
+    {"t":0, "x": 0,    "y":  20,  "w":8,  "h" : 1 ,"index":"00"},
+    {"t":1, "x": 8,    "y":  20,  "w":8,  "h" : 1 ,"index":"00"},
+    {"t":0, "x": 16,   "y":  18,  "w":8,  "h":1,"index":"00"},
+    {"t":2, "x": 24,   "y":  18,  "w":8,  "h":1, "index":"00"},
+    {"t":0, "x": 32,   "y":  20,  "w":8,  "h":1, "index":"00"},
+    {"t":3, "x": 40,   "y":  20,  "w":1,  "h":2, "index":"00"},
+    {"t":0, "x": 41,   "y":  22,  "w":4,  "h":1, "index":"0"},
+    {"t":4, "x": 45,   "y":  20,  "w":1,  "h":2, "index":"00"},
+    {"t":0, "x": 46,   "y":  20,  "w":4,  "h":1, "index":"0"},
+    {"t":0, "x": 53,   "y": 20 ,  "w":12,  "h":1,  "index":"000"}
   ],
   "obstacle":
   [
-    {"type":"trap" , "x": 0,"y": 450,"w" :50,"h":50}
+    {"type": 2 , "x": 41,"y": 11,"data":[7.5]},
+    {"type": 0 , "x" : 50,"y":20, "data":[53, 2, 1]},
+    {"type": 3 , "x" : 3 , "y":16,"data":[1,1]},
+    {"type":1,"x":60,"y":19,"data":[0]}
   ],
   "ai":
   [
@@ -21,3 +29,15 @@
   ]
 }
 }
+/*  char TYPE_FLAT=0;
+        char TYPE_UPHILL = 1;
+        char TYPE_DOWNHILL = 2;
+        char TYPE_RIGHT_SIDE_WALL = 3;
+        char TYPE_LEFT_SIDE_WALL = 4;*/
+/*
+  interface MapBuilderObstacle{
+        char TYPE_MOVING_GROUND = 0;
+        char TYPE_TRAP = 1;
+        char TYPE_PENDULUM =2;
+        char TYPE_FALL_OBSTACLE = 3;
+    }*/

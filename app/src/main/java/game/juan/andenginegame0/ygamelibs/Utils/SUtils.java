@@ -25,18 +25,5 @@ public class SUtils {
         }
         return -1;
     }
-    public static short getFootMaskBits(int type){
-        switch (type){
-            case ConstantsSet.Type.PLAYER:
-                return ConstantsSet.Collision.PLAYER_FOOT_MASK_BITS;
-        }
-        return -1;
-    }
-    public static short getFootCatgBits(int type){
-        switch (type){
-            case ConstantsSet.Type.PLAYER:
-                return ConstantsSet.Collision.PLAYER_FOOT_CATG_BITS;
-        }
-        return -1;
-    }
+
 }

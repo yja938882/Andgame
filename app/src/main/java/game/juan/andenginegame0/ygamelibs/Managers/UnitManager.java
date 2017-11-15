@@ -36,7 +36,7 @@ public class UnitManager {
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/player/");
         final BitmapTextureAtlas textureAtlas = new BitmapTextureAtlas(activity.getTextureManager(),1024,1024);
         playerTextureRegion  = BitmapTextureAtlasTextureRegionFactory.
-                createTiledFromAsset(textureAtlas,activity.getAssets(),"player_s.png",0,0,16,16);
+                createTiledFromAsset(textureAtlas,activity.getAssets(),"player_s.png",0,0,8,8);
         textureAtlas.load();
 
         final BitmapTextureAtlas bulletAtlas = new BitmapTextureAtlas(activity.getTextureManager(),32,16);
@@ -63,9 +63,9 @@ public class UnitManager {
         //playerUnit.createCircleUnit(world.getWorld(),scene,new UnitData(ConstantsSet.TYPE_PLAYER,3,3,3,3.0f,8.0f));
         camera.setChaseEntity(playerUnit);
 
-        final int colnum = 16;
-        final long walk_frame_du[] ={100,100,100,100,100,100,100,100};
-        final int walk_frame_i[] = {0,1,2,3,4,5,6,7};
+        final int colnum = 8;
+        final long walk_frame_du[] ={25,50,50,50,50,50,25};
+        final int walk_frame_i[] = {0,1,2,3,4,5,0};
         playerUnit.setMovingFrame(walk_frame_du,walk_frame_i);
 
         final long attack_frame_du[] = {50,50,50,100,100,50};
@@ -77,7 +77,7 @@ public class UnitManager {
         playerUnit.setHittedFrame(hitted_frame_du,hitted_frame_i);
 
         final long jump_frame_du[] ={50};
-        final int jump_frame_i[] = {colnum*3};
+        final int jump_frame_i[] = {0};
         playerUnit.setJumpFrame(jump_frame_du,jump_frame_i);
     }
     /*public void loadAI()*/

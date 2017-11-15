@@ -22,6 +22,7 @@ import game.juan.andenginegame0.ygamelibs.UI.CoinUI;
 import game.juan.andenginegame0.ygamelibs.UI.HealthUI;
 import game.juan.andenginegame0.ygamelibs.UI.SettingButton;
 import game.juan.andenginegame0.ygamelibs.Unit.PlayerUnit;
+import game.juan.andenginegame0.ygamelibs.World.GameScene;
 
 /**
  * Created by juan on 2017. 9. 24..
@@ -41,8 +42,8 @@ public class UIManager {
     CoinUI coinUI;
 
     public UIManager(int cam_width, int cam_height){
-        this.CAMERA_WIDTH = cam_width;
-        this.CAMERA_HEIGHT = cam_height;
+        this.CAMERA_WIDTH = GameScene.CAMERA_WIDTH;
+        this.CAMERA_HEIGHT = GameScene.CAMERA_HEIGHT;
     }
     public void loadGraphics(BaseGameActivity activity){
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/ui/");
@@ -68,7 +69,7 @@ public class UIManager {
         coinTextureAtlas.load();
 
         font = FontFactory.createFromAsset(activity.getFontManager(),activity.getTextureManager(),256,256,activity.getAssets(),
-                "gfx/font/gamefont.ttf",46,true, Color.BLACK);
+                "gfx/font/gamefont.ttf",32,true, Color.BLACK);
         font.load();
 
     }

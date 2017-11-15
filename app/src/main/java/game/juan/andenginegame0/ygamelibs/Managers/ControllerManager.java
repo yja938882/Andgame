@@ -72,7 +72,7 @@ public class ControllerManager {
     }
 
     public void createController(BaseGameActivity activity , HUD hud, PlayerUnit playerUnit){
-        final AttackController attackButton = new AttackController(CAMERA_WIDTH-50,CAMERA_HEIGHT-attackButtonTextureRegion.getHeight()
+        final AttackController attackButton = new AttackController(CAMERA_WIDTH-attackButtonTextureRegion.getWidth(),CAMERA_HEIGHT-attackButtonTextureRegion.getHeight()
                 ,100,100,attackButtonTextureRegion,
                 activity.getEngine().getVertexBufferObjectManager());
 

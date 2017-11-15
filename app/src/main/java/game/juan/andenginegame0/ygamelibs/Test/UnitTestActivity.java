@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.badlogic.gdx.math.Vector2;
 import org.andengine.engine.Engine;
+import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
@@ -24,15 +25,11 @@ import game.juan.andenginegame0.ygamelibs.World.HorizontalWorld;
 
 public class UnitTestActivity extends BaseGameActivity {
 
-    private static final int CAMERA_WIDTH = 800;
-    private static final int CAMERA_HEIGHT = 480;
-
-
 
     boolean scheduleEngineStart;
 
     private GameScene scene;
-    private Camera mCamera;
+    private BoundCamera mCamera;
 
     private View 	decorView;
     private int	uiOption;
@@ -52,7 +49,7 @@ public class UnitTestActivity extends BaseGameActivity {
 
         @Override
     public EngineOptions onCreateEngineOptions() {
-            mCamera = new Camera(0,0,CAMERA_WIDTH,CAMERA_HEIGHT);
+            mCamera = new BoundCamera(0,0,GameScene.CAMERA_WIDTH,GameScene.CAMERA_HEIGHT);
             EngineOptions engineOptions = new EngineOptions(true
                     , ScreenOrientation.LANDSCAPE_FIXED,
                     new RatioResolutionPolicy(2560,1440),mCamera);

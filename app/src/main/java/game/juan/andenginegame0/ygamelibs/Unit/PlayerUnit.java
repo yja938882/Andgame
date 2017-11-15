@@ -23,7 +23,7 @@ public class PlayerUnit extends Unit{
     }
 
     public void createUnit(PhysicsWorld world, Scene scene, UnitData data, float efw, float efh) {
-        super.createUnit(world,scene,data,efw,efh);
+        super.createUnit(world,scene,data,1,1);
     }
 
     public void registerUI(UIManager uiManager){
@@ -42,13 +42,12 @@ public class PlayerUnit extends Unit{
                     animate(moving_frame_duration, moving_frame_img_index, true);
                 break;
             case ConstantsSet.ACTION_STOP:
-                stopAnimation(0);
+                stopAnimation(8);
                 break;
             case ConstantsSet.ACTION_ATTACK:
                 animate(attack_frame_duration,attack_frame_img_index,false,attackAnimationListener);
                 break;
             case ConstantsSet.ACTION_HITTED:
-                Log.d(TAG,"ACTION_HITTED");
                 if(push_direction==ConstantsSet.ACTION_MOVE_RIGHT){
                     getBody().setLinearVelocity(5,0);
                 }else{
@@ -108,7 +107,6 @@ public class PlayerUnit extends Unit{
             @Override
             public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite, int pOldFrameIndex, int pNewFrameIndex) {
                 if(pNewFrameIndex>=hitted_frame_img_index.length-1){
-                    Log.d(TAG,"Lock free");
                     setActionLock(false);
                     setAction(ConstantsSet.ACTION_STOP);
                 }

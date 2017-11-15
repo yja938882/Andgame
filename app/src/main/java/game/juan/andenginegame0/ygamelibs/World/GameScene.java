@@ -4,6 +4,7 @@ import android.hardware.Sensor;
 
 import com.badlogic.gdx.math.Vector2;
 
+import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
@@ -27,8 +28,8 @@ import game.juan.andenginegame0.ygamelibs.Managers.UnitManager;
 
 public class GameScene extends Scene {
 
-    private static final int CAMERA_WIDTH = 800;
-    private static final int CAMERA_HEIGHT = 480;
+    public static final int CAMERA_WIDTH = 1024;
+    public static final int CAMERA_HEIGHT = 600;
 
     HorizontalWorld world;
 
@@ -38,7 +39,7 @@ public class GameScene extends Scene {
     UIManager uiManager;
     UnitManager unitManager;
     ItemManager itemManager;
-    Camera camera;
+    BoundCamera camera;
 
     HUD hud;
 
@@ -68,6 +69,9 @@ public class GameScene extends Scene {
 
                 clearDetachQueue();
                 camera.updateChaseEntity();
+                camera.setBounds(camera.getCenterX()-camera.getWidth()/2,
+                        0,10000,10000);
+
             }
             @Override
             public void reset() {
@@ -92,8 +96,9 @@ public class GameScene extends Scene {
         itemManager = new ItemManager();
     }
 
-    public void createScene(BaseGameActivity activity, Camera camera){
+    public void createScene(BaseGameActivity activity, BoundCamera camera){
         this.camera = camera;
+        camera.setBoundsEnabled(true);
         this.registerUpdateHandler(world.getWorld());
         createUnits(activity,camera);
         createMap(activity);

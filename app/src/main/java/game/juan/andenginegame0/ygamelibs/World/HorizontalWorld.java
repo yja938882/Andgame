@@ -58,6 +58,7 @@ public class HorizontalWorld {
     }
     public void createWorld(Vector2 gravity, boolean bol){
         physicsWorld = new PhysicsWorld(gravity,bol);
+        
        physicsWorld.setContactListener(createContactLister());
         physicsWorld.setContinuousPhysics(true);
 
@@ -110,7 +111,6 @@ public class HorizontalWorld {
 
             @Override
             public void postSolve(Contact contact, ContactImpulse impulse) {
-
             }
         };
         return contactListener;
@@ -119,8 +119,8 @@ public class HorizontalWorld {
 
         ParallaxBackground background = new ParallaxBackground(0,0,0);
         background.attachParallaxEntity(new ParallaxBackground.ParallaxEntity(0,new Sprite(0,0,bgTextureRegion,activity.getVertexBufferObjectManager())));
-        //scene.setBackground(new Background(Color.WHITE));
-        scene.setBackground(background);
+        scene.setBackground(new Background(Color.WHITE));
+       // scene.setBackground(background);
         //MapBuilder.createHorizontalMovingGround(scene,physicsWorld,activity,200,600,400,50,50);
         MapBuilder.createMapFromData(scene,physicsWorld,activity,imgfile,jfile,unitManager);
     }

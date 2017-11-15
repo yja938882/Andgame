@@ -1,19 +1,21 @@
 package game.juan.andenginegame0.ygamelibs.Utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 /**
  * Created by juan on 2017. 9. 19..
  */
 
 public class DataManager {
-    private final float STATIC_UNIT=128.0f;
+    private final float STATIC_UNIT=32.0f;
 
     private String backgroundImg="";
     private String tileImg="";
@@ -34,9 +36,10 @@ public class DataManager {
 
 
     private int obstacleNum;
-    private int obstaclesType[];
+    private char obstaclesType[];
     private int obstaclesX[];
     private int obstaclesY[];
+    private ArrayList<float[]> obstacle_datas = new ArrayList<>();
 
 
 
@@ -58,13 +61,36 @@ public class DataManager {
             static_type = new char[static_length];
             for(int i=0;i<static_length;i++){
                 total_length+=(staticMapData.getJSONObject(i).getInt("w"));
-                static_x[i] = (staticMapData.getJSONObject(i).getInt("x"));
-                static_y[i] = (staticMapData.getJSONObject(i).getInt("y"));
+                static_x[i] = (int)STATIC_UNIT*(staticMapData.getJSONObject(i).getInt("x"));
+                static_y[i] = (int)STATIC_UNIT*(staticMapData.getJSONObject(i).getInt("y"));
                 static_w[i] = STATIC_UNIT*(staticMapData.getJSONObject(i).getInt("w"));
                 static_h[i] = STATIC_UNIT*(staticMapData.getJSONObject(i).getInt("h"));
                 static_index[i] = (staticMapData.getJSONObject(i).getString("index"));
                 static_type[i] = (char)(staticMapData.getJSONObject(i).getInt("t"));
             }
+
+            JSONArray obstacleData = mapObject.getJSONArray("obstacle");
+            obstacleNum = obstacleData.length();
+            obstaclesX = new int[obstacleNum];
+            obstaclesY = new int[obstacleNum];
+            //obstaclesH = new float[obstacleNum];
+            obstaclesType = new char[obstacleNum];
+            for(int i=0;i<obstacleNum;i++){
+                obstaclesX[i] = (int)STATIC_UNIT*obstacleData.getJSONObject(i).getInt("x");
+                obstaclesY[i] = (int)STATIC_UNIT*obstacleData.getJSONObject(i).getInt("y");
+               // obstaclesH[i] = STATIC_UNIT*(float)obstacleData.getJSONObject(i).getDouble("h");
+                obstaclesType[i] = (char)obstacleData.getJSONObject(i).getInt("type");
+                float[] datas = new float[obstacleData.getJSONObject(i).getJSONArray("data").length()];
+                for(int j=0;j<obstacleData.getJSONObject(i).getJSONArray("data").length();j++){
+                    datas[j] = (float)obstacleData.getJSONObject(i).getJSONArray("data").getDouble(j);
+                    datas[j]*=STATIC_UNIT;
+                }
+                obstacle_datas.add(datas);
+
+               // Log.d("TEST",""+obstacleData.getJSONObject(i).getJSONArray("data").get(0));
+            }
+
+
 
             JSONArray aiMapData = mapObject.getJSONArray("ai");
             ai_num = aiMapData.length();
@@ -110,8 +136,8 @@ public class DataManager {
     }
     public int[] getTileIndex(int index){
         int[] indexs = new int[static_index[index].length()];
-        for(int i=0;i<indexs.length;i++){
-            indexs[i] = Integer.parseInt(static_index[index].substring(i,i+1));
+        for(int i=0;i<indexs.length;i++) {
+            indexs[i] = Integer.parseInt(static_index[index].substring(i, i + 1));
         }
         return indexs;
     }
@@ -152,8 +178,7 @@ public class DataManager {
     public int getObstacleY(int i){
         return obstaclesY[i];
     }
-
-
+    public float[] getObstacleDatas(int i){return obstacle_datas.get(i);}
 
 
 }

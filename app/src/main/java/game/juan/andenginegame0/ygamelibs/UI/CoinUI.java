@@ -18,10 +18,10 @@ public class CoinUI {
     Sprite coin;
     Text coinnum;
     public void setup(ITextureRegion textureRegion, Font font, Engine mEngine, HUD hud) {
-       coin = new Sprite(100,0,textureRegion,mEngine.getVertexBufferObjectManager());
+       coin = new Sprite(200,0,textureRegion,mEngine.getVertexBufferObjectManager());
        hud.attachChild(coin);
 
-       coinnum = new Text(200,0,font,""+coin_num,40,mEngine.getVertexBufferObjectManager());
+       coinnum = new Text(200+coin.getWidth()+10,0,font,""+coin_num,40,mEngine.getVertexBufferObjectManager());
        hud.attachChild(coinnum);
     }
     public void addCoinNum(int add){
