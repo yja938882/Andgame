@@ -68,8 +68,8 @@ public class UnitManager {
         final int walk_frame_i[] = {0,1,2,3,4,5,0};
         playerUnit.setMovingFrame(walk_frame_du,walk_frame_i);
 
-        final long attack_frame_du[] = {50,50,50,100,100,50};
-        final int attack_frame_i[] = {0+colnum*1,1+colnum*1,2+colnum*1,3+colnum*1,4+1*colnum,0+colnum*0};
+        final long attack_frame_du[] = {50,100,100,100,50};
+        final int attack_frame_i[] = {4+colnum*1,5+colnum*1,6+colnum*1,7+colnum*1, 4+colnum*1};
         playerUnit.setAttackFrame(attack_frame_du,attack_frame_i);
 
         final long hitted_frame_du[]={50,50,50,50,50,50,50,50};

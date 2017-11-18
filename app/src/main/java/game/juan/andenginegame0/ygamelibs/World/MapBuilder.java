@@ -2,30 +2,45 @@ package game.juan.andenginegame0.ygamelibs.World;
 
 import android.util.Log;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 
+import org.andengine.entity.primitive.DrawMode;
+import org.andengine.entity.primitive.Line;
+import org.andengine.entity.primitive.Mesh;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.shape.IShape;
 import org.andengine.entity.sprite.batch.SpriteBatch;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
+import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
+import org.andengine.extension.physics.box2d.util.triangulation.EarClippingTriangulator;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
+import org.andengine.util.adt.list.ListUtils;
 import org.andengine.util.color.Color;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
+import game.juan.andenginegame0.ygamelibs.Managers.ObstacleManager;
 import game.juan.andenginegame0.ygamelibs.Managers.UnitManager;
 import game.juan.andenginegame0.ygamelibs.Obstacles.FallingObstacle;
+import game.juan.andenginegame0.ygamelibs.Obstacles.ShootingObstacle;
 import game.juan.andenginegame0.ygamelibs.Obstacles.TrapObstacle;
 import game.juan.andenginegame0.ygamelibs.Unit.UnitData;
 import game.juan.andenginegame0.ygamelibs.Utils.DataManager;
+import game.juan.andenginegame0.ygamelibs.Utils.MapBlock;
+import game.juan.andenginegame0.ygamelibs.Utils.ObstacleData;
 
 /**
  * Created by juan on 2017. 9. 2..
@@ -39,14 +54,53 @@ public class MapBuilder {
 
 
      static void createMapFromData(Scene scene, PhysicsWorld physicsWorld, BaseGameActivity activity, String imgfile, String jfile, UnitManager unitManager){
-        DataManager dm = new DataManager();
-        dm.loadMapData(activity,jfile);
-        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+
+        //BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 
         final FixtureDef FIX = PhysicsFactory.createFixtureDef(2.0f,0.0f,0.0f);
         FIX.filter.categoryBits = ConstantsSet.Collision.GROUND_CATG_BITS;
         FIX.filter.maskBits = ConstantsSet.Collision.GROUND_MASK_BITS;
 
+
+        DataManager dm = new DataManager();
+        ObstacleManager om = new ObstacleManager();
+        dm.loadMapData(activity,jfile);
+        int BLOCK_LENGTH = dm.getBlockLength();
+        int OBSTACLE_LENGTH = dm.getObstacleLength();
+
+        for(int i=0;i<BLOCK_LENGTH;i++){
+            MapBlock mapBlock = dm.getBlock(i);
+            List<Vector2> UniqueBodyVertices = new ArrayList<Vector2>();
+            UniqueBodyVertices.addAll((List<Vector2>) ListUtils.toList(mapBlock.getVertices()));
+            List<Vector2> UniqueBodyVerticesTriangulated = new EarClippingTriangulator().computeTriangles(UniqueBodyVertices);
+
+            float[] MeshTriangles = new float[UniqueBodyVerticesTriangulated.size() * 3];
+            for(int j = 0; j < UniqueBodyVerticesTriangulated.size(); j++) {
+                MeshTriangles[j*3] = UniqueBodyVerticesTriangulated.get(j).x;
+                MeshTriangles[j*3+1] = UniqueBodyVerticesTriangulated.get(j).y;
+                UniqueBodyVerticesTriangulated.get(j).
+                        mul(1/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT);
+            }
+            Mesh UniqueBodyMesh = new Mesh(mapBlock.getPosX(),mapBlock.getPosY(), MeshTriangles,
+                    UniqueBodyVerticesTriangulated.size(), DrawMode.TRIANGLES,
+                    activity.getVertexBufferObjectManager());
+            UniqueBodyMesh.setColor(1f, 0f, 0f);
+            scene.attachChild(UniqueBodyMesh);
+
+            Body uniqueBody = PhysicsFactory.createTrianglulatedBody(
+                    physicsWorld, UniqueBodyMesh ,UniqueBodyVerticesTriangulated,
+                    BodyDef.BodyType.StaticBody, FIX);
+            uniqueBody.setUserData(new UnitData(ConstantsSet.Type.GROUND,0,0,0,0,0));
+            //physicsWorld.registerPhysicsConnector(new PhysicsConnector(UniqueBodyMesh, uniqueBody, true, true));
+
+        }
+
+        for(int i=0;i<OBSTACLE_LENGTH;i++){
+            ObstacleData obstacleData = dm.getObstacle(i);
+            om.create(obstacleData, scene,physicsWorld,activity);
+        }
+
+/*
         int capacity = dm.getCapacity();
         for(int i=0;i<dm.getStaticSize();i++){
             float sx = dm.getStaticX(i);
@@ -64,78 +118,7 @@ public class MapBuilder {
             float dy;
             Body b;
 
-            BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/map/");
-            BitmapTextureAtlas textureAtlas1 = new BitmapTextureAtlas(activity.getTextureManager(),1024,512);
-            ITiledTextureRegion textureRegion = BitmapTextureAtlasTextureRegionFactory
-                    .createTiledFromAsset(textureAtlas1,activity,"map.png",0,0,8,4);
-            textureAtlas1.load();
-            SpriteBatch staticSpriteBatch;
 
-            switch(t){
-                case ConstantsSet.MapBuilder.TYPE_FLAT:
-                //    b =PhysicsFactory.createBoxBody(physicsWorld,centerX,centerY,w,h, BodyDef.BodyType.StaticBody,FIX);
-                    b = PhysicsFactory.createLineBody(physicsWorld,sx,sy,sx+w,sy,FIX);
-                    b.setUserData(new UnitData(ConstantsSet.Type.GROUND,0,0,0,0,0));
-
-                    staticSpriteBatch = new SpriteBatch(textureAtlas1,indexs.length,activity.getVertexBufferObjectManager());
-                    for(int idx=0;idx<indexs.length;idx++){
-                        staticSpriteBatch.draw(textureRegion.getTextureRegion(0),sx+idx*textureRegion.getWidth(0),sy,
-                                textureRegion.getWidth(0),textureRegion.getHeight(0),1,1,1,1);
-                    }
-
-                    staticSpriteBatch.submit();
-                    scene.attachChild(staticSpriteBatch);
-                    break;
-                case ConstantsSet.MapBuilder.TYPE_DOWNHILL:
-                    rw = (float)Math.sqrt(1f + 0.25 * 0.25);
-                    dx = (sx+ w);
-                    dy = (sy + w/4f);
-                    b = PhysicsFactory.createLineBody(physicsWorld,sx,sy,dx,dy,FIX);
-                    b.setUserData(new UnitData(ConstantsSet.Type.GROUND,0,0,0,0,0));
-                    staticSpriteBatch = new SpriteBatch(textureAtlas1,indexs.length,activity.getVertexBufferObjectManager());
-                    for(int idx=0;idx<indexs.length;idx++){
-                        staticSpriteBatch.draw(textureRegion.getTextureRegion(0),sx+idx*textureRegion.getWidth(0)*rw,sy,
-                                textureRegion.getWidth(0)*rw,textureRegion.getHeight(0),1,1,1,1);
-                    }
-                    staticSpriteBatch.submit();
-                    staticSpriteBatch.setRotationCenter(sx,sy);
-                    staticSpriteBatch.setRotation((float)Math.toDegrees(Math.atan(0.25)));
-                    scene.attachChild(staticSpriteBatch);
-
-                    break;
-                case ConstantsSet.MapBuilder.TYPE_UPHILL:
-                    rw = (float)Math.sqrt(1f + 0.25 * 0.25);
-                    dx = (sx+ w);
-                    dy = (sy - w/4f);
-                    b = PhysicsFactory.createLineBody(physicsWorld,sx,sy,dx,dy,FIX);
-                    b.setUserData(new UnitData(ConstantsSet.Type.GROUND,0,0,0,0,0));
-                    staticSpriteBatch = new SpriteBatch(textureAtlas1,indexs.length,activity.getVertexBufferObjectManager());
-                    for(int idx=0;idx<indexs.length;idx++){
-                        staticSpriteBatch.draw(textureRegion.getTextureRegion(0),sx+idx*textureRegion.getWidth(0)*rw,sy,
-                                textureRegion.getWidth(0)*rw,textureRegion.getHeight(0),1,1,1,1);
-                    }
-                    staticSpriteBatch.submit();
-                    staticSpriteBatch.setRotationCenter(sx,sy);
-                    staticSpriteBatch.setRotation(-(float)Math.toDegrees(Math.atan(0.25)));
-                    scene.attachChild(staticSpriteBatch);
-                    break;
-                case ConstantsSet.MapBuilder.TYPE_RIGHT_SIDE_WALL:
-                    debugRect = new Rectangle(sx,sy,w,h,activity.getVertexBufferObjectManager());
-                    b = PhysicsFactory.createBoxBody(physicsWorld,debugRect,BodyDef.BodyType.StaticBody,FIX);
-                    b.setUserData(new UnitData(ConstantsSet.Type.GROUND,0,0,0,0,0));
-                    debugRect.setColor(Color.BLUE);
-                    physicsWorld.registerPhysicsConnector(new PhysicsConnector(debugRect,b));
-                    scene.attachChild(debugRect);
-                    break;
-                case ConstantsSet.MapBuilder.TYPE_LEFT_SIDE_WALL:
-                    debugRect = new Rectangle(sx,sy,w,h,activity.getVertexBufferObjectManager());
-                    b = PhysicsFactory.createBoxBody(physicsWorld,debugRect,BodyDef.BodyType.StaticBody,FIX);
-                    b.setUserData(new UnitData(ConstantsSet.Type.GROUND,0,0,0,0,0));
-                    debugRect.setColor(Color.BLUE);
-                    physicsWorld.registerPhysicsConnector(new PhysicsConnector(debugRect,b));
-                    scene.attachChild(debugRect);
-                    break;
-            }
         }
         for(int i=0;i<dm.getObstacleNum();i++){
             int t = dm.getObstacleType(i);
@@ -155,13 +138,16 @@ public class MapBuilder {
                 case ConstantsSet.MapBuilderObstacle.TYPE_MOVING_GROUND:
                     createObstacle_MovingGround(scene,physicsWorld,activity,x,y,datas);
                     break;
+                case ConstantsSet.MapBuilderObstacle.TYPE_SHOTTER_TRAP:
+                    createObstacle_Shooter(scene,physicsWorld,activity,x,y,datas);
+                    break;
             }
         }
 
         int ai_num = dm.getAiNum();
         for(int i=0;i<ai_num;i++){
             unitManager.createAI(activity,physicsWorld,scene,dm.getAiX(i),dm.getAiY(i));
-        }
+        }*/
 
     }
 
@@ -322,7 +308,20 @@ public class MapBuilder {
 
     private static void createObstacle_Shooter(Scene scene, PhysicsWorld physicsWorld, BaseGameActivity activity,
                                                int sx, int sy, float datas[]){
+        final Rectangle rectangle = new Rectangle(sx, sy, datas[0], datas[1], activity.getVertexBufferObjectManager());
+        rectangle.setColor(Color.BLACK);
+        scene.attachChild(rectangle);
 
+
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/obstacle/");
+        final BitmapTextureAtlas textureAtlas = new BitmapTextureAtlas(activity.getTextureManager(),512,64);
+        ITiledTextureRegion iTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.
+                createTiledFromAsset(textureAtlas,activity.getAssets(),"stone_test.png",0,0,8,1);
+        textureAtlas.load();
+
+        final ShootingObstacle shootingObstacle = new ShootingObstacle(sx,sy,iTiledTextureRegion,activity.getVertexBufferObjectManager());
+        shootingObstacle.create(physicsWorld,scene,new UnitData((short)10,0,0,0,0,0));
+        shootingObstacle.setup(sx,sy,3, new Vector2(-10,0));
     }
 
     //시소 장애물

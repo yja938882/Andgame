@@ -79,6 +79,7 @@ public class UnitTestActivity extends BaseGameActivity {
     @Override
     public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws Exception {
         scene = new GameScene();
+        scene.setCullingEnabled(true);
         scene.createResources();
         scene.loadGraphic(this);
 

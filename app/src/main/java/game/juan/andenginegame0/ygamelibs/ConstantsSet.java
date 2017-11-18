@@ -90,6 +90,8 @@ public interface ConstantsSet {
         float FRICTION_RUBBER = 0.8f;
         float FRICTION_ASPHALT = 0.65f;
         float FRICTION_ICE = 0.15f;
+
+        float UNIT=32.0f;
     }
     interface AIstate{
         int IDLE =0;
