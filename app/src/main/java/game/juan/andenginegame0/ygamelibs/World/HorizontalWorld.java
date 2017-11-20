@@ -33,6 +33,7 @@ import org.andengine.util.color.Color;
 
 import java.util.ArrayList;
 
+import debugdraw.DebugRenderer;
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Managers.UnitManager;
 import game.juan.andenginegame0.ygamelibs.Unit.AIUnit;
@@ -61,6 +62,7 @@ public class HorizontalWorld {
         
        physicsWorld.setContactListener(createContactLister());
         physicsWorld.setContinuousPhysics(true);
+
 
     }
     public void addPlayerUnit(PlayerUnit playerUnit){
@@ -97,6 +99,7 @@ public class HorizontalWorld {
 
                 Fixture fixtureB = contact.getFixtureB();
                 Body bodyB = fixtureB.getBody();
+
                 Object ob = bodyB.getUserData();
                 if(oa!=null && ob!=null){
                     ((UnitData)oa).endContactWith(((UnitData)ob).getType());

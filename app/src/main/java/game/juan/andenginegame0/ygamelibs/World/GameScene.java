@@ -13,10 +13,12 @@ import org.andengine.entity.IEntity;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.ui.activity.BaseGameActivity;
+import org.andengine.util.color.Color;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
+import debugdraw.DebugRenderer;
 import game.juan.andenginegame0.ygamelibs.Managers.ControllerManager;
 import game.juan.andenginegame0.ygamelibs.Managers.ItemManager;
 import game.juan.andenginegame0.ygamelibs.Managers.UIManager;
@@ -103,7 +105,11 @@ public class GameScene extends Scene {
         createUnits(activity,camera);
         createMap(activity);
         createUI(activity,camera);
-
+        DebugRenderer dr = new DebugRenderer(world.getWorld(),activity.getVertexBufferObjectManager());
+        dr.setColor(Color.BLUE);
+        dr.setDrawBodies(true);
+        dr.setDrawJoints(true);
+        this.attachChild(dr);
         unitManager.getPlayerUnit().registerUI(uiManager);
 
     }

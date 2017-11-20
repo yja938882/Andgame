@@ -41,6 +41,7 @@ public interface ConstantsSet {
     interface Collision{
         /*player - catg*/
         short PLAYER_BODY_CATG_BITS = 0x0001;
+        short PLAYER_HEAD_CATG_BITS = 0x0002;
 
         /*ai - catg*/
         short AI_BODY_CATG_BITS = 0x0004;
@@ -57,10 +58,11 @@ public interface ConstantsSet {
 
 
         short PLAYER_BODY_MASK_BITS = AI_BULLET_CATG_BITS;
+        short PLAYER_HEAD_MASK_BITS = GROUND_CATG_BITS;
 
         short AI_BODY_MASK_BITS = PLAYER_BODY_CATG_BITS|PLAYER_BULLET_CATG_BITS;
 
-        short GROUND_MASK_BITS = PLAYER_BODY_CATG_BITS| AI_BODY_CATG_BITS;
+        short GROUND_MASK_BITS = PLAYER_BODY_CATG_BITS| AI_BODY_CATG_BITS|PLAYER_HEAD_CATG_BITS;
 
         short OBSTACLE_BULLET_MASK_BITS = PLAYER_BODY_CATG_BITS|GROUND_CATG_BITS;
 

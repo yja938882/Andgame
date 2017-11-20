@@ -2,11 +2,14 @@ package game.juan.andenginegame0.ygamelibs.Unit;
 
 import android.util.Log;
 
+import com.badlogic.gdx.math.Vector2;
+
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.ui.activity.BaseGameActivity;
 
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Managers.UIManager;
@@ -22,8 +25,25 @@ public class PlayerUnit extends Unit{
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
 
-    public void createUnit(PhysicsWorld world, Scene scene, UnitData data, float efw, float efh) {
-        super.createUnit(world,scene,data,1,1);
+    public void createUnit(PhysicsWorld world, Scene scene, UnitData data, float scale, BaseGameActivity activity) {
+       // super.createUnit(world,scene,data,1,1);
+        this.setScale(scale);
+        final float s1x = getWidthScaled()/4f;
+        final float s1y = getHeightScaled()/8f;
+        final float s2x = getWidthScaled()/8f;
+        final float s2y = getHeightScaled()/4f;
+
+        final Vector2[] head_vertices ={
+                new Vector2(-s1x,-s1y),
+                new Vector2(-s1x,s1y),
+                new Vector2(-s2x,s2y),
+                new Vector2(s2x,s2y),
+                new Vector2(s1x,s1y),
+                new Vector2(s1x,-s1y),
+                new Vector2(s2x,-s2y),
+                new Vector2(-s2x,-s2y)
+        };
+        super.createUnit(world,scene,data,head_vertices,activity);
     }
 
     public void registerUI(UIManager uiManager){

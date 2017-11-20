@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Managers;
 
+import com.badlogic.gdx.math.Vector2;
+
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.entity.scene.Scene;
@@ -11,7 +13,9 @@ import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
+import debugdraw.DebugRenderer;
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Unit.AIUnit;
 import game.juan.andenginegame0.ygamelibs.Unit.Bullet;
@@ -43,6 +47,7 @@ public class UnitManager {
         bulletTextureRegion = BitmapTextureAtlasTextureRegionFactory.
                 createFromAsset(bulletAtlas,activity.getAssets(),"axe.png",0,0);
         bulletAtlas.load();
+
     }
     public void loadAIGraphics(BaseGameActivity activity){
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/ai/");
@@ -59,7 +64,8 @@ public class UnitManager {
 
         playerUnit = new PlayerUnit(100,440,playerTextureRegion,activity.getVertexBufferObjectManager() );
         playerUnit.setBullet(bullet);
-        playerUnit.createUnit(world.getWorld(),scene,new UnitData(ConstantsSet.Type.PLAYER,3,3,3,5.0f,8.5f),30,60);
+        playerUnit.createUnit(world.getWorld(),scene,new UnitData(ConstantsSet.Type.PLAYER,3,3,3,5.0f,8.5f),0.5f,activity);
+
         //playerUnit.createCircleUnit(world.getWorld(),scene,new UnitData(ConstantsSet.TYPE_PLAYER,3,3,3,3.0f,8.0f));
         camera.setChaseEntity(playerUnit);
 
