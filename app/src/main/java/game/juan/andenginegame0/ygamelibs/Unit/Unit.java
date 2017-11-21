@@ -32,14 +32,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
+import game.juan.andenginegame0.ygamelibs.Utils.PhysicsUtil;
 
 /**
  * Created by juan on 2017. 10. 8..
  */
 
 public abstract class Unit extends AnimatedSprite {
+    /*===Constants==================================*/
     private final String TAG="Unit";
 
+    /*===Fields=====================================*/
     long attack_frame_duration[];
     int attack_frame_img_index[];
     long die_frame_duration[];
@@ -56,20 +59,18 @@ public abstract class Unit extends AnimatedSprite {
 
     Bullet bullet;
 
-    private Body head;
-    private Body body;
-  //  private Body foot;
+    private Body mBody;
+    private Body mFoot;
     boolean isStop = false;
 
     private float SPEED;
     private float JUMP_SPEED;
 
     private int action = ConstantsSet.ACTION_STOP;
-    int direction = ConstantsSet.ACTION_MOVE_RIGHT;
+    private int direction = ConstantsSet.ACTION_MOVE_RIGHT;
     int push_direction = ConstantsSet.ACTION_MOVE_RIGHT;
 
-    protected boolean moving = false;
-
+    private boolean moving = false;
     private boolean actionLock = false;
 
     PhysicsConnector pc;
@@ -88,21 +89,21 @@ public abstract class Unit extends AnimatedSprite {
         sc = scene;
         this.SPEED = data.getSpeed();
         this.JUMP_SPEED = data.getJumpSpeed();
-        final FixtureDef bodyFix = createFixtureDef(data , ConstantsSet.Unit.BODY);
-        body = PhysicsFactory.createBoxBody(world,getX(), getY(),this.getWidth()/2.5f,this.getHeight()/2.5f, BodyDef.BodyType.DynamicBody,bodyFix);
-        body.setFixedRotation(true);
-        body.setUserData(data);
-        pc = new PhysicsConnector(this,body,true,true);
+        final FixtureDef bodyFix = PhysicsUtil.createFixtureDef(data.getType() , ConstantsSet.Divider.BODY);
+        mBody = PhysicsFactory.createBoxBody(world,getX(), getY(),this.getWidth()/2.5f,this.getHeight()/2.5f, BodyDef.BodyType.DynamicBody,bodyFix);
+        mBody.setFixedRotation(true);
+        mBody.setUserData(data);
+        pc = new PhysicsConnector(this,mBody,true,true);
         world.registerPhysicsConnector(pc);
         scene.attachChild(this);
     }
-    public void createUnit(PhysicsWorld world, Scene scene, UnitData data, Vector2[] head_vs, BaseGameActivity activity){
+    void createUnit(PhysicsWorld world, Scene scene, UnitData data, Vector2[] head_vs, BaseGameActivity activity){
         pw = world;
         sc= scene;
         this.SPEED = data.getSpeed();
         this.JUMP_SPEED = data.getJumpSpeed();
 
-        final FixtureDef headFix = createFixtureDef(data,ConstantsSet.Unit.HEAD);
+        final FixtureDef bodyFix = PhysicsUtil.createFixtureDef(data.getType() , ConstantsSet.Divider.BODY);
        // body = PhysicsFactory.createBoxBody(world,getX(),getY(),this.getWidthScaled()-side_margin*2f,head_height, BodyDef.BodyType.DynamicBody,headFix);
 
 
@@ -122,34 +123,25 @@ public abstract class Unit extends AnimatedSprite {
                 activity.getVertexBufferObjectManager());
         UniqueBodyMesh.setColor(1f, 0f, 0f);
        // scene.attachChild(UniqueBodyMesh);
-        Body uniqueBody = PhysicsFactory.createTrianglulatedBody(
+        mBody = PhysicsFactory.createTrianglulatedBody(
                 world, this ,UniqueBodyVerticesTriangulated,
-                BodyDef.BodyType.DynamicBody, headFix);
-        uniqueBody.setUserData(new UnitData((short)11,0,0,0,0,0));
+                BodyDef.BodyType.DynamicBody, bodyFix);
+        mBody.setUserData(new UnitData(ConstantsSet.Type.PLAYER,0,0,0,0,0));
 
-        final FixtureDef bodyFix = createFixtureDef(data , ConstantsSet.Unit.BODY);
-
-        //world.registerPhysicsConnector(new PhysicsConnector(UniqueBodyMesh,uniqueBody));
-
-       // Rectangle r = new Rectangle(getX()-getWidthScaled()/4,getY()-getHeightScaled()/8,getWidthScaled()/2,getHeightScaled()/4,activity.getVertexBufferObjectManager());
-       // r.setColor(Color.BLACK);
-        body = PhysicsFactory.createBoxBody(world,getX(), getY(),this.getWidthScaled()/4f,this.getHeight()/16f, BodyDef.BodyType.DynamicBody,bodyFix);
-       // body = PhysicsFactory.createBoxBody(world,r, BodyDef.BodyType.DynamicBody,bodyFix);
-        body.setUserData(data);
-      //  scene.attachChild(r);
+        final FixtureDef footFix = PhysicsUtil.createFixtureDef(data.getType() , ConstantsSet.Divider.FOOT);
+        mFoot = PhysicsFactory.createBoxBody(world,getX(), getY(),this.getWidthScaled()/4f,this.getHeight()/16f, BodyDef.BodyType.DynamicBody,footFix);
+        mFoot.setUserData(data);
 
         WeldJointDef wd = new WeldJointDef();
-        wd.initialize(uniqueBody,body,uniqueBody.getWorldCenter());
+        wd.initialize(mBody,mFoot,mBody.getWorldCenter());
         wd.localAnchorA.set(0,0);
         wd.localAnchorB.set(0,-getHeightScaled()/(64f));
         world.createJoint(wd);
-        body.setFixedRotation(true);
-        //world.registerPhysicsConnector(new PhysicsConnector(r,body,true,true));
+        mFoot.setFixedRotation(true);
 
-       // pc = new PhysicsConnector(r,body,true,true);
-
-        pc = new PhysicsConnector(this,uniqueBody,true,true);
+        pc = new PhysicsConnector(this,mBody,true,false);
         world.registerPhysicsConnector(pc);
+
         scene.attachChild(this);
 
     }
@@ -163,18 +155,16 @@ public abstract class Unit extends AnimatedSprite {
             return;
         }
         if(direction==ConstantsSet.ACTION_MOVE_RIGHT){
-            bullet.shot(body.getPosition().x,this.body.getPosition().y,10,0);
+            bullet.shot(mBody.getPosition().x,this.mBody.getPosition().y,10,0);
         }else{
-            bullet.shot(body.getPosition().x,this.body.getPosition().y,-10,0);
+            bullet.shot(mBody.getPosition().x,this.mBody.getPosition().y,-10,0);
         }
 
     }
 
     private void update(){
-        UnitData bodyData = (UnitData)body.getUserData();
-        if(bodyData.needtostop){
-            bodyData.needtostop = false;
-        }
+        UnitData footData = (UnitData)mFoot.getUserData();
+        UnitData bodyData = (UnitData)mBody.getUserData();
         if(bodyData.isNeedToHitted()){
             push_direction = bodyData.getPushWay();
             action = ConstantsSet.ACTION_HITTED;
@@ -190,14 +180,15 @@ public abstract class Unit extends AnimatedSprite {
 
                 this.setFlippedHorizontal(false);
                 this.direction = action;
-                if(bodyData.isIntheAir()){
-                    if(body.getLinearVelocity().x<=SPEED) {
-                        body.applyForce(new Vector2(30, 0), body.getWorldCenter());
+                if(footData.isIntheAir()){
+                    if(mBody.getLinearVelocity().x<=SPEED) {
+                      //  mFoot.applyForce(new Vector2(30, 0), mFoot.getWorldCenter());
+                        mBody.applyForce(new Vector2(30, 0), mBody.getWorldCenter());
                     }
                    onActionAnimate(ConstantsSet.ACTION_JUMP);
                 }else{
-                    if(body.getLinearVelocity().x<=SPEED) {
-                        body.applyForce(new Vector2(30, 0), body.getWorldCenter());
+                    if(mBody.getLinearVelocity().x<=SPEED) {
+                        mBody.applyForce(new Vector2(30, 0), mBody.getWorldCenter());
                     }
                      onActionAnimate(action);
                 }
@@ -205,30 +196,30 @@ public abstract class Unit extends AnimatedSprite {
             case ConstantsSet.ACTION_MOVE_LEFT:
                 this.setFlippedHorizontal(true);
                 this.direction = action;
-                if(bodyData.isIntheAir()){
-                    if(body.getLinearVelocity().x>=-SPEED) {
-                        body.applyForce(new Vector2(-30, 0), body.getWorldCenter());
+                if(footData.isIntheAir()){
+                    if(mBody.getLinearVelocity().x>=-SPEED) {
+                        mBody.applyForce(new Vector2(-30, 0), mBody.getWorldCenter());
                     }
                     onActionAnimate(ConstantsSet.ACTION_JUMP);
                 }else{
-                    if(body.getLinearVelocity().x>=-SPEED) {
-                        body.applyForce(new Vector2(-30, 0), body.getWorldCenter());
+                    if(mBody.getLinearVelocity().x>=-SPEED) {
+                        mBody.applyForce(new Vector2(-30, 0), mBody.getWorldCenter());
                     }
                     onActionAnimate(action);
                 }
                 break;
             case ConstantsSet.ACTION_JUMP:
-                if(!bodyData.isIntheAir()) {
+                if(!footData.isIntheAir()) {
                     if(i<=0) {
                         i=10;
-                        body.setLinearVelocity(body.getLinearVelocity().x,-20f);
+                        mBody.setLinearVelocity(mBody.getLinearVelocity().x,-10f);
                     }
                     onActionAnimate(action);
                 }
                 break;
             case ConstantsSet.ACTION_STOP:
-                if(!bodyData.isIntheAir()) {
-                    this.body.setLinearVelocity(0,0);
+                if(!footData.isIntheAir()) {
+                    this.mBody.setLinearVelocity(0,0);
                     onActionAnimate(action);
                 }
                 break;
@@ -255,37 +246,7 @@ public abstract class Unit extends AnimatedSprite {
     public void setAction(int act){this.action = act;}
     abstract void onActionAnimate(int action);
 
-    private static FixtureDef createFixtureDef(UnitData data,int u){
-        FixtureDef fixtureDef = null;
 
-        switch(data.getType()){
-            case ConstantsSet.Type.PLAYER:
-                switch (u){
-                    case ConstantsSet.Unit.BODY:
-                        fixtureDef = PhysicsFactory.createFixtureDef(ConstantsSet.Physics.DENSITY_HUMAN,0f, 0.5f);
-                        fixtureDef.filter.categoryBits = ConstantsSet.Collision.PLAYER_BODY_CATG_BITS;
-                        fixtureDef.filter.maskBits = ConstantsSet.Collision.PLAYER_BODY_MASK_BITS;
-                        break;
-                    case ConstantsSet.Unit.HEAD:
-                        fixtureDef = PhysicsFactory.createFixtureDef(0.01f,0f, 0f);
-                        fixtureDef.filter.categoryBits = ConstantsSet.Collision.PLAYER_HEAD_CATG_BITS;
-                        fixtureDef.filter.maskBits = ConstantsSet.Collision.PLAYER_HEAD_MASK_BITS;
-                        break;
-
-                }
-                break;
-            case ConstantsSet.Type.AI:
-                switch (u){
-                    case ConstantsSet.Unit.BODY:
-                        fixtureDef = PhysicsFactory.createFixtureDef(ConstantsSet.Physics.DENSITY_HUMAN,0f, ConstantsSet.Physics.FRICTION_RUBBER);
-                        fixtureDef.filter.categoryBits = ConstantsSet.Collision.AI_BODY_CATG_BITS;
-                        fixtureDef.filter.maskBits = ConstantsSet.Collision.AI_BODY_MASK_BITS;
-                        break;
-                }
-                break;
-        }
-        return fixtureDef;
-    }
 
     public boolean isMoving(){return moving;}
     public synchronized void setActionLock(boolean a){this.actionLock = a;}
@@ -294,7 +255,7 @@ public abstract class Unit extends AnimatedSprite {
     protected void onManagedUpdate(float pSecondsElapsed) {
         super.onManagedUpdate(pSecondsElapsed);
         update();
-        body.applyForce(new Vector2(0,10f),body.getWorldCenter());
+        mBody.applyForce(new Vector2(0,15f),mBody.getWorldCenter());
 
         if(i>0){
             i--;
@@ -331,14 +292,14 @@ public abstract class Unit extends AnimatedSprite {
         this.direction = d;
 
     }
-    public Body getBody(){return body;}
+    public Body getBody(){return mBody;}
     public void destroy(PhysicsWorld world,Scene scene){
         world.unregisterPhysicsConnector(pc);
-        body.setActive(false);
+        mBody.setActive(false);
         setVisible(false);
     }
     public int getDirection(){return direction;}
     public float getPositionX(){
-        return body.getPosition().x*32f;
+        return mBody.getPosition().x*32f;
     }
 }

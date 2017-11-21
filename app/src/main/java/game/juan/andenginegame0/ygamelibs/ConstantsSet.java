@@ -33,53 +33,41 @@ public interface ConstantsSet {
         short PLAYER_BULLET = 0x0005;
         short AI_BULLET = 0x0006;
     }
-    interface Unit{
-        int BODY = 0;
-        int HEAD = 1;
+    interface Divider{
+        int BODY = 1;
         int FOOT = 2;
+        int PASS_OBSTACLE = 3;
+        int ATTAK_OBSTACLE=4;
     }
     interface Collision{
-        /*player - catg*/
-        short PLAYER_BODY_CATG_BITS = 0x0001;
-        short PLAYER_HEAD_CATG_BITS = 0x0002;
+        /*===Category Bits=====================*/
+        short PLAYER_BODY_CATG_BITS        = 0x0001;
+        short PLAYER_FOOT_CATG_BITS        = 0x0002;
+        short PLAYER_BULLET_CATG_BITS      = 0x0004;
+        short AI_BODY_CATG_BITS            = 0x0008;
+        short AI_FOOT_CATG_BITS            = 0x0010;
+        short AI_BULLET_CATG_BITS          = 0x0020;
+        short GROUND_CATG_BITS             = 0x0040;
+        short OBSTACLE_CATG_BITS           = 0x0080;
+        short OBSTACLE_BULLET_CATG_BITS    = 0x0100;
+        short PASSABLE_OBSTACLE_CATG_BITS  = 0x0000;
 
-        /*ai - catg*/
-        short AI_BODY_CATG_BITS = 0x0004;
-
-        short GROUND_CATG_BITS = 0x0010;
-
-        short OBSTACLE_BULLET_CATG_BITS = 0x0008;
-
-        short PASSABLE_OBSTACLE_CATG_BITS = 0x0011;
-
-        //short ITEM_CATG_BITS = 0x0012;
-        short PLAYER_BULLET_CATG_BITS = 0x0012;
-        short AI_BULLET_CATG_BITS = 0x0014;
-
-
-        short PLAYER_BODY_MASK_BITS = AI_BULLET_CATG_BITS;
-        short PLAYER_HEAD_MASK_BITS = GROUND_CATG_BITS;
-
-        short AI_BODY_MASK_BITS = PLAYER_BODY_CATG_BITS|PLAYER_BULLET_CATG_BITS;
-
-        short GROUND_MASK_BITS = PLAYER_BODY_CATG_BITS| AI_BODY_CATG_BITS|PLAYER_HEAD_CATG_BITS;
-
-        short OBSTACLE_BULLET_MASK_BITS = PLAYER_BODY_CATG_BITS|GROUND_CATG_BITS;
-
-        short ITEM_MASK_BITS = GROUND_CATG_BITS;
-        short PASSABLE_OBSTACLE_MASK_BITS = 0x0000;
-
-        short PLAYER_BULLET_MASK_BITS = AI_BODY_CATG_BITS;
-        short AI_BULLET_MASK_BITS = PLAYER_BODY_CATG_BITS;
+        /*===Mask Bits=========================*/
+        short PLAYER_BODY_MASK_BITS     = OBSTACLE_CATG_BITS|OBSTACLE_BULLET_CATG_BITS|
+                                          AI_BODY_CATG_BITS|AI_BULLET_CATG_BITS|GROUND_CATG_BITS|PLAYER_FOOT_CATG_BITS;
+        short PLAYER_FOOT_MASK_BITS     = GROUND_CATG_BITS|PLAYER_BODY_CATG_BITS;
+        short PLAYER_BULLET_MASK_BITS   = GROUND_CATG_BITS|AI_BODY_CATG_BITS;
+        short AI_BODY_MASK_BITS         = AI_BODY_CATG_BITS|GROUND_CATG_BITS|PLAYER_BODY_CATG_BITS|
+                                          PLAYER_BULLET_CATG_BITS;
+        short AI_FOOT_MASK_BITS         = GROUND_CATG_BITS;
+        short AI_BULLET_MASK_BITS       = GROUND_CATG_BITS | PLAYER_BODY_CATG_BITS;
+        short GROUND_MASK_BITS          = PLAYER_FOOT_CATG_BITS |PLAYER_BULLET_CATG_BITS|PLAYER_BODY_CATG_BITS|
+                                          AI_BODY_CATG_BITS|AI_FOOT_CATG_BITS|AI_BULLET_CATG_BITS;
+        short OBSTACLE_MASK_BITS        = PLAYER_BODY_CATG_BITS;
+        short OBSTACLE_BULLET_MASK_BITS = PLAYER_BODY_CATG_BITS;
+        short PASSABLE_OBSTACLE_MASK_BITS = PASSABLE_OBSTACLE_CATG_BITS;
     }
 
-    interface MapBuilder{
-        char TYPE_FLAT=0;
-        char TYPE_UPHILL = 1;
-        char TYPE_DOWNHILL = 2;
-        char TYPE_RIGHT_SIDE_WALL = 3;
-        char TYPE_LEFT_SIDE_WALL = 4;
-    }
     interface MapBuilderObstacle{
         char TYPE_MOVING_GROUND = 0;
         char TYPE_TRAP = 1;
@@ -88,6 +76,8 @@ public interface ConstantsSet {
         char TYPE_SHOTTER_TRAP = 4;
     }
     interface Physics{
+        float DENSITY_UNIT = 1.0f;
+        float FRICTION_UNIT=0.0f;
         float DENSITY_HUMAN=2.0f;
         float FRICTION_RUBBER = 0.8f;
         float FRICTION_ASPHALT = 0.65f;

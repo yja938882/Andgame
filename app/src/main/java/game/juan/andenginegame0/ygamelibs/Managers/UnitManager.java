@@ -62,7 +62,7 @@ public class UnitManager {
         bullet.createBullet(world.getWorld(),scene,new UnitData(ConstantsSet.Type.PLAYER_BULLET,3,3,3,5.0f,10.0f),32,16);
 
 
-        playerUnit = new PlayerUnit(100,440,playerTextureRegion,activity.getVertexBufferObjectManager() );
+        playerUnit = new PlayerUnit(50,400,playerTextureRegion,activity.getVertexBufferObjectManager() );
         playerUnit.setBullet(bullet);
         playerUnit.createUnit(world.getWorld(),scene,new UnitData(ConstantsSet.Type.PLAYER,3,3,3,5.0f,8.5f),0.5f,activity);
 

@@ -41,6 +41,7 @@ import game.juan.andenginegame0.ygamelibs.Unit.UnitData;
 import game.juan.andenginegame0.ygamelibs.Utils.DataManager;
 import game.juan.andenginegame0.ygamelibs.Utils.MapBlock;
 import game.juan.andenginegame0.ygamelibs.Utils.ObstacleData;
+import game.juan.andenginegame0.ygamelibs.Utils.PhysicsUtil;
 
 /**
  * Created by juan on 2017. 9. 2..
@@ -55,12 +56,8 @@ public class MapBuilder {
 
      static void createMapFromData(Scene scene, PhysicsWorld physicsWorld, BaseGameActivity activity, String imgfile, String jfile, UnitManager unitManager){
 
-        //BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 
-        final FixtureDef FIX = PhysicsFactory.createFixtureDef(2.0f,0.0f,0.5f);
-        FIX.filter.categoryBits = ConstantsSet.Collision.GROUND_CATG_BITS;
-        FIX.filter.maskBits = ConstantsSet.Collision.GROUND_MASK_BITS;
-
+        final FixtureDef FIX = PhysicsUtil.createFixtureDef(ConstantsSet.Type.GROUND,-1);
 
         DataManager dm = new DataManager();
         ObstacleManager om = new ObstacleManager();
