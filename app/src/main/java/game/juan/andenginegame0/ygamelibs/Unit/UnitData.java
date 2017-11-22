@@ -2,6 +2,8 @@ package game.juan.andenginegame0.ygamelibs.Unit;
 
 import android.util.Log;
 
+import com.badlogic.gdx.math.Vector2;
+
 import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 
 /**
@@ -10,14 +12,17 @@ import game.juan.andenginegame0.ygamelibs.ConstantsSet;
 
 public class UnitData {
     private String TAG ="UnitData";
+
     private short type;
+    private short contactType = ConstantsSet.Collision.NO_COLLISION;
     private int damage;
     private int max_hp;
     private int hp;
     private float speed;
     private float jump_speed;
+
    // boolean in_the_air;
-    private int push_way;
+    private float push_x;
 
     int hitted_damage=0;
     int contact_counter=0;
@@ -26,6 +31,7 @@ public class UnitData {
 
     boolean needtostop = false;
     boolean needtohitted = false;
+    boolean needtohitted_for_obs= false;
 
     public UnitData(short type, int damage, int max_hp, int hp, float speed, float jump_speed){
         this.type = type;
@@ -65,13 +71,17 @@ public class UnitData {
     public void setNeedToStop(boolean n){this.needtostop = n;}
 
     public boolean isNeedToHitted(){return needtohitted;}
-    public void setNeedToHitted(boolean n, int way){
-        this.push_way = way;
+    public void setNeedToHitted(boolean n, float x){
+        this.push_x = x;
         this.needtohitted = n;}
     public void setNeedToHitted(boolean n){
         this.needtohitted = n;
        }
 
+       public boolean isNeedtohitted_for_obs(){return needtohitted_for_obs;}
+       public void setNeedtohitted_for_obs(boolean n){
+           this.needtohitted_for_obs = n;
+       }
 
     public void setHitted(int damage){
         //hitted_damage = damage;
@@ -82,38 +92,34 @@ public class UnitData {
             }
         }
     }
-    public int getPushWay(){return this.push_way;}
-    public void beginContactWith(short t){
+    public float getPushWay(){return this.push_x;}
+    public void beginContactWith(short t, float x){
+        contactType = t;
         switch (t){
             case ConstantsSet.Type.GROUND:
                 contactWithGround(true);
-                break;
-            case ConstantsSet.Type.PLAYER_BULLET:
-                Log.d("begincontact","pb");
-
-                break;
-            case ConstantsSet.Type.AI_BULLET:
-                break;
-            case ConstantsSet.Type.AI:
+                setNeedtohitted_for_obs(true);
                 break;
             case ConstantsSet.Type.PLAYER:
+                setNeedtohitted_for_obs(true);
+                break;
+            case ConstantsSet.Type.PLAYER_BULLET:
+            case ConstantsSet.Type.AI_BULLET:
+            case ConstantsSet.Type.OBSTACLE:
+            case ConstantsSet.Type.AI:
+                setNeedToHitted(true,x);
                 break;
         }
     }
     public void endContactWith(short t){
+        contactType = ConstantsSet.Collision.NO_COLLISION;
         switch (t){
             case ConstantsSet.Type.GROUND:
                 contactWithGround(false);
                 break;
             case ConstantsSet.Type.PLAYER_BULLET:
-                if(type==ConstantsSet.Type.AI){
-                    setNeedToHitted(true,1);
-                }
                 break;
             case ConstantsSet.Type.AI_BULLET:
-                if(type==ConstantsSet.Type.PLAYER){
-                    setNeedToHitted(true,1);
-                }
                 break;
             case ConstantsSet.Type.PLAYER:
                 if(type==ConstantsSet.Type.AI_BULLET){
@@ -128,8 +134,10 @@ public class UnitData {
 
         }
 
-    }
 
+    }
+    public short getContactType(){return contactType;}
+    public void reSetContactType(){this.contactType=ConstantsSet.Collision.NO_COLLISION;}
     private boolean is_need_to_disappear = false;
     public boolean isNeedToDisappear(){
         return is_need_to_disappear;

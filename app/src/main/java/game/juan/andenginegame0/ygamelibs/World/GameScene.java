@@ -116,7 +116,12 @@ public class GameScene extends Scene {
     private void createUnits(BaseGameActivity activity,Camera camera){
         unitManager.createPlayer(activity,world,this,camera);
         world.addPlayerUnit(unitManager.getPlayerUnit());
-        itemManager.createCoin(activity,this,150,650, unitManager.getPlayerUnit());
+        itemManager.createCoin(activity,this,200,400, unitManager.getPlayerUnit());
+        itemManager.createCoin(activity,this,300,350, unitManager.getPlayerUnit());
+        itemManager.createCoin(activity,this,400,330, unitManager.getPlayerUnit());
+        itemManager.createCoin(activity,this,500,300, unitManager.getPlayerUnit());
+
+
     }
     private void createUI(BaseGameActivity activity, Camera camera){
         hud = new HUD();

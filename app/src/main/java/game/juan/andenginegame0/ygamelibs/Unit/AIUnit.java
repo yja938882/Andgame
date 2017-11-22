@@ -44,11 +44,11 @@ public class AIUnit extends Unit{
                 stopAnimation(0);
                 break;
             case ConstantsSet.ACTION_ATTACK:
-                animate(attack_frame_duration,attack_frame_img_index,false,attackAnimationListener);
+                animate(attackFrameDuration,attackFrameImgIndex,false,attackAnimationListener);
                 break;
             case ConstantsSet.ACTION_HITTED:
                 if(!isAnimationRunning()) {
-                    animate(hitted_frame_duration, hitted_frame_img_index, false,hittedAnimationListener);
+                    animate(beAttackedFrameDuration, beAttackedFrameImgIndex, false,hittedAnimationListener);
                 }
                 break;
             case ConstantsSet.ACTION_JUMP:
@@ -73,7 +73,7 @@ public class AIUnit extends Unit{
 
             @Override
             public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite, int pOldFrameIndex, int pNewFrameIndex) {
-                if(pNewFrameIndex>=attack_frame_img_index.length-2){
+                if(pNewFrameIndex>=attackFrameImgIndex.length-2){
                     setActionLock(false);
                     Log.d(TAG,"ACTION_LOCK - false");
                     shot();
@@ -104,7 +104,7 @@ public class AIUnit extends Unit{
 
             @Override
             public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite, int pOldFrameIndex, int pNewFrameIndex) {
-                if(pNewFrameIndex>=hitted_frame_img_index.length-2){
+                if(pNewFrameIndex>=attackFrameImgIndex.length-2){
                       die=true;
                 }
             }

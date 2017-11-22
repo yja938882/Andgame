@@ -202,8 +202,12 @@ public class ObstacleManager {
         textureAtlas.load();
 
         final FallingObstacle fallingObstacle = new FallingObstacle(sx,sy,iTiledTextureRegion,activity.getVertexBufferObjectManager());
-        fallingObstacle.create(physicsWorld,scene,new UnitData((short)10,0,0,0,0,0));
-        fallingObstacle.setup(sx,sy,3);
+        fallingObstacle.create(physicsWorld,scene,new UnitData(ConstantsSet.Type.OBSTACLE,0,0,0,0,0));
+        fallingObstacle.setup(sx,sy,3,5);
+
+        final long[] beAttackedFrameDuration ={20,20,20,20,20,20,20,20};
+        final int[] beAttackedFrameIndex ={0,1,2,3,4,5,6,7};
+        fallingObstacle.setBeAttackedFrame(beAttackedFrameDuration,beAttackedFrameIndex);
     }
 
    public static void createObstacle_Shooter(Scene scene, PhysicsWorld physicsWorld, BaseGameActivity activity,

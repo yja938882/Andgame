@@ -77,15 +77,16 @@ public class HorizontalWorld {
                 Log.d(TAG,"beginContact");
                 Fixture fixtureA = contact.getFixtureA();
                 Body bodyA = fixtureA.getBody();
+                Vector2 va =bodyA.getPosition();
                 Object oa = bodyA.getUserData();
 
                 Fixture fixtureB = contact.getFixtureB();
                 Body bodyB = fixtureB.getBody();
                 Object ob = bodyB.getUserData();
-
+                Vector2 vb = bodyB.getPosition();
                 if(oa!=null && ob!=null){
-                    ((UnitData)oa).beginContactWith(((UnitData)ob).getType());
-                    ((UnitData)ob).beginContactWith(((UnitData)oa).getType());
+                    ((UnitData)oa).beginContactWith(((UnitData)ob).getType(), va.x);
+                    ((UnitData)ob).beginContactWith(((UnitData)oa).getType(), vb.x);
                 }
 
             }

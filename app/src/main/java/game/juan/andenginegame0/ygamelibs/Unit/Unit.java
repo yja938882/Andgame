@@ -43,14 +43,14 @@ public abstract class Unit extends AnimatedSprite {
     private final String TAG="Unit";
 
     /*===Fields=====================================*/
-    long attack_frame_duration[];
-    int attack_frame_img_index[];
+    long attackFrameDuration[];
+    int attackFrameImgIndex[];
     long die_frame_duration[];
     int die_frame_img_index[];
     long moving_frame_duration[];
     int moving_frame_img_index[];
-    long hitted_frame_duration[];
-    int hitted_frame_img_index[];
+    long beAttackedFrameDuration[];
+    int beAttackedFrameImgIndex[];
     long jump_frame_duration[];
     int  jump_frame_img_index[];
 
@@ -69,7 +69,7 @@ public abstract class Unit extends AnimatedSprite {
     private int action = ConstantsSet.ACTION_STOP;
     private int direction = ConstantsSet.ACTION_MOVE_RIGHT;
     int push_direction = ConstantsSet.ACTION_MOVE_RIGHT;
-
+    float push_x;
     private boolean moving = false;
     private boolean actionLock = false;
 
@@ -166,8 +166,8 @@ public abstract class Unit extends AnimatedSprite {
         UnitData footData = (UnitData)mFoot.getUserData();
         UnitData bodyData = (UnitData)mBody.getUserData();
         if(bodyData.isNeedToHitted()){
-            push_direction = bodyData.getPushWay();
             action = ConstantsSet.ACTION_HITTED;
+            this.push_x = bodyData.getPushWay();
             bodyData.setNeedToHitted(false);
         }
 
@@ -235,6 +235,7 @@ public abstract class Unit extends AnimatedSprite {
             case ConstantsSet.ACTION_HITTED:
                 onActionAnimate(action);
                 setActionLock(true);
+
                 break;
             case ConstantsSet.ACTION_DIE:
                 break;
@@ -272,13 +273,13 @@ public abstract class Unit extends AnimatedSprite {
         this.moving_frame_img_index=frame_index;
     }
     public void setAttackFrame(long frame_duration[], int frame_index[]) {
-        this.attack_frame_duration = frame_duration;
-        this.attack_frame_img_index = frame_index;
+        this.attackFrameDuration = frame_duration;
+        this.attackFrameImgIndex = frame_index;
         attackAnimationListener = setAttackAnimationListener();
     }
-    public void setHittedFrame(long frame_duration[], int frame_index[]) {
-        this.hitted_frame_duration = frame_duration;
-        this.hitted_frame_img_index = frame_index;
+    public void setBeAttackedFrame(long pFrameDuration[], int pFrameIndex[]) {
+        this.beAttackedFrameDuration = pFrameDuration;
+        this.beAttackedFrameImgIndex = pFrameIndex;
         hittedAnimationListener = setHittedAnimationListener();
     }
     public void setJumpFrame(long frame_duration[], int frame_index[]){
