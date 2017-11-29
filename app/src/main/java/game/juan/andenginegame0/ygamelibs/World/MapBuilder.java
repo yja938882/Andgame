@@ -1,72 +1,58 @@
 package game.juan.andenginegame0.ygamelibs.World;
 
-import android.util.Log;
+import android.provider.ContactsContract;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
-import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 
 import org.andengine.entity.primitive.DrawMode;
-import org.andengine.entity.primitive.Line;
 import org.andengine.entity.primitive.Mesh;
-import org.andengine.entity.primitive.Rectangle;
-import org.andengine.entity.scene.Scene;
-import org.andengine.entity.shape.IShape;
 import org.andengine.entity.sprite.batch.SpriteBatch;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
 import org.andengine.extension.physics.box2d.util.triangulation.EarClippingTriangulator;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.adt.list.ListUtils;
-import org.andengine.util.color.Color;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import game.juan.andenginegame0.ygamelibs.ConstantsSet;
+import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
+import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
+import game.juan.andenginegame0.ygamelibs.Data.DataPhysicsFactory;
+import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
 import game.juan.andenginegame0.ygamelibs.Managers.ObstacleManager;
-import game.juan.andenginegame0.ygamelibs.Managers.UnitManager;
-import game.juan.andenginegame0.ygamelibs.Obstacles.FallingObstacle;
-import game.juan.andenginegame0.ygamelibs.Obstacles.ShootingObstacle;
-import game.juan.andenginegame0.ygamelibs.Obstacles.TrapObstacle;
-import game.juan.andenginegame0.ygamelibs.Unit.UnitData;
-import game.juan.andenginegame0.ygamelibs.Utils.DataManager;
-import game.juan.andenginegame0.ygamelibs.Utils.MapBlock;
-import game.juan.andenginegame0.ygamelibs.Utils.ObstacleData;
-import game.juan.andenginegame0.ygamelibs.Utils.PhysicsUtil;
+import game.juan.andenginegame0.ygamelibs.Data.DataManager;
+import game.juan.andenginegame0.ygamelibs.Static.StaticData;
 
 /**
  * Created by juan on 2017. 9. 2..
  */
 
-public class MapBuilder {
+public class MapBuilder implements ConstantsSet{
     private static String TAG ="MapBuilder";
     private static float ROOT_5 = 2.23606f;
     SpriteBatch staticBatch[];
 
 
 
-     static void createMapFromData(Scene scene, PhysicsWorld physicsWorld, BaseGameActivity activity, String imgfile, String jfile, UnitManager unitManager){
+     static void createMapFromData(GameScene scene, PhysicsWorld physicsWorld, BaseGameActivity activity, String imgfile, String jfile, EntityManager pEntityManager){
 
 
-        final FixtureDef FIX = PhysicsUtil.createFixtureDef(ConstantsSet.Type.GROUND,-1);
+        final FixtureDef FIX = DataPhysicsFactory.createFixtureDef(ConstantsSet.Classify.STATIC| ConstantsSet.Classify.GROUND);
 
         DataManager dm = new DataManager();
         ObstacleManager om = new ObstacleManager();
         dm.loadMapData(activity,jfile);
-        int BLOCK_LENGTH = dm.getBlockLength();
+        int BLOCK_LENGTH = dm.getStaticLength();
         int OBSTACLE_LENGTH = dm.getObstacleLength();
 
         for(int i=0;i<BLOCK_LENGTH;i++){
-            MapBlock mapBlock = dm.getBlock(i);
+            StaticData mapBlock = dm.getBlock(i);
             List<Vector2> UniqueBodyVertices = new ArrayList<Vector2>();
             UniqueBodyVertices.addAll((List<Vector2>) ListUtils.toList(mapBlock.getVertices()));
             List<Vector2> UniqueBodyVerticesTriangulated = new EarClippingTriangulator().computeTriangles(UniqueBodyVertices);
@@ -87,64 +73,29 @@ public class MapBuilder {
             Body uniqueBody = PhysicsFactory.createTrianglulatedBody(
                     physicsWorld, UniqueBodyMesh ,UniqueBodyVerticesTriangulated,
                     BodyDef.BodyType.StaticBody, FIX);
-            uniqueBody.setUserData(new UnitData(ConstantsSet.Type.GROUND,0,0,0,0,0));
-            //physicsWorld.registerPhysicsConnector(new PhysicsConnector(UniqueBodyMesh, uniqueBody, true, true));
+            DataBlock db = new DataBlock(DataBlock.GROUND_CLASS,StaticType.GROUND,0,0) {
+                @Override
+                public void beginContactWith(int pClass) {
+
+                }
+
+                @Override
+                public void endContactWith(int pClass) {
+
+                }
+            };
+            uniqueBody.setUserData(db);
+           // physicsWorld.registerPhysicsConnector(new PhysicsConnector(UniqueBodyMesh, uniqueBody, true, true));
 
         }
-
+        Vector2 vs [] = new Vector2[OBSTACLE_LENGTH];
         for(int i=0;i<OBSTACLE_LENGTH;i++){
-            ObstacleData obstacleData = dm.getObstacle(i);
-            om.create(obstacleData, scene,physicsWorld,activity);
+            //ObstacleData obstacleData = dm.getObstacle(i);
+            // om.create(obstacleData, scene,physicsWorld,activity);
+            DataBlock obstacleData = dm.getObstacle(i);
+            vs[i] = new Vector2(obstacleData.getPosX(),obstacleData.getPosY());
+          //  pEntityManager.createObstacle(scene,obstacleData,vs);
         }
-
-/*
-        int capacity = dm.getCapacity();
-        for(int i=0;i<dm.getStaticSize();i++){
-            float sx = dm.getStaticX(i);
-            float sy = dm.getStaticY(i);
-            float w = dm.getStaticW(i);
-            float h =dm.getStaticH(i);
-            int indexs[] = dm.getTileIndex(i);
-            char t = dm.getStaticType(i);
-            Rectangle debugRect;
-
-            float centerX =sx +w/2f;
-            float centerY =sy + h/2f;
-            float rw;
-            float dx;
-            float dy;
-            Body b;
-
-
-        }
-        for(int i=0;i<dm.getObstacleNum();i++){
-            int t = dm.getObstacleType(i);
-            int x = dm.getObstacleX(i);
-            int y = dm.getObstacleY(i);
-            float[] datas = dm.getObstacleDatas(i);
-            switch(t){
-                case ConstantsSet.MapBuilderObstacle.TYPE_PENDULUM:
-                    createObstacle_Pendulum(scene,physicsWorld,activity, x , y ,datas);
-                    break;
-                case ConstantsSet.MapBuilderObstacle.TYPE_TRAP:
-                    createObstacle_Trap(scene,physicsWorld,activity, x , y , datas);
-                    break;
-                case ConstantsSet.MapBuilderObstacle.TYPE_FALL_OBSTACLE:
-                    createObstacle_Fall(scene,physicsWorld,activity, x , y , datas);
-                    break;
-                case ConstantsSet.MapBuilderObstacle.TYPE_MOVING_GROUND:
-                    createObstacle_MovingGround(scene,physicsWorld,activity,x,y,datas);
-                    break;
-                case ConstantsSet.MapBuilderObstacle.TYPE_SHOTTER_TRAP:
-                    createObstacle_Shooter(scene,physicsWorld,activity,x,y,datas);
-                    break;
-            }
-        }
-
-        int ai_num = dm.getAiNum();
-        for(int i=0;i<ai_num;i++){
-            unitManager.createAI(activity,physicsWorld,scene,dm.getAiX(i),dm.getAiY(i));
-        }*/
 
     }
 

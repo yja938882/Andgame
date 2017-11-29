@@ -1,17 +1,16 @@
 package game.juan.andenginegame0.ygamelibs.World;
 
-import android.hardware.Sensor;
+import android.util.Log;
 
 import com.badlogic.gdx.math.Vector2;
 
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
-import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.sprite.Sprite;
+import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.color.Color;
 
@@ -19,10 +18,10 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import debugdraw.DebugRenderer;
+import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
 import game.juan.andenginegame0.ygamelibs.Managers.ControllerManager;
-import game.juan.andenginegame0.ygamelibs.Managers.ItemManager;
-import game.juan.andenginegame0.ygamelibs.Managers.UIManager;
-import game.juan.andenginegame0.ygamelibs.Managers.UnitManager;
+import game.juan.andenginegame0.ygamelibs.Dynamic.Item.ItemManager;
+import game.juan.andenginegame0.ygamelibs.UI.UIManager;
 
 /**
  * Created by juan on 2017. 10. 29..
@@ -39,13 +38,15 @@ public class GameScene extends Scene {
 
     ControllerManager controllerManager;
     UIManager uiManager;
-    UnitManager unitManager;
+    EntityManager mEntityManager;
     ItemManager itemManager;
     BoundCamera camera;
+    BaseGameActivity activity;
 
     HUD hud;
 
-    public GameScene(){
+    public GameScene(BaseGameActivity activity){
+        this.activity = activity;
         detachQueue = new LinkedList<IEntity>();
         createUpdateHandler();
         world = new HorizontalWorld();
@@ -68,7 +69,8 @@ public class GameScene extends Scene {
         this.registerUpdateHandler(new IUpdateHandler() {
             @Override
             public void onUpdate(float pSecondsElapsed) {
-
+                Log.d("TH_test","Scene");
+                mEntityManager.manage();
                 clearDetachQueue();
                 camera.updateChaseEntity();
                 camera.setBounds(camera.getCenterX()-camera.getWidth()/2,
@@ -83,8 +85,8 @@ public class GameScene extends Scene {
     }
     public void loadGraphic(BaseGameActivity activity){
         world.loadBgGraphics(activity);
-        unitManager.loadPlayerGraphics(activity);
-        unitManager.loadAIGraphics(activity);
+        mEntityManager.loadGraphics(this);
+       // unitManager.loadAIGraphics(activity);
         controllerManager.loadGraphics(activity);
         uiManager.loadGraphics(activity);
         //uiManager.loadFont(activity);
@@ -94,7 +96,8 @@ public class GameScene extends Scene {
     public void createResources(){
         controllerManager = new ControllerManager(CAMERA_WIDTH,CAMERA_HEIGHT);
         uiManager = new UIManager(CAMERA_WIDTH, CAMERA_HEIGHT);
-        unitManager = new UnitManager();
+        //unitManager = new UnitManager();
+        mEntityManager = new EntityManager();
         itemManager = new ItemManager();
     }
 
@@ -110,34 +113,41 @@ public class GameScene extends Scene {
         dr.setDrawBodies(true);
         dr.setDrawJoints(true);
         this.attachChild(dr);
-        unitManager.getPlayerUnit().registerUI(uiManager);
+        mEntityManager.getPlayerUnit().registerUI(uiManager);
 
     }
     private void createUnits(BaseGameActivity activity,Camera camera){
-        unitManager.createPlayer(activity,world,this,camera);
-        world.addPlayerUnit(unitManager.getPlayerUnit());
-        itemManager.createCoin(activity,this,200,400, unitManager.getPlayerUnit());
-        itemManager.createCoin(activity,this,300,350, unitManager.getPlayerUnit());
-        itemManager.createCoin(activity,this,400,330, unitManager.getPlayerUnit());
-        itemManager.createCoin(activity,this,500,300, unitManager.getPlayerUnit());
+        mEntityManager.createEntities(this);
+        world.addPlayerUnit(mEntityManager.getPlayerUnit());
+      //  itemManager.createCoin(activity,this,200,400, unitManager.getPlayerUnit());
+       // itemManager.createCoin(activity,this,300,350, unitManager.getPlayerUnit());
+       // itemManager.createCoin(activity,this,400,330, unitManager.getPlayerUnit());
+       // itemManager.createCoin(activity,this,500,300, unitManager.getPlayerUnit());
 
 
     }
     private void createUI(BaseGameActivity activity, Camera camera){
         hud = new HUD();
-        controllerManager.createController(activity,hud,unitManager.getPlayerUnit());
-        uiManager.createUI(activity,hud,unitManager.getPlayerUnit(),this);
+        controllerManager.createController(activity,hud,mEntityManager.getPlayerUnit());
+        uiManager.createUI(activity,hud,mEntityManager.getPlayerUnit(),this);
         camera.setHUD(hud);
         //uiManager.createText(activity,this);
 
     }
 
     private void createMap(BaseGameActivity activity){
-        world.createMap(activity,this,"map0.png","map0.json",unitManager);
+        world.createMap(activity,this,"map0.png","map0.json",mEntityManager);
     }
     public Camera getCamera(){
         return camera;
     }
-
-
+    public BaseGameActivity getActivity(){
+        return this.activity;
+    }
+    public PhysicsWorld getWorld(){
+        return this.world.getWorld();
+    }
+    public Vector2 getGravity(){
+        return this.world.gravity;
+    }
 }

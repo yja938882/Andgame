@@ -1,27 +1,19 @@
 package game.juan.andenginegame0.ygamelibs.Test;
 
-import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
-import com.badlogic.gdx.math.Vector2;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
-import org.andengine.engine.camera.SmoothCamera;
-import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.BaseGameActivity;
-import game.juan.andenginegame0.ygamelibs.Managers.ControllerManager;
-import game.juan.andenginegame0.ygamelibs.Managers.ItemManager;
-import game.juan.andenginegame0.ygamelibs.Managers.UIManager;
-import game.juan.andenginegame0.ygamelibs.Managers.UnitManager;
+
 import game.juan.andenginegame0.ygamelibs.World.GameScene;
-import game.juan.andenginegame0.ygamelibs.World.HorizontalWorld;
 
 public class UnitTestActivity extends BaseGameActivity {
 
@@ -78,7 +70,7 @@ public class UnitTestActivity extends BaseGameActivity {
 
     @Override
     public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws Exception {
-        scene = new GameScene();
+        scene = new GameScene(this);
         scene.setCullingEnabled(true);
         scene.createResources();
         scene.loadGraphic(this);

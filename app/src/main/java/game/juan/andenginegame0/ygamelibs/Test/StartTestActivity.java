@@ -50,23 +50,6 @@ public class StartTestActivity extends Activity {
         startActivity(i);
       //  finish();
     }
-    public void onClickBuildMapTest(View v){
-        String map = "map";
-        map+=((EditText)findViewById(R.id.build_map_test)).getText();
-        map+=".json";
-        Intent i = new Intent(StartTestActivity.this,BuildMapTestActivity.class);
-        i.putExtra("file",map);
-        startActivity(i);
-    }
-    public void onClickObstacleTest(View v){
-        Intent i = new Intent(StartTestActivity.this,ObstacleTestActivity.class);
-        startActivity(i);
-        //finish();
-    }
-    public void onClickLoadDataTest(View v){
-        Intent i = new Intent(StartTestActivity.this,DataTestActivity.class);
-        startActivity(i);
-        //finish();
-    }
+
 
 }

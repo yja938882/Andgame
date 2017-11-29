@@ -32,10 +32,14 @@
   ],
   "obstacle":
   [
-    {"type": 0 , "x": 28, "y":  15, "data":[30, 2, 1]},
-    {"type": 1 , "x": 70, "y":  14, "data":[0]},
-    {"type": 2 , "x": 42, "y":  6, "data":[7.5]},
-    {"type": 3 , "x": 5 , "y":  10, "data":[1,1]}
+    {"type": 3 , "x": 1 , "y":  10, "data":[1,1]},
+    {"type": 3 , "x": 2 , "y":  10, "data":[1,1]},
+    {"type": 3 , "x": 3 , "y":  10, "data":[1,1]},
+    {"type": 3 , "x": 41 , "y":  10, "data":[1,1]},
+    {"type": 3 , "x": 42 , "y":  10, "data":[1,1]},
+    {"type": 3 , "x": 43 , "y":  10, "data":[1,1]},
+    {"type": 3 , "x": 45 , "y":  10, "data":[1,1]}
+
   ],
   "ai":
   [
@@ -49,4 +53,5 @@
         char TYPE_TRAP = 1;
         char TYPE_PENDULUM =2;
         char TYPE_FALL_OBSTACLE = 3;
+        car TYPE_SHOT_OBSTACLE = 4;
     }*/

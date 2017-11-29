@@ -34,12 +34,9 @@ import org.andengine.util.color.Color;
 import java.util.ArrayList;
 
 import debugdraw.DebugRenderer;
-import game.juan.andenginegame0.ygamelibs.ConstantsSet;
-import game.juan.andenginegame0.ygamelibs.Managers.UnitManager;
-import game.juan.andenginegame0.ygamelibs.Unit.AIUnit;
-import game.juan.andenginegame0.ygamelibs.Unit.PlayerUnit;
-import game.juan.andenginegame0.ygamelibs.Unit.Unit;
-import game.juan.andenginegame0.ygamelibs.Unit.UnitData;
+import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
+import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
+import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
 
 /**
  * Created by juan on 2017. 9. 2..
@@ -49,9 +46,10 @@ public class HorizontalWorld {
     private String TAG="HorizontalWorld";
     ITextureRegion bgTextureRegion;
 
+    Vector2 gravity = new Vector2(0,20);
     private PhysicsWorld physicsWorld;
    PlayerUnit playerUnit;
-    AIUnit aiUnit;
+    //AIUnit aiUnit;
  //   public static ArrayList<AIUnit> deadAIs = new ArrayList<>();
 
     public PhysicsWorld getWorld(){
@@ -64,6 +62,9 @@ public class HorizontalWorld {
         physicsWorld.setContinuousPhysics(true);
 
 
+    }
+    public Vector2 getGravity(){
+        return gravity;
     }
     public void addPlayerUnit(PlayerUnit playerUnit){
         this.playerUnit = playerUnit;
@@ -85,8 +86,8 @@ public class HorizontalWorld {
                 Object ob = bodyB.getUserData();
                 Vector2 vb = bodyB.getPosition();
                 if(oa!=null && ob!=null){
-                    ((UnitData)oa).beginContactWith(((UnitData)ob).getType(), va.x);
-                    ((UnitData)ob).beginContactWith(((UnitData)oa).getType(), vb.x);
+                    ((DataBlock)oa).beginContactWith(((DataBlock)ob).getClassifyData());
+                    ((DataBlock)ob).beginContactWith(((DataBlock)oa).getClassifyData());
                 }
 
             }
@@ -103,8 +104,8 @@ public class HorizontalWorld {
 
                 Object ob = bodyB.getUserData();
                 if(oa!=null && ob!=null){
-                    ((UnitData)oa).endContactWith(((UnitData)ob).getType());
-                    ((UnitData)ob).endContactWith(((UnitData)oa).getType());
+                    ((DataBlock)oa).endContactWith(((DataBlock)ob).getClassifyData());
+                    ((DataBlock)ob).endContactWith(((DataBlock)oa).getClassifyData());
                 }
             }
 
@@ -119,14 +120,14 @@ public class HorizontalWorld {
         };
         return contactListener;
     }
-    public void createMap(BaseGameActivity activity, Scene scene, String imgfile, String jfile, UnitManager unitManager){
+    public void createMap(BaseGameActivity activity, GameScene scene, String imgfile, String jfile, EntityManager pEntityManager){
 
         ParallaxBackground background = new ParallaxBackground(0,0,0);
         background.attachParallaxEntity(new ParallaxBackground.ParallaxEntity(0,new Sprite(0,0,bgTextureRegion,activity.getVertexBufferObjectManager())));
         scene.setBackground(new Background(Color.WHITE));
        // scene.setBackground(background);
         //MapBuilder.createHorizontalMovingGround(scene,physicsWorld,activity,200,600,400,50,50);
-        MapBuilder.createMapFromData(scene,physicsWorld,activity,imgfile,jfile,unitManager);
+        MapBuilder.createMapFromData(scene,physicsWorld,activity,imgfile,jfile,pEntityManager);
     }
 
     public void loadBgGraphics(BaseGameActivity activity){
