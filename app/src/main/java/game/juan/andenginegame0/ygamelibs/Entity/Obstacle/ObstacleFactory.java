@@ -1,5 +1,8 @@
 package game.juan.andenginegame0.ygamelibs.Entity.Obstacle;
 
+import android.provider.ContactsContract;
+import android.util.Log;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -15,6 +18,7 @@ import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.color.Color;
@@ -35,11 +39,13 @@ import game.juan.andenginegame0.ygamelibs.World.GameScene;
 public class ObstacleFactory implements ConstantsSet.EntityType{
 
     /*===Public Statics===================*/
-    protected static GameEntity createSimpleObstacle(GameScene pGameScene , ITiledTextureRegion iTiledTextureRegion,ObstacleData pObstacleData){
+    public static GameEntity createSimpleObstacle(GameScene pGameScene , ITiledTextureRegion iTiledTextureRegion,ObstacleData pObstacleData){
         switch (pObstacleData.getType()){
+            case OBS_TRAP_TEMP:
+                return createTrapTemp_Obstacle(pGameScene,iTiledTextureRegion,pObstacleData);
             case OBS_TRAP :
-
-                break;
+                Log.d("TRAP","TRAP1");
+                return createTrap_Obstacle(pGameScene,iTiledTextureRegion,pObstacleData);
             case OBS_FALL:
                 return createFall_Obstacle(pGameScene,iTiledTextureRegion,pObstacleData);
             case OBS_SHOT:
@@ -62,9 +68,28 @@ public class ObstacleFactory implements ConstantsSet.EntityType{
         fallingObstacle.setForce(new Vector2(0,10),new Vector2(0,10));
         fallingObstacle.setOrigin(pDataBlock.getPosX()+fallingObstacle.getWidthScaled()/2f,pDataBlock.getPosY()+fallingObstacle.getHeightScaled()/2f);
         fallingObstacle.setTimeLimit(2,2);
+        fallingObstacle.setActive(true);
+        pGameScene.attachChild(fallingObstacle);
         return fallingObstacle;
     }
-
+    private static TrapObstacle createTrap_Obstacle(GameScene pGameScene, ITiledTextureRegion iTiledTextureRegion, DataBlock pDataBlock){
+       final TrapObstacle trapObstacle = new TrapObstacle(pDataBlock.getPosX(), pDataBlock.getPosY(),iTiledTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
+       trapObstacle.setupBody(1);
+       trapObstacle.createBody(pGameScene,0,pDataBlock,30f,30f,BodyDef.BodyType.StaticBody);
+       pGameScene.attachChild(trapObstacle);
+       return trapObstacle;
+    }
+    private static TrapObstacle createTrapTemp_Obstacle(GameScene pGameScene, ITiledTextureRegion iTiledTextureRegion, DataBlock pDataBlock){
+        final TrapObstacle trapObstacle = new TrapObstacle(pDataBlock.getPosX(), pDataBlock.getPosY(),iTiledTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
+        trapObstacle.setupBody(1);
+        trapObstacle.createBody(pGameScene,0,pDataBlock,30f,30f,BodyDef.BodyType.StaticBody);
+        final long[] beAttackedFrameDuration ={50,50,50,50,50,50};
+        final int[] beAttackedFrameIndex ={0,1,2,3,4,5};
+        trapObstacle.createActionLock(1);
+        trapObstacle.setHitFrame(beAttackedFrameDuration,beAttackedFrameIndex,0);
+        pGameScene.attachChild(trapObstacle);
+        return trapObstacle;
+    }
     public void create(ObstacleData od , GameScene pGameScene, PhysicsWorld world, BaseGameActivity activity){
       /*  switch (od.getType()){
             case ConstantsSet.Obstacle.MOVING_GROUND:
@@ -135,7 +160,18 @@ public class ObstacleFactory implements ConstantsSet.EntityType{
         //  TrapObstacle trapObstacle = new TrapObstacle(sx,sy,)
 
     }
-    public static void createObstacle_Pendulum(Scene scene, PhysicsWorld physicsWorld, BaseGameActivity activity,float std_x, float std_y, float datais[]){
+    //GameScene pGameScene , ITiledTextureRegion iTiledTextureRegion,ObstacleData pObstacleData
+    public static PendulumObstacle createObstacle_Pendulum(GameScene pGameScene,
+                                               ITiledTextureRegion iTiledTextureRegionStd, ITiledTextureRegion iTiledTextureRegionBar, ITiledTextureRegion iTiledTextureRegionEnd,
+                                               DataBlock pDataBlock){
+       PendulumObstacle pendulumObstacle = new PendulumObstacle(pDataBlock.getPosX(),pDataBlock.getPosY(),iTiledTextureRegionStd,pGameScene.getActivity().getVertexBufferObjectManager());
+       pendulumObstacle.setupBody(3);
+       pendulumObstacle.setAxisTexture(pGameScene,iTiledTextureRegionBar);
+       pendulumObstacle.setSawTexture(pGameScene,iTiledTextureRegionEnd);
+       pendulumObstacle.createBody(pGameScene,pDataBlock, BodyDef.BodyType.StaticBody);
+
+       return pendulumObstacle;
+        /*
         float bar_h =1* PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
         int std_w = 64;
         int std_h = 64;
@@ -212,7 +248,7 @@ public class ObstacleFactory implements ConstantsSet.EntityType{
 
                 }
             }
-        });
+        });*/
     }
 
 

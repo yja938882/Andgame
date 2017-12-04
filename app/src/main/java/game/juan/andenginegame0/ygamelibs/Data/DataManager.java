@@ -14,6 +14,7 @@ import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.ObstacleData;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.AiData;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerData;
 import game.juan.andenginegame0.ygamelibs.Static.StaticData;
+import game.juan.andenginegame0.ygamelibs.World.GameScene;
 
 import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.StaticType.GROUND;
 
@@ -25,12 +26,17 @@ import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.StaticType.GR
 
 public class DataManager implements ConstantsSet{
     /*==Fields==========================*/
-    private ArrayList<DataBlock> mObstacleData;
+    private ArrayList<ObstacleData> mObstacleData;
     private ArrayList<StaticData> mStaticMapData;
     private PlayerData mPlayerData;
     private ArrayList<AiData> mAiData;
 
-    public void loadMapData(Context context, String file){
+    public void loadResources(GameScene pGameScene){
+        loadMapData(pGameScene.getActivity(),"map0.json");
+    }
+
+
+    private void loadMapData(Context context, String file){
         try{
             JSONObject mapObject = loadJSONFromAsset(context,file).getJSONObject("map");
             mStaticMapData = new ArrayList<>();
@@ -54,14 +60,34 @@ public class DataManager implements ConstantsSet{
                 for(int j=0;j<data.length;j++){
                     data[j] = (float)dataJSONArray.getDouble(j);
                 }
-                final ObstacleData obstacleData = new ObstacleData(Classify.ATTACK_OBSTACLE,EntityType.OBS_FALL,obj.getInt("x"),obj.getInt("y"));
+                int vClass=0;
+                int vType=0;
+                switch(obj.getString("type")){
+                    case "fall":
+                        vClass = DataBlock.ATK_OBS_CLASS;
+                        vType = EntityType.OBS_FALL;
+                        break;
+                    case "trap":
+                        Log.d("TRAP","TRAP0");
+                        vClass=DataBlock.ATK_OBS_CLASS;
+                        vType = EntityType.OBS_TRAP;
+                        break;
+                    case "trap_temp":
+                        vClass=DataBlock.ATK_OBS_CLASS;
+                        vType = EntityType.OBS_TRAP_TEMP;
+                        break;
+                    case "pendulum":
+                        vClass=DataBlock.GROUND_CLASS;
+                        vType = EntityType.OBS_PENDULUM;
+                        break;
+                }
+                final ObstacleData obstacleData = new ObstacleData(vClass,vType,obj.getInt("x"),obj.getInt("y"));
                 mObstacleData.add(obstacleData);
             }
 
-            EntityManager em = new EntityManager();
-            int ret = em.calculateMaxEntityInCam(mObstacleData);
-            Log.d("TATA","result :"+ret);
-
+           // EntityManager em = new EntityManager();
+            //int ret = em.calculateMaxEntityInCam(mObstacleData);
+            //Log.d("TATA","result :"+ret);
 
             //Player 데이터 읽기
 
@@ -71,14 +97,9 @@ public class DataManager implements ConstantsSet{
             e.printStackTrace();
         }
     }
-    public StaticData getBlock(int index){
-        return mStaticMapData.get(index);
-    }
-    public DataBlock getObstacle(int index){return mObstacleData.get(index);}
-    public int getStaticLength(){
-        return mStaticMapData.size();
-    }
-    public int getObstacleLength(){return mObstacleData.size();}
+
+    public ArrayList<StaticData> getStaticData(){return mStaticMapData;}
+    public ArrayList<ObstacleData> getObstacleData(){return mObstacleData;}
 
 
     private static JSONObject loadJSONFromAsset(Context context, String filename){

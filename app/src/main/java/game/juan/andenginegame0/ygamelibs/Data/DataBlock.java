@@ -26,7 +26,9 @@ public abstract class DataBlock implements ConstantsSet.Classify {
     *           |===================|====================|=============
     *           |-Obstacle          |
     *           |                   |====================|=============
-    *           |                   |-AttackObstacle     |
+    *           |                   |-AttackObstacle     |BulletObstacle
+    *                               |                    |Trap
+    *                               |                    |Trap_temp
     *           |                   |====================|=============
     *           |                   |-PassableObstacle   |
     *           |                   |====================|=============
@@ -39,8 +41,8 @@ public abstract class DataBlock implements ConstantsSet.Classify {
     */
 
     /*===Constants=================*/
-    public static final int PLAYER_BODY_CLASS = ENTITY|UNIT|PLAYER|FOOT;
-    public static final int PLAYER_FOOT_CLASS = ENTITY|UNIT|PLAYER|BODY;
+    public static final int PLAYER_BODY_CLASS = ENTITY|UNIT|PLAYER|BODY;
+    public static final int PLAYER_FOOT_CLASS = ENTITY|UNIT|PLAYER|FOOT;
 
     public static final int AI_BODY_CLASS=ENTITY|UNIT|AI|BODY;
     public static final int AI_FOOT_CLASS=ENTITY|UNIT|AI|FOOT;

@@ -43,14 +43,9 @@ import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
  */
 
 public class HorizontalWorld {
-    private String TAG="HorizontalWorld";
-    ITextureRegion bgTextureRegion;
-
     Vector2 gravity = new Vector2(0,20);
     private PhysicsWorld physicsWorld;
    PlayerUnit playerUnit;
-    //AIUnit aiUnit;
- //   public static ArrayList<AIUnit> deadAIs = new ArrayList<>();
 
     public PhysicsWorld getWorld(){
         return physicsWorld;
@@ -120,23 +115,7 @@ public class HorizontalWorld {
         };
         return contactListener;
     }
-    public void createMap(BaseGameActivity activity, GameScene scene, String imgfile, String jfile, EntityManager pEntityManager){
 
-        ParallaxBackground background = new ParallaxBackground(0,0,0);
-        background.attachParallaxEntity(new ParallaxBackground.ParallaxEntity(0,new Sprite(0,0,bgTextureRegion,activity.getVertexBufferObjectManager())));
-        scene.setBackground(new Background(Color.WHITE));
-       // scene.setBackground(background);
-        //MapBuilder.createHorizontalMovingGround(scene,physicsWorld,activity,200,600,400,50,50);
-        MapBuilder.createMapFromData(scene,physicsWorld,activity,imgfile,jfile,pEntityManager);
-    }
 
-    public void loadBgGraphics(BaseGameActivity activity){
-        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/bg/");
-        final BitmapTextureAtlas bgTexture = new BitmapTextureAtlas(activity.getTextureManager(),800,480, TextureOptions.BILINEAR);
-        bgTextureRegion = BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(bgTexture,activity,"background.png",0,0);
-        bgTexture.load();
-
-    }
 
 }

@@ -161,7 +161,10 @@ public abstract class Unit extends GameEntity{
             (bodyData).setNeedToBeAttacked(false);
         }
 
-        if(isLocked()) return;
+        if(isLocked()) {
+            Log.d("LLOCK","IS locked");
+            return;
+        }
 
         switch (mAction){
             case ConstantsSet.UnitAction.ACTION_MOVE_RIGHT:

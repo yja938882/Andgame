@@ -9,6 +9,7 @@ import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 
 /**
  * Created by juan on 2017. 11. 28..
+ *
  */
 
 public class StaticData extends DataBlock{

@@ -16,29 +16,20 @@ import game.juan.andenginegame0.ygamelibs.Entity.Unit.Unit;
  * Created by juan on 2017. 9. 1..
  */
 
-public class OneWayMoveController extends Sprite implements ConstantsSet{
-    private Unit unit;
-    private int way;
+public class OneWayMoveController extends Controller{
 
     public OneWayMoveController(float pX, float pY, float pWidth, float pHeight, ITextureRegion pTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pWidth, pHeight, pTextureRegion, pVertexBufferObjectManager);
     }
 
-    public void setup(Unit unit, int way,HUD hud){
-        this.unit = unit;
-        this.way = way;
-        hud.registerTouchArea(this);
-        hud.attachChild(this);
-    }
     @Override
-    public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y)
-    {
+    public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y) {
         if (pSceneTouchEvent.isActionDown()||pSceneTouchEvent.isActionMove()) {
-                unit.setAction(way);
+                mUnit.setAction(mAction);
         }else{
-            unit.setAction(UnitAction.ACTION_STOP);
+            mUnit.setAction(UnitAction.ACTION_STOP);
         }
      return true;
-    };
+    }
 
 }

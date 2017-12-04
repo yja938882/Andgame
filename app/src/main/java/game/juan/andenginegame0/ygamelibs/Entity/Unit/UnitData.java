@@ -23,7 +23,7 @@ public abstract class UnitData extends DataBlock{
        return mGroundContactCounter<=0;
    }
    public void setNeedToBeAttacked(boolean n){
-       this.isNeedToBeAttacked = true;
+       this.isNeedToBeAttacked = n;
    }
    public boolean isNeedToBeAttacked(){
        return this.isNeedToBeAttacked;

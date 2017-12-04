@@ -34,7 +34,7 @@ import game.juan.andenginegame0.ygamelibs.World.GameScene;
 public abstract class GameEntity extends AnimatedSprite{
     /*===Fields===============================*/
     private Body[] mBodies;
-    private boolean mActive;
+    private boolean mActive = false;
     private ActionLock[] mActionLocks;
 
 
@@ -66,6 +66,15 @@ public abstract class GameEntity extends AnimatedSprite{
             pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(this, mBodies[0]));
         }
     }
+
+    public void createBody(GameScene pGameScene, int pBodyIndex, DataBlock pDataBlock
+    ,float pCx, float pCy, float pW, float pH, BodyDef.BodyType pBodyType){
+        final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
+        mBodies[pBodyIndex] = PhysicsFactory.createBoxBody(pGameScene.getWorld(),pCx,pCy,pW,pH,pBodyType,fixtureDef);
+    }
+
+
+
     public void createActionLock(final int pLockSize){
         this.mActionLocks = new ActionLock[pLockSize];
         for(int i=0;i<pLockSize;i++){
@@ -83,6 +92,8 @@ public abstract class GameEntity extends AnimatedSprite{
     @Override
     protected void onManagedUpdate(float pSecondsElapsed) {
         super.onManagedUpdate(pSecondsElapsed);
+        if(mActionLocks==null)
+            return;
         for(ActionLock al : mActionLocks){
             al.onManagedUpdate(pSecondsElapsed);
         }
@@ -91,6 +102,8 @@ public abstract class GameEntity extends AnimatedSprite{
 
     /*===Setter & Getter======================*/
     public void setActive(boolean pActive){
+        if(pActive==mActive)
+            return;
         this.mActive = pActive;
         for (Body body: mBodies) {
             body.setActive(pActive);

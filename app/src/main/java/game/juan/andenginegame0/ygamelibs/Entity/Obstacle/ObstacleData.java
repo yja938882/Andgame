@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Entity.Obstacle;
 
+import android.util.Log;
+
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 
 /**
@@ -21,7 +23,10 @@ public class ObstacleData extends DataBlock {
     public void beginContactWith(int pClass) {
         switch (pClass){
             case PLAYER_BODY_CLASS:
+                Log.d("CREATW","C w P");
+                setNeedToReload(true);
             case GROUND_CLASS:
+                Log.d("CREATW","C w G");
                 setNeedToReload(true);
                 break;
 

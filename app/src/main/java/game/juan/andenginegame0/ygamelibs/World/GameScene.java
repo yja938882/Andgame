@@ -18,9 +18,10 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import debugdraw.DebugRenderer;
+import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
-import game.juan.andenginegame0.ygamelibs.Managers.ControllerManager;
 import game.juan.andenginegame0.ygamelibs.Dynamic.Item.ItemManager;
+import game.juan.andenginegame0.ygamelibs.Static.StaticManager;
 import game.juan.andenginegame0.ygamelibs.UI.UIManager;
 
 /**
@@ -36,16 +37,21 @@ public class GameScene extends Scene {
 
     Queue<IEntity> detachQueue;
 
-    ControllerManager controllerManager;
-    UIManager uiManager;
-    EntityManager mEntityManager;
-    ItemManager itemManager;
-    BoundCamera camera;
+    private DataManager mDataManager;
+
+    private StaticManager mStaticManager;
+    private UIManager mUiManager;
+    private EntityManager mEntityManager;
+    private ItemManager mItemManager;
+
+
+    private BoundCamera camera;
+
     BaseGameActivity activity;
 
     HUD hud;
 
-    public GameScene(BaseGameActivity activity){
+    public GameScene(BaseGameActivity activity){ 
         this.activity = activity;
         detachQueue = new LinkedList<IEntity>();
         createUpdateHandler();
@@ -69,13 +75,11 @@ public class GameScene extends Scene {
         this.registerUpdateHandler(new IUpdateHandler() {
             @Override
             public void onUpdate(float pSecondsElapsed) {
-                Log.d("TH_test","Scene");
                 mEntityManager.manage();
                 clearDetachQueue();
                 camera.updateChaseEntity();
                 camera.setBounds(camera.getCenterX()-camera.getWidth()/2,
                         0,10000,10000);
-
             }
             @Override
             public void reset() {
@@ -83,61 +87,57 @@ public class GameScene extends Scene {
             }
         });
     }
-    public void loadGraphic(BaseGameActivity activity){
-        world.loadBgGraphics(activity);
-        mEntityManager.loadGraphics(this);
-       // unitManager.loadAIGraphics(activity);
-        controllerManager.loadGraphics(activity);
-        uiManager.loadGraphics(activity);
-        //uiManager.loadFont(activity);
-       // world.loadBgGraphics(activity);
-        itemManager.loadItemGraphics(activity);
-    }
+
+
     public void createResources(){
-        controllerManager = new ControllerManager(CAMERA_WIDTH,CAMERA_HEIGHT);
-        uiManager = new UIManager(CAMERA_WIDTH, CAMERA_HEIGHT);
-        //unitManager = new UnitManager();
+        mDataManager = new DataManager();
+
+        mStaticManager = new StaticManager();
+        mStaticManager.createResource();
+
         mEntityManager = new EntityManager();
-        itemManager = new ItemManager();
+        mEntityManager.createResource();
+
+        mUiManager = new UIManager();
+        mUiManager.createResource();
+
+    }
+    public void loadResources(){
+       // mEntityManager.loadGraphics(this);
+      ///  mItemManager.loadItemGraphics(activity);
+
+        mDataManager.loadResources(this);
+
+        mStaticManager.loadResource(this);
+        mEntityManager.loadResource(this);
+        mUiManager.loadResource(this);
     }
 
     public void createScene(BaseGameActivity activity, BoundCamera camera){
         this.camera = camera;
         camera.setBoundsEnabled(true);
         this.registerUpdateHandler(world.getWorld());
-        createUnits(activity,camera);
-        createMap(activity);
-        createUI(activity,camera);
+
+        mStaticManager.createOnGame(this);
+        mEntityManager.createOnGame(this);
+        mUiManager.createOnGame(this);
+
+
+        mEntityManager.getPlayerUnit().registerUI(mUiManager);
+
+        //For debugging
         DebugRenderer dr = new DebugRenderer(world.getWorld(),activity.getVertexBufferObjectManager());
         dr.setColor(Color.BLUE);
         dr.setDrawBodies(true);
         dr.setDrawJoints(true);
         this.attachChild(dr);
-        mEntityManager.getPlayerUnit().registerUI(uiManager);
 
     }
     private void createUnits(BaseGameActivity activity,Camera camera){
         mEntityManager.createEntities(this);
         world.addPlayerUnit(mEntityManager.getPlayerUnit());
-      //  itemManager.createCoin(activity,this,200,400, unitManager.getPlayerUnit());
-       // itemManager.createCoin(activity,this,300,350, unitManager.getPlayerUnit());
-       // itemManager.createCoin(activity,this,400,330, unitManager.getPlayerUnit());
-       // itemManager.createCoin(activity,this,500,300, unitManager.getPlayerUnit());
-
-
-    }
-    private void createUI(BaseGameActivity activity, Camera camera){
-        hud = new HUD();
-        controllerManager.createController(activity,hud,mEntityManager.getPlayerUnit());
-        uiManager.createUI(activity,hud,mEntityManager.getPlayerUnit(),this);
-        camera.setHUD(hud);
-        //uiManager.createText(activity,this);
-
     }
 
-    private void createMap(BaseGameActivity activity){
-        world.createMap(activity,this,"map0.png","map0.json",mEntityManager);
-    }
     public Camera getCamera(){
         return camera;
     }
@@ -150,4 +150,11 @@ public class GameScene extends Scene {
     public Vector2 getGravity(){
         return this.world.gravity;
     }
+    public HUD getHud(){
+        return this.hud;
+    }
+    public EntityManager getEntityManager(){
+        return this.mEntityManager;
+    }
+    public DataManager getDataManager(){return this.mDataManager;}
 }

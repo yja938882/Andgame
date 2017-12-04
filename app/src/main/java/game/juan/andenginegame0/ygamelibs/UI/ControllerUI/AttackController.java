@@ -16,24 +16,16 @@ import game.juan.andenginegame0.ygamelibs.Entity.Unit.Unit;
  * Created by juan on 2017. 9. 2..
  */
 
-public class AttackController extends Sprite {
-    private final String TAG ="AttackController";
-    private Unit unit;
-    private int num;
+public class AttackController extends Controller {
+
     public AttackController(float pX, float pY, float pWidth, float pHeight, ITextureRegion pTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pWidth, pHeight, pTextureRegion, pVertexBufferObjectManager);
-    }
-    public void setup(Unit unit, int num , HUD hud){
-        this.unit = unit;
-        this.num = num;
-        hud.registerTouchArea(this);
-        hud.attachChild(this);
     }
     @Override
     public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y)
     {
         if (pSceneTouchEvent.isActionDown()) {
-            unit.setAction(num);
+            mUnit.setAction(mAction);
         }
         return true;
     }

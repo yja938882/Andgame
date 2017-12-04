@@ -73,7 +73,7 @@ public class UnitTestActivity extends BaseGameActivity {
         scene = new GameScene(this);
         scene.setCullingEnabled(true);
         scene.createResources();
-        scene.loadGraphic(this);
+        scene.loadResources();
 
         pOnCreateResourcesCallback.onCreateResourcesFinished();
     }

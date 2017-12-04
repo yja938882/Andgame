@@ -6,20 +6,32 @@ package game.juan.andenginegame0.ygamelibs.Data;
  */
 
 public interface ConstantsSet {
+    int CAMERA_WIDTH = 1024;
+    int CAMERA_HEIGHT = 600;
+
     /*===Class================*/
     interface Classify {
         int ENTITY = 0x01000000;
+
         int UNIT = 0x00010000;
+
         int OBJECT = 0x00020000;
-        int OBSTACLE = 0x00030000;
+
         int PLAYER = 0x00000100;
         int AI = 0x00000200;
-        int BULLET = 0x00000300;
-        int ATTACK_OBSTACLE = 0x00000100;
-        int PASSABLE_OBSTACLE = 0x00000200;
-        int INPASSABLE_OBSTACLE = 0x00000300;
+
         int BODY = 0x00000001;
         int FOOT = 0x00000002;
+
+        int OBSTACLE = 0x00030000;
+
+        int ATTACK_OBSTACLE     = 0x00000100;
+        int PASSABLE_OBSTACLE   = 0x00000200;
+        int INPASSABLE_OBSTACLE = 0x00000300;
+
+        int BULLET = 0x00000300;
+
+
 
         int STATIC = 0x02000000;
         int GROUND = 0x00010000;
@@ -30,7 +42,7 @@ public interface ConstantsSet {
 
     interface Physics{
         /*=== Density & Friction =================*/
-        float DENSITY_UNIT = 2.0f;
+        float DENSITY_UNIT = 1.0f;
         float FRICTION_UNIT=0.0f;
         /*===Category Bits========================*/
         short PLAYER_BODY_CATG_BITS        = 0x0001;
@@ -89,9 +101,10 @@ public interface ConstantsSet {
 
         int OBS_MOVING_GROUND = 21;
         int OBS_TRAP = 22;
-        int OBS_PENDULUM = 23;
-        int OBS_FALL = 24;
-        int OBS_SHOT = 25;
+        int OBS_TRAP_TEMP = 23;
+        int OBS_PENDULUM = 24;
+        int OBS_FALL = 25;
+        int OBS_SHOT = 26;
     }
     interface StaticType{
         int GROUND = 1;

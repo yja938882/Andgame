@@ -5,6 +5,7 @@ import android.provider.ContactsContract;
 import org.andengine.entity.Entity;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
+import game.juan.andenginegame0.ygamelibs.World.GameScene;
 
 /**
  * Created by juan on 2017. 11. 29..
@@ -20,8 +21,11 @@ public abstract class EntityList {
     private int mPosIndex =0;
     private int POS_SIZE;
 
+    private GameScene mGameScene;
+
     /*===Construct==================*/
-    public EntityList(int pEntityListSize , int pPosSize){
+    public EntityList(GameScene pGameScene, int pEntityListSize , int pPosSize){
+        this.mGameScene = pGameScene;
         this.mEntityList = new GameEntity[pEntityListSize];
         this.mPosX = new float[pPosSize];
         this.mPosY = new float[pPosSize];
@@ -56,10 +60,18 @@ public abstract class EntityList {
             return;
         }
         GameEntity ge = mEntityList[mEntityIndex];
-        if(reviveRule(ge)){
+        if(reviveRule(mGameScene,ge)){
             ge.revive(mPosX[mPosIndex], mPosY[mPosIndex]);
+            ge.setActive(activeRule(mGameScene,ge));
+        }else {
+            ge.setActive(activeRule(mGameScene, ge));
+        }
+        mEntityIndex++;
+        if(mEntityIndex>=mEntityList.length){
+            mEntityIndex=0;
         }
     }
-    public abstract boolean reviveRule(GameEntity pGameEntity);
+    public abstract boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity);
+    public abstract boolean activeRule(GameScene pGameScene, GameEntity pGameEntity);
 
 }
