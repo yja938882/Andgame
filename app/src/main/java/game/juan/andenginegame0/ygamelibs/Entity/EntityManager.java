@@ -25,6 +25,8 @@ import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.BulletObstacle;
 import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.ObstacleData;
 import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.ObstacleFactory;
+import game.juan.andenginegame0.ygamelibs.Entity.Unit.AI.AiData;
+import game.juan.andenginegame0.ygamelibs.Entity.Unit.AI.AiFactory;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerData;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
 import game.juan.andenginegame0.ygamelibs.IManager;
@@ -50,9 +52,11 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
 
     private PlayerData mPlayerDataBlock;
     private ITiledTextureRegion mPlayerTextureRegion;
+    private ITiledTextureRegion mAiTextureRegion;
     private ITiledTextureRegion mObstacleTR[];
   //  private EntityList mObstacleList;
     private ManagedEntityList mObstacleList;
+    private ManagedEntityList mAiList;
 
     /*===Constructor==============*/
     /*===Method===================*/
@@ -70,12 +74,16 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
         Log.d("NOM_DEBUG [ET Manager]","Load obstacle resource");
         loadObstacleResource(pGameScene);
 
+        Log.d("NOM_DEBUG [ET Manager]","Load ai resource");
+        loadAIGraphics(pGameScene);
+
     }
 
     @Override
     public void createOnGame(GameScene pGameScene) {
         createPlayerUnit(pGameScene);
         createObstacle(pGameScene,pGameScene.getDataManager().getObstacleData());
+        createAiUnit(pGameScene,pGameScene.getDataManager().getAiData());
     }
 
 
@@ -89,6 +97,8 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
         if(mObstacleList!=null){
             mObstacleList.manage();
         }
+        if(mAiList!=null)
+            mAiList.manage();
     }
     public PlayerUnit getPlayerUnit(){
         return playerUnit;
@@ -105,19 +115,19 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
     }
 
     private void loadAIGraphics(GameScene pGameScene){
-       /* BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/ai/");
-        final BitmapTextureAtlas textureAtlas = new BitmapTextureAtlas(activity.getTextureManager(),640,320);
-        aiTextureRegion = BitmapTextureAtlasTextureRegionFactory
-                .createTiledFromAsset(textureAtlas,activity.getAssets(),"ai0.png",0,0,10,5);
-        textureAtlas.load();*/
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/ai/");
+        final BitmapTextureAtlas textureAtlas = new BitmapTextureAtlas(pGameScene.getActivity().getTextureManager(),1024,1024);
+        mAiTextureRegion  = BitmapTextureAtlasTextureRegionFactory.
+                createTiledFromAsset(textureAtlas,pGameScene.getActivity().getAssets(),"ai.png",0,0,8,8);
+        textureAtlas.load();
     }
 
     private void loadObstacleResource(GameScene pGameScene){
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/obstacle/");
 
-        final BitmapTextureAtlas obsFall = new BitmapTextureAtlas(pGameScene.getActivity().getTextureManager(),512,64);
+        final BitmapTextureAtlas obsFall = new BitmapTextureAtlas(pGameScene.getActivity().getTextureManager(),320,64);
         mObstacleTR[TR_OBT_FALL] = BitmapTextureAtlasTextureRegionFactory.
-                createTiledFromAsset(obsFall,pGameScene.getActivity().getAssets(),"stone_test.png",0,0,8,1);
+                createTiledFromAsset(obsFall,pGameScene.getActivity().getAssets(),"fall.png",0,0,5,1);
         obsFall.load();
 
         final BitmapTextureAtlas obsStopTrap = new BitmapTextureAtlas(pGameScene.getActivity().getTextureManager(),64,64);
@@ -149,9 +159,9 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
     private void createPlayerUnit(GameScene pGameScene){
         playerUnit = new PlayerUnit(50,300,mPlayerTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
         mPlayerDataBlock = new PlayerData(DataBlock.PLAYER_BODY_CLASS, ConstantsSet.EntityType.PLAYER,50,300);
-        playerUnit.createPlayer(pGameScene,mPlayerDataBlock);
+        playerUnit.createPlayer(pGameScene,mPlayerDataBlock,pGameScene.getDataManager().getPlayerConfig());
         pGameScene.getCamera().setChaseEntity(playerUnit);
-
+       // ;
         final int colnum = 8;
         final long walk_frame_du[] ={25,50,50,50,50,50,25};
         final int walk_frame_i[] = {0,1,2,3,4,5,0};
@@ -170,6 +180,44 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
         playerUnit.setJumpFrame(jump_frame_du,jump_frame_i,-1);
         playerUnit.setActive(true);
         pGameScene.attachChild(playerUnit);
+    }
+
+    private void createAiUnit(GameScene pGameScene, ArrayList<AiData> pAiData){
+        ArrayList<AiData> aiDataList = new ArrayList<>();
+        for( int i=0;i<pAiData.size();i++){
+            aiDataList.add(pAiData.get(i));
+        }
+        int entityListSize = calculateMaxAiInCam(aiDataList);
+        final EntityList aiList = new EntityList(pGameScene , entityListSize,aiDataList.size() - entityListSize) {
+            @Override
+            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
+                if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
+                float camx = pGameScene.getCamera().getCenterX();
+                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2)
+                    return false;
+                else
+                    return true;
+            }
+        };
+        for(int i=0;i<aiDataList.size();i++){
+            if(!aiList.isEntityListFull()) {
+                aiList.add(AiFactory.createAi(pGameScene,mAiTextureRegion,aiDataList.get(i)));
+                //aiList.add(ObstacleFactory.createSimpleObstacle(pGameScene, mObstacleTR[TR_OBT_FALL], aiDataList.get(i)));
+            }else{
+                aiList.add(aiDataList.get(i).getPosX(),aiDataList.get(i).getPosY());
+            }
+        }
+
+        mAiList = new ManagedEntityList(1);
+        mAiList.setList(0,aiList);
+        mAiList.ready();
     }
 
     private void createObstacle(GameScene pGameScene, ArrayList<ObstacleData> pObstacleData){
@@ -300,9 +348,6 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
                 penObsList.add(penObsDataList.get(i).getPosX(),penObsDataList.get(i).getPosY());
             }
         }
-
-
-
         mObstacleList = new ManagedEntityList(4);
         mObstacleList.setList(0,fallObsList);
         mObstacleList.setList(1,trapObsList);
@@ -324,7 +369,6 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
     private int calculateMaxObstacleInCam(ArrayList<ObstacleData> pDataList){
         AscendingObj ascendingObj = new AscendingObj();
         Collections.sort(pDataList,ascendingObj);
-
         int rightIndex =0;
         int leftIndex =0;
         int max = -1;
@@ -337,7 +381,23 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
                 max = rightIndex-leftIndex+1;
 
         }
+        return max;
+    }
+    private int calculateMaxAiInCam(ArrayList<AiData> pDataList){
+        AscendingObj ascendingObj = new AscendingObj();
+        Collections.sort(pDataList,ascendingObj);
+        int rightIndex =0;
+        int leftIndex =0;
+        int max = -1;
+        for(int i=0;i<pDataList.size();i++){
+            rightIndex =i;
+            while(pDataList.get(rightIndex).getPosX() - pDataList.get(leftIndex).getPosX() > GameScene.CAMERA_WIDTH*1.2f){
+                leftIndex++;
+            }
+            if(rightIndex - leftIndex+1 >=max)
+                max = rightIndex-leftIndex+1;
 
+        }
         return max;
     }
     private int calculateMaxEntityInCam(ArrayList<DataBlock> pDataList){

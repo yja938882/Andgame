@@ -1,6 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Data;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -9,14 +10,11 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
 import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.ObstacleData;
-import game.juan.andenginegame0.ygamelibs.Entity.Unit.AiData;
+import game.juan.andenginegame0.ygamelibs.Entity.Unit.AI.AiData;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerData;
 import game.juan.andenginegame0.ygamelibs.Static.StaticData;
 import game.juan.andenginegame0.ygamelibs.World.GameScene;
-
-import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.StaticType.GROUND;
 
 
 /**
@@ -31,8 +29,26 @@ public class DataManager implements ConstantsSet{
     private PlayerData mPlayerData;
     private ArrayList<AiData> mAiData;
 
+    private JSONObject mPlayerConfig;
+
+    private DBManager mDBManager;
+    private SQLiteDatabase db;
+    private  int dbVersion =4;
+    String dbName ="config.db";
+
     public void loadResources(GameScene pGameScene){
+        mDBManager = new DBManager(pGameScene.getActivity(),dbName,null,dbVersion);
+        try {
+            db = mDBManager.getReadableDatabase();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         loadMapData(pGameScene.getActivity(),"map0.json");
+        loadConfigData();
+    }
+    private void loadConfigData(){
+        mPlayerConfig= mDBManager.getConfigJSON(db,"player");
+        db.close();
     }
 
 
@@ -92,6 +108,26 @@ public class DataManager implements ConstantsSet{
             //Player 데이터 읽기
 
             //AI 데이터 일기
+            mAiData = new ArrayList<>();
+            JSONArray aiJSONs = mapObject.getJSONArray("ai");
+            for(int i=0;i<aiJSONs.length();i++){
+                JSONObject obj = aiJSONs.getJSONObject(i);
+                JSONArray dataJSONArray = obj.getJSONArray("data");
+                final float data[] = new float[dataJSONArray.length()];
+                for(int j=0;j<data.length;j++){
+                    data[j] = (float)dataJSONArray.getDouble(j);
+                }
+                int vClass=0;
+                int vType=0;
+                switch(obj.getString("type")){
+                    case "dd":
+                        vClass = DataBlock.AI_BODY_CLASS;
+                        vType = EntityType.MOVING_AI;
+                        break;
+                }
+                final AiData aiData = new AiData(vClass , vType, obj.getInt("x"),obj.getInt("y"));
+                mAiData.add(aiData);
+            }
 
         }catch (Exception e){
             e.printStackTrace();
@@ -100,8 +136,10 @@ public class DataManager implements ConstantsSet{
 
     public ArrayList<StaticData> getStaticData(){return mStaticMapData;}
     public ArrayList<ObstacleData> getObstacleData(){return mObstacleData;}
-
-
+    public ArrayList<AiData> getAiData(){return mAiData;}
+    public JSONObject getPlayerConfig(){
+        return mPlayerConfig;
+    }
     private static JSONObject loadJSONFromAsset(Context context, String filename){
         String json = null;
         JSONObject object = null;

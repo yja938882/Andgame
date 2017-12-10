@@ -20,6 +20,7 @@ public class Controller extends Sprite implements ConstantsSet{
 
     Controller(float pX, float pY,float pW, float pH, ITextureRegion pTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY,pW,pH, pTextureRegion, pVertexBufferObjectManager);
+        this.setAlpha(0.5f);
     }
     public void create(Unit pUnit,  int pAction, HUD pHud){
         this.mUnit = pUnit;

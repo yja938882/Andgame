@@ -61,8 +61,8 @@ public class ObstacleFactory implements ConstantsSet.EntityType{
         final BulletObstacle fallingObstacle = new BulletObstacle(pDataBlock.getPosX(),pDataBlock.getPosY(),iTiledTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
         fallingObstacle.setupBody(1);
         fallingObstacle.createBody(pGameScene,0,pDataBlock,30f,30f, BodyDef.BodyType.DynamicBody);
-        final long[] beAttackedFrameDuration ={20,20,20,20,20,20,20,20};
-        final int[] beAttackedFrameIndex ={0,1,2,3,4,5,6,7};
+        final long[] beAttackedFrameDuration ={40,40,40,50,50};
+        final int[] beAttackedFrameIndex ={0,1,2,3,4};
         fallingObstacle.createActionLock(1);
         fallingObstacle.setHitFrame(beAttackedFrameDuration,beAttackedFrameIndex,0);
         fallingObstacle.setForce(new Vector2(0,10),new Vector2(0,10));

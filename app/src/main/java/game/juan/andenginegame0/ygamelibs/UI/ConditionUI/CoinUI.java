@@ -27,7 +27,6 @@ public class CoinUI {
     public void addCoinNum(int add){
         coin_num+=add;
         coinnum.setText(""+coin_num);
-
     }
 }
 

@@ -3,6 +3,7 @@ package game.juan.andenginegame0.ygamelibs.Data;
 import com.badlogic.gdx.math.Vector2;
 
 import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
+import org.json.JSONObject;
 
 /**
  * Created by juan on 2017. 11. 26..

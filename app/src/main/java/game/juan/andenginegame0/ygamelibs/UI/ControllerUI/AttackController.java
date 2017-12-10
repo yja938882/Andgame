@@ -20,12 +20,16 @@ public class AttackController extends Controller {
 
     public AttackController(float pX, float pY, float pWidth, float pHeight, ITextureRegion pTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pWidth, pHeight, pTextureRegion, pVertexBufferObjectManager);
+        this.setAlpha(0.5f);
     }
     @Override
     public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y)
     {
         if (pSceneTouchEvent.isActionDown()) {
             mUnit.setAction(mAction);
+            this.setAlpha(1.0f);
+        }else{
+            this.setAlpha(0.5f);
         }
         return true;
     }

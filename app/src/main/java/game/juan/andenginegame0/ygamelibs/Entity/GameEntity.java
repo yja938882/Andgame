@@ -71,6 +71,16 @@ public abstract class GameEntity extends AnimatedSprite{
     ,float pCx, float pCy, float pW, float pH, BodyDef.BodyType pBodyType){
         final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
         mBodies[pBodyIndex] = PhysicsFactory.createBoxBody(pGameScene.getWorld(),pCx,pCy,pW,pH,pBodyType,fixtureDef);
+        mBodies[pBodyIndex].setUserData(pDataBlock);
+    }
+    public void createBody(GameScene pGameScene, int pBodyIndex, DataBlock pDataBlock
+    , float pCx, float pCy, float pR, BodyDef.BodyType pBodyType){
+        final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
+        mBodies[pBodyIndex] = PhysicsFactory.createCircleBody(pGameScene.getWorld(),pCx,pCy,pR,pBodyType,fixtureDef);
+        mBodies[pBodyIndex].setUserData(pDataBlock);
+        if(pBodyIndex==0){
+            pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(this, mBodies[0]));
+        }
     }
 
 
@@ -124,6 +134,7 @@ public abstract class GameEntity extends AnimatedSprite{
     protected DataBlock getDataBlock(int index){
         return (DataBlock)(mBodies[index].getUserData());
     }
+
 
     /*===Method================================*/
     protected void setLinearVelocity(int pIndex , Vector2 pV){

@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
@@ -30,7 +32,7 @@ public abstract class Unit extends GameEntity{
     /*===Fields===============================*/
     private float MAX_SPEED = 10;
     private float SPEED = 5f;
-    private Vector2 JUMP_FORCE = new Vector2(0,-10);
+    private Vector2 JUMP_FORCE = new Vector2(0,-20);
     private Vector2 GRAVITY = new Vector2(0,0);
 
     private long attackFrameDuration[];
@@ -43,6 +45,9 @@ public abstract class Unit extends GameEntity{
     private int beAttackedFrameIndex[];
     private long jumpFrameDuration[];
     private int  jumpFrameIndex[];
+
+    private boolean jumpLock= false;
+    private int jumpCounter =0;
 
     private int mAction = ConstantsSet.UnitAction.ACTION_STOP;
 
@@ -72,18 +77,25 @@ public abstract class Unit extends GameEntity{
         setupBody(2);
         createBody(pGameScene,BODY,pDataBlock,pBodyVertices, BodyDef.BodyType.DynamicBody);
        // footDataBlock.setClassifyData((pDataBlock.getClassifyData()&0xffffff00)| game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CLASSIFY.FOOT);
+       // createBody(pGameScene,BODY,pDataBlock,pDataBlock.getPosX(),pDataBlock.getPosY(),this.getWidthScaled()/2,BodyDef.BodyType.DynamicBody);
 
+       // createBody(pGameScene,FOOT,new PlayerData(DataBlock.PLAYER_FOOT_CLASS,pDataBlock.getType(),(int)pDataBlock.getPosX(),(int)pDataBlock.getPosY()),pFootWidth,pFootHeight, BodyDef.BodyType.DynamicBody);
+        createBody(pGameScene,FOOT,new PlayerData(DataBlock.PLAYER_FOOT_CLASS,pDataBlock.getType(),(int)pDataBlock.getPosX(),(int)pDataBlock.getPosY())
+                ,getBody(BODY).getWorldCenter().x,getBody(BODY).getWorldCenter().y,
+                pFootWidth/2, BodyDef.BodyType.DynamicBody);
 
-        createBody(pGameScene,FOOT,new PlayerData(DataBlock.PLAYER_FOOT_CLASS,pDataBlock.getType(),(int)pDataBlock.getPosX(),(int)pDataBlock.getPosY()),pFootWidth,pFootHeight, BodyDef.BodyType.DynamicBody);
         float bodyHeight = getHeightOfShape(pBodyVertices);
 
-        //Weld Body & Foot
-        WeldJointDef weldJoint = new WeldJointDef();
-        weldJoint.initialize(getBody(BODY),getBody(FOOT),getBody(BODY).getWorldCenter());
-        weldJoint.localAnchorA.set(0,0);
-        weldJoint.localAnchorB.set(0,-bodyHeight/2f);
-        pGameScene.getWorld().createJoint(weldJoint);
-        getBody(BODY).setFixedRotation(true);
+       getBody(BODY).setFixedRotation(true);
+
+        RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
+        revoluteJointDef.initialize(getBody(BODY),getBody(FOOT),getBody(BODY).getWorldCenter());
+        revoluteJointDef.enableMotor=true;
+        revoluteJointDef.motorSpeed = 10f;
+        revoluteJointDef.localAnchorA.set(0,bodyHeight/2);
+       // revoluteJointDef.localAnchorA.set(0,getWidthScaled()/(4*32f));
+        revoluteJointDef.localAnchorB.set(0,0);
+        pGameScene.getWorld().createJoint(revoluteJointDef);
     }
 
 
@@ -154,8 +166,15 @@ public abstract class Unit extends GameEntity{
     /*===Inner Method================================*/
 
     private void update(){
-        PlayerData bodyData =(PlayerData) getDataBlock(BODY);
-        PlayerData footData = (PlayerData)getDataBlock(FOOT);
+        if(jumpLock)
+            jumpCounter++;
+        if(jumpCounter>=10){
+            jumpCounter=0;
+            jumpLock = false;
+        }
+
+        UnitData bodyData =(UnitData) getDataBlock(BODY);
+        UnitData footData = (UnitData)getDataBlock(FOOT);
         if( (bodyData).isNeedToBeAttacked()){
             mAction = ConstantsSet.UnitAction.ACTION_HITTED;
             (bodyData).setNeedToBeAttacked(false);
@@ -171,7 +190,8 @@ public abstract class Unit extends GameEntity{
 
                 this.setFlippedHorizontal(false);
                 if(getBody(BODY).getLinearVelocity().x<=MAX_SPEED)
-                    setLinearVelocity(BODY,SPEED,getBody(BODY).getLinearVelocity().y);
+                 //   setLinearVelocity(BODY,SPEED,getBody(BODY).getLinearVelocity().y);
+                    getBody(FOOT).setAngularVelocity(30f);
                 if(footData.isInTheAir()){
                     animate(jumpFrameDuration,jumpFrameIndex,false);
                 } else{
@@ -185,7 +205,8 @@ public abstract class Unit extends GameEntity{
 
                 this.setFlippedHorizontal(true);
                 if(getBody(BODY).getLinearVelocity().x>= -MAX_SPEED)
-                    setLinearVelocity(BODY,-SPEED,getBody(BODY).getLinearVelocity().y);
+                    //setLinearVelocity(BODY,-SPEED,getBody(BODY).getLinearVelocity().y);
+                    getBody(FOOT).setAngularVelocity(-30f);
                 if(footData.isInTheAir()){
                     animate(jumpFrameDuration,jumpFrameIndex,false);
                 }else{
@@ -195,16 +216,18 @@ public abstract class Unit extends GameEntity{
 
                 break;
             case ConstantsSet.UnitAction.ACTION_JUMP:
+                if(jumpLock)
+                    return;
                 if(!footData.isInTheAir()){
+                    jumpLock = true;
                     applyLinearImpulse(BODY,JUMP_FORCE);
                     animate(jumpFrameDuration,jumpFrameIndex,false);
                 }
-
                 break;
             case ConstantsSet.UnitAction.ACTION_STOP:
-
                 if(!footData.isInTheAir()){
-                    setLinearVelocity(BODY,new Vector2(0,0));
+                    //setLinearVelocity(BODY,new Vector2(0,0));
+                    getBody(FOOT).setAngularVelocity(0);
                     stopAnimation(0);
                 }
 
@@ -229,7 +252,6 @@ public abstract class Unit extends GameEntity{
     @Override
     protected void onManagedUpdate(float pSecondsElapsed) {
         super.onManagedUpdate(pSecondsElapsed);
-        Log.d("TH_test","Unit");
         update();
         applyForce(BODY,GRAVITY);
         applyForce(FOOT,GRAVITY);
@@ -238,6 +260,9 @@ public abstract class Unit extends GameEntity{
     @Override
     public void revive(float pPx, float pPy) {
 
+    }
+    public Vector2 getPhysicsBodyPos(){
+        return getBody(BODY).getPosition();
     }
 
     private float getHeightOfShape(Vector2[] pVertices){

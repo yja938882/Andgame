@@ -43,7 +43,8 @@ public interface ConstantsSet {
     interface Physics{
         /*=== Density & Friction =================*/
         float DENSITY_UNIT = 1.0f;
-        float FRICTION_UNIT=0.0f;
+        float FRICTION_UNIT=2.0f;
+        float FRICTION_ZERO=0.0f;
         /*===Category Bits========================*/
         short PLAYER_BODY_CATG_BITS        = 0x0001;
         short PLAYER_FOOT_CATG_BITS        = 0x0002;
@@ -98,6 +99,7 @@ public interface ConstantsSet {
 
         int STOP_AI = 10;
         int FLY_AI = 11;
+        int MOVING_AI = 12;
 
         int OBS_MOVING_GROUND = 21;
         int OBS_TRAP = 22;

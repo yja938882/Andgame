@@ -51,5 +51,10 @@ public class StartTestActivity extends Activity {
       //  finish();
     }
 
+    public void onClickDBTest(View v){
+        Intent i = new Intent(StartTestActivity.this,DBTestActivity.class);
+        startActivity(i);
+    }
+
 
 }

@@ -96,12 +96,12 @@ public class UIManager implements IManager,ConstantsSet {
     private void loadControllerGraphicResource(GameScene pGameScene){
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/ui/");
 
-        final BitmapTextureAtlas leftBTA = new BitmapTextureAtlas(pGameScene.getActivity().getTextureManager(), 80,80,TextureOptions.BILINEAR);
+        final BitmapTextureAtlas leftBTA = new BitmapTextureAtlas(pGameScene.getActivity().getTextureManager(), 68,67,TextureOptions.BILINEAR);
         mControllerTRs[LEFT] = BitmapTextureAtlasTextureRegionFactory.
                 createFromAsset(leftBTA,pGameScene.getActivity(),"left.png",0,0);
         leftBTA.load();
 
-        final BitmapTextureAtlas rightBTA = new BitmapTextureAtlas(pGameScene.getActivity().getTextureManager(), 80,80,TextureOptions.BILINEAR);
+        final BitmapTextureAtlas rightBTA = new BitmapTextureAtlas(pGameScene.getActivity().getTextureManager(), 68,67,TextureOptions.BILINEAR);
         mControllerTRs[RIGHT] = BitmapTextureAtlasTextureRegionFactory.
                 createFromAsset(rightBTA,pGameScene.getActivity(),"right.png",0,0);
         rightBTA.load();
@@ -161,11 +161,11 @@ public class UIManager implements IManager,ConstantsSet {
                 pGameScene.getActivity().getEngine().getVertexBufferObjectManager());
 
         mControllers[LEFT]=new OneWayMoveController(10,CAMERA_HEIGHT-(mControllerTRs[LEFT].getHeight()+mControllerTRs[LEFT].getWidth())
-                ,80,80,mControllerTRs[LEFT],
+                ,100,100,mControllerTRs[LEFT],
                 pGameScene.getActivity().getEngine().getVertexBufferObjectManager());
 
-        mControllers[RIGHT] = new OneWayMoveController(20+mControllerTRs[RIGHT].getWidth(),CAMERA_HEIGHT-(mControllerTRs[RIGHT].getHeight()+mControllerTRs[RIGHT].getWidth())
-                ,80,80,mControllerTRs[RIGHT],
+        mControllers[RIGHT] = new OneWayMoveController(40+mControllerTRs[RIGHT].getWidth(),CAMERA_HEIGHT-(mControllerTRs[RIGHT].getHeight()+mControllerTRs[RIGHT].getWidth())
+                ,100,100,mControllerTRs[RIGHT],
                 pGameScene.getActivity().getEngine().getVertexBufferObjectManager());
 
         mControllers[UP]= new OneWayMoveController(433*2,
@@ -196,13 +196,13 @@ public class UIManager implements IManager,ConstantsSet {
         mHealthUI = new HealthUI(3,10,10,36,36,4);
         mHealthUI.setup(heartTextureRegion,pGameScene.getActivity().getEngine(),mHud);
 
-        final SettingButton settingButton = new SettingButton(CAMERA_WIDTH-50,20,24,24,settingTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
+        final SettingButton settingButton = new SettingButton(CAMERA_WIDTH-80,20,50,50,settingTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
         settingButton.setup(pGameScene, pGameScene.getActivity());
         mHud.registerTouchArea(settingButton);
         mHud.attachChild(settingButton);
 
-        final Sprite inven = new Sprite(128,CAMERA_HEIGHT-64,invenTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
-        mHud.attachChild(inven);
+      //  final Sprite inven = new Sprite(128,CAMERA_HEIGHT-64,invenTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
+      //  mHud.attachChild(inven);
 
         mCoinUI = new CoinUI();
         mCoinUI.setup(coinTextureRegion,font,pGameScene.getActivity().getEngine(),mHud);

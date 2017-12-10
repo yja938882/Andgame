@@ -16,10 +16,12 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
     public static FixtureDef createFixtureDef(int pClass){
         FixtureDef fixtureDef = null;
         short category=0x000, mask=0x000;
+        float friction = ConstantsSet.Physics.FRICTION_UNIT;
         switch(pClass){
             case ENTITY|UNIT|PLAYER|BODY:
                 category = PLAYER_BODY_CATG_BITS;
                 mask = PLAYER_BODY_MASK_BITS;
+                friction = FRICTION_ZERO;
                 Log.d("CREATW","PLAYER BODY "+PLAYER_BODY_CATG_BITS+ "  :"+PLAYER_BODY_MASK_BITS);
                 break;
             case ENTITY|UNIT|PLAYER|FOOT:
@@ -55,7 +57,7 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
                 Log.d("CREATW","GROUND");
                 break;
         }
-        fixtureDef = PhysicsFactory.createFixtureDef(ConstantsSet.Physics.DENSITY_UNIT,0f, ConstantsSet.Physics.FRICTION_UNIT);
+        fixtureDef = PhysicsFactory.createFixtureDef(ConstantsSet.Physics.DENSITY_UNIT,0f, friction);
         fixtureDef.filter.categoryBits = category;
         fixtureDef.filter.maskBits = mask;
         return fixtureDef;

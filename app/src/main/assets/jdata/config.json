@@ -1,0 +1,58 @@
+//ai
+//id          :
+//src         :
+//gdata       : HP , SPEED, JUMP_SPEED
+//body        : rect | circle | octagon |vertices
+//body_data[] :
+//foot        : rect | circle | none
+//foot_data[] :
+//cmds []     :
+{
+  "player":
+  {
+    "id":"player",
+    "src":"player_s.png",
+    "data":
+    {
+      "body":"octagon",      "body_data":[-8,-4,8,4],
+      "foot":"circle",      "foot_data":[4],
+      "hp":3,
+      "speed":10,     "jump":20,
+      "movingFrameIndex"    :[0  ,1  ,2  ,3  ,4  ,5  ,0],
+      "movingFrameDuration" :[25 ,50 ,50 ,50 ,50 ,50 ,25],
+      "attackFrameIndex"    :[12  ,13 ,14 ,15 ,12],
+      "attackFrameDuration" :[50  ,100,100,100,50],
+      "dieFrameIndex"       :[50],
+      "dieFrameDuration"    :[0],
+      "beAttackedFrameIndex"   :[32,33,34,35,36,37,38,32],
+      "beAttackedFrameDuration":[50,50,50,50,50,50,50,50],
+      "jumpFrameIndex"         :[0],
+      "jumpFrameDuration"      :[50]
+    }
+  },
+
+  "ai":
+  [
+    {
+      "id":"",
+      "src":"",
+      "data":
+      {
+        "body":"octagon",      "body_data":[-8,-4,8,4],
+        "foot":"circle",      "foot_data":[4],
+        "hp":3,
+        "speed":10,     "jump":20,
+        "movingFrameIndex"    :[0  ,1  ,2  ,3  ,4  ,5  ,0],
+        "movingFrameDuration" :[25 ,50 ,50 ,50 ,50 ,50 ,25],
+        "attackFrameIndex"    :[12  ,13 ,14 ,15 ,12],
+        "attackFrameDuration" :[50  ,100,100,100,50],
+        "dieFrameIndex"       :[],
+        "dieFrameDuration"    :[],
+        "beAttackedFrameIndex"   :[32,33,34,35,36,37,38,32],
+        "beAttackedFrameDuration":[50,50,50,50,50,50,50,50],
+        "jumpFrameIndex"         :[0],
+        "jumpFrameDuration"      :[50]
+      }
+    }
+  ]
+}

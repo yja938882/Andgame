@@ -1,4 +1,6 @@
-package game.juan.andenginegame0.ygamelibs.Entity.Unit;
+package game.juan.andenginegame0.ygamelibs.Entity.Unit.AI;
+
+import game.juan.andenginegame0.ygamelibs.Entity.Unit.UnitData;
 
 /**
  * Created by juan on 2017. 11. 29..
