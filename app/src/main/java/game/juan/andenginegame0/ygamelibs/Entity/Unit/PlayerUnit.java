@@ -60,21 +60,9 @@ public class PlayerUnit extends Unit{
     }
 
     private void setConfigData(JSONObject pConfigData){
-        long movingFrameDuration[];
-        int movingFrameIndex[];
-
-        long attackFrameDuration[];
-        int attackFrameIndex[];
-
-        long beAttackedFrameDuration[];
-        int beAttackedFrameIndex[];
-
-        long jumpFrameDuration[];
-        int jumpFrameIndex[];
-
-        long dieFrameDuration[];
-        int dieFrameIndex[];
-
+        long movingFrameDuration[], attackFrameDuration[], jumpFrameDuration[], dieFrameDuration[], beAttackedFrameDuration[];
+        int movingFrameIndex[], attackFrameIndex[],  jumpFrameIndex[], dieFrameIndex[],beAttackedFrameIndex[];
+        int bodyShape[], footShape[];
         try {
             JSONArray fi = pConfigData.getJSONArray("movingFrameIndex");
             JSONArray fd = pConfigData.getJSONArray("movingFrameDuration");
@@ -84,6 +72,7 @@ public class PlayerUnit extends Unit{
                 movingFrameIndex[i] = fi.getInt(i);
                 movingFrameDuration[i] = fi.getLong(i);
             }
+            setMovingFrame(movingFrameDuration,movingFrameIndex,-1);
 
             fi=pConfigData.getJSONArray("attackFrameIndex");
             fd= pConfigData.getJSONArray("attackFrameDuration");
@@ -93,28 +82,45 @@ public class PlayerUnit extends Unit{
                 attackFrameIndex[i] = fi.getInt(i);
                 attackFrameDuration[i] = fi.getLong(i);
             }
+            setMovingFrame(attackFrameDuration,attackFrameIndex,0);
 
             fi=pConfigData.getJSONArray("dieFrameIndex");
             fd = pConfigData.getJSONArray("dieFrameDuration");
             dieFrameIndex = new int[fi.length()];
+            dieFrameDuration = new long[fd.length()];
             for(int i=0;i<fi.length();i++){
                 dieFrameIndex[i] = fi.getInt(i);
+                dieFrameDuration[i] = fd.getLong(i);
             }
-//요서부터
+            setMovingFrame(dieFrameDuration,dieFrameIndex,-1);
+
             fi=pConfigData.getJSONArray("beAttackedFrameIndex");
-            attackFrameIndex = new int[fi.length()];
+            fd = pConfigData.getJSONArray("beAttackedDuration");
+            beAttackedFrameIndex = new int[fi.length()];
+            beAttackedFrameDuration = new long[fd.length()];
             for(int i=0;i<fi.length();i++){
-                attackFrameIndex[i] = fi.getInt(i);
+                beAttackedFrameIndex[i] = fi.getInt(i);
+                beAttackedFrameDuration[i] = fd.getLong(i);
             }
+            setAttackFrame(beAttackedFrameDuration,beAttackedFrameIndex,1);
 
             fi=pConfigData.getJSONArray("jumpFrameIndex");
+            fd=pConfigData.getJSONArray("jumpFrameDuration");
             jumpFrameIndex = new int[fi.length()];
+            jumpFrameDuration = new long[fd.length()];
             for(int i=0;i<fi.length();i++){
                 jumpFrameIndex[i] = fi.getInt(i);
+                jumpFrameDuration[i] = fd.getLong(i);
             }
+            setJumpFrame(jumpFrameDuration,jumpFrameIndex,-1);
+
+
         }catch (Exception e){
             e.printStackTrace();
         }
 
+    }
+    public float getXSpeed(){
+        return this.getBody(0).getLinearVelocity().x;
     }
 }

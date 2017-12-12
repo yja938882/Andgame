@@ -160,7 +160,7 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
         playerUnit = new PlayerUnit(50,300,mPlayerTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
         mPlayerDataBlock = new PlayerData(DataBlock.PLAYER_BODY_CLASS, ConstantsSet.EntityType.PLAYER,50,300);
         playerUnit.createPlayer(pGameScene,mPlayerDataBlock,pGameScene.getDataManager().getPlayerConfig());
-        pGameScene.getCamera().setChaseEntity(playerUnit);
+       // pGameScene.getCamera().setChaseEntity(playerUnit);
        // ;
         final int colnum = 8;
         final long walk_frame_du[] ={25,50,50,50,50,50,25};

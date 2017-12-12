@@ -83,6 +83,10 @@ public abstract class GameEntity extends AnimatedSprite{
         }
     }
 
+    public void createBody(GameScene pGameScene, int pBodyIndex, DataBlock pDataBlock){
+
+    }
+
 
 
     public void createActionLock(final int pLockSize){

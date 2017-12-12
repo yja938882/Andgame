@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.IEntity;
@@ -77,9 +78,11 @@ public class GameScene extends Scene {
             public void onUpdate(float pSecondsElapsed) {
                 mEntityManager.manage();
                 clearDetachQueue();
-                camera.updateChaseEntity();
+               // camera.updateChaseEntity();
+                camera.setCenter(mEntityManager.getPlayerUnit().getX(),mEntityManager.getPlayerUnit().getY());
                 camera.setBounds(camera.getCenterX()-camera.getWidth()/2,
-                        0,10000,10000);
+                        0,10000,960);
+                Log.d("CMA!!",""+camera.getCenterY()+" "+camera.getCenterX());
             }
             @Override
             public void reset() {
@@ -105,12 +108,15 @@ public class GameScene extends Scene {
     public void loadResources(){
        // mEntityManager.loadGraphics(this);
       ///  mItemManager.loadItemGraphics(activity);
-
+        Log.d("DDD","1") ;
         mDataManager.loadResources(this);
-
+        Log.d("DDD","2") ;
         mStaticManager.loadResource(this);
+        Log.d("DDD","3") ;
         mEntityManager.loadResource(this);
+        Log.d("DDD","4") ;
         mUiManager.loadResource(this);
+        Log.d("DDD","5") ;
     }
 
     public void createScene(BaseGameActivity activity, BoundCamera camera){
@@ -122,15 +128,14 @@ public class GameScene extends Scene {
         mEntityManager.createOnGame(this);
         mUiManager.createOnGame(this);
 
-
         mEntityManager.getPlayerUnit().registerUI(mUiManager);
 
         //For debugging
-        DebugRenderer dr = new DebugRenderer(world.getWorld(),activity.getVertexBufferObjectManager());
-        dr.setColor(Color.BLUE);
-        dr.setDrawBodies(true);
-        dr.setDrawJoints(true);
-        this.attachChild(dr);
+       // DebugRenderer dr = new DebugRenderer(world.getWorld(),activity.getVertexBufferObjectManager());
+       // dr.setColor(Color.BLUE);
+       // dr.setDrawBodies(true);
+       // dr.setDrawJoints(true);
+      //  this.attachChild(dr);
 
     }
     private void createUnits(BaseGameActivity activity,Camera camera){

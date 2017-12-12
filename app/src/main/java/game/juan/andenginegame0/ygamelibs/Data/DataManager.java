@@ -37,18 +37,25 @@ public class DataManager implements ConstantsSet{
     String dbName ="config.db";
 
     public void loadResources(GameScene pGameScene){
+        Log.d("DDD","11");
         mDBManager = new DBManager(pGameScene.getActivity(),dbName,null,dbVersion);
         try {
             db = mDBManager.getReadableDatabase();
         }catch (Exception e){
+            Log.d("DDD","12.5");
             e.printStackTrace();
         }
+        Log.d("DDD","12");
         loadMapData(pGameScene.getActivity(),"map0.json");
+        Log.d("DDD","13");
         loadConfigData();
+        Log.d("DDD","13");
     }
     private void loadConfigData(){
         mPlayerConfig= mDBManager.getConfigJSON(db,"player");
-        db.close();
+        Log.d("DDD","14");
+        //db.close();
+
     }
 
 

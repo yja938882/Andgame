@@ -1,12 +1,3 @@
-//ai
-//id          :
-//src         :
-//gdata       : HP , SPEED, JUMP_SPEED
-//body        : rect | circle | octagon |vertices
-//body_data[] :
-//foot        : rect | circle | none
-//foot_data[] :
-//cmds []     :
 {
   "player":
   {

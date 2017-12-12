@@ -72,7 +72,8 @@ public class DBManager extends SQLiteOpenHelper{
         String sql = "select * from "+CONFIG_TABLE+" where "+KEY_NAME+" ='"+pKeyName+"';";
         Cursor cursor = db.rawQuery(sql,null);
         cursor.moveToFirst();
-        while(!cursor.isAfterLast()){
+        Log.d("DDD","15");
+        while(cursor.moveToNext()){
             try {
                 object = new JSONObject(cursor.getString(2));
             }catch (Exception e){
@@ -80,6 +81,7 @@ public class DBManager extends SQLiteOpenHelper{
             }
         }
         cursor.close();
+        Log.d("DDD","16");
         return object;
     }
     public String getConfigSrc(SQLiteDatabase db, String pKeyName){
