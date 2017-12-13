@@ -47,44 +47,26 @@ public abstract class GameEntity extends AnimatedSprite{
     public void setupBody(final int pBodySize){
         mBodies = new Body[pBodySize];
     }
-    public void createBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType){
+
+    public void createVerticesBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType){
         final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
 
         mBodies[pBodyIndex] = PhysicsFactory.createTrianglulatedBody(pGameScene.getWorld(),
                 this,createBodyShape(pVertices),pBodyType,fixtureDef);
         mBodies[pBodyIndex].setUserData(pDataBlock);
-        if(pBodyIndex ==0) {//body index 0 is main body
-            pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(this, mBodies[0]));
-        }
-    }
-    public void createBody(GameScene pGameScene, int pBodyIndex, DataBlock pDataBlock, float pWidth, float pHeight, BodyDef.BodyType pBodyType){
-        final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
-        mBodies[pBodyIndex] = PhysicsFactory.createBoxBody(pGameScene.getWorld(),this.getX(), this.getY(),
-                pWidth,pHeight,pBodyType,fixtureDef);
-        mBodies[pBodyIndex].setUserData(pDataBlock);
-        if(pBodyIndex ==0) {//body index 0 is main body
-            pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(this, mBodies[0]));
-        }
-    }
-
-    public void createBody(GameScene pGameScene, int pBodyIndex, DataBlock pDataBlock
-    ,float pCx, float pCy, float pW, float pH, BodyDef.BodyType pBodyType){
-        final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
-        mBodies[pBodyIndex] = PhysicsFactory.createBoxBody(pGameScene.getWorld(),pCx,pCy,pW,pH,pBodyType,fixtureDef);
-        mBodies[pBodyIndex].setUserData(pDataBlock);
-    }
-    public void createBody(GameScene pGameScene, int pBodyIndex, DataBlock pDataBlock
-    , float pCx, float pCy, float pR, BodyDef.BodyType pBodyType){
-        final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
-        mBodies[pBodyIndex] = PhysicsFactory.createCircleBody(pGameScene.getWorld(),pCx,pCy,pR,pBodyType,fixtureDef);
-        mBodies[pBodyIndex].setUserData(pDataBlock);
         if(pBodyIndex==0){
             pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(this, mBodies[0]));
         }
     }
-
-    public void createBody(GameScene pGameScene, int pBodyIndex, DataBlock pDataBlock){
-
+    public void createCircleBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType){
+        final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
+        Log.d("Exception"," "+mBodies.length);
+        mBodies[pBodyIndex] = PhysicsFactory.createCircleBody(pGameScene.getWorld(),
+                pVertices[0].x,pVertices[0].y,pVertices[0].x,pBodyType,fixtureDef);
+        mBodies[pBodyIndex].setUserData(pDataBlock);
+        if(pBodyIndex==0){
+            pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(this, mBodies[0]));
+        }
     }
 
 

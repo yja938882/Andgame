@@ -13,7 +13,7 @@ public class DBTestActivity extends AppCompatActivity {
 
     private DBManager mDBManager;
     String dbName ="config.db";
-    int dbVersion =4;
+    int dbVersion =5;
     private SQLiteDatabase db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,8 @@ public class DBTestActivity extends AppCompatActivity {
             db = mDBManager.getReadableDatabase();
             TextView tv = (TextView)findViewById(R.id.dbtid);
             tv.setText(mDBManager.selectData(db,"ai")+"\n" +
-                    mDBManager.selectData(db,"player"));
+                    mDBManager.selectData(db,"player")+"\n\n"+
+            mDBManager.getConfigJSON(db,"player"));
         }catch (SQLiteException e){
             e.printStackTrace();
         }

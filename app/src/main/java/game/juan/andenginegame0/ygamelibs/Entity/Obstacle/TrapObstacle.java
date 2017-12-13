@@ -1,9 +1,12 @@
 package game.juan.andenginegame0.ygamelibs.Entity.Obstacle;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
@@ -22,16 +25,23 @@ public class TrapObstacle extends GameEntity{
     private static final int STATE_SLEEP= 2;
     private static final int STATE_READY = 3;
 
+    public static final int VERTICAL_SHAPE =0;
+    public static final int CIRCLE_SHAPE =1;
+    public static final int NONE_SHAPE = 2;
+
     private long hitFrameDuration[];
     private int hitFrameIndex[];
 
     private boolean isTemp;
     private int mState;
 
+    private Vector2[] bodyShape;
+    private int bodySType;
 
     public TrapObstacle(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
+    /*
     @Override
     public void createBody(GameScene pGameScene, int pBodyIndex, DataBlock pDataBlock, float pWidth, float pHeight, BodyDef.BodyType pBodyType) {
         super.createBody(pGameScene,pBodyIndex,pDataBlock,pWidth,pHeight,pBodyType);
@@ -42,7 +52,17 @@ public class TrapObstacle extends GameEntity{
             isTemp = true;
         }
 
+    }*/
+    public void createObstacle(GameScene pGameScene, DataBlock pDataBlock){
+        setupBody(1);
+        if(bodySType==VERTICAL_SHAPE){
+            createVerticesBody(pGameScene,0,pDataBlock,bodyShape, BodyDef.BodyType.StaticBody);
+        }else{
+            createCircleBody(pGameScene,0,pDataBlock,bodyShape, BodyDef.BodyType.StaticBody);
+        }
+        transform(pDataBlock.getPosX(),pDataBlock.getPosY());
     }
+
     @Override
     public void revive(float pPx, float pPy) {
         mState = STATE_READY;
@@ -88,6 +108,53 @@ public class TrapObstacle extends GameEntity{
                 lockLimit+=((float)du)/1000f;
             }
             setActionLock(pLockIndex,lockLimit);
+        }
+    }
+    public void setConfigData(JSONObject pConfigData){
+        setAnimationConfigData(pConfigData);
+        setPhysicsConfigData(pConfigData);
+    }
+    private void setAnimationConfigData(JSONObject pConfigData){
+        try{
+            if((pConfigData.getString("anim")).contentEquals("no")){
+                return;
+            }
+            createActionLock(1);
+            JSONArray fi = pConfigData.getJSONArray("animFrameIndex");
+            JSONArray fd = pConfigData.getJSONArray("animFrameDuration");
+
+            hitFrameIndex = new int[fi.length()];
+            hitFrameDuration = new long[fd.length()];
+            for(int i=0;i<fi.length();i++){
+                hitFrameIndex[i] = fi.getInt(i);
+                hitFrameDuration[i] = fd.getLong(i);
+            }
+
+            float lockLimit =0;
+            for(long du : hitFrameDuration){
+                lockLimit+=((float)du)/1000f;
+            }
+            setActionLock(0,lockLimit);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    private void setPhysicsConfigData(JSONObject pConfigData){
+        try{
+            JSONArray bodyX = pConfigData.getJSONArray("body_vx");
+            JSONArray bodyY = pConfigData.getJSONArray("body_vy");
+            bodyShape = new Vector2[bodyX.length()];
+            for(int i=0;i<bodyX.length();i++){
+                bodyShape[i] = new Vector2((float)(bodyX.getDouble(i)),(float)bodyY.getDouble((i)));
+            }
+            String bodyType = pConfigData.getString("body");
+            switch (bodyType){
+                case "vertices" : bodySType = VERTICAL_SHAPE; break;
+                case "circle": bodySType = CIRCLE_SHAPE; break;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

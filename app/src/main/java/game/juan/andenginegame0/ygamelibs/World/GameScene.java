@@ -77,6 +77,7 @@ public class GameScene extends Scene {
             @Override
             public void onUpdate(float pSecondsElapsed) {
                 mEntityManager.manage();
+                Log.d("CDEBUG","px:"+mEntityManager.getPlayerUnit().getX()+"py:"+mEntityManager.getPlayerUnit().getY());
                 clearDetachQueue();
                // camera.updateChaseEntity();
                 camera.setCenter(mEntityManager.getPlayerUnit().getX(),mEntityManager.getPlayerUnit().getY());
@@ -131,11 +132,11 @@ public class GameScene extends Scene {
         mEntityManager.getPlayerUnit().registerUI(mUiManager);
 
         //For debugging
-       // DebugRenderer dr = new DebugRenderer(world.getWorld(),activity.getVertexBufferObjectManager());
-       // dr.setColor(Color.BLUE);
-       // dr.setDrawBodies(true);
-       // dr.setDrawJoints(true);
-      //  this.attachChild(dr);
+        DebugRenderer dr = new DebugRenderer(world.getWorld(),activity.getVertexBufferObjectManager());
+        dr.setColor(Color.BLUE);
+        dr.setDrawBodies(true);
+        dr.setDrawJoints(true);
+        this.attachChild(dr);
 
     }
     private void createUnits(BaseGameActivity activity,Camera camera){

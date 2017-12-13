@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.InputStream;
@@ -68,20 +69,21 @@ public class DBManager extends SQLiteOpenHelper{
         return ret;
     }
     public JSONObject getConfigJSON(SQLiteDatabase db, String pKeyName){
+        Log.d("JSON!!","get cf");
         JSONObject object=null;
         String sql = "select * from "+CONFIG_TABLE+" where "+KEY_NAME+" ='"+pKeyName+"';";
         Cursor cursor = db.rawQuery(sql,null);
         cursor.moveToFirst();
-        Log.d("DDD","15");
-        while(cursor.moveToNext()){
+        while(!cursor.isAfterLast()){
             try {
                 object = new JSONObject(cursor.getString(2));
+                cursor.moveToNext();
+                Log.d("JSON!!","obj : "+object);
             }catch (Exception e){
                 e.printStackTrace();
             }
         }
         cursor.close();
-        Log.d("DDD","16");
         return object;
     }
     public String getConfigSrc(SQLiteDatabase db, String pKeyName){
@@ -107,8 +109,13 @@ public class DBManager extends SQLiteOpenHelper{
     private void loadConfigurationData(SQLiteDatabase db){
         try{
             JSONObject configObject = loadJSONFromAsset(c,"jdata/config.json");
-            JSONObject playerObject = configObject.getJSONObject("player");
-            insertConfig(db,playerObject.getString("id"),playerObject.getString("src"),(playerObject.getJSONObject("data")).toString());
+            JSONArray entityArray = configObject.getJSONArray("entity");
+            for(int i=0;i<entityArray.length();i++){
+                insertConfig(db,
+                        ((JSONObject)entityArray.get(i)).getString("id"),
+                        ((JSONObject)entityArray.get(i)).getString("src"),
+                        ((JSONObject)entityArray.get(i)).getJSONObject("data").toString());
+            }
         }
         catch (Exception e){
             e.printStackTrace();

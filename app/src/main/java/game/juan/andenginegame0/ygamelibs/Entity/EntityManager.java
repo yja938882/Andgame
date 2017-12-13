@@ -158,26 +158,10 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
 
     private void createPlayerUnit(GameScene pGameScene){
         playerUnit = new PlayerUnit(50,300,mPlayerTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
-        mPlayerDataBlock = new PlayerData(DataBlock.PLAYER_BODY_CLASS, ConstantsSet.EntityType.PLAYER,50,300);
-        playerUnit.createPlayer(pGameScene,mPlayerDataBlock,pGameScene.getDataManager().getPlayerConfig());
-       // pGameScene.getCamera().setChaseEntity(playerUnit);
-       // ;
-        final int colnum = 8;
-        final long walk_frame_du[] ={25,50,50,50,50,50,25};
-        final int walk_frame_i[] = {0,1,2,3,4,5,0};
-        playerUnit.setMovingFrame(walk_frame_du,walk_frame_i,-1);
-
-        final long attack_frame_du[] = {50,100,100,100,50};
-        final int attack_frame_i[] = {4+colnum*1,5+colnum*1,6+colnum*1,7+colnum*1, 4+colnum*1};
-        playerUnit.setAttackFrame(attack_frame_du,attack_frame_i,0);
-
-        final long hitted_frame_du[]={50,50,50,50,50,50,50,50};
-        final int hitted_frame_i[] ={colnum*4,1+colnum*4,2+colnum*4,3+colnum*4,4+colnum*4,5+colnum*4,6+colnum*4,0+colnum*4};
-        playerUnit.setBeAttackedFrame(hitted_frame_du,hitted_frame_i,1);
-
-        final long jump_frame_du[] ={50};
-        final int jump_frame_i[] = {0};
-        playerUnit.setJumpFrame(jump_frame_du,jump_frame_i,-1);
+        mPlayerDataBlock = new PlayerData(DataBlock.PLAYER_BODY_CLASS, ConstantsSet.EntityType.PLAYER,(int)(50f/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),((int)(50/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT)));
+        //playerUnit.createPlayer(pGameScene,mPlayerDataBlock,pGameScene.getDataManager().getPlayerConfig());
+        playerUnit.setConfigData(pGameScene.getDataManager().getPlayerConfig());
+        playerUnit.createPlayer(pGameScene,mPlayerDataBlock);
         playerUnit.setActive(true);
         pGameScene.attachChild(playerUnit);
     }

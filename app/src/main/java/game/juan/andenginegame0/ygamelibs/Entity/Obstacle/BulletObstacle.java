@@ -7,6 +7,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.concurrent.TimeUnit;
 
@@ -27,6 +29,11 @@ public class BulletObstacle extends GameEntity{
     private static final int STATE_WORKING = 2;
     private static final int STATE_RELOAD = 3;
     private static final int STATE_HIT = 4;
+
+    public static final int VERTICAL_SHAPE =0;
+    public static final int CIRCLE_SHAPE =1;
+    public static final int NONE_SHAPE = 2;
+
     /*===Fields===========================*/
     private float mOriginX;
     private float mOriginY;
@@ -39,35 +46,43 @@ public class BulletObstacle extends GameEntity{
     private float WORKING_TIME_LIMIT;
 
     private Vector2 mImpulseForce;
-    private Vector2 mApplyForce = new Vector2(0,0);
+    private Vector2 mApplyForce ;//= new Vector2(0,0);
 
     private int mState = STATE_RELOAD;
+
+    private Vector2 bodyShape[];
+    private int bodySType;
 
     /*===Constructor======================*/
     public BulletObstacle(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
+    /*
     @Override
     public void createBody(GameScene pGameScene, int pBodyIndex, DataBlock pDataBlock, float pWidth, float pHeight, BodyDef.BodyType pBodyType) {
         super.createBody(pGameScene,pBodyIndex,pDataBlock,pWidth,pHeight,pBodyType);
+        final Vector2 vertices[] = {new }
         getBody(0).setFixedRotation(true);
-    }
+    }*/
+    public void createObstacle(GameScene pGameScene, DataBlock pDataBlock){
+        setupBody(1);
+        if(bodySType ==VERTICAL_SHAPE){
+            createVerticesBody(pGameScene,0,pDataBlock,bodyShape, BodyDef.BodyType.DynamicBody);
+        }else{
+            createCircleBody(pGameScene,0,pDataBlock,bodyShape, BodyDef.BodyType.DynamicBody);
 
+        }
+    }
 
     /*===Setup============================*/
     public void setOrigin(float pOriginX, float pOriginY){
         this.mOriginX = pOriginX;
         this.mOriginY = pOriginY;
     }
-    public void setTimeLimit(float pIDLE_TIME , float pWORKING_TIME){
-        this.IDLE_TIME_LIMIT = pIDLE_TIME;
-        this.WORKING_TIME_LIMIT = pWORKING_TIME;
-    }
-    public void setForce(Vector2 pApplyForce, Vector2 pImpulseForce){
-        this.mApplyForce = pApplyForce;
-        this.mImpulseForce = pImpulseForce;
-    }
-    public void setHitFrame(final long pFrameDuration[] , final int pFrameIndex[], int pLockIndex ){
+
+
+
+   /* public void setHitFrame(final long pFrameDuration[] , final int pFrameIndex[], int pLockIndex ){
         this.hitFrameDuration = pFrameDuration;
         this.hitFrameIndex = pFrameIndex;
         if(pLockIndex>=0){
@@ -77,7 +92,7 @@ public class BulletObstacle extends GameEntity{
             }
             setActionLock(pLockIndex,lockLimit);
         }
-    }
+    }*/
 
     /*===Method===========================*/
     @Override
@@ -141,4 +156,67 @@ public class BulletObstacle extends GameEntity{
 
         }
     }
+    public void setConfigData(JSONObject pConfigData){
+        setAnimationConfigData(pConfigData);
+        setPhysicsConfigData(pConfigData);
+    }
+    private void setAnimationConfigData(JSONObject pConfigData){
+        try{
+
+            createActionLock(1);
+            JSONArray fi = pConfigData.getJSONArray("animFrameIndex");
+            JSONArray fd = pConfigData.getJSONArray("animFrameDuration");
+
+            hitFrameIndex = new int[fi.length()];
+            hitFrameDuration = new long[fd.length()];
+            for(int i=0;i<fi.length();i++){
+                hitFrameIndex[i] = fi.getInt(i);
+                hitFrameDuration[i] = fd.getLong(i);
+            }
+
+            float lockLimit =0;
+            for(long du : hitFrameDuration){
+                lockLimit+=((float)du)/1000f;
+            }
+            setActionLock(0,lockLimit);
+
+            setTimeLimit((float)pConfigData.getDouble("idle_time"),(float)pConfigData.getDouble("working_time"));
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    private void setPhysicsConfigData(JSONObject pConfigData){
+        try{
+            JSONArray bodyX = pConfigData.getJSONArray("body_vx");
+            JSONArray bodyY = pConfigData.getJSONArray("body_vy");
+            bodyShape = new Vector2[bodyX.length()];
+            for(int i=0;i<bodyX.length();i++){
+                bodyShape[i] = new Vector2((float)(bodyX.getDouble(i)),(float)bodyY.getDouble((i)));
+            }
+            String bodyType = pConfigData.getString("body");
+            switch (bodyType){
+                case "vertices" : bodySType = VERTICAL_SHAPE; break;
+                case "circle": bodySType = CIRCLE_SHAPE; break;
+            }
+
+            JSONArray iforce = pConfigData.getJSONArray("iforce");
+            JSONArray aforce = pConfigData.getJSONArray("aforce");
+            setForce(new Vector2((float)iforce.getDouble(0), (float)iforce.getDouble(1)),
+                    new Vector2((float)aforce.getDouble(0), (float)aforce.getDouble(1)));
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    private void setForce(Vector2 pApplyForce, Vector2 pImpulseForce){
+        this.mApplyForce = pApplyForce;
+        this.mImpulseForce = pImpulseForce;
+    }
+    private void setTimeLimit(float pIDLE_TIME , float pWORKING_TIME){
+        this.IDLE_TIME_LIMIT = pIDLE_TIME;
+        this.WORKING_TIME_LIMIT = pWORKING_TIME;
+    }
+
 }

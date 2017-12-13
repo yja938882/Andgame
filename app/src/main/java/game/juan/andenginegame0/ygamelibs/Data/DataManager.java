@@ -30,32 +30,33 @@ public class DataManager implements ConstantsSet{
     private ArrayList<AiData> mAiData;
 
     private JSONObject mPlayerConfig;
+    private JSONObject mTrapConfig;
+    private JSONObject mTempTrapConfig;
+    private JSONObject mPendulumConfig;
+    private JSONObject mFallConfig;
 
     private DBManager mDBManager;
     private SQLiteDatabase db;
-    private  int dbVersion =4;
+    private  int dbVersion =10;
     String dbName ="config.db";
 
     public void loadResources(GameScene pGameScene){
-        Log.d("DDD","11");
         mDBManager = new DBManager(pGameScene.getActivity(),dbName,null,dbVersion);
         try {
             db = mDBManager.getReadableDatabase();
         }catch (Exception e){
-            Log.d("DDD","12.5");
             e.printStackTrace();
         }
-        Log.d("DDD","12");
         loadMapData(pGameScene.getActivity(),"map0.json");
-        Log.d("DDD","13");
         loadConfigData();
-        Log.d("DDD","13");
     }
     private void loadConfigData(){
         mPlayerConfig= mDBManager.getConfigJSON(db,"player");
-        Log.d("DDD","14");
-        //db.close();
-
+        mTrapConfig = mDBManager.getConfigJSON(db,"trap_0");
+        mTempTrapConfig = mDBManager.getConfigJSON(db,"temp_trap_0");
+        mPendulumConfig = mDBManager.getConfigJSON(db,"pendulum_0");
+        mFallConfig = mDBManager.getConfigJSON(db,"fall_0");
+        Log.d("JSON!!",""+mPlayerConfig);
     }
 
 
@@ -147,6 +148,10 @@ public class DataManager implements ConstantsSet{
     public JSONObject getPlayerConfig(){
         return mPlayerConfig;
     }
+    public JSONObject getTrapConfig(){return mTrapConfig;}
+    public JSONObject getTempTrapConfig(){return mTempTrapConfig;}
+    public JSONObject getPendulumConfig(){return mPendulumConfig;}
+    public JSONObject getFallConfig(){return mFallConfig;}
     private static JSONObject loadJSONFromAsset(Context context, String filename){
         String json = null;
         JSONObject object = null;
