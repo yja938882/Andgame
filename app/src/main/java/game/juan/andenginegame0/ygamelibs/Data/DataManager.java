@@ -34,10 +34,11 @@ public class DataManager implements ConstantsSet{
     private JSONObject mTempTrapConfig;
     private JSONObject mPendulumConfig;
     private JSONObject mFallConfig;
+    private JSONObject mAiConfig;
 
     private DBManager mDBManager;
     private SQLiteDatabase db;
-    private  int dbVersion =10;
+    private  int dbVersion =13;
     String dbName ="config.db";
 
     public void loadResources(GameScene pGameScene){
@@ -56,6 +57,7 @@ public class DataManager implements ConstantsSet{
         mTempTrapConfig = mDBManager.getConfigJSON(db,"temp_trap_0");
         mPendulumConfig = mDBManager.getConfigJSON(db,"pendulum_0");
         mFallConfig = mDBManager.getConfigJSON(db,"fall_0");
+        mAiConfig = mDBManager.getConfigJSON(db,"moving_ai_0");
         Log.d("JSON!!",""+mPlayerConfig);
     }
 
@@ -152,6 +154,7 @@ public class DataManager implements ConstantsSet{
     public JSONObject getTempTrapConfig(){return mTempTrapConfig;}
     public JSONObject getPendulumConfig(){return mPendulumConfig;}
     public JSONObject getFallConfig(){return mFallConfig;}
+    public JSONObject getAiConfig(){return mAiConfig;}
     private static JSONObject loadJSONFromAsset(Context context, String filename){
         String json = null;
         JSONObject object = null;

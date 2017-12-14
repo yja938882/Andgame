@@ -70,7 +70,6 @@ public class BulletObstacle extends GameEntity{
             createVerticesBody(pGameScene,0,pDataBlock,bodyShape, BodyDef.BodyType.DynamicBody);
         }else{
             createCircleBody(pGameScene,0,pDataBlock,bodyShape, BodyDef.BodyType.DynamicBody);
-
         }
     }
 

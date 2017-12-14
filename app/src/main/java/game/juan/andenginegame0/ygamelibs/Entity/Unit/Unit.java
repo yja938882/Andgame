@@ -382,7 +382,7 @@ public abstract class Unit extends GameEntity{
             attackFrameDuration = new long[fd.length()];
             for(int i=0;i<fi.length();i++){
                 attackFrameIndex[i] = fi.getInt(i);
-                attackFrameDuration[i] = fi.getLong(i);
+                attackFrameDuration[i] = fd.getLong(i);
 
             }
             wlock = pConfigData.getString("attackLock");

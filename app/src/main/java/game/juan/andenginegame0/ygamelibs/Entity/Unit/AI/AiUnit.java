@@ -2,12 +2,18 @@ package game.juan.andenginegame0.ygamelibs.Entity.Unit.AI;
 
 import com.badlogic.gdx.math.Vector2;
 
+import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
+import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerData;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.Unit;
+import game.juan.andenginegame0.ygamelibs.Entity.Unit.UnitData;
+import game.juan.andenginegame0.ygamelibs.World.GameScene;
 
 /**
  * Created by juan on 2017. 11. 25..
@@ -31,6 +37,13 @@ public class AiUnit extends Unit {
 
     public AiUnit(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
+    }
+    public void createAi(GameScene pGameScene, DataBlock pDataBlock){
+        this.setScale(0.5f);
+        setGravity(pGameScene.getGravity());
+        PlayerData ud = new PlayerData(pDataBlock.getClassifyData(),pDataBlock.getType(),(int)(pDataBlock.getPosX()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),(int)(pDataBlock.getPosY()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT));
+        createUnit(pGameScene,ud,new PlayerData(DataBlock.PLAYER_FOOT_CLASS,pDataBlock.getType(),(int)(pDataBlock.getPosX()),(int)pDataBlock.getPosY()));
+
     }
     public void setCmdList(int[] plist, float[] pduList){
         this.mCmdList = plist;
@@ -68,6 +81,24 @@ public class AiUnit extends Unit {
                 setAction(ConstantsSet.UnitAction.ACTION_MOVE_RIGHT);
                 break;
         }
+    }
+    @Override
+    public void setConfigData(JSONObject p){
+        super.setConfigData(p);
+        try {
+            JSONArray cmdArr = p.getJSONArray("cmdList");
+            JSONArray cmdDu = p.getJSONArray("cmdDu");
+
+            mCmdList = new int[cmdArr.length()];
+            mCmdDuList = new float[cmdArr.length()];
+            for(int i=0;i<cmdArr.length();i++){
+                mCmdList[i] = cmdArr.getInt(i);
+                mCmdDuList[i] = (float)cmdDu.getDouble(i);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
 }

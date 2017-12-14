@@ -62,7 +62,7 @@ public abstract class GameEntity extends AnimatedSprite{
         final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
         Log.d("Exception"," "+mBodies.length);
         mBodies[pBodyIndex] = PhysicsFactory.createCircleBody(pGameScene.getWorld(),
-                pVertices[0].x,pVertices[0].y,pVertices[0].x,pBodyType,fixtureDef);
+                pVertices[0].x,pVertices[0].y,pVertices[1].x,pBodyType,fixtureDef);
         mBodies[pBodyIndex].setUserData(pDataBlock);
         if(pBodyIndex==0){
             pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(this, mBodies[0]));
