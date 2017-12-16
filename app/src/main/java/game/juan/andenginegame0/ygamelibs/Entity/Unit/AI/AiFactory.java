@@ -31,6 +31,7 @@ public class AiFactory implements ConstantsSet.EntityType{
        // aiUnit.setScale(0.5f);
         aiUnit.setConfigData(pGameScene.getDataManager().getAiConfig());
         aiUnit.createAi(pGameScene,pDataBlock);
+        aiUnit.setActive(true);
         pGameScene.attachChild(aiUnit);
 
         return aiUnit;

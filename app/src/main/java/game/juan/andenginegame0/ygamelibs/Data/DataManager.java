@@ -38,7 +38,7 @@ public class DataManager implements ConstantsSet{
 
     private DBManager mDBManager;
     private SQLiteDatabase db;
-    private  int dbVersion =13;
+    private  int dbVersion =20;
     String dbName ="config.db";
 
     public void loadResources(GameScene pGameScene){

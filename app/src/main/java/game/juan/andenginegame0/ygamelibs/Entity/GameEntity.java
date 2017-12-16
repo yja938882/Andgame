@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
+import org.andengine.entity.particle.emitter.PointParticleEmitter;
 import org.andengine.entity.primitive.DrawMode;
 import org.andengine.entity.primitive.Mesh;
 import org.andengine.entity.sprite.AnimatedSprite;
@@ -35,7 +36,7 @@ public abstract class GameEntity extends AnimatedSprite{
     /*===Fields===============================*/
     private Body[] mBodies;
     private boolean mActive = false;
-    private ActionLock[] mActionLocks;
+    protected ActionLock[] mActionLocks;
 
 
     /*===Constructor===========================*/
@@ -70,13 +71,13 @@ public abstract class GameEntity extends AnimatedSprite{
     }
 
 
-
+/*
     public void createActionLock(final int pLockSize){
         this.mActionLocks = new ActionLock[pLockSize];
         for(int i=0;i<pLockSize;i++){
             mActionLocks[i] = new ActionLock();
         }
-    }
+    }*/
     protected void setActionLock(int pIndex, final float pMaxSeconds){
         mActionLocks[pIndex].setMaxCount(pMaxSeconds);
     }
@@ -116,6 +117,9 @@ public abstract class GameEntity extends AnimatedSprite{
     protected void transform(float pX, float pY){
         Log.d("Bullet","transform : "+pX+","+pY);
         mBodies[0].setTransform(pX/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,pY/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,0.0f);
+    }
+    protected void transformPhysically(float pX, float pY){
+        mBodies[0].setTransform(pX,pY,0.0f);
     }
     protected DataBlock getDataBlock(int index){
         return (DataBlock)(mBodies[index].getUserData());
@@ -164,16 +168,16 @@ public abstract class GameEntity extends AnimatedSprite{
     }
 
     /*===Inner Class========================*/
-    class ActionLock{
+    public abstract class ActionLock{
         boolean mActionLock;
         float mElapsedCount;
         float mMaxCount;
-        ActionLock(final float pMaxElapsedCount){
+        public ActionLock(final float pMaxElapsedCount){
             mElapsedCount=0;
             mActionLock = false;
             this.mElapsedCount = pMaxElapsedCount;
         }
-        ActionLock(){
+        public ActionLock(){
             mElapsedCount=0;
             mActionLock=false;
         }
@@ -186,6 +190,8 @@ public abstract class GameEntity extends AnimatedSprite{
                 if(mElapsedCount>=mMaxCount){
                     mActionLock = false;
                     mElapsedCount =0;
+                    Log.d("TEMP!!_DEBUG","LOCK Free :"+mMaxCount);
+                    lockFree();
                 }
             }
         }
@@ -195,6 +201,6 @@ public abstract class GameEntity extends AnimatedSprite{
         boolean isLocked(){
             return mActionLock;
         }
-
+        public abstract void lockFree();
     }
 }

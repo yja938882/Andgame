@@ -1,19 +1,30 @@
 package game.juan.andenginegame0.ygamelibs.Entity;
 
 
-import android.graphics.Bitmap;
-import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.ViewDebug;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 
-import org.andengine.entity.Entity;
+import org.andengine.entity.particle.BatchedSpriteParticleSystem;
+import org.andengine.entity.particle.ParticleSystem;
+import org.andengine.entity.particle.emitter.CircleParticleEmitter;
+import org.andengine.entity.particle.emitter.PointParticleEmitter;
+import org.andengine.entity.particle.initializer.AccelerationParticleInitializer;
+import org.andengine.entity.particle.initializer.RotationParticleInitializer;
+import org.andengine.entity.particle.initializer.ScaleParticleInitializer;
+import org.andengine.entity.particle.initializer.VelocityParticleInitializer;
+import org.andengine.entity.particle.modifier.ExpireParticleInitializer;
+import org.andengine.entity.particle.modifier.ScaleParticleModifier;
 import org.andengine.entity.primitive.Rectangle;
+import org.andengine.entity.sprite.UncoloredSprite;
 import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
+import org.andengine.opengl.texture.ITexture;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
+import org.andengine.opengl.texture.region.TextureRegion;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,14 +32,16 @@ import java.util.Comparator;
 
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
-import game.juan.andenginegame0.ygamelibs.Data.DataManager;
-import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.BulletObstacle;
+import game.juan.andenginegame0.ygamelibs.Entity.Objects.ObjectData;
+import game.juan.andenginegame0.ygamelibs.Entity.Objects.PlayerBulletData;
 import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.ObstacleData;
 import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.ObstacleFactory;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.AI.AiData;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.AI.AiFactory;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerData;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
+import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Bullet;
+import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Weapon;
 import game.juan.andenginegame0.ygamelibs.IManager;
 import game.juan.andenginegame0.ygamelibs.World.GameScene;
 
@@ -52,11 +65,15 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
 
     private PlayerData mPlayerDataBlock;
     private ITiledTextureRegion mPlayerTextureRegion;
+    ITextureRegion mPlayerMovingParticleTR;
+
     private ITiledTextureRegion mAiTextureRegion;
     private ITiledTextureRegion mObstacleTR[];
   //  private EntityList mObstacleList;
+    private ITiledTextureRegion mBulletTextureRegion;
     private ManagedEntityList mObstacleList;
     private ManagedEntityList mAiList;
+
 
     /*===Constructor==============*/
     /*===Method===================*/
@@ -64,6 +81,8 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
     @Override
     public void createResource() {
         mObstacleTR = new ITiledTextureRegion[OBSTACLE_TR_SIZE];
+       // pointParticleEmitter =
+        //circleParticleEmitter = new CircleParticleEmitter(500,500,5);
     }
 
     @Override
@@ -77,6 +96,12 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
         Log.d("NOM_DEBUG [ET Manager]","Load ai resource");
         loadAIGraphics(pGameScene);
 
+        Log.d("NOM_DEBUG [ET Manager]","Load bullet resource");
+        loadObjectResource(pGameScene);
+
+      //  ExpireParticleInitializer<UncoloredSprite>
+        //        expireParticleInitializer = new ExpireParticleInitializer<UncoloredSprite>(10,20);
+
     }
 
     @Override
@@ -84,6 +109,12 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
         createPlayerUnit(pGameScene);
         createObstacle(pGameScene,pGameScene.getDataManager().getObstacleData());
         createAiUnit(pGameScene,pGameScene.getDataManager().getAiData());
+
+
+      //  circleParticleEmitter.setCenter(300,300);
+       // pointParticleEmitter.
+        //pGameScene.registerUpdateHandler(pointParticleEmitter);
+
     }
 
 
@@ -112,6 +143,11 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
         mPlayerTextureRegion  = BitmapTextureAtlasTextureRegionFactory.
                 createTiledFromAsset(textureAtlas,pGameScene.getActivity().getAssets(),"player_s.png",0,0,8,8);
         textureAtlas.load();
+
+        final BitmapTextureAtlas PlayerMovingParticleBTA = new BitmapTextureAtlas(pGameScene.getActivity().getTextureManager(),16,16);
+        mPlayerMovingParticleTR  = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(PlayerMovingParticleBTA,pGameScene.getActivity().getAssets(),"ptest.png",0,0);
+        PlayerMovingParticleBTA.load();
     }
 
     private void loadAIGraphics(GameScene pGameScene){
@@ -119,6 +155,14 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
         final BitmapTextureAtlas textureAtlas = new BitmapTextureAtlas(pGameScene.getActivity().getTextureManager(),1024,1024);
         mAiTextureRegion  = BitmapTextureAtlasTextureRegionFactory.
                 createTiledFromAsset(textureAtlas,pGameScene.getActivity().getAssets(),"ai.png",0,0,8,8);
+        textureAtlas.load();
+    }
+
+    private void loadObjectResource(GameScene pGameScene){
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/object/");
+        final BitmapTextureAtlas textureAtlas = new BitmapTextureAtlas(pGameScene.getActivity().getTextureManager(),64,64);
+        mBulletTextureRegion  = BitmapTextureAtlasTextureRegionFactory.
+                createTiledFromAsset(textureAtlas,pGameScene.getActivity().getAssets(),"bullet0.png",0,0,1,1);
         textureAtlas.load();
     }
 
@@ -161,6 +205,16 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
         mPlayerDataBlock = new PlayerData(DataBlock.PLAYER_BODY_CLASS, ConstantsSet.EntityType.PLAYER,(int)(50f/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),((int)(50/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT)));
         //playerUnit.createPlayer(pGameScene,mPlayerDataBlock,pGameScene.getDataManager().getPlayerConfig());
         playerUnit.setConfigData(pGameScene.getDataManager().getPlayerConfig());
+        playerUnit.setMovingParticleSystem(pGameScene,mPlayerMovingParticleTR);
+        Weapon weapon = new Weapon(1);
+        Bullet bullet = new Bullet(0,0,mBulletTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
+        final Vector2[] shapes={new Vector2(0,16),new Vector2(16,0)};
+        bullet.createBullet(pGameScene,new PlayerBulletData(DataBlock.PLAYER_BLT_CLASS,ConstantsSet.EntityType.BULLET,0,0),shapes);
+        pGameScene.attachChild(bullet);
+        weapon.setBullet(bullet);
+
+
+        playerUnit.setWeapon(weapon);
         playerUnit.createPlayer(pGameScene,mPlayerDataBlock);
         playerUnit.setActive(true);
         pGameScene.attachChild(playerUnit);
@@ -403,4 +457,6 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
 
         return max;
     }
+
+
 }

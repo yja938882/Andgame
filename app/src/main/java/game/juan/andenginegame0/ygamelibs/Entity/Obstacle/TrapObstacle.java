@@ -20,6 +20,10 @@ import game.juan.andenginegame0.ygamelibs.World.GameScene;
 
 public class TrapObstacle extends GameEntity{
     /*===Constants=================*/
+    private static final int LOCK_SIZE =1;
+    private static final int HIT_LOCK_INDEX=0;
+
+
     private static final int STATE_IDLE=0;
     private static final int STATE_HIT = 1;
     private static final int STATE_SLEEP= 2;
@@ -119,7 +123,7 @@ public class TrapObstacle extends GameEntity{
             if((pConfigData.getString("anim")).contentEquals("no")){
                 return;
             }
-            createActionLock(1);
+            createActionLock();
             JSONArray fi = pConfigData.getJSONArray("animFrameIndex");
             JSONArray fd = pConfigData.getJSONArray("animFrameDuration");
 
@@ -156,5 +160,22 @@ public class TrapObstacle extends GameEntity{
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void createActionLock(){
+        this.mActionLocks = new ActionLock[LOCK_SIZE];
+
+        mActionLocks[HIT_LOCK_INDEX] = new ActionLock() {
+            @Override
+            public void lockFree() {
+                hitFinished();
+            }
+        };
+
+    }
+
+
+    public void hitFinished(){
+
     }
 }

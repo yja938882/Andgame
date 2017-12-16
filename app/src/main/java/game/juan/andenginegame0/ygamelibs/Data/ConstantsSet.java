@@ -107,6 +107,8 @@ public interface ConstantsSet {
         int OBS_PENDULUM = 24;
         int OBS_FALL = 25;
         int OBS_SHOT = 26;
+
+        int BULLET = 30;
     }
     interface StaticType{
         int GROUND = 1;

@@ -1,12 +1,6 @@
-package game.juan.andenginegame0.ygamelibs.Entity.Weapon;
+package game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon;
 
 import com.badlogic.gdx.math.Vector2;
-
-import org.andengine.opengl.texture.region.ITiledTextureRegion;
-import org.andengine.opengl.vbo.VertexBufferObjectManager;
-
-import game.juan.andenginegame0.ygamelibs.Entity.GameEntity;
-import game.juan.andenginegame0.ygamelibs.Entity.Unit.Unit;
 
 /**
  * Created by juan on 2017. 12. 4..
@@ -22,6 +16,10 @@ public class Weapon{
     public Weapon(int pSize){
         this.mBullets = new Bullet[pSize];
         this.mManagedBulletSize = pSize;
+    }
+    public void setBullet(Bullet pBullet){
+     //   for(int i=0;i<mManagedBulletSize;i++)
+            mBullets[0] = pBullet;
     }
 
     public void shot(Vector2 pSrc, Vector2 pDest){

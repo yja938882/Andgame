@@ -56,8 +56,8 @@ public class StaticManager implements IManager ,ConstantsSet{
         ParallaxBackground.ParallaxEntity parallaxEntity = new ParallaxBackground.ParallaxEntity(-5.0f,background2);
         autoParallaxBackground.attachParallaxEntity(parallaxBackground);
         autoParallaxBackground.attachParallaxEntity(parallaxEntity);
-        background1.setAlpha(0.5f);
-        background2.setAlpha(0.5f);
+       // background1.setAlpha(0.5f);
+        //background2.setAlpha(0.5f);
         autoParallaxBackground.setParallaxChangePerSecond(2);
         //background.setPosition(-100,-500);
        //autoParallaxBackground.onUpdate();

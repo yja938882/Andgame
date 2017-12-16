@@ -23,8 +23,8 @@
         "beAttackedFrameIndex"   :[32,33,34,35,36,37,38,32],
         "beAttackedFrameDuration":[50,50,50,50,50,50,50,50],
         "beAttackedLock"        :"strong",
-        "jumpFrameIndex"         :[0],
-        "jumpFrameDuration"      :[50],
+        "jumpFrameIndex"         :[24,25,26],
+        "jumpFrameDuration"      :[50,50,50],
         "jumpLock"              :"none"
       }
     },
@@ -44,8 +44,8 @@
         "attackFrameIndex"    :[12  ,13 ,14 ,15 ,12],
         "attackFrameDuration" :[50  ,100,100,100,50],
         "attackLock"          : "soft",
-        "dieFrameIndex"       :[50],
-        "dieFrameDuration"    :[0],
+        "dieFrameIndex"       :[40,41,42,43,44,45,46,47],
+        "dieFrameDuration"    :[50,80,80,80,80,80,80,50],
         "dieLock"             : "strong",
         "beAttackedFrameIndex"   :[32,33,34,35,36,37,38,32],
         "beAttackedFrameDuration":[50,50,50,50,50,50,50,50],
@@ -95,9 +95,9 @@
       "data":
       {
         "src2"  :""       ,"src3": "",
-        "body1" :"vertices",  "body1_vx":[0,0], "body1_vy":[0,0],
-        "body2" :"vertices",  "body2_vx":[0,0], "body2_vy":[0,0],
-        "body3" :"vertices",  "body3_vx":[0,0], "body3_vy":[0,0],
+        "body1" :"vertices",  "body1_vx":[-16,-16,-8,8,16,16,8,-8],"body1_vy":[-8,8,16,16,8,-8,-16,-16],
+        "body2" :"vertices",  "body2_vx":[-4,-4,4,4], "body2_vy":[-64,64,64,-64],
+        "body3" :"vertices",  "body3_vx":[-16,-16,16,16],"body3_vy":[-16,16,16,-16],
         "motor_speed" : 10
       }
     }

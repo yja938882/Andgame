@@ -35,6 +35,12 @@ public abstract class Unit extends GameEntity{
     public static final int VERTICAL_SHAPE =0;
     public static final int CIRCLE_SHAPE =1;
     public static final int NONE_SHAPE = 2;
+
+    private static final int LOCK_SIZE = 3;
+    private static final int ATTACK_LOCK_INDEX=0;
+    private static final int BEATTACKED_LOCK_INDEX =1;
+    private static final int DIE_LOCK_INDEX=2;
+
     //public static final int
     /*===Fields===============================*/
     private float MAX_SPEED = 10;
@@ -63,55 +69,14 @@ public abstract class Unit extends GameEntity{
 
     private int mAction = ConstantsSet.UnitAction.ACTION_STOP;
 
+    private boolean alive = true;
+
     /*===Constructor===========================*/
     public Unit(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
 
     /*===Setup=================================*/
-  /*
-
-    public void createUnit(GameScene pGameScene,Vector2[] pBodyVertices, Vector2[] pFootVertices, DataBlock pDataBlock){
-        //Create Foot & Body
-        setupBody(2);
-        createBody(pGameScene,BODY,pDataBlock,pBodyVertices, BodyDef.BodyType.DynamicBody);
-        createBody(pGameScene,FOOT,pDataBlock,pFootVertices, BodyDef.BodyType.DynamicBody);
-        float bodyHeight = getHeightOfShape(pBodyVertices);
-
-        //Weld Body & Foot
-        WeldJointDef weldJoint = new WeldJointDef();
-        weldJoint.initialize(getBody(BODY),getBody(FOOT),getBody(BODY).getWorldCenter());
-        weldJoint.localAnchorA.set(0,0);
-        weldJoint.localAnchorB.set(0,bodyHeight/6f);
-        pGameScene.getWorld().createJoint(weldJoint);
-        getBody(BODY).setFixedRotation(true);
-    }
-    public void createUnit(GameScene pGameScene,Vector2[] pBodyVertices, float pFootWidth, float pFootHeight, DataBlock pDataBlock){
-        //Create Foot & Body
-        setupBody(2);
-        createBody(pGameScene,BODY,pDataBlock,pBodyVertices, BodyDef.BodyType.DynamicBody);
-       // footDataBlock.setClassifyData((pDataBlock.getClassifyData()&0xffffff00)| game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CLASSIFY.FOOT);
-       // createBody(pGameScene,BODY,pDataBlock,pDataBlock.getPosX(),pDataBlock.getPosY(),this.getWidthScaled()/2,BodyDef.BodyType.DynamicBody);
-
-       // createBody(pGameScene,FOOT,new PlayerData(DataBlock.PLAYER_FOOT_CLASS,pDataBlock.getType(),(int)pDataBlock.getPosX(),(int)pDataBlock.getPosY()),pFootWidth,pFootHeight, BodyDef.BodyType.DynamicBody);
-        createBody(pGameScene,FOOT,new PlayerData(DataBlock.PLAYER_FOOT_CLASS,pDataBlock.getType(),(int)pDataBlock.getPosX(),(int)pDataBlock.getPosY())
-                ,getBody(BODY).getWorldCenter().x,getBody(BODY).getWorldCenter().y,
-                pFootWidth/2, BodyDef.BodyType.DynamicBody);
-
-        float bodyHeight = getHeightOfShape(pBodyVertices);
-
-       getBody(BODY).setFixedRotation(true);
-
-        RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
-        revoluteJointDef.initialize(getBody(BODY),getBody(FOOT),getBody(BODY).getWorldCenter());
-        revoluteJointDef.enableMotor=true;
-        revoluteJointDef.motorSpeed = 10f;
-        revoluteJointDef.localAnchorA.set(0,bodyHeight/2);
-       // revoluteJointDef.localAnchorA.set(0,getWidthScaled()/(4*32f));
-        revoluteJointDef.localAnchorB.set(0,0);
-        pGameScene.getWorld().createJoint(revoluteJointDef);
-    }
-*/
 
     /*===Method======================================*/
     public void setAction(int pAction){
@@ -138,12 +103,22 @@ public abstract class Unit extends GameEntity{
             (bodyData).setNeedToBeAttacked(false);
         }
 
-        if(isLocked()) {
-            Log.d("LLOCK","IS locked");
-            return;
+        if(!alive){
+
+            mAction = ConstantsSet.UnitAction.ACTION_DIE;
         }
 
+        if(isLocked()) {
+             return;
+        }
+       // Log.d("TEMP_DEBUG","mA :" +mAction);
         switch (mAction){
+            case ConstantsSet.UnitAction.ACTION_DIE:
+                Log.d("TEMP!!_DEBUG","ACTION DIE - anim");
+                LockAction(DIE_LOCK_INDEX);
+                animate(dieFrameDuration,dieFrameIndex,false);
+                Log.d("TEMP!!_DEBUG","ACTION DIE - anim e");
+                break;
             case ConstantsSet.UnitAction.ACTION_MOVE_RIGHT:
 
                 this.setFlippedHorizontal(false);
@@ -153,11 +128,11 @@ public abstract class Unit extends GameEntity{
                 if(footData.isInTheAir()){
                     animate(jumpFrameDuration,jumpFrameIndex,false);
                 } else{
-                    if(!isAnimationRunning())
-                        animate(movingFrameDuration,movingFrameIndex,true);
+                    if(!isAnimationRunning()) {
+                        animate(movingFrameDuration, movingFrameIndex, true);
+                    }
+                    onMoving();
                 }
-
-
                 break;
             case ConstantsSet.UnitAction.ACTION_MOVE_LEFT:
 
@@ -166,10 +141,13 @@ public abstract class Unit extends GameEntity{
                     //setLinearVelocity(BODY,-SPEED,getBody(BODY).getLinearVelocity().y);
                     getBody(FOOT).setAngularVelocity(-30f);
                 if(footData.isInTheAir()){
-                    animate(jumpFrameDuration,jumpFrameIndex,false);
+                   // if(!isAnimationRunning())
+                        animate(jumpFrameDuration,jumpFrameIndex,true);
                 }else{
-                    if(!isAnimationRunning())
-                        animate(movingFrameDuration,movingFrameIndex,true);
+                    if(!isAnimationRunning()) {
+                        animate(movingFrameDuration, movingFrameIndex, true);
+                    }
+                    onMoving();
                 }
 
                 break;
@@ -180,7 +158,8 @@ public abstract class Unit extends GameEntity{
                 if(!footData.isInTheAir()){
                     jumpLock = true;
                     applyLinearImpulse(BODY,JUMP_FORCE);
-                    animate(jumpFrameDuration,jumpFrameIndex,false);
+                    if(!isAnimationRunning())
+                        animate(jumpFrameDuration,jumpFrameIndex,true);
                 }
                 break;
             case ConstantsSet.UnitAction.ACTION_STOP:
@@ -188,16 +167,19 @@ public abstract class Unit extends GameEntity{
                     //setLinearVelocity(BODY,new Vector2(0,0));
                     getBody(FOOT).setAngularVelocity(0);
                     stopAnimation(0);
+                    onStop();
                 }
 
                 break;
             case ConstantsSet.UnitAction.ACTION_ATTACK:
-                LockAction(0);
+                LockAction(ATTACK_LOCK_INDEX);
                 animate(attackFrameDuration,attackFrameIndex,false);
                 setAction(ConstantsSet.UnitAction.ACTION_STOP);
+                attack();
                 break;
             case ConstantsSet.UnitAction.ACTION_HITTED:
-                LockAction(1);
+                beAttacked();
+                LockAction(BEATTACKED_LOCK_INDEX);
                 animate(beAttackedFrameDuration, beAttackedFrameIndex, false);
                 setAction(ConstantsSet.UnitAction.ACTION_STOP);
                 break;
@@ -207,7 +189,12 @@ public abstract class Unit extends GameEntity{
                 break;
         }
     }
+    protected void attack(){
 
+    }
+    protected abstract void beAttacked();
+    protected void setAlive(boolean a){this.alive = a;}
+    protected boolean isAlive(){return this.alive;}
     @Override
     protected void onManagedUpdate(float pSecondsElapsed) {
         super.onManagedUpdate(pSecondsElapsed);
@@ -223,7 +210,7 @@ public abstract class Unit extends GameEntity{
     public Vector2 getPhysicsBodyPos(){
         return getBody(BODY).getPosition();
     }
-
+    public Vector2 getFootPos(){return (getBody(FOOT).getPosition().mul(PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT));}
     private float getHeightOfShape(int pShape, Vector2[] pVertices){
         if(pShape == CIRCLE_SHAPE){
             return ((pVertices[1].x)*2f)/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
@@ -293,33 +280,6 @@ public abstract class Unit extends GameEntity{
         transform(pBodyData.getPosX(),pBodyData.getPosY());
     }
 
-    /*
-      public void createUnit(GameScene pGameScene,Vector2[] pBodyVertices, float pFootWidth, float pFootHeight, DataBlock pDataBlock){
-        //Create Foot & Body
-        setupBody(2);
-        createBody(pGameScene,BODY,pDataBlock,pBodyVertices, BodyDef.BodyType.DynamicBody);
-       // footDataBlock.setClassifyData((pDataBlock.getClassifyData()&0xffffff00)| game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CLASSIFY.FOOT);
-       // createBody(pGameScene,BODY,pDataBlock,pDataBlock.getPosX(),pDataBlock.getPosY(),this.getWidthScaled()/2,BodyDef.BodyType.DynamicBody);
-
-       // createBody(pGameScene,FOOT,new PlayerData(DataBlock.PLAYER_FOOT_CLASS,pDataBlock.getType(),(int)pDataBlock.getPosX(),(int)pDataBlock.getPosY()),pFootWidth,pFootHeight, BodyDef.BodyType.DynamicBody);
-        createBody(pGameScene,FOOT,new PlayerData(DataBlock.PLAYER_FOOT_CLASS,pDataBlock.getType(),(int)pDataBlock.getPosX(),(int)pDataBlock.getPosY())
-                ,getBody(BODY).getWorldCenter().x,getBody(BODY).getWorldCenter().y,
-                pFootWidth/2, BodyDef.BodyType.DynamicBody);
-
-        float bodyHeight = getHeightOfShape(pBodyVertices);
-
-       getBody(BODY).setFixedRotation(true);
-
-        RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
-        revoluteJointDef.initialize(getBody(BODY),getBody(FOOT),getBody(BODY).getWorldCenter());
-        revoluteJointDef.enableMotor=true;
-        revoluteJointDef.motorSpeed = 10f;
-        revoluteJointDef.localAnchorA.set(0,bodyHeight/2);
-       // revoluteJointDef.localAnchorA.set(0,getWidthScaled()/(4*32f));
-        revoluteJointDef.localAnchorB.set(0,0);
-        pGameScene.getWorld().createJoint(revoluteJointDef);
-    }
-     */
     public void setConfigData(JSONObject pConfigData){
         setAnimationConfigData(pConfigData);
         setPhysicsConfigData(pConfigData);
@@ -356,7 +316,8 @@ public abstract class Unit extends GameEntity{
     }
     private void setAnimationConfigData(JSONObject pConfigData){
         try {
-            createActionLock(pConfigData.getInt("lock"));
+            //createActionLock(pConfigData.getInt("lock"));
+            createActionLock();
             int pLockIndex =0;
 
             JSONArray fi = pConfigData.getJSONArray("movingFrameIndex");
@@ -367,14 +328,14 @@ public abstract class Unit extends GameEntity{
                 movingFrameIndex[i] = fi.getInt(i);
                 movingFrameDuration[i] = fd.getLong(i);
             }
-            String wlock = pConfigData.getString("movingLock");
+           /* String wlock = pConfigData.getString("movingLock");
             if(!wlock.contains("none")){
                 float lockLimit =0;
                 for(long du : movingFrameDuration){
                     lockLimit+=((float)du/1000f);
                 }
                 setActionLock(pLockIndex++,lockLimit);
-            }
+            }*/
 
             fi=pConfigData.getJSONArray("attackFrameIndex");
             fd= pConfigData.getJSONArray("attackFrameDuration");
@@ -385,32 +346,38 @@ public abstract class Unit extends GameEntity{
                 attackFrameDuration[i] = fd.getLong(i);
 
             }
-            wlock = pConfigData.getString("attackLock");
-            if(!wlock.contains("none")){
+           // wlock = pConfigData.getString("attackLock");
+            //if(!wlock.contains("none")){
                 float lockLimit =0;
                 for(long du : attackFrameDuration){
                     lockLimit+=((float)du/1000f);
                 }
-                setActionLock(pLockIndex++,lockLimit);
-            }
+                setActionLock(ATTACK_LOCK_INDEX,lockLimit);
+            //}
 
 
             fi=pConfigData.getJSONArray("dieFrameIndex");
             fd = pConfigData.getJSONArray("dieFrameDuration");
             dieFrameIndex = new int[fi.length()];
             dieFrameDuration = new long[fd.length()];
+            Log.d("TEMP!!_DEBUG","fd length :"+fd.length());
             for(int i=0;i<fi.length();i++){
                 dieFrameIndex[i] = fi.getInt(i);
                 dieFrameDuration[i] = fd.getLong(i);
             }
-            wlock = pConfigData.getString("dieLock");
-            if(!wlock.contains("none")){
-                float lockLimit =0;
-                for(long du : dieFrameDuration){
-                    lockLimit+=((float)du/1000f);
-                }
-                setActionLock(pLockIndex++,lockLimit);
+            Log.d("TEMP!!_DEBUG","d length :"+dieFrameDuration.length);
+
+
+            lockLimit = 0;
+           /* for (long du : dieFrameDuration) {
+                Log.d("TEMP!!_DEBUG",""+du);
+                lockLimit += ((float) du / 1000f);
+            }*/
+            for(int i=0;i<dieFrameDuration.length;i++){
+                Log.d("TEMP!!_DEBUG"," "+i+" "+dieFrameDuration[i]);
+                lockLimit += ((float) dieFrameDuration[i] / 1000f);
             }
+            setActionLock(DIE_LOCK_INDEX,lockLimit);
 
             fi=pConfigData.getJSONArray("beAttackedFrameIndex");
             fd = pConfigData.getJSONArray("beAttackedFrameDuration");
@@ -420,14 +387,16 @@ public abstract class Unit extends GameEntity{
                 beAttackedFrameIndex[i] = fi.getInt(i);
                 beAttackedFrameDuration[i] = fd.getLong(i);
             }
-            wlock = pConfigData.getString("beAttackedLock");
-            if(!wlock.contains("none")){
-                float lockLimit =0;
-                for(long du : beAttackedFrameDuration){
-                    lockLimit+=((float)du/1000f);
+            //wlock = pConfigData.getString("beAttackedLock");
+            //if(!wlock.contains("none")){
+
+                lockLimit = 0;
+                for (long du : beAttackedFrameDuration) {
+                    lockLimit += ((float) du / 1000f);
                 }
-                setActionLock(pLockIndex++,lockLimit);
-            }
+
+                setActionLock(BEATTACKED_LOCK_INDEX,lockLimit);
+            //}
 
             fi=pConfigData.getJSONArray("jumpFrameIndex");
             fd=pConfigData.getJSONArray("jumpFrameDuration");
@@ -437,17 +406,45 @@ public abstract class Unit extends GameEntity{
                 jumpFrameIndex[i] = fi.getInt(i);
                 jumpFrameDuration[i] = fd.getLong(i);
             }
-            wlock = pConfigData.getString("jumpLock");
-            if(!wlock.contains("none")){
-                float lockLimit =0;
-                for(long du : jumpFrameDuration){
-                    lockLimit+=((float)du/1000f);
-                }
-                setActionLock(pLockIndex++,lockLimit);
-            }
+
 
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+
+    public void createActionLock(){
+        this.mActionLocks = new ActionLock[LOCK_SIZE];
+
+        mActionLocks[ATTACK_LOCK_INDEX] = new ActionLock() {
+            @Override
+            public void lockFree() {
+                attackFinished();
+            }
+        };
+        mActionLocks[BEATTACKED_LOCK_INDEX] = new ActionLock() {
+            @Override
+            public void lockFree() {
+                beAttackedFinished();
+            }
+        };
+        mActionLocks[DIE_LOCK_INDEX] = new ActionLock() {
+            @Override
+            public void lockFree() {
+                Log.d("TEMP!!_DEBUG","lock free");
+                dieFinished();
+            }
+        };
+    }
+
+    public abstract void attackFinished();
+    public abstract void beAttackedFinished();
+    public abstract void dieFinished();
+    protected void onMoving(){
+
+    }
+    protected void onStop(){
+
     }
 }

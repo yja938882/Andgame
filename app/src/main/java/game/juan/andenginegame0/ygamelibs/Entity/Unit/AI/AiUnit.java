@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Entity.Unit.AI;
 
+import android.util.Log;
+
 import com.badlogic.gdx.math.Vector2;
 
 import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
@@ -34,15 +36,29 @@ public class AiUnit extends Unit {
     private int[] mCmdList;
     private float[] mCmdDuList;
 
+    private int hp;
+
 
     public AiUnit(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
+
+    @Override
+    protected void beAttacked() {
+        Log.d("TEMP!!_DEBUG","ATTACKED!!!");
+        hp--;
+        if(hp<=0){
+            setAlive(false);
+        }
+    }
+
     public void createAi(GameScene pGameScene, DataBlock pDataBlock){
         this.setScale(0.5f);
         setGravity(pGameScene.getGravity());
-        PlayerData ud = new PlayerData(pDataBlock.getClassifyData(),pDataBlock.getType(),(int)(pDataBlock.getPosX()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),(int)(pDataBlock.getPosY()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT));
-        createUnit(pGameScene,ud,new PlayerData(DataBlock.PLAYER_FOOT_CLASS,pDataBlock.getType(),(int)(pDataBlock.getPosX()),(int)pDataBlock.getPosY()));
+      //  PlayerData ud = new PlayerData(pDataBlock.getClassifyData(),pDataBlock.getType(),(int)(pDataBlock.getPosX()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),(int)(pDataBlock.getPosY()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT));
+        AiData aiData = new AiData(pDataBlock.getClassifyData(),pDataBlock.getType(),(int)(pDataBlock.getPosX()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),(int)(pDataBlock.getPosY()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT));
+
+        createUnit(pGameScene,aiData,new AiData(DataBlock.PLAYER_FOOT_CLASS,pDataBlock.getType(),(int)(pDataBlock.getPosX()),(int)pDataBlock.getPosY()));
 
     }
     public void setCmdList(int[] plist, float[] pduList){
@@ -57,6 +73,7 @@ public class AiUnit extends Unit {
     }
 
     public void updateCmd(float pSecondsElapsed){
+        if(!isAlive()) return;
         mCmdElapsed += pSecondsElapsed;
         if(mCmdElapsed>=mCmdDuList[mCmd]){
             mCmd++;
@@ -64,23 +81,24 @@ public class AiUnit extends Unit {
             if(mCmd>=mCmdList.length)
                 mCmd=0;
         }
-        switch (mCmdList[mCmd]){
-            case CMD_ATTACK:
-                setAction(ConstantsSet.UnitAction.ACTION_ATTACK);
-                break;
-            case CMD_IDLE:
-                setAction(ConstantsSet.UnitAction.ACTION_STOP);
-                break;
-            case CMD_JUMP:
-                setAction(ConstantsSet.UnitAction.ACTION_JUMP);
-                break;
-            case CMD_MOVE_LEFT:
-                setAction(ConstantsSet.UnitAction.ACTION_MOVE_LEFT);
-                break;
-            case CMD_MOVE_RIGHT:
-                setAction(ConstantsSet.UnitAction.ACTION_MOVE_RIGHT);
-                break;
-        }
+
+            switch (mCmdList[mCmd]) {
+                case CMD_ATTACK:
+                    setAction(ConstantsSet.UnitAction.ACTION_ATTACK);
+                    break;
+                case CMD_IDLE:
+                    setAction(ConstantsSet.UnitAction.ACTION_STOP);
+                    break;
+                case CMD_JUMP:
+                    setAction(ConstantsSet.UnitAction.ACTION_JUMP);
+                    break;
+                case CMD_MOVE_LEFT:
+                    setAction(ConstantsSet.UnitAction.ACTION_MOVE_LEFT);
+                    break;
+                case CMD_MOVE_RIGHT:
+                    setAction(ConstantsSet.UnitAction.ACTION_MOVE_RIGHT);
+                    break;
+            }
     }
     @Override
     public void setConfigData(JSONObject p){
@@ -88,17 +106,39 @@ public class AiUnit extends Unit {
         try {
             JSONArray cmdArr = p.getJSONArray("cmdList");
             JSONArray cmdDu = p.getJSONArray("cmdDu");
-
             mCmdList = new int[cmdArr.length()];
             mCmdDuList = new float[cmdArr.length()];
             for(int i=0;i<cmdArr.length();i++){
                 mCmdList[i] = cmdArr.getInt(i);
                 mCmdDuList[i] = (float)cmdDu.getDouble(i);
             }
+            hp = p.getInt("hp");
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
 
+    @Override
+    public void attackFinished() {
+
+    }
+
+    @Override
+    public void beAttackedFinished() {
+        Log.d("TEMP!!_DEBUG","be attacked finished "+hp);
+        setAction(ConstantsSet.UnitAction.ACTION_STOP);
+
+    }
+
+    @Override
+    public void dieFinished() {
+        if(!isAlive()){
+            Log.d("TEMP!!_DEBUG","die");
+            //transformPhysically(getBody(0).getPosition().x,getBody(0).getPosition().y-1);
+             setActive(false);
+             stopAnimation();
+             this.setVisible(false);
+        }
     }
 
 }

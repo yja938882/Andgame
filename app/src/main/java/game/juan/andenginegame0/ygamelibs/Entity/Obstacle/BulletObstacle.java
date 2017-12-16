@@ -34,6 +34,8 @@ public class BulletObstacle extends GameEntity{
     public static final int CIRCLE_SHAPE =1;
     public static final int NONE_SHAPE = 2;
 
+    private static final int LOCK_SIZE =1;
+    private static final int HIT_LOCK_INDEX=0;
     /*===Fields===========================*/
     private float mOriginX;
     private float mOriginY;
@@ -162,7 +164,7 @@ public class BulletObstacle extends GameEntity{
     private void setAnimationConfigData(JSONObject pConfigData){
         try{
 
-            createActionLock(1);
+            createActionLock();
             JSONArray fi = pConfigData.getJSONArray("animFrameIndex");
             JSONArray fd = pConfigData.getJSONArray("animFrameDuration");
 
@@ -218,4 +220,20 @@ public class BulletObstacle extends GameEntity{
         this.WORKING_TIME_LIMIT = pWORKING_TIME;
     }
 
+    public void createActionLock(){
+        this.mActionLocks = new ActionLock[LOCK_SIZE];
+
+        mActionLocks[HIT_LOCK_INDEX] = new ActionLock() {
+            @Override
+            public void lockFree() {
+                hitFinished();
+            }
+        };
+
+    }
+
+
+    public void hitFinished(){
+
+    }
 }
