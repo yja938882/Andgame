@@ -4,8 +4,6 @@ import android.graphics.Color;
 import android.util.Log;
 
 import org.andengine.engine.camera.hud.HUD;
-import org.andengine.entity.scene.Scene;
-import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
@@ -13,10 +11,8 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
-import org.andengine.ui.activity.BaseGameActivity;
 
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
-import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
 import game.juan.andenginegame0.ygamelibs.IManager;
 import game.juan.andenginegame0.ygamelibs.UI.ConditionUI.CoinUI;
 import game.juan.andenginegame0.ygamelibs.UI.ConditionUI.HealthUI;
@@ -24,7 +20,7 @@ import game.juan.andenginegame0.ygamelibs.UI.ConditionUI.SettingButton;
 import game.juan.andenginegame0.ygamelibs.UI.ControllerUI.AttackController;
 import game.juan.andenginegame0.ygamelibs.UI.ControllerUI.Controller;
 import game.juan.andenginegame0.ygamelibs.UI.ControllerUI.OneWayMoveController;
-import game.juan.andenginegame0.ygamelibs.World.GameScene;
+import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
 /**
  * Created by juan on 2017. 9. 24..
@@ -151,7 +147,7 @@ public class UIManager implements IManager,ConstantsSet {
         coinTextureAtlas.load();
 
         font = FontFactory.createFromAsset(pGameScene.getActivity().getFontManager(),pGameScene.getActivity().getTextureManager(),256,256,pGameScene.getActivity().getAssets(),
-                "gfx/font/gamefont.ttf",32,true, Color.BLACK);
+                "gamefont.ttf",32,true, Color.BLACK);
         font.load();
     }
 

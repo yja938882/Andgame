@@ -9,7 +9,7 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Entity.GameEntity;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.ObjectData;
-import game.juan.andenginegame0.ygamelibs.World.GameScene;
+import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
 /**
  * Created by juan on 2017. 12. 5..

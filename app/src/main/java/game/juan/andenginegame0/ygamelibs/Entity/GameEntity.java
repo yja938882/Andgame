@@ -1,6 +1,5 @@
 package game.juan.andenginegame0.ygamelibs.Entity;
 
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.badlogic.gdx.math.Vector2;
@@ -8,9 +7,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
-import org.andengine.entity.particle.emitter.PointParticleEmitter;
-import org.andengine.entity.primitive.DrawMode;
-import org.andengine.entity.primitive.Mesh;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
@@ -22,10 +18,10 @@ import org.andengine.util.adt.list.ListUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Data.DataPhysicsFactory;
-import game.juan.andenginegame0.ygamelibs.World.GameScene;
+import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
 /**
  * Created by juan on 2017. 11. 25..
@@ -37,6 +33,7 @@ public abstract class GameEntity extends AnimatedSprite{
     private Body[] mBodies;
     private boolean mActive = false;
     protected ActionLock[] mActionLocks;
+    protected ActionLock[] mSoftActionLocks;
 
 
     /*===Constructor===========================*/
@@ -81,9 +78,13 @@ public abstract class GameEntity extends AnimatedSprite{
     protected void setActionLock(int pIndex, final float pMaxSeconds){
         mActionLocks[pIndex].setMaxCount(pMaxSeconds);
     }
+    protected void setSoftActionLock(int pIndex, final float pMaxSeconds){
+        mSoftActionLocks[pIndex].setMaxCount(pMaxSeconds);
+    }
     protected void LockAction(int pIndex){
         mActionLocks[pIndex].lock();
     }
+    protected void SoftLockAction(int pIndex){mActionLocks[pIndex].lock();}
 
     /*==Overriding============================*/
     @Override
@@ -92,6 +93,11 @@ public abstract class GameEntity extends AnimatedSprite{
         if(mActionLocks==null)
             return;
         for(ActionLock al : mActionLocks){
+            al.onManagedUpdate(pSecondsElapsed);
+        }
+        if(mSoftActionLocks==null)
+            return;
+        for(ActionLock al : mSoftActionLocks){
             al.onManagedUpdate(pSecondsElapsed);
         }
 
@@ -198,7 +204,7 @@ public abstract class GameEntity extends AnimatedSprite{
         void lock(){
             this.mActionLock = true;
         }
-        boolean isLocked(){
+        public boolean isLocked(){
             return mActionLock;
         }
         public abstract void lockFree();

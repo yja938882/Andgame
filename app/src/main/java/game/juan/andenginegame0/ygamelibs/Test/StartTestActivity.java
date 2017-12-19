@@ -56,5 +56,10 @@ public class StartTestActivity extends Activity {
         startActivity(i);
     }
 
+    public void onClickTutTest(View v){
+        Intent i = new Intent(StartTestActivity.this,TutActivity.class);
+        startActivity(i);
+    }
+
 
 }

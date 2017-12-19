@@ -6,9 +6,8 @@ import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
-import game.juan.andenginegame0.ygamelibs.Dynamic.Item.CoinItem;
 
-import game.juan.andenginegame0.ygamelibs.World.GameScene;
+import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
 /**
  * Created by juan on 2017. 10. 29..

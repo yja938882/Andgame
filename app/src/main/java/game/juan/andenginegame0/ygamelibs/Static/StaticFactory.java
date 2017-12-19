@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataPhysicsFactory;
-import game.juan.andenginegame0.ygamelibs.World.GameScene;
+import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
 /**
  * Created by juan on 2017. 11. 28..

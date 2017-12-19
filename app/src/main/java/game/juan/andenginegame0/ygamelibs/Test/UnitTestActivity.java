@@ -7,21 +7,28 @@ import android.view.View;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.BaseGameActivity;
 
-import game.juan.andenginegame0.ygamelibs.World.GameScene;
+import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
+import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
+import game.juan.andenginegame0.ygamelibs.Scene.SceneManager;
+import game.juan.andenginegame0.ygamelibs.Scene.SplashScene;
 
 public class UnitTestActivity extends BaseGameActivity {
 
 
+    private ResourceManager resourceManager;
+
     boolean scheduleEngineStart;
 
-    private GameScene scene;
     private BoundCamera mCamera;
+
 
     private View 	decorView;
     private int	uiOption;
@@ -70,22 +77,36 @@ public class UnitTestActivity extends BaseGameActivity {
 
     @Override
     public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws Exception {
-        scene = new GameScene(this);
-        scene.setCullingEnabled(true);
-        scene.createResources();
-        scene.loadResources();
+        ResourceManager.prepareManager(mEngine,this,mCamera,getVertexBufferObjectManager());
+        resourceManager = ResourceManager.getInstance();
 
+        SceneManager.getInstance().loadSplashScene();
         pOnCreateResourcesCallback.onCreateResourcesFinished();
     }
 
     @Override
     public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws Exception {
-          scene.createScene(this,mCamera);
-          pOnCreateSceneCallback.onCreateSceneFinished(this.scene);
+        SceneManager.getInstance().createSplashScene(pOnCreateSceneCallback);
     }
 
     @Override
     public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) throws Exception {
+       /* mEngine.registerUpdateHandler(new TimerHandler(2f, new ITimerCallback() {
+            @Override
+            public void onTimePassed(TimerHandler pTimerHandler) {
+                mEngine.unregisterUpdateHandler(pTimerHandler);
+                mGameScene.setCullingEnabled(true);
+                mGameScene.createResources();
+                mGameScene.loadResources();
+                //mSplashScene.disposeScene();
+                SceneManager.getInstance().disposeSplashScene();
+                //SceneManager.getInstance().getCurrentScene().disposeScene();
+                mGameScene.createScene(mCamera);
+                mEngine.setScene(mGameScene);
+                //mEngine.setScene(mGameScene);
+            }
+        }));*/
+
         pOnPopulateSceneCallback.onPopulateSceneFinished();
     }
 
@@ -114,7 +135,5 @@ public class UnitTestActivity extends BaseGameActivity {
         super.onResume();
     }
     public Camera getCamera(){return mCamera;}
-
-
 
 }

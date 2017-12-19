@@ -31,8 +31,6 @@ public interface ConstantsSet {
 
         int BULLET = 0x00000300;
 
-
-
         int STATIC = 0x02000000;
         int GROUND = 0x00010000;
 

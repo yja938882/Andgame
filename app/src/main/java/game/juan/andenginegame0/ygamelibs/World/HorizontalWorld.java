@@ -43,7 +43,7 @@ import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
  */
 
 public class HorizontalWorld {
-    Vector2 gravity = new Vector2(0,20);
+    public Vector2 gravity = new Vector2(0,20);
     private PhysicsWorld physicsWorld;
    PlayerUnit playerUnit;
 

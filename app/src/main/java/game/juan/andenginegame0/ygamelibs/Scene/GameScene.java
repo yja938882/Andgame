@@ -1,4 +1,4 @@
-package game.juan.andenginegame0.ygamelibs.World;
+package game.juan.andenginegame0.ygamelibs.Scene;
 
 import android.util.Log;
 
@@ -24,12 +24,13 @@ import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
 import game.juan.andenginegame0.ygamelibs.Dynamic.Item.ItemManager;
 import game.juan.andenginegame0.ygamelibs.Static.StaticManager;
 import game.juan.andenginegame0.ygamelibs.UI.UIManager;
+import game.juan.andenginegame0.ygamelibs.World.HorizontalWorld;
 
 /**
  * Created by juan on 2017. 10. 29..
  */
 
-public class GameScene extends Scene {
+public class GameScene extends BaseScene {
 
     public static final int CAMERA_WIDTH = 1024;
     public static final int CAMERA_HEIGHT = 600;
@@ -107,20 +108,13 @@ public class GameScene extends Scene {
 
     }
     public void loadResources(){
-       // mEntityManager.loadGraphics(this);
-      ///  mItemManager.loadItemGraphics(activity);
-        Log.d("DDD","1") ;
-        mDataManager.loadResources(this);
-        Log.d("DDD","2") ;
+      //  mDataManager.loadResources(this);
         mStaticManager.loadResource(this);
-        Log.d("DDD","3") ;
         mEntityManager.loadResource(this);
-        Log.d("DDD","4") ;
         mUiManager.loadResource(this);
-        Log.d("DDD","5") ;
     }
 
-    public void createScene(BaseGameActivity activity, BoundCamera camera){
+    public void createScene(BoundCamera camera){
         this.camera = camera;
         camera.setBoundsEnabled(true);
         this.registerUpdateHandler(world.getWorld());
@@ -163,4 +157,24 @@ public class GameScene extends Scene {
         return this.mEntityManager;
     }
     public DataManager getDataManager(){return this.mDataManager;}
+
+    @Override
+    public void createScene() {
+
+    }
+
+    @Override
+    public void onBackKeyPressed() {
+
+    }
+
+    @Override
+    public SceneManager.SceneType getSceneType() {
+        return null;
+    }
+
+    @Override
+    public void disposeScene() {
+
+    }
 }

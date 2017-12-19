@@ -12,7 +12,7 @@ public abstract class UnitData extends DataBlock{
     /*===Fields========================*/
     private int mGroundContactCounter=0;
     boolean isNeedToBeAttacked = false;
-
+    boolean isNeedToBeStopJumpAnim = false;
     /*===Constructor===================*/
     public UnitData(int pClass, int pType, int pX, int pY) {
         super(pClass, pType, pX, pY);
@@ -29,8 +29,16 @@ public abstract class UnitData extends DataBlock{
        return this.isNeedToBeAttacked;
    }
    public synchronized void contactWithGround(boolean a){
-       Log.d("TTTT","con "+a);
-       if(a)mGroundContactCounter++;
+       if(a){
+           setNeedToBeStopJumpAnim(true);
+           mGroundContactCounter++;
+       }
        else mGroundContactCounter--;
+   }
+   public void setNeedToBeStopJumpAnim(boolean b){
+       isNeedToBeStopJumpAnim = b;
+   }
+   public boolean isNeedToBeStopJumpAnim(){
+       return isNeedToBeStopJumpAnim;
    }
 }

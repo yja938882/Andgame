@@ -1,11 +1,6 @@
 package game.juan.andenginegame0.ygamelibs.Entity;
 
-import android.provider.ContactsContract;
-
-import org.andengine.entity.Entity;
-
-import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
-import game.juan.andenginegame0.ygamelibs.World.GameScene;
+import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
 /**
  * Created by juan on 2017. 11. 29..

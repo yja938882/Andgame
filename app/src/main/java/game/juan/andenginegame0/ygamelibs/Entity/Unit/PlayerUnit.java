@@ -1,13 +1,10 @@
 package game.juan.andenginegame0.ygamelibs.Entity.Unit;
 
-import android.util.Log;
-
 import com.badlogic.gdx.math.Vector2;
 
 import org.andengine.entity.particle.BatchedSpriteParticleSystem;
 import org.andengine.entity.particle.emitter.PointParticleEmitter;
 import org.andengine.entity.particle.initializer.AccelerationParticleInitializer;
-import org.andengine.entity.particle.initializer.RotationParticleInitializer;
 import org.andengine.entity.particle.initializer.ScaleParticleInitializer;
 import org.andengine.entity.particle.initializer.VelocityParticleInitializer;
 import org.andengine.entity.particle.modifier.AlphaParticleModifier;
@@ -21,7 +18,7 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Weapon;
 import game.juan.andenginegame0.ygamelibs.UI.UIManager;
-import game.juan.andenginegame0.ygamelibs.World.GameScene;
+import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
 /**
  * Created by juan on 2017. 11. 25..
@@ -50,7 +47,10 @@ public class PlayerUnit extends Unit{
     @Override
     protected void attack() {
         super.attack();
-        mWeapon.shot(getPhysicsBodyPos(),new Vector2(15,0));
+        if(!isFlippedHorizontal())
+            mWeapon.shot(getPhysicsBodyPos(),new Vector2(15,0));
+        else
+            mWeapon.shot(getPhysicsBodyPos(),new Vector2(-15,0));
     }
 
     @Override
@@ -106,19 +106,6 @@ public class PlayerUnit extends Unit{
         movingParticleSystem.setParticlesSpawnEnabled(false);
 
     }
-    /*
-     BatchedSpriteParticleSystem batchedSpriteParticleSystem = new BatchedSpriteParticleSystem(
-                pointParticleEmitter,25,50,15,iTextureRegion,pGameScene.getActivity().getEngine().getVertexBufferObjectManager());
-       // ParticleSystem batchedSpriteParticleSystem = new ParticleSystem()
-        batchedSpriteParticleSystem.addParticleInitializer(new VelocityParticleInitializer<UncoloredSprite>(10,10,-10,-10));
-        batchedSpriteParticleSystem.addParticleInitializer(new AccelerationParticleInitializer<UncoloredSprite>(3,30,10,50));
-        batchedSpriteParticleSystem.addParticleInitializer(new ExpireParticleInitializer<UncoloredSprite>(1));
-        batchedSpriteParticleSystem.addParticleInitializer(new RotationParticleInitializer<UncoloredSprite>(-30,30));
-        batchedSpriteParticleSystem.addParticleInitializer(new ScaleParticleInitializer<UncoloredSprite>(0.5f,1f));
-        batchedSpriteParticleSystem.addParticleModifier(new ScaleParticleModifier<UncoloredSprite>(0f,0f,0.4f,1f));
-        pGameScene.attachChild(batchedSpriteParticleSystem);
-        batchedSpriteParticleSystem.setParticlesSpawnEnabled(true);
-     */
     @Override
     protected void onMoving(){
         movingParticleEmitter.setCenter(getFootPos().x,getFootPos().y);

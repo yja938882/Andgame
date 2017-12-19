@@ -2,29 +2,14 @@ package game.juan.andenginegame0.ygamelibs.Entity;
 
 
 import android.util.Log;
-import android.view.ViewDebug;
 
 import com.badlogic.gdx.math.Vector2;
 
-import org.andengine.entity.particle.BatchedSpriteParticleSystem;
-import org.andengine.entity.particle.ParticleSystem;
-import org.andengine.entity.particle.emitter.CircleParticleEmitter;
-import org.andengine.entity.particle.emitter.PointParticleEmitter;
-import org.andengine.entity.particle.initializer.AccelerationParticleInitializer;
-import org.andengine.entity.particle.initializer.RotationParticleInitializer;
-import org.andengine.entity.particle.initializer.ScaleParticleInitializer;
-import org.andengine.entity.particle.initializer.VelocityParticleInitializer;
-import org.andengine.entity.particle.modifier.ExpireParticleInitializer;
-import org.andengine.entity.particle.modifier.ScaleParticleModifier;
-import org.andengine.entity.primitive.Rectangle;
-import org.andengine.entity.sprite.UncoloredSprite;
 import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
-import org.andengine.opengl.texture.ITexture;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
-import org.andengine.opengl.texture.region.TextureRegion;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +17,7 @@ import java.util.Comparator;
 
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
-import game.juan.andenginegame0.ygamelibs.Entity.Objects.ObjectData;
+import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.PlayerBulletData;
 import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.ObstacleData;
 import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.ObstacleFactory;
@@ -43,7 +28,7 @@ import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Bullet;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Weapon;
 import game.juan.andenginegame0.ygamelibs.IManager;
-import game.juan.andenginegame0.ygamelibs.World.GameScene;
+import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
 /**
  * Created by juan on 2017. 11. 25..
@@ -107,13 +92,11 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
     @Override
     public void createOnGame(GameScene pGameScene) {
         createPlayerUnit(pGameScene);
-        createObstacle(pGameScene,pGameScene.getDataManager().getObstacleData());
-        createAiUnit(pGameScene,pGameScene.getDataManager().getAiData());
+        //createObstacle(pGameScene,pGameScene.getDataManager().getObstacleData());
+        createObstacle(pGameScene, DataManager.getInstance().obstacleDataList);
 
+     //   createAiUnit(pGameScene,pGameScene.getDataManager().getAiData());
 
-      //  circleParticleEmitter.setCenter(300,300);
-       // pointParticleEmitter.
-        //pGameScene.registerUpdateHandler(pointParticleEmitter);
 
     }
 
@@ -202,9 +185,8 @@ public class EntityManager implements IManager , ConstantsSet.Classify {
 
     private void createPlayerUnit(GameScene pGameScene){
         playerUnit = new PlayerUnit(50,300,mPlayerTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
-        mPlayerDataBlock = new PlayerData(DataBlock.PLAYER_BODY_CLASS, ConstantsSet.EntityType.PLAYER,(int)(50f/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),((int)(50/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT)));
-        //playerUnit.createPlayer(pGameScene,mPlayerDataBlock,pGameScene.getDataManager().getPlayerConfig());
-        playerUnit.setConfigData(pGameScene.getDataManager().getPlayerConfig());
+      //  mPlayerDataBlock = new PlayerData(DataBlock.PLAYER_BODY_CLASS, ConstantsSet.EntityType.PLAYER,(int)(50f/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),((int)(50/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT)));
+      //  playerUnit.setConfigData(pGameScene.getDataManager().getPlayerConfig());
         playerUnit.setMovingParticleSystem(pGameScene,mPlayerMovingParticleTR);
         Weapon weapon = new Weapon(1);
         Bullet bullet = new Bullet(0,0,mBulletTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
