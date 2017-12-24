@@ -78,19 +78,6 @@ public class BulletObstacle extends GameEntity{
     }
 
 
-
-   /* public void setHitFrame(final long pFrameDuration[] , final int pFrameIndex[], int pLockIndex ){
-        this.hitFrameDuration = pFrameDuration;
-        this.hitFrameIndex = pFrameIndex;
-        if(pLockIndex>=0){
-            float lockLimit =0;
-            for(long du : hitFrameDuration){
-                lockLimit+=((float)du)/1000f;
-            }
-            setActionLock(pLockIndex,lockLimit);
-        }
-    }*/
-
     /*===Method===========================*/
     @Override
     protected void onManagedUpdate(float pSecondsElapsed) {

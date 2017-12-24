@@ -18,6 +18,7 @@ import java.util.List;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataPhysicsFactory;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
+import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 
 /**
  * Created by juan on 2017. 11. 28..
@@ -42,7 +43,7 @@ public class StaticFactory {
         }
         Mesh UniqueBodyMesh = new Mesh(pStaticData.getPosX(),pStaticData.getPosY(), MeshTriangles,
                 UniqueBodyVerticesTriangulated.size(), DrawMode.TRIANGLES,
-                pGameScene.getActivity().getVertexBufferObjectManager());
+                ResourceManager.getInstance().vbom);
         UniqueBodyMesh.setColor(0f, 0f, 0f);
         pGameScene.attachChild(UniqueBodyMesh);
 

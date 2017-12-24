@@ -11,5 +11,4 @@ public class WaftAi extends AiUnit{
     public WaftAi(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
-
 }

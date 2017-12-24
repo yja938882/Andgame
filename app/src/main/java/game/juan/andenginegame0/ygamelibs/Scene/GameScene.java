@@ -31,7 +31,7 @@ import game.juan.andenginegame0.ygamelibs.World.HorizontalWorld;
  */
 
 public class GameScene extends BaseScene {
-
+    private static final String TAG="[cheep] GameScene";
     public static final int CAMERA_WIDTH = 1024;
     public static final int CAMERA_HEIGHT = 600;
 
@@ -39,28 +39,9 @@ public class GameScene extends BaseScene {
 
     Queue<IEntity> detachQueue;
 
-    private DataManager mDataManager;
-
-    private StaticManager mStaticManager;
-    private UIManager mUiManager;
-    private EntityManager mEntityManager;
-    private ItemManager mItemManager;
-
-
     private BoundCamera camera;
 
-    BaseGameActivity activity;
-
     HUD hud;
-
-    public GameScene(BaseGameActivity activity){ 
-        this.activity = activity;
-        detachQueue = new LinkedList<IEntity>();
-        createUpdateHandler();
-        world = new HorizontalWorld();
-        world.createWorld(new Vector2(0, 0),false);
-
-    }
 
     public synchronized void pushToDetach(IEntity entity){
         detachQueue.add(entity);
@@ -77,15 +58,13 @@ public class GameScene extends BaseScene {
         this.registerUpdateHandler(new IUpdateHandler() {
             @Override
             public void onUpdate(float pSecondsElapsed) {
-                mEntityManager.manage();
-                Log.d("CDEBUG","px:"+mEntityManager.getPlayerUnit().getX()+"py:"+mEntityManager.getPlayerUnit().getY());
-                clearDetachQueue();
-               // camera.updateChaseEntity();
-                camera.setCenter(mEntityManager.getPlayerUnit().getX(),mEntityManager.getPlayerUnit().getY());
+               EntityManager.getInstance().manage();
+                 clearDetachQueue();
+                camera.setCenter(EntityManager.getInstance().getPlayerUnit().getX(),
+                        EntityManager.getInstance().getPlayerUnit().getY());
                 camera.setBounds(camera.getCenterX()-camera.getWidth()/2,
                         0,10000,960);
-                Log.d("CMA!!",""+camera.getCenterY()+" "+camera.getCenterX());
-            }
+             }
             @Override
             public void reset() {
 
@@ -93,56 +72,8 @@ public class GameScene extends BaseScene {
         });
     }
 
-
-    public void createResources(){
-        mDataManager = new DataManager();
-
-        mStaticManager = new StaticManager();
-        mStaticManager.createResource();
-
-        mEntityManager = new EntityManager();
-        mEntityManager.createResource();
-
-        mUiManager = new UIManager();
-        mUiManager.createResource();
-
-    }
-    public void loadResources(){
-      //  mDataManager.loadResources(this);
-        mStaticManager.loadResource(this);
-        mEntityManager.loadResource(this);
-        mUiManager.loadResource(this);
-    }
-
-    public void createScene(BoundCamera camera){
-        this.camera = camera;
-        camera.setBoundsEnabled(true);
-        this.registerUpdateHandler(world.getWorld());
-
-        mStaticManager.createOnGame(this);
-        mEntityManager.createOnGame(this);
-        mUiManager.createOnGame(this);
-
-        mEntityManager.getPlayerUnit().registerUI(mUiManager);
-
-        //For debugging
-        //DebugRenderer dr = new DebugRenderer(world.getWorld(),activity.getVertexBufferObjectManager());
-        //dr.setColor(Color.BLUE);
-        //dr.setDrawBodies(true);
-        //dr.setDrawJoints(true);
-      //  this.attachChild(dr);
-
-    }
-    private void createUnits(BaseGameActivity activity,Camera camera){
-        mEntityManager.createEntities(this);
-        world.addPlayerUnit(mEntityManager.getPlayerUnit());
-    }
-
     public Camera getCamera(){
         return camera;
-    }
-    public BaseGameActivity getActivity(){
-        return this.activity;
     }
     public PhysicsWorld getWorld(){
         return this.world.getWorld();
@@ -153,14 +84,36 @@ public class GameScene extends BaseScene {
     public HUD getHud(){
         return this.hud;
     }
-    public EntityManager getEntityManager(){
-        return this.mEntityManager;
-    }
-    public DataManager getDataManager(){return this.mDataManager;}
 
     @Override
     public void createScene() {
+        Log.d(TAG,"createScene");
 
+        detachQueue = new LinkedList<IEntity>();
+        createUpdateHandler();
+        world = new HorizontalWorld();
+        world.createWorld(new Vector2(0, 0),false);
+        this.setCullingEnabled(true);
+        this.camera = ResourceManager.getInstance().camera;
+        this.camera.setBoundsEnabled(true);
+        this.registerUpdateHandler(world.getWorld());
+
+
+
+
+
+
+        EntityManager.getInstance().createOnGame(this);
+        UIManager.getInstance().createOnGame(this);
+        StaticManager.getInstance().createOnGame(this);
+        //ResourceManager.getInstance().camera.setHUD(UIManager.getInstance().mHud);
+
+        //For debugging
+        DebugRenderer dr = new DebugRenderer(world.getWorld(),vbom);
+        dr.setColor(Color.BLUE);
+        dr.setDrawBodies(true);
+        dr.setDrawJoints(true);
+        this.attachChild(dr);
     }
 
     @Override

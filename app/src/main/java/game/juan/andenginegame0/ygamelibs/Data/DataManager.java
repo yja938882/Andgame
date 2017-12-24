@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import org.andengine.entity.Entity;
 import org.andengine.entity.particle.modifier.ExpireParticleInitializer;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.json.JSONArray;
@@ -35,22 +36,9 @@ public class DataManager implements ConstantsSet{
     //String dbName ="config.db";
     /*==Fields==========================*/
 
-    private DBManager mDBManager;
     private BaseGameActivity activity;
 
 
-    /*
-    public void loadResources(GameScene pGameScene){
-        mDBManager = new DBManager(pGameScene.getActivity(),dbName,null,dbVersion);
-        try {
-            db = mDBManager.getReadableDatabase();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        loadMapData(pGameScene.getActivity(),"map0.json");
-        loadConfigData();
-    }
- */
 
     /*===Player Data=============*/
 
@@ -59,7 +47,7 @@ public class DataManager implements ConstantsSet{
 
     //Load
     private void loadPlayerConfigData(SQLiteDatabase db){
-        playerConfig= mDBManager.getConfigJSON(db,"player");
+        playerConfig= dbManager.getConfigJSON(db,"player");
     }
 
     /*===Stage Data===============*/
@@ -68,51 +56,84 @@ public class DataManager implements ConstantsSet{
     public static final int OBSTACLE_TYPE_SIZE = 4;
     public static final int OBSTACLE_TYPE_=0;
     public static final int AI_TYPE_SIZE = 1;
-
+    final String AI_CONFIG_NAME[]={
+            "ai_moving_1","ai_moving_2","ai_shooting_1","ai_shooting_2","ai_flying_1"
+    };
+    final String OBS_CONFIG_NAME[]={
+            "obs_fall","obs_shooting","obs_trap","obs_trap_temp","obs_pendulum","obs_moving_ground"
+    };
     //Fields
-    public JSONObject obstacleConfig[]=null;
-    public JSONObject aiConfig[]=null;
+    public JSONObject stageObject=null;
+    public JSONObject stageConfig = null;
+
+    public String obstacleConfigKeys[]=null;
+    public String aiConfigKeys[]=null;
+
+    public JSONObject obstacleConfigs[] = null;
+    public JSONObject aiConfigs[]=null;
+
 
     public ArrayList<ObstacleData> obstacleDataList;
     public ArrayList<StaticData> staticMapDataList;
     public ArrayList<AiData> aiDataList;
-
+    //LoadStageConfig
     public void loadStageData(int pStage){
+
         SQLiteDatabase db = dbManager.getReadableDatabase();
-        loadObstacleConfig(pStage,db);
-        loadAiConfig(pStage,db);
-        loadStaticConfig(pStage,db);
+        //Loading config data
+        loadStageConfig(pStage,db);
+        loadPlayerConfigData(db);
+
         loadMapData(pStage);
     }
 
-    private void loadObstacleConfig(int pStage, SQLiteDatabase db){
-        Log.d(TAG,"loadObstacleConfig( "+pStage+" )");
+    private void loadStageConfig(int pStage, SQLiteDatabase db){
+        Log.d(TAG,"loadStageConfigData("+pStage+")");
+        try {
+            stageObject = (loadJSONFromAsset(activity, "stage/stage" + pStage + ".json")).getJSONObject("map");
+            stageConfig = stageObject.getJSONObject("stage_config");
+            Log.d(TAG,"stage Config ... : "+stageConfig.toString());
 
-        if(obstacleConfig==null)
-            obstacleConfig = new JSONObject[OBSTACLE_TYPE_SIZE];
-        for(int type=0;type<obstacleConfig.length;type++){
-            obstacleConfig[type] = dbManager.getConfigJSON(db,"obs_"+type+"_"+pStage);
+            Log.d(TAG,"loadAiConfig("+pStage+")");
+            if (aiConfigKeys == null)
+                aiConfigKeys = new String[stageConfig.getInt("ai_size")];
+            for(int i=0;i<AI_CONFIG_NAME.length;i++){
+                aiConfigKeys[i] = stageConfig.getString(AI_CONFIG_NAME[i]);
+            }
+            if(aiConfigs ==null)
+                aiConfigs = new JSONObject[stageConfig.getInt("ai_size")];
+            for(int i=0;i<AI_CONFIG_NAME.length;i++){
+                Log.d(TAG,aiConfigKeys[i]);
+                aiConfigs[i] = (dbManager.getConfigJSON(db,aiConfigKeys[i]));
+                Log.d(TAG,aiConfigs[i].toString());
+            }
+
+            Log.d(TAG,"loadObstacleConfig("+pStage+")");
+            if (obstacleConfigKeys == null)
+                obstacleConfigKeys = new String[stageConfig.getInt("obs_size")];
+            for(int i=0;i<OBS_CONFIG_NAME.length;i++){
+                obstacleConfigKeys[i] = stageConfig.getString(OBS_CONFIG_NAME[i]);
+            }
+            if(obstacleConfigs ==null)
+                obstacleConfigs = new JSONObject[stageConfig.getInt("obs_size")];
+            for(int i=0;i<OBS_CONFIG_NAME.length;i++){
+                obstacleConfigs[i]=(dbManager.getConfigJSON(db,obstacleConfigKeys[i]));
+                Log.d(TAG,""+i+" - "+obstacleConfigs[i].toString());
+            }
+
+
+        }catch(Exception e){
+            Log.d(TAG,"Error - "+e.getMessage());
+        }finally {
+            //exit(0);
         }
-    }
-
-    private void loadAiConfig(int pStage,SQLiteDatabase db){
-        Log.d(TAG,"loadAiConfig( "+pStage+" )");
-
-        if(aiConfig==null)
-            aiConfig = new JSONObject[AI_TYPE_SIZE];
-        for(int type=0;type<aiConfig.length;type++){
-            aiConfig[type] = dbManager.getConfigJSON(db,"ai_"+type+"_"+pStage);
-        }
-    }
-
-    private void loadStaticConfig(int pStage,SQLiteDatabase db){
-
+        Log.d(TAG,"loadStageConfigData("+pStage+")");
     }
 
     private void loadMapData(int pStage){
         Log.d(TAG,"loadMapData( "+pStage+" )");
         try{
-            JSONObject map = loadJSONFromAsset(activity,"map"+pStage+".png");
+            JSONObject map = loadJSONFromAsset(activity,"stage/stage"+pStage+".json").getJSONObject("map");
 
             Log.d(TAG,"...loading static data in stage "+pStage);
 
@@ -136,21 +157,28 @@ public class DataManager implements ConstantsSet{
                 int vClass=0;
                 int vType=0;
                 switch(obj.getString("type")){
-                    case "fall":
+                    case "obs_fall":
                         vClass = DataBlock.ATK_OBS_CLASS;
                         vType = EntityType.OBS_FALL;
                         break;
-                    case "trap":
+                    case "obs_trap":
                         vClass=DataBlock.ATK_OBS_CLASS;
                         vType = EntityType.OBS_TRAP;
                         break;
-                    case "trap_temp":
+                    case "obs_trap_temp":
                         vClass=DataBlock.ATK_OBS_CLASS;
                         vType = EntityType.OBS_TRAP_TEMP;
                         break;
-                    case "pendulum":
+                    case "obs_pendulum":
                         vClass=DataBlock.GROUND_CLASS;
                         vType = EntityType.OBS_PENDULUM;
+                        break;
+                    case "obs_shooting":
+                        break;
+                    case "obs_moving_ground":
+                        Log.d("QQQ","moving_ground!! :"+obj.toString());
+                        vClass = DataBlock.GROUND_CLASS;
+                        vType = EntityType.OBS_MOVING_GROUND;
                         break;
                 }
                 ObstacleData obsData =
@@ -172,9 +200,17 @@ public class DataManager implements ConstantsSet{
                 int vClass = 0;
                 int vType = 0;
                 switch (obj.getString("type")) {
-                    case "dd":
+                    case "ai_moving_1":
                         vClass = DataBlock.AI_BODY_CLASS;
                         vType = EntityType.MOVING_AI;
+                        break;
+                    case "ai_moving_2":
+                        break;
+                    case "ai_shooting_1":
+                        break;
+                    case "ai_shooting_2":
+                        break;
+                    case "ai_flying_1":
                         break;
                 }
                 final AiData aiData = new AiData(vClass, vType, obj.getInt("x"), obj.getInt("y"));
@@ -184,7 +220,7 @@ public class DataManager implements ConstantsSet{
         }catch (Exception e){
             e.printStackTrace();
         }finally {
-            exit(0);
+           // exit(0);
         }
     }
 
@@ -208,7 +244,6 @@ public class DataManager implements ConstantsSet{
 
     public static void prepareManager(BaseGameActivity activity,DBManager dbManager){
         Log.d(TAG,"prepareManager");
-
         getInstance().activity = activity;
         getInstance().dbManager = dbManager;
     }

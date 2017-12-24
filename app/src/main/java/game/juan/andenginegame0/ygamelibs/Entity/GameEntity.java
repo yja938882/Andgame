@@ -48,7 +48,7 @@ public abstract class GameEntity extends AnimatedSprite{
 
     public void createVerticesBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType){
         final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
-
+        Log.d("cheep!!!","createVetices Body");
         mBodies[pBodyIndex] = PhysicsFactory.createTrianglulatedBody(pGameScene.getWorld(),
                 this,createBodyShape(pVertices),pBodyType,fixtureDef);
         mBodies[pBodyIndex].setUserData(pDataBlock);
@@ -58,7 +58,7 @@ public abstract class GameEntity extends AnimatedSprite{
     }
     public void createCircleBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType){
         final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
-        Log.d("Exception"," "+mBodies.length);
+        Log.d("cheep!!!","createCircle Body");
         mBodies[pBodyIndex] = PhysicsFactory.createCircleBody(pGameScene.getWorld(),
                 pVertices[0].x,pVertices[0].y,pVertices[1].x,pBodyType,fixtureDef);
         mBodies[pBodyIndex].setUserData(pDataBlock);

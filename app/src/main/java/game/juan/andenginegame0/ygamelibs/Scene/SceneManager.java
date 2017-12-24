@@ -7,6 +7,8 @@ import org.andengine.engine.camera.BoundCamera;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.IGameInterface;
 
+import game.juan.andenginegame0.ygamelibs.UI.UIManager;
+
 /**
  * Created by juan on 2017. 12. 17..
  */
@@ -33,6 +35,10 @@ public class SceneManager {
     private Engine engine = ResourceManager.getInstance().engine;
     private static final SceneManager INSTANCE = new SceneManager();
     private SceneType currentSceneType = SceneType.SPLASH;
+
+    /*Managers*/
+    private UIManager uiManager;
+
 
     public void setScene(BaseScene scene){
         engine.setScene(scene);
@@ -108,16 +114,28 @@ public class SceneManager {
         mainScene.disposeScene();
         mainScene = null;
     }
+    /*===Loading Scene========*/
+
+    public void createLoadingScene(SceneType pSceneType){
+        Log.d(TAG,"createLoadingScene");
+        loadingScene = new LoadingScene(pSceneType);
+        setScene(loadingScene);
+    }
+    public void disposeLoadingScene(){
+        loadingScene.disposeScene();
+        loadingScene = null;
+    }
+
 
     /*===Game Scene==========*/
-    public void loadGameScene(final Engine engine)
-    {
-        gameScene = new GameScene(ResourceManager.getInstance().gameActivity);
-        gameScene.setCullingEnabled(true);
-        ((GameScene)gameScene).createResources();
-        ((GameScene)gameScene).loadResources();
-        ((GameScene)gameScene).createScene((BoundCamera)engine.getCamera());
-        engine.setScene(gameScene);
+    public void loadGameScene() {
+        Log.d(TAG,"loadingGameScene");
+        ResourceManager.getInstance().loadStage(0);
+    }
+    public void createGameScene(){
+        Log.d(TAG,"createGameScene");
+        gameScene = new GameScene();
+        setScene(gameScene);
     }
 
 }

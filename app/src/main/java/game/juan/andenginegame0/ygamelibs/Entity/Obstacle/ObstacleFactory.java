@@ -9,6 +9,7 @@ import org.andengine.ui.activity.BaseGameActivity;
 
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
+import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 import game.juan.andenginegame0.ygamelibs.Entity.GameEntity;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
@@ -29,13 +30,13 @@ public class ObstacleFactory implements ConstantsSet.EntityType{
             case OBS_TRAP_TEMP:
                 return createTrapTemp_Obstacle(pGameScene,iTiledTextureRegion,pObstacleData);
             case OBS_TRAP :
-                Log.d("TRAP","TRAP1");
                 return createTrap_Obstacle(pGameScene,iTiledTextureRegion,pObstacleData);
             case OBS_FALL:
                 return createFall_Obstacle(pGameScene,iTiledTextureRegion,pObstacleData);
             case OBS_SHOT:
                 break;
-
+            case OBS_MOVING_GROUND:
+                return createMovingGround_Obstacle(pGameScene,iTiledTextureRegion,pObstacleData);
 
         }
         return null;
@@ -43,8 +44,9 @@ public class ObstacleFactory implements ConstantsSet.EntityType{
 
 
    private static BulletObstacle createFall_Obstacle(GameScene pGameScene , ITiledTextureRegion iTiledTextureRegion,DataBlock pDataBlock){
-        final BulletObstacle fallingObstacle = new BulletObstacle(pDataBlock.getPosX(),pDataBlock.getPosY(),iTiledTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
-        //fallingObstacle.setConfigData(pGameScene.getDataManager().getFallConfig());
+        final BulletObstacle fallingObstacle = new BulletObstacle(pDataBlock.getPosX(),pDataBlock.getPosY(),
+                iTiledTextureRegion,ResourceManager.getInstance().vbom);
+        fallingObstacle.setConfigData(/**/DataManager.getInstance().obstacleConfigs[0]);
         fallingObstacle.createObstacle(pGameScene,pDataBlock);
         fallingObstacle.setOrigin(pDataBlock.getPosX()+fallingObstacle.getWidthScaled()/2f,pDataBlock.getPosY()+fallingObstacle.getHeightScaled()/2f);
         fallingObstacle.setActive(true);
@@ -52,18 +54,30 @@ public class ObstacleFactory implements ConstantsSet.EntityType{
         return fallingObstacle;
     }
     private static TrapObstacle createTrap_Obstacle(GameScene pGameScene, ITiledTextureRegion iTiledTextureRegion, DataBlock pDataBlock){
-       final TrapObstacle trapObstacle = new TrapObstacle(pDataBlock.getPosX(), pDataBlock.getPosY(),iTiledTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
-      // trapObstacle.setConfigData(pGameScene.getDataManager().getTrapConfig());
+       final TrapObstacle trapObstacle = new TrapObstacle(pDataBlock.getPosX(), pDataBlock.getPosY(),
+               iTiledTextureRegion,ResourceManager.getInstance().vbom);
+       trapObstacle.setConfigData(DataManager.getInstance().obstacleConfigs[2]);
        trapObstacle.createObstacle(pGameScene,pDataBlock);
        pGameScene.attachChild(trapObstacle);
        return trapObstacle;
     }
     private static TrapObstacle createTrapTemp_Obstacle(GameScene pGameScene, ITiledTextureRegion iTiledTextureRegion, DataBlock pDataBlock){
-        final TrapObstacle trapObstacle = new TrapObstacle(pDataBlock.getPosX(), pDataBlock.getPosY(),iTiledTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
-        //trapObstacle.setConfigData(pGameScene.getDataManager().getTempTrapConfig());
+        final TrapObstacle trapObstacle = new TrapObstacle(pDataBlock.getPosX(), pDataBlock.getPosY(),
+                iTiledTextureRegion,ResourceManager.getInstance().vbom);
+        trapObstacle.setConfigData(DataManager.getInstance().obstacleConfigs[3]);
         trapObstacle.createObstacle(pGameScene,pDataBlock);
         pGameScene.attachChild(trapObstacle);
         return trapObstacle;
+    }
+    private static MovingGround createMovingGround_Obstacle(GameScene pGameScene, ITiledTextureRegion iTiledTextureRegion, DataBlock pDataBlock){
+        final MovingGround movingGround = new MovingGround(pDataBlock.getPosX(),pDataBlock.getPosY(),
+                iTiledTextureRegion, ResourceManager.getInstance().vbom);
+        Log.d("TEST",""+DataManager.getInstance().obstacleConfigs[5].toString());
+       movingGround.setConfigData(DataManager.getInstance().obstacleConfigs[5]);
+
+       movingGround.createObstacle(pGameScene,pDataBlock);
+       pGameScene.attachChild(movingGround);
+       return movingGround;
     }
 
     /*
@@ -119,8 +133,9 @@ public class ObstacleFactory implements ConstantsSet.EntityType{
     public static PendulumObstacle createObstacle_Pendulum(GameScene pGameScene,
                                                ITiledTextureRegion iTiledTextureRegionStd, ITiledTextureRegion iTiledTextureRegionBar, ITiledTextureRegion iTiledTextureRegionEnd,
                                                DataBlock pDataBlock){
-       PendulumObstacle pendulumObstacle = new PendulumObstacle(pDataBlock.getPosX(),pDataBlock.getPosY(),iTiledTextureRegionStd,pGameScene.getActivity().getVertexBufferObjectManager());
-       //pendulumObstacle.setConfigData(ResourceManager.getInstance().ge)//getPendulumConfig());
+       PendulumObstacle pendulumObstacle = new PendulumObstacle(pDataBlock.getPosX(),pDataBlock.getPosY(),iTiledTextureRegionStd,
+               ResourceManager.getInstance().vbom);
+       pendulumObstacle.setConfigData(DataManager.getInstance().obstacleConfigs[4]);//getPendulumConfig());
        pendulumObstacle.setAxisTexture(pGameScene,iTiledTextureRegionBar);
        pendulumObstacle.setSawTexture(pGameScene,iTiledTextureRegionEnd);
        pendulumObstacle.createObstacle(pGameScene,pDataBlock);

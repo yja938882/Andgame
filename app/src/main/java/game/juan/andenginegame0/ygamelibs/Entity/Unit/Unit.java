@@ -67,6 +67,7 @@ public abstract class Unit extends GameEntity{
 
     private boolean alive = true;
 
+
     /*===Constructor===========================*/
     public Unit(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
@@ -76,6 +77,7 @@ public abstract class Unit extends GameEntity{
 
     /*===Method======================================*/
     public void setAction(int pAction){
+        Log.d("cheep","set Action "+pAction);
         this.mAction = pAction;
     }
     public void setGravity(Vector2 pGravity){
@@ -85,6 +87,8 @@ public abstract class Unit extends GameEntity{
     /*===Inner Method================================*/
 
     private void update(){
+
+       // Log.d("cheep","ac0  "+mAction);
         if(jumpLock)
             jumpCounter++;
         if(jumpCounter>=10){
@@ -95,13 +99,15 @@ public abstract class Unit extends GameEntity{
         UnitData bodyData =(UnitData) getDataBlock(BODY);
         UnitData footData = (UnitData)getDataBlock(FOOT);
         if( (bodyData).isNeedToBeAttacked()){
-            mAction = ConstantsSet.UnitAction.ACTION_HITTED;
+            if(!invincible)
+                mAction = ConstantsSet.UnitAction.ACTION_HITTED;
             (bodyData).setNeedToBeAttacked(false);
-        }
+          }
+      //  Log.d("cheep","ac1   "+mAction);
         if(footData.isNeedToBeStopJumpAnim()) {
             footData.setNeedToBeStopJumpAnim(false);
             stopAnimation(0);
-        }
+         }
         if(!alive){
             mAction = ConstantsSet.UnitAction.ACTION_DIE;
         }
@@ -109,8 +115,7 @@ public abstract class Unit extends GameEntity{
         if(isLocked()) {
              return;
         }
-
-        switch (mAction){
+    switch (mAction){
             case ConstantsSet.UnitAction.ACTION_DIE:
                 LockAction(DIE_LOCK_INDEX);
                 animate(dieFrameDuration,dieFrameIndex,false);
@@ -119,9 +124,7 @@ public abstract class Unit extends GameEntity{
                 this.setFlippedHorizontal(false);
                 getBody(FOOT).setAngularVelocity(30f);
                 if(footData.isInTheAir()){
-                    //stopAnimation(jumpFrameIndex[1]);
-                    //animate(jumpFrameDuration,jumpFrameIndex,true);
-                    if(!isAnimationRunning()) {
+                      if(!isAnimationRunning()) {
                         animate(jumpFrameDuration, jumpFrameIndex, true);
                     }
 
@@ -136,9 +139,7 @@ public abstract class Unit extends GameEntity{
                 this.setFlippedHorizontal(true);
                 getBody(FOOT).setAngularVelocity(-30f);
                 if(footData.isInTheAir()){
-                        //stopAnimation(jumpFrameIndex[1]);
-                        //animate(jumpFrameDuration,jumpFrameIndex,true);
-                    if(!isAnimationRunning()) {
+                      if(!isAnimationRunning()) {
                         animate(jumpFrameDuration, jumpFrameIndex, true);
                     }
 
@@ -247,7 +248,9 @@ public abstract class Unit extends GameEntity{
         setupBody(2);
         switch (bodySType){
             case VERTICAL_SHAPE:
+                Log.d("cheep!!!","body vertices");
                 createVerticesBody(pGameScene,BODY,pBodyData,bodyShape, BodyDef.BodyType.DynamicBody);
+                Log.d("cheep!!!","b len :"+bodyShape.length);
                 // createOctagonBody(pGameScene,BODY,pBodyData,bodyShape, BodyDef.BodyType.DynamicBody);
                 break;
             case CIRCLE_SHAPE:
@@ -259,6 +262,7 @@ public abstract class Unit extends GameEntity{
 
         switch (footSType){
             case VERTICAL_SHAPE:
+                Log.d("cheep!!!","vs");
                 createVerticesBody(pGameScene,FOOT,pFootData,footShape, BodyDef.BodyType.DynamicBody);
                 break;
             case CIRCLE_SHAPE:
@@ -276,6 +280,7 @@ public abstract class Unit extends GameEntity{
         revoluteJointDef.localAnchorA.set(0,bodyHeight/2);
         revoluteJointDef.localAnchorB.set(0,0);
         pGameScene.getWorld().createJoint(revoluteJointDef);
+        Log.d("cheep!!!","bh :"+bodyHeight/2);
 
 
         transform(pBodyData.getPosX(),pBodyData.getPosY());
@@ -454,6 +459,8 @@ public abstract class Unit extends GameEntity{
         };
     }
 
+
+
     public abstract void attackFinished();
     public abstract void beAttackedFinished();
     public abstract void dieFinished();
@@ -463,4 +470,21 @@ public abstract class Unit extends GameEntity{
     protected void onStop(){
 
     }
+
+
+    protected boolean invincible = false;
+    protected float invincibleTimeLimit = 2f;
+    protected float invincibleTimer = 0f;
+    protected int invincibleAlphaCounter =0;
+
+    protected void setInvincible(){
+        invincible = true;
+        //  getBody(0).getFixtureList().get(0).setFilterData();
+    }
+    protected void unsetInvincible(){
+        invincible = false;
+        invincibleTimer = 0f;
+        this.setAlpha(1.0f);
+    }
+
 }

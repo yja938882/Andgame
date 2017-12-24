@@ -26,18 +26,15 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
                 category = PLAYER_BODY_CATG_BITS;
                 mask = PLAYER_BODY_MASK_BITS;
                 friction = FRICTION_ZERO;
-                Log.d("CREATW","PLAYER BODY "+PLAYER_BODY_CATG_BITS+ "  :"+PLAYER_BODY_MASK_BITS);
                 break;
             case ENTITY|UNIT|PLAYER|FOOT:
                 category = PLAYER_FOOT_CATG_BITS;
                 mask = PLAYER_FOOT_MASK_BITS;
-                Log.d("CREATW","PLAYER FOOT");
-                break;
+                 break;
             case ENTITY|UNIT|AI|BODY:
                 category = AI_BODY_CATG_BITS;
                 mask = AI_BODY_MASK_BITS;
-                Log.d("CREATW","AI BODY");
-                break;
+                 break;
             case ENTITY|UNIT|AI|FOOT:
                 category = AI_FOOT_CATG_BITS;
                 mask = AI_FOOT_MASK_BITS;
@@ -45,8 +42,7 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
             case ENTITY|OBSTACLE|ATTACK_OBSTACLE:
                 category = OBSTACLE_BULLET_CATG_BITS;
                 mask = OBSTACLE_BULLET_MASK_BITS;
-                Log.d("CREATW","ATK_OBS "+OBSTACLE_BULLET_CATG_BITS+"  :"+OBSTACLE_BULLET_MASK_BITS);
-                break;
+                  break;
             case ENTITY|OBSTACLE|PASSABLE_OBSTACLE:
                 category = PASSABLE_OBSTACLE_CATG_BITS;
                 mask = PASSABLE_OBSTACLE_MASK_BITS;
@@ -58,8 +54,7 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
             case STATIC|GROUND:
                 category = GROUND_CATG_BITS;
                 mask = GROUND_MASK_BITS;
-                Log.d("CREATW","GROUND");
-                break;
+                 break;
         }
         fixtureDef = PhysicsFactory.createFixtureDef(ConstantsSet.Physics.DENSITY_UNIT,0f, friction);
         fixtureDef.filter.categoryBits = category;

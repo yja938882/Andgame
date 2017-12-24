@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Entity.Unit;
 
+import android.util.Log;
+
 import com.badlogic.gdx.math.Vector2;
 
 import org.andengine.entity.particle.BatchedSpriteParticleSystem;
@@ -17,6 +19,7 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Weapon;
+import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.UI.UIManager;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
@@ -33,11 +36,11 @@ public class PlayerUnit extends Unit{
     BatchedSpriteParticleSystem movingParticleSystem;
     PointParticleEmitter movingParticleEmitter;
 
+
     /*===Constructor===========================*/
 
     public PlayerUnit(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
-        //movingParticleEmitter = new PointParticleEmitter(500,300);
     }
 
     public void setWeapon(Weapon pWeapon){
@@ -46,6 +49,7 @@ public class PlayerUnit extends Unit{
 
     @Override
     protected void attack() {
+        Log.d("cheep!!!","attack");
         super.attack();
         if(!isFlippedHorizontal())
             mWeapon.shot(getPhysicsBodyPos(),new Vector2(15,0));
@@ -61,7 +65,8 @@ public class PlayerUnit extends Unit{
     public void createPlayer(GameScene pGameScene, PlayerData pPlayerData){
         this.setScale(0.5f);
         setGravity(pGameScene.getGravity());
-        createUnit(pGameScene,pPlayerData,new PlayerData(DataBlock.PLAYER_FOOT_CLASS,pPlayerData.getType(),(int)(pPlayerData.getPosX()),(int)pPlayerData.getPosY()));
+        createUnit(pGameScene,pPlayerData,new PlayerData(DataBlock.PLAYER_FOOT_CLASS,pPlayerData.getType(),
+                (int)(pPlayerData.getPosX()),(int)pPlayerData.getPosY()));
     }
 
     public void registerUI(UIManager pUiManager){
@@ -78,8 +83,17 @@ public class PlayerUnit extends Unit{
 
     @Override
     protected void beAttacked() {
-
+        setInvincible();
     }
+   // private void setInvincible(){
+     //   invincibility = true;
+      //  getBody(0).getFixtureList().get(0).setFilterData();
+    //}
+    //private void unsetInvincible(){
+      //  invincibility = false;
+       // invincibleTimer = 0f;
+       // this.setAlpha(1.0f);
+    //}
 
     @Override
     public void attackFinished() {
@@ -88,11 +102,13 @@ public class PlayerUnit extends Unit{
 
     @Override
     public void beAttackedFinished() {
-
+        //invincibility = true;
     }
-    public void setMovingParticleSystem(GameScene pGameScene, ITextureRegion pTextureRegion){
+    public void setMovingParticleSystem(GameScene pGameScene){
         movingParticleEmitter = new PointParticleEmitter(0,0);
-        this.movingParticleSystem =new BatchedSpriteParticleSystem(movingParticleEmitter,10,20,20,pTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
+        this.movingParticleSystem =new BatchedSpriteParticleSystem(movingParticleEmitter,
+                10,20,20,
+                ResourceManager.getInstance().playerMovingParticleRegion, ResourceManager.getInstance().vbom);
         movingParticleSystem.addParticleInitializer(new VelocityParticleInitializer<UncoloredSprite>(0,0,-10,-20));
         movingParticleSystem.addParticleInitializer(new AccelerationParticleInitializer<UncoloredSprite>(3,30,10,50));
         movingParticleSystem.addParticleInitializer(new ExpireParticleInitializer<UncoloredSprite>(1.2f));
@@ -116,5 +132,26 @@ public class PlayerUnit extends Unit{
     protected void onStop(){
         movingParticleSystem.setParticlesSpawnEnabled(false);
     }
+
+
+    @Override
+    protected void onManagedUpdate(float pSecondsElapsed) {
+        super.onManagedUpdate(pSecondsElapsed);
+
+        if(invincible){
+            if(invincibleAlphaCounter++ %2==0){
+                this.setAlpha(0.5f);
+            }else{
+                this.setAlpha(1f);
+            }
+
+            invincibleTimer+=pSecondsElapsed;
+            if(invincibleTimer>invincibleTimeLimit){
+                unsetInvincible();
+            }
+        }
+    }
+
+
 
 }

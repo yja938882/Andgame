@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon;
 
+import android.util.Log;
+
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -23,6 +25,7 @@ public class Weapon{
     }
 
     public void shot(Vector2 pSrc, Vector2 pDest){
+        Log.d("cheep!!!","shot");
         mBullets[mNextBulletIndex].shotAtoB(pSrc,pDest);
         mNextBulletIndex++;
         if(mManagedBulletSize<=mNextBulletIndex){

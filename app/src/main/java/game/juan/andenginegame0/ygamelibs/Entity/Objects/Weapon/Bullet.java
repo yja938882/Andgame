@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon;
 
+import android.util.Log;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 
@@ -32,6 +34,7 @@ public class Bullet extends GameEntity {
     }
 
     public void shotAtoB(Vector2 pSrc , Vector2 pDest){
+        Log.d("cheep","s a to b");
         this.getBody(0).setActive(true);
         this.setVisible(true);
         this.setLinearVelocity(0,0,0);

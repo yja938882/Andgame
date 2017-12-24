@@ -10,6 +10,8 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.Constants;
 
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
+import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
+import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.Unit;
 
 /**
@@ -26,10 +28,11 @@ public class OneWayMoveController extends Controller{
     @Override
     public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y) {
         if (pSceneTouchEvent.isActionDown()||pSceneTouchEvent.isActionMove()) {
-                mUnit.setAction(mAction);
+                EntityManager.getInstance().playerUnit.setAction(mAction);
+
                 this.setAlpha(1.0f);
         }else{
-            mUnit.setAction(UnitAction.ACTION_STOP);
+            EntityManager.getInstance().playerUnit.setAction(UnitAction.ACTION_STOP);
             this.setAlpha(0.5f);
         }
      return true;

@@ -1,5 +1,6 @@
 package game.juan.andenginegame0.ygamelibs.Test;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -11,10 +12,13 @@ import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
+import org.andengine.engine.options.WakeLockOptions;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import game.juan.andenginegame0.ygamelibs.Data.DBManager;
+import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.Scene.SceneManager;
@@ -33,6 +37,8 @@ public class UnitTestActivity extends BaseGameActivity {
     private View 	decorView;
     private int	uiOption;
 
+    private  int dbVersion =25;
+    String dbName ="config.db";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +60,7 @@ public class UnitTestActivity extends BaseGameActivity {
                     new RatioResolutionPolicy(2560,1440),mCamera);
 
             engineOptions.getTouchOptions().setNeedsMultiTouch(true);
+            engineOptions.setWakeLockOptions(WakeLockOptions.SCREEN_ON);
         return engineOptions;
     }
 
@@ -79,6 +86,9 @@ public class UnitTestActivity extends BaseGameActivity {
     public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws Exception {
         ResourceManager.prepareManager(mEngine,this,mCamera,getVertexBufferObjectManager());
         resourceManager = ResourceManager.getInstance();
+
+        final DBManager dbManager = new DBManager(this,dbName,null,dbVersion);
+        DataManager.prepareManager(this,dbManager);
 
         SceneManager.getInstance().loadSplashScene();
         pOnCreateResourcesCallback.onCreateResourcesFinished();

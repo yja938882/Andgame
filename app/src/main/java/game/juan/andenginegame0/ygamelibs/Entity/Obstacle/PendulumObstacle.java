@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Entity.GameEntity;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
+import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 
 /**
  * Created by juan on 2017. 12. 3..
@@ -49,11 +50,13 @@ public class PendulumObstacle extends GameEntity {
     }
 
     public void setSawTexture(GameScene pGameScene, ITextureRegion pTextureRegion){
-        mSawSprite = new Sprite(this.getX()-this.getWidthScaled()/2,this.getY()+this.getHeightScaled(),pTextureRegion.getWidth(),pTextureRegion.getHeight(),pTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
+        mSawSprite = new Sprite(this.getX()-this.getWidthScaled()/2,this.getY()+this.getHeightScaled(),
+                pTextureRegion.getWidth(),pTextureRegion.getHeight(),pTextureRegion, ResourceManager.getInstance().vbom);
        // a = pTextureRegion;
     }
     public void setAxisTexture(GameScene pGameScene, ITextureRegion pTextureRegion){
-       mAxisSprite = new Sprite(this.getX()-this.getWidthScaled()/2,this.getY()+this.getHeightScaled(),pTextureRegion.getWidth(),pTextureRegion.getHeight(),pTextureRegion,pGameScene.getActivity().getVertexBufferObjectManager());
+       mAxisSprite = new Sprite(this.getX()-this.getWidthScaled()/2,this.getY()+this.getHeightScaled(),pTextureRegion.getWidth(),
+               pTextureRegion.getHeight(),pTextureRegion,ResourceManager.getInstance().vbom);
        // s= pTextureRegion;
     }
     public void createObstacle(GameScene pGameScene, DataBlock pDataBlock){

@@ -8,6 +8,7 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
+import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.Unit;
 
 
@@ -26,12 +27,11 @@ public class AttackController extends Controller {
     public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y)
     {
         if (pSceneTouchEvent.isActionDown()) {
-            mUnit.setAction(mAction);
+            EntityManager.getInstance().playerUnit.setAction(mAction);
             this.setAlpha(1.0f);
         }else{
             this.setAlpha(0.5f);
         }
         return true;
     }
-
 }

@@ -41,7 +41,6 @@ public class AiUnit extends Unit {
 
     @Override
     protected void beAttacked() {
-        Log.d("TEMP!!_DEBUG","ATTACKED!!!");
         hp--;
         if(hp<=0){
             setAlive(false);
@@ -57,6 +56,7 @@ public class AiUnit extends Unit {
         createUnit(pGameScene,aiData,new AiData(DataBlock.PLAYER_FOOT_CLASS,pDataBlock.getType(),(int)(pDataBlock.getPosX()),(int)pDataBlock.getPosY()));
 
     }
+    boolean ret = true;
     public void setCmdList(int[] plist, float[] pduList){
         this.mCmdList = plist;
         this.mCmdDuList = pduList;
@@ -69,7 +69,11 @@ public class AiUnit extends Unit {
     }
 
     public void updateCmd(float pSecondsElapsed){
+
         if(!isAlive()) return;
+
+        if(ret) return;
+
         mCmdElapsed += pSecondsElapsed;
         if(mCmdElapsed>=mCmdDuList[mCmd]){
             mCmd++;
