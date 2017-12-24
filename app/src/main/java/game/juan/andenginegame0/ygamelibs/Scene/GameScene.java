@@ -98,15 +98,10 @@ public class GameScene extends BaseScene {
         this.camera.setBoundsEnabled(true);
         this.registerUpdateHandler(world.getWorld());
 
-
-
-
-
-
         EntityManager.getInstance().createOnGame(this);
         UIManager.getInstance().createOnGame(this);
         StaticManager.getInstance().createOnGame(this);
-        //ResourceManager.getInstance().camera.setHUD(UIManager.getInstance().mHud);
+
 
         //For debugging
         DebugRenderer dr = new DebugRenderer(world.getWorld(),vbom);

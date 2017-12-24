@@ -91,7 +91,7 @@ public class SplashScene extends BaseScene {
         this.attachChild(cheepSprite);
         movingParticleEmitter = new PointParticleEmitter(404,420);
         this.movingParticleSystem =new BatchedSpriteParticleSystem(movingParticleEmitter,3,10,10
-                ,ResourceManager.getInstance().ParticleRegion,ResourceManager.getInstance().vbom);
+                ,ResourceManager.getInstance().truckParticleRegion,ResourceManager.getInstance().vbom);
         movingParticleSystem.addParticleInitializer(new VelocityParticleInitializer<UncoloredSprite>(-2,-10,-10,-20));
         movingParticleSystem.addParticleInitializer(new AccelerationParticleInitializer<UncoloredSprite>(-1,-3,-1,-3));
         movingParticleSystem.addParticleInitializer(new ExpireParticleInitializer<UncoloredSprite>(4f));

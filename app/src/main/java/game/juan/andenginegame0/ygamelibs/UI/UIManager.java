@@ -120,16 +120,16 @@ public class UIManager implements ConstantsSet {
 
 
         mHealthUI = new HealthUI(3,10,10,36,36,4);
-        mHealthUI.setup(ResourceManager.getInstance().heartRegion,ResourceManager.getInstance().engine,mHud);
+        mHealthUI.setup(ResourceManager.getInstance().heartTextureRegion,ResourceManager.getInstance().engine,mHud);
 
         final SettingButton settingButton = new SettingButton(CAMERA_WIDTH-80,20,50,50,
-                ResourceManager.getInstance().settingRegion,ResourceManager.getInstance().vbom);
+                ResourceManager.getInstance().settingTextureRegion,ResourceManager.getInstance().vbom);
         settingButton.setup(SceneManager.getInstance().getCurrentScene(), ResourceManager.getInstance().gameActivity);
         mHud.registerTouchArea(settingButton);
         mHud.attachChild(settingButton);
 
         mCoinUI = new CoinUI();
-        mCoinUI.setup(ResourceManager.getInstance().coinRegion,
+        mCoinUI.setup(ResourceManager.getInstance().coinTextureRegion,
                 ResourceManager.getInstance().mainFont,ResourceManager.getInstance().engine,mHud);
         ResourceManager.getInstance().camera.setHUD(mHud);
 

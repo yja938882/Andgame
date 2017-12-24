@@ -2,29 +2,30 @@ package game.juan.andenginegame0.ygamelibs.Scene;
 
 
 import org.andengine.engine.Engine;
+import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
+import org.andengine.opengl.texture.bitmap.BitmapTexture;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
-  import android.util.Log;
+import android.graphics.Bitmap;
+import android.util.Log;
 
-        import org.andengine.engine.Engine;
-        import org.andengine.engine.camera.Camera;
-        import org.andengine.entity.text.Text;
-        import org.andengine.opengl.font.Font;
-        import org.andengine.opengl.font.FontFactory;
-        import org.andengine.opengl.texture.ITexture;
-        import org.andengine.opengl.texture.TextureOptions;
-        import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
-        import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-        import org.andengine.opengl.texture.region.ITextureRegion;
-        import org.andengine.opengl.texture.region.ITiledTextureRegion;
-        import org.andengine.opengl.vbo.VertexBufferObjectManager;
-        import org.andengine.ui.activity.BaseGameActivity;
-        import org.andengine.util.color.Color;
-
-        import game.juan.andenginegame0.ygamelibs.Data.DataManager;
-
-/**
+import org.andengine.engine.Engine;
+import org.andengine.engine.camera.Camera;
+import org.andengine.entity.text.Text;
+import org.andengine.opengl.font.Font;
+import org.andengine.opengl.font.FontFactory;
+import org.andengine.opengl.texture.ITexture;
+import org.andengine.opengl.texture.TextureOptions;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.ITiledTextureRegion;
+import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.ui.activity.BaseGameActivity;
+import org.andengine.util.color.Color;
+import game.juan.andenginegame0.ygamelibs.Data.DataManager;
+/*
  * Created by juan on 2017. 12. 18..
  * ResourceManager
  * load , unload graphics, font, audio
@@ -37,25 +38,100 @@ public class ResourceManager {
 
   public Engine engine;
   public BaseGameActivity gameActivity;
-  public Camera camera;
+  public BoundCamera camera;
   public VertexBufferObjectManager vbom;
 
 
     /*===SplashScene==============================*/
 
-  public ITextureRegion splashRegion;
-  private BitmapTextureAtlas splashTextureAtlas;
+  public ITextureRegion splashLayer0Region;
+  public ITextureRegion splashLayer1Region;
+  public ITextureRegion splashLayer2Region;
+  public ITextureRegion moonRegion;
+  public ITextureRegion truckRegion;
+  public ITiledTextureRegion cheepRegion;
+  public ITextureRegion truckParticleRegion;
+  public ITextureRegion titleRegion;
 
+
+  private BitmapTextureAtlas splash0TextureAtlas;
+  private BitmapTextureAtlas splash1TextureAtlas;
+  private BitmapTextureAtlas splash2TextureAtlas;
+  private BitmapTextureAtlas moonTextureAtlas;
+  private BitmapTextureAtlas truckTextureAtlas;
+  private BitmapTextureAtlas cheepTextureAtlas;
+  private BitmapTextureAtlas truckParticleTextureAtlas;
+  private BitmapTextureAtlas titleTextureAtlas;
 
   public void loadSplashSceneGraphics(){
-    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/bg/");
-    splashTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(), 1024, 640, TextureOptions.BILINEAR);
-    splashRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextureAtlas, gameActivity, "splash.png", 0, 0);
-    splashTextureAtlas.load();
+    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/splash/");
+
+    splash0TextureAtlas =new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,600);
+    splashLayer0Region = BitmapTextureAtlasTextureRegionFactory.
+            createFromAsset(splash0TextureAtlas,gameActivity,"splash_layer0.png",0,0);
+    splash0TextureAtlas.load();
+
+    splash1TextureAtlas =new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,600);
+    splashLayer1Region = BitmapTextureAtlasTextureRegionFactory.
+              createFromAsset(splash1TextureAtlas,gameActivity,"splash_layer1.png",0,0);
+    splash1TextureAtlas.load();
+
+    splash2TextureAtlas =new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,600);
+    splashLayer2Region = BitmapTextureAtlasTextureRegionFactory.
+              createFromAsset(splash2TextureAtlas,gameActivity,"splash_layer2.png",0,0);
+    splash2TextureAtlas.load();
+
+    truckTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,600);
+    truckRegion = BitmapTextureAtlasTextureRegionFactory.
+            createFromAsset(truckTextureAtlas,gameActivity,"truck.png",0,0);
+    truckTextureAtlas.load();
+
+    moonTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,600);
+    moonRegion = BitmapTextureAtlasTextureRegionFactory.
+            createFromAsset(moonTextureAtlas,gameActivity,"moon.png",0,0);
+    moonTextureAtlas.load();
+
+    cheepTextureAtlas= new BitmapTextureAtlas(gameActivity.getTextureManager(), 768,128);
+    cheepRegion = BitmapTextureAtlasTextureRegionFactory.
+            createTiledFromAsset(cheepTextureAtlas,gameActivity,"cheep.png",0,0,6,1);
+    cheepTextureAtlas.load();
+
+    truckParticleTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),16,16);
+    truckParticleRegion = BitmapTextureAtlasTextureRegionFactory.
+            createFromAsset(truckParticleTextureAtlas,gameActivity,"particle.png",0,0);
+    truckParticleTextureAtlas.load();
+
+    titleTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),318,110);
+    titleRegion = BitmapTextureAtlasTextureRegionFactory.
+            createFromAsset(titleTextureAtlas,gameActivity,"title.png",0,0);
+    titleTextureAtlas.load();
   }
   public void unloadSplashSceneGraphics(){
-    splashTextureAtlas.unload();
-    splashRegion = null;
+    splash0TextureAtlas.unload();
+    splashLayer0Region =null;
+
+    splash1TextureAtlas.unload();
+    splashLayer1Region = null;
+
+    splash2TextureAtlas.unload();
+    splashLayer2Region =null;
+
+    truckTextureAtlas.unload();
+    truckRegion = null;
+
+    moonTextureAtlas.unload();
+    moonRegion =null;
+
+    cheepTextureAtlas.unload();
+    cheepRegion = null;
+
+    truckParticleTextureAtlas.unload();
+    truckParticleRegion = null;
+
+    titleTextureAtlas.unload();
+    titleRegion=null;
+
+
   }
 
     /*===MainScene================================*/
@@ -85,6 +161,7 @@ public class ResourceManager {
     loadPlayerGraphics();
     loadAiGraphics();
     loadObstacleGraphics();
+    loadGameUI();
   }
 
     /*===Static=======*/
@@ -107,7 +184,7 @@ public class ResourceManager {
     background_1_TextureAtlas.load();
 
     background_2_TextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,960,TextureOptions.BILINEAR);
-    backgroundRegion1 = BitmapTextureAtlasTextureRegionFactory.
+    backgroundRegion2 = BitmapTextureAtlasTextureRegionFactory.
             createFromAsset(background_2_TextureAtlas,gameActivity,"b.png",0,0);
     background_2_TextureAtlas.load();
   }
@@ -135,15 +212,13 @@ public class ResourceManager {
 
     BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/player/");
 
-         playerTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,1024);
-      playerRegion  = BitmapTextureAtlasTextureRegionFactory.
+    playerTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,1024);
+    playerRegion  = BitmapTextureAtlasTextureRegionFactory.
               createTiledFromAsset(playerTextureAtlas,gameActivity.getAssets(),"player_s.png",0,0,8,8);
-      playerTextureAtlas.load();
+    playerTextureAtlas.load();
 
 
-
-
-      playerMovingParticleTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),16,16);
+    playerMovingParticleTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),16,16);
     playerMovingParticleRegion  = BitmapTextureAtlasTextureRegionFactory.
             createFromAsset(playerMovingParticleTextureAtlas,gameActivity.getAssets(),"ptest.png",0,0);
     playerMovingParticleTextureAtlas.load();
@@ -183,16 +258,11 @@ public class ResourceManager {
 
     BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/ai/");
 
-    //for(int i=0;i<AI_TEXTURE_SIZE;i++){
-      ///aiTextureAtlas[i] = new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,1024);
-      //aiRegions[i] = BitmapTextureAtlasTextureRegionFactory.
-       //       createTiledFromAsset(aiTextureAtlas[i],gameActivity.getAssets(),"ai.png",0,0,8,8);
-      //aiTextureAtlas[i].load();
-    //}
-      aiTextureAtlas[0] = new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,1024);
-      aiRegions[0] = BitmapTextureAtlasTextureRegionFactory.
+
+    aiTextureAtlas[0] = new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,1024);
+    aiRegions[0] = BitmapTextureAtlasTextureRegionFactory.
               createTiledFromAsset(aiTextureAtlas[0],gameActivity.getAssets(),"rat.png",0,0,10,10);
-      aiTextureAtlas[0].load();
+    aiTextureAtlas[0].load();
   }
   private void unloadAiGraphics(){
     for(BitmapTextureAtlas bitmapTextureAtlas:aiTextureAtlas){
@@ -284,9 +354,83 @@ public class ResourceManager {
   }
 
 
+  public static final int  CONTROLLER_SIZE =6;
+  public static final int  UI_ATTACK =0;
+  public static final int  UI_LEFT =1;
+  public static final int  UI_RIGHT =2;
+  public static final int  UI_SKILL1 =3;
+  public static final int  UI_SKILL2 =4;
+  public static final int  UI_UP =5;
 
+    public ITextureRegion mControllerTRs[]=null;
+    private BitmapTextureAtlas mControllerAtlas[]=null;
 
+    public ITiledTextureRegion heartTextureRegion;
+    public ITextureRegion settingTextureRegion;
+    public ITextureRegion invenTextureRegion;
+    public ITextureRegion coinTextureRegion;
 
+    private BitmapTextureAtlas heartTextureAtlas;
+    private BitmapTextureAtlas settingTextureAtlas;
+    private BitmapTextureAtlas invenTextureAtlas;
+    private BitmapTextureAtlas coinTextureAtlas;
+
+    private void loadGameUI(){
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/ui/");
+
+        mControllerAtlas = new BitmapTextureAtlas[CONTROLLER_SIZE];
+        mControllerTRs = new ITextureRegion[CONTROLLER_SIZE];
+        mControllerAtlas[UI_LEFT] = new BitmapTextureAtlas(gameActivity.getTextureManager(),
+                68,67,TextureOptions.BILINEAR);
+        mControllerTRs[UI_LEFT] = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(mControllerAtlas[UI_LEFT],gameActivity,"left.png",0,0);
+        mControllerAtlas[UI_LEFT].load();
+
+        mControllerAtlas[UI_RIGHT] = new BitmapTextureAtlas(gameActivity.getTextureManager(), 68,67,TextureOptions.BILINEAR);
+        mControllerTRs[UI_RIGHT] = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(mControllerAtlas[UI_RIGHT],gameActivity,"right.png",0,0);
+        mControllerAtlas[UI_RIGHT].load();
+
+        mControllerAtlas[UI_ATTACK]= new BitmapTextureAtlas(gameActivity.getTextureManager(),112,123,TextureOptions.BILINEAR);
+        mControllerTRs[UI_ATTACK] = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(mControllerAtlas[UI_ATTACK],gameActivity,"attack_btn.png",0,0);
+        mControllerAtlas[UI_ATTACK].load();
+
+        mControllerAtlas[UI_UP] = new BitmapTextureAtlas(gameActivity.getTextureManager(),72,60, TextureOptions.BILINEAR);
+        mControllerTRs[UI_UP] =BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(mControllerAtlas[UI_UP],gameActivity,"up.png",0,0);
+        mControllerAtlas[UI_UP].load();
+
+        mControllerAtlas[UI_SKILL1] = new BitmapTextureAtlas(gameActivity.getTextureManager(), 112,123,TextureOptions.BILINEAR );
+        mControllerTRs[UI_SKILL1] = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(mControllerAtlas[UI_SKILL1],gameActivity,"skill1.png",0,0);
+        mControllerAtlas[UI_SKILL1].load();
+
+        mControllerAtlas[UI_SKILL2] = new BitmapTextureAtlas(gameActivity.getTextureManager(), 72,60,TextureOptions.BILINEAR );
+        mControllerTRs[UI_SKILL2] = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(mControllerAtlas[UI_SKILL2],gameActivity,"skill2.png",0,0);
+        mControllerAtlas[UI_SKILL2].load();
+
+        heartTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),55,34);
+        heartTextureRegion  = BitmapTextureAtlasTextureRegionFactory.
+                createTiledFromAsset(heartTextureAtlas,gameActivity,"heart.png",0,0,2,1);
+        heartTextureAtlas.load();
+
+        settingTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),96,48);
+        settingTextureRegion  = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(settingTextureAtlas,gameActivity,"icon_setting.png",0,0);
+        settingTextureAtlas.load();
+
+        invenTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),192,64);
+        invenTextureRegion = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(invenTextureAtlas,gameActivity,"bottom_inven.png",0,0);
+        invenTextureAtlas.load();
+
+        coinTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(), 28,27);
+        coinTextureRegion = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(coinTextureAtlas,gameActivity,"coin.png",0,0);
+        coinTextureAtlas.load();
+    }
 
 
   public void loadGameResources(){
@@ -313,7 +457,7 @@ public class ResourceManager {
 
 
 
-  public static void prepareManager(Engine engine, BaseGameActivity activity, Camera camera, VertexBufferObjectManager vbom){
+  public static void prepareManager(Engine engine, BaseGameActivity activity, BoundCamera camera, VertexBufferObjectManager vbom){
     getInstance().engine = engine;
     getInstance().gameActivity = activity;
     getInstance().camera = camera;

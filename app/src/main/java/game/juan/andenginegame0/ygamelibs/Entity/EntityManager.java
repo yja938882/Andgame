@@ -138,7 +138,6 @@ public class EntityManager implements ConstantsSet.Classify {
             if(!aiList.isEntityListFull()) {
                 aiList.add(AiFactory.createAi(pGameScene,
                         ResourceManager.getInstance().aiRegions[0],aiDataList.get(i)));
-                //aiList.add(ObstacleFactory.createSimpleObstacle(pGameScene, mObstacleTR[TR_OBT_FALL], aiDataList.get(i)));
             }else{
                 aiList.add(aiDataList.get(i).getPosX(),aiDataList.get(i).getPosY());
             }
