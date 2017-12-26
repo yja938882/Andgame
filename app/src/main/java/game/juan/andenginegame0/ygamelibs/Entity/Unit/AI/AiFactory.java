@@ -26,7 +26,7 @@ public class AiFactory implements ConstantsSet.EntityType{
     private static AiUnit createMoving_Ai(GameScene pGameScene , ITiledTextureRegion iTiledTextureRegion, DataBlock pDataBlock){
         final AiUnit aiUnit = new AiUnit(pDataBlock.getPosX(),pDataBlock.getPosY(),
                 iTiledTextureRegion, ResourceManager.getInstance().vbom);
-       aiUnit.setScale(0.5f);
+      // aiUnit.setScale(0.5f);
         aiUnit.setConfigData(DataManager.getInstance().aiConfigs[0]);
         aiUnit.createAi(pGameScene,pDataBlock);
         aiUnit.setActive(true);

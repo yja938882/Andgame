@@ -62,7 +62,7 @@ public class PendulumObstacle extends GameEntity {
     public void createObstacle(GameScene pGameScene, DataBlock pDataBlock){
      //   mSawSprite.setScale(0.5f);
        // mAxisSprite.setHeight(mAxisSprite.getHeight()*2);
-        mAxisSprite.setScale(2f);
+      //  mAxisSprite.setScale(2f);
       /*  float std_x = pDataBlock.getPosX();
         float std_y = pDataBlock.getPosY();
         float std_w = this.getWidthScaled();

@@ -7,6 +7,7 @@ import org.andengine.entity.scene.background.AutoParallaxBackground;
 import org.andengine.entity.scene.background.ParallaxBackground;
 import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.sprite.batch.SpriteBatch;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
@@ -68,6 +69,8 @@ public class StaticManager implements ConstantsSet{
 
             }
         });
+
+        //SpriteBatch spriteBatch1 = new SpriteBatch(ResourceManager.getInstance().mapRegion[0])
     }
 
     public static StaticManager getInstance(){

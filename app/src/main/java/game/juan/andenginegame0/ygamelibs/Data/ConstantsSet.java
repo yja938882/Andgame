@@ -58,7 +58,7 @@ public interface ConstantsSet {
         /*===Mask Bits============================*/
         short PLAYER_BODY_MASK_BITS     = OBSTACLE_CATG_BITS|OBSTACLE_BULLET_CATG_BITS|
                 AI_BODY_CATG_BITS|AI_BULLET_CATG_BITS|GROUND_CATG_BITS|PLAYER_FOOT_CATG_BITS;
-        short PLAYER_FOOT_MASK_BITS     = GROUND_CATG_BITS|PLAYER_BODY_CATG_BITS;
+        short PLAYER_FOOT_MASK_BITS     = GROUND_CATG_BITS|PLAYER_BODY_CATG_BITS|OBSTACLE_BULLET_CATG_BITS;
         short PLAYER_BULLET_MASK_BITS   = GROUND_CATG_BITS|AI_BODY_CATG_BITS;
         short AI_BODY_MASK_BITS         = AI_BODY_CATG_BITS|GROUND_CATG_BITS|PLAYER_BODY_CATG_BITS|
                 PLAYER_BULLET_CATG_BITS;
@@ -67,7 +67,7 @@ public interface ConstantsSet {
         short GROUND_MASK_BITS          = PLAYER_FOOT_CATG_BITS |PLAYER_BULLET_CATG_BITS|PLAYER_BODY_CATG_BITS|
                 AI_BODY_CATG_BITS|AI_FOOT_CATG_BITS|AI_BULLET_CATG_BITS|OBSTACLE_BULLET_CATG_BITS;
         short OBSTACLE_MASK_BITS        = PLAYER_BODY_CATG_BITS;
-        short OBSTACLE_BULLET_MASK_BITS = PLAYER_BODY_CATG_BITS|GROUND_CATG_BITS;
+        short OBSTACLE_BULLET_MASK_BITS = PLAYER_BODY_CATG_BITS|GROUND_CATG_BITS|PLAYER_FOOT_CATG_BITS;
         short PASSABLE_OBSTACLE_MASK_BITS = PASSABLE_OBSTACLE_CATG_BITS;
 
     }
@@ -100,11 +100,12 @@ public interface ConstantsSet {
         int MOVING_AI = 12;
 
         int OBS_MOVING_GROUND = 21;
-        int OBS_TRAP = 22;
-        int OBS_TRAP_TEMP = 23;
-        int OBS_PENDULUM = 24;
-        int OBS_FALL = 25;
-        int OBS_SHOT = 26;
+        int OBS_TRAP_1 = 22;
+        int OBS_TRAP_2 =23;
+        int OBS_TRAP_TEMP = 24;
+        int OBS_PENDULUM = 25;
+        int OBS_FALL = 26;
+        int OBS_SHOT = 27;
 
         int BULLET = 30;
     }

@@ -122,6 +122,7 @@ public class TrapObstacle extends GameEntity{
             if((pConfigData.getString("anim")).contentEquals("no")){
                 return;
             }
+            isTemp = true;
             createActionLock();
             JSONArray fi = pConfigData.getJSONArray("animFrameIndex");
             JSONArray fd = pConfigData.getJSONArray("animFrameDuration");

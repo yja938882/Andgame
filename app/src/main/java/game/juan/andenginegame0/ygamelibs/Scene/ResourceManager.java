@@ -8,6 +8,7 @@ import org.andengine.opengl.texture.bitmap.BitmapTexture;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import android.graphics.Bitmap;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import org.andengine.engine.Engine;
@@ -25,6 +26,13 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.color.Color;
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
+
+import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_CONFIG_SIZE;
+import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_FALL_CONFIG;
+import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_PENDULUM_CONFIG;
+import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_SHOOTING_CONFIG;
+import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_TRAP_1_CONFIG;
+import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_TRAP_2_CONFIG;
 /*
  * Created by juan on 2017. 12. 18..
  * ResourceManager
@@ -158,6 +166,7 @@ public class ResourceManager {
     Log.d(TAG,"loadStage "+pStage);
     DataManager.getInstance().loadStageData(pStage);
     loadBackgroundGraphics();
+    loadMapGraphics(pStage);
     loadPlayerGraphics();
     loadAiGraphics();
     loadObstacleGraphics();
@@ -172,6 +181,8 @@ public class ResourceManager {
   public ITextureRegion backgroundRegion2;
   private BitmapTextureAtlas background_2_TextureAtlas;
 
+  public ITextureRegion mapRegion[];
+  private BitmapTextureAtlas mapTextureAtlas[];
   //Inner Methods
   private void loadBackgroundGraphics(){
     Log.d(TAG,"loadBackgroundGraphics ");
@@ -193,6 +204,22 @@ public class ResourceManager {
     backgroundRegion1 = null;
     background_2_TextureAtlas.unload();
     backgroundRegion2 = null;
+  }
+
+  private void loadMapGraphics(int pStage){
+      Log.d(TAG,"loadMapGraphics");
+      BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/map/");
+      mapRegion = new ITextureRegion[3];
+      mapTextureAtlas = new BitmapTextureAtlas[3];
+
+      for(int i=0;i<3;i++){
+        mapTextureAtlas[i] = new BitmapTextureAtlas(gameActivity.getTextureManager(),32,32,TextureOptions.BILINEAR);
+        mapRegion[i] = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(mapTextureAtlas[i],gameActivity,"0_"+i+1+".png",0,0);
+        mapTextureAtlas[i].load();
+      }
+
+
   }
 
     /*===Player=======*/
@@ -261,7 +288,7 @@ public class ResourceManager {
 
     aiTextureAtlas[0] = new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,1024);
     aiRegions[0] = BitmapTextureAtlasTextureRegionFactory.
-              createTiledFromAsset(aiTextureAtlas[0],gameActivity.getAssets(),"rat.png",0,0,10,10);
+              createTiledFromAsset(aiTextureAtlas[0],gameActivity.getAssets(),"rat.png",0,0,8,8);
     aiTextureAtlas[0].load();
   }
   private void unloadAiGraphics(){
@@ -277,72 +304,55 @@ public class ResourceManager {
 
   //Constants
 
-    private static final int OBSTACLE_TEXTURE_SIZE = 7;
-    private static final int TR_OBS_FALL =0;
-    private static final int TR_OBS_STOP_TRAP = 1;
-    private static final int TR_OBS_ANIM_TRAP = 2;
-    private static final int TR_OBS_PENDULUM_STD = 3;
-    private static final int TR_OBS_PENDULUM_BAR = 4;
-    private static final int TR_OBS_PENDULUM_END = 5;
-    private static final int TR_OBS_MOVING_GROUND = 6;
+  private static final int OBSTACLE_TEXTURE_SIZE = OBS_CONFIG_SIZE +2;
 
     //Fields
   public ITiledTextureRegion obstacleRegions[]=null;
   private BitmapTextureAtlas obstacleTextureAtlas[]=null;
 
   //Load Unload
+
+  /* loadObstacleGraphics
+    장애물 그래픽 로드
+    OBS_FALL_CONFIG , OBS_FALL_CONFIG,
+     ,,,
+    OBS_PENDULUM_CONFIG,OBS_PENDULUM_CONFIG+1,OBS_PENDULUM_CONFIG+2
+   */
   private void loadObstacleGraphics(){
     Log.d(TAG,"loadObstacleGraphics ");
       BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/obstacle/");
-
+    DataManager dm = DataManager.getInstance();
     if(obstacleRegions==null)
       obstacleRegions = new ITiledTextureRegion[OBSTACLE_TEXTURE_SIZE];
     if(obstacleTextureAtlas==null)
       obstacleTextureAtlas = new BitmapTextureAtlas[OBSTACLE_TEXTURE_SIZE];
 
-      obstacleTextureAtlas[TR_OBS_FALL] = new BitmapTextureAtlas(gameActivity.getTextureManager(),320,64);
-      obstacleRegions[TR_OBS_FALL] = BitmapTextureAtlasTextureRegionFactory.
-              createTiledFromAsset(obstacleTextureAtlas[TR_OBS_FALL],gameActivity.getAssets(),
-                      "fall.png",0,0,5,1);
-      obstacleTextureAtlas[TR_OBS_FALL].load();
-
-
-      obstacleTextureAtlas[TR_OBS_STOP_TRAP] = new BitmapTextureAtlas(gameActivity.getTextureManager(),64,64);
-      obstacleRegions[TR_OBS_STOP_TRAP] = BitmapTextureAtlasTextureRegionFactory.
-              createTiledFromAsset(obstacleTextureAtlas[TR_OBS_STOP_TRAP],gameActivity.getAssets(),
-                      "trap.png",0,0,1,1);
-      obstacleTextureAtlas[TR_OBS_STOP_TRAP].load();
-
-      obstacleTextureAtlas[TR_OBS_ANIM_TRAP] = new BitmapTextureAtlas(gameActivity.getTextureManager(),128,64);
-      obstacleRegions[TR_OBS_ANIM_TRAP] = BitmapTextureAtlasTextureRegionFactory.
-              createTiledFromAsset(obstacleTextureAtlas[TR_OBS_ANIM_TRAP],gameActivity.getAssets(),
-                      "trap_temp.png",0,0,6,1);
-      obstacleTextureAtlas[TR_OBS_ANIM_TRAP].load();
-
-      obstacleTextureAtlas[TR_OBS_PENDULUM_STD] = new BitmapTextureAtlas(gameActivity.getTextureManager(),64,64);
-      obstacleRegions[TR_OBS_PENDULUM_STD] = BitmapTextureAtlasTextureRegionFactory.
-              createTiledFromAsset(obstacleTextureAtlas[TR_OBS_PENDULUM_STD],gameActivity.getAssets(),
-                      "pendulum_std.png",0,0,1,1);
-      obstacleTextureAtlas[TR_OBS_PENDULUM_STD].load();
-
-      obstacleTextureAtlas[TR_OBS_PENDULUM_BAR] = new BitmapTextureAtlas(gameActivity.getTextureManager(),4,64);
-      obstacleRegions[TR_OBS_PENDULUM_BAR] = BitmapTextureAtlasTextureRegionFactory.
-              createTiledFromAsset(obstacleTextureAtlas[TR_OBS_PENDULUM_BAR],gameActivity.getAssets(),
-                      "pendulum_bar.png",0,0,1,1);
-      obstacleTextureAtlas[TR_OBS_PENDULUM_BAR].load();
-
-      obstacleTextureAtlas[TR_OBS_PENDULUM_END] = new BitmapTextureAtlas(gameActivity.getTextureManager(),128,128);
-      obstacleRegions[TR_OBS_PENDULUM_END] = BitmapTextureAtlasTextureRegionFactory.
-              createTiledFromAsset(obstacleTextureAtlas[TR_OBS_PENDULUM_END],gameActivity.getAssets(),
-                      "pendulum.png",0,0,1,1);
-      obstacleTextureAtlas[TR_OBS_PENDULUM_END].load();
-
-      obstacleTextureAtlas[TR_OBS_MOVING_GROUND] = new BitmapTextureAtlas(gameActivity.getTextureManager(),128,32);
-      obstacleRegions[TR_OBS_MOVING_GROUND] = BitmapTextureAtlasTextureRegionFactory.
-              createTiledFromAsset(obstacleTextureAtlas[TR_OBS_MOVING_GROUND],gameActivity.getAssets(),
-                      "moving_ground0.png",0,0,1,1);
-      obstacleTextureAtlas[TR_OBS_MOVING_GROUND].load();
-
+    for(int i=0;i<OBSTACLE_TEXTURE_SIZE-3;i++){
+      Log.d(TAG,"--loading obstacle Texture "+i);
+      obstacleTextureAtlas[i] = new BitmapTextureAtlas(gameActivity.getTextureManager(),
+              dm.getObsWidth(i),
+              dm.getObsHeight(i));
+      obstacleRegions[i] = BitmapTextureAtlasTextureRegionFactory.
+              createTiledFromAsset(obstacleTextureAtlas[i],gameActivity.getAssets(),
+                      dm.getObsSrc(i),
+                      0,0,
+                      dm.getObsCol(i),
+                      dm.getObsRow(i));
+      obstacleTextureAtlas[i].load();
+    }
+    for(int i=0;i<3;i++){
+      obstacleTextureAtlas[OBS_PENDULUM_CONFIG+i] = new BitmapTextureAtlas(gameActivity.getTextureManager(),
+              dm.getObsWidth(OBS_PENDULUM_CONFIG,i),
+              dm.getObsHeight(OBS_PENDULUM_CONFIG,i));
+      obstacleRegions[OBS_PENDULUM_CONFIG+i] = BitmapTextureAtlasTextureRegionFactory.
+              createTiledFromAsset(obstacleTextureAtlas[OBS_PENDULUM_CONFIG+i],
+                      gameActivity.getAssets(),
+                      dm.getObsSrc(OBS_PENDULUM_CONFIG,i),
+                      0,0,
+                      dm.getObsCol(OBS_PENDULUM_CONFIG,i),
+                      dm.getObsRow(OBS_PENDULUM_CONFIG,i));
+      obstacleTextureAtlas[OBS_PENDULUM_CONFIG+i].load();
+    }
   }
   private void unloadObstacleGraphics(){
     for(BitmapTextureAtlas bitmapTextureAtlas:obstacleTextureAtlas){

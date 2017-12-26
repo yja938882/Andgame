@@ -37,7 +37,7 @@ public class UnitTestActivity extends BaseGameActivity {
     private View 	decorView;
     private int	uiOption;
 
-    private  int dbVersion =25;
+    private  int dbVersion =29;
     String dbName ="config.db";
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +115,8 @@ public class UnitTestActivity extends BaseGameActivity {
                 mEngine.setScene(mGameScene);
                 //mEngine.setScene(mGameScene);
             }
-        }));*/
+        }));
+        */
 
         pOnPopulateSceneCallback.onPopulateSceneFinished();
     }

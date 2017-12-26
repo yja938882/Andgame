@@ -28,6 +28,7 @@ public class LoadingScene extends BaseScene {
         this.scenetoload = pSceneType;
         createScene();
     }
+
     @Override
     public void createScene() {
         setBackground(new Background(Color.BLACK));
@@ -38,7 +39,6 @@ public class LoadingScene extends BaseScene {
         this.registerUpdateHandler(new IUpdateHandler() {
             @Override
             public void onUpdate(float pSecondsElapsed) {
-                Log.d(TAG,"DdDDD");
                 switch(scenetoload){
                     case GAME:
                         SceneManager.getInstance().loadGameScene();

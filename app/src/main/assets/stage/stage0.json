@@ -9,18 +9,21 @@
     "ai_shooting_1"   :"throwing_rat"    ,"ai_shooting_2" :"shooting_rat",
     "ai_flying_1"     :"flying_rat",
 
-    "obs_size": 6,
+    "obs_size": 7,
     "obs_fall"      :"egg0"               ,"obs_shooting"      :"egg1",
-    "obs_trap"      :"wood_throne"        ,"obs_trap_temp"     :"rat_trap",
-    "obs_pendulum"  :"saw"                ,"obs_moving_ground" :"moving_ground0"
+    "obs_trap_1"    :"thorn0"             ,"obs_trap_2"        :"thorn1",
+    "obs_trap_temp" :"rat_trap",
+    "obs_pendulum"  :"saw"                ,"obs_moving_ground" :"moving_ground0",
 
+    "m_size":3,
+    "m1" : "0_1.png", "m2" : "0_2.png", "m3" :"0_3.png"
   },
   "src": "map0.png",
   "bg" : "background.png",
   "blocks":
   [
     {
-     "vx" :[0, 0, 20, 20],
+      "vx" :[0, 0, 25, 25],
       "vy":[0  ,1, 1 ,  0],
       "sx":0,
       "sy":15
@@ -39,14 +42,15 @@
     {"type": "obs_fall" , "x": 59 , "y":  6, "data":[1,1]},
     {"type": "obs_fall" , "x": 66 , "y":  6, "data":[1,1]},
     {"type":"obs_trap_temp","x":29,"y":14,"data":[1,1]},
-    {"type": "obs_trap" , "x": 34 , "y":  14, "data":[1,1]},
+    {"type": "obs_trap_1" , "x": 34 , "y":  14, "data":[1,1]},
+    {"type": "obs_trap_2" , "x": 38 , "y":  14, "data":[1,1]},
     {"type":"obs_pendulum","x":65,"y":3, "data":[1,1]},
     {"type":"obs_shooting","x":35,"y":7,"data" :[1,1]},
     {"type":"obs_moving_ground","x":20,"y":15,"data":[1,1]}
   ],
   "ai":
   [
-    {"type":"ai_moving_1", "x":21, "y":15,"data":[1,1]}
+    {"type":"ai_moving_1", "x":10, "y":13,"data":[1,1]}
   ]
 }
 }

@@ -98,10 +98,11 @@ public abstract class Unit extends GameEntity{
         boolean isInTheAir;
         UnitData bodyData =(UnitData) getDataBlock(BODY);
         UnitData footData = (UnitData)getDataBlock(FOOT);
-        if( (bodyData).isNeedToBeAttacked()){
+        if( (bodyData).isNeedToBeAttacked() || (footData).isNeedToBeAttacked()){
             if(!invincible)
                 mAction = ConstantsSet.UnitAction.ACTION_HITTED;
             (bodyData).setNeedToBeAttacked(false);
+            (footData).setNeedToBeAttacked(false);
           }
       //  Log.d("cheep","ac1   "+mAction);
         if(footData.isNeedToBeStopJumpAnim()) {

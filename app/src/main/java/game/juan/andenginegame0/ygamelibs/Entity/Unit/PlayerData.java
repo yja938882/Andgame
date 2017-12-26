@@ -17,6 +17,7 @@ public class PlayerData extends UnitData{
             case AI_BODY_CLASS:
             case ATK_OBS_CLASS :
             case AI_BLT_CLASS:
+                contactWithGround(true);
                 setNeedToBeAttacked(true);
                 break;
         }
@@ -26,6 +27,11 @@ public class PlayerData extends UnitData{
     public void endContactWith(int pClass) {
         switch (pClass){
             case GROUND_CLASS:
+                contactWithGround(false);
+                break;
+            case AI_BODY_CLASS:
+            case ATK_OBS_CLASS :
+            case AI_BLT_CLASS:
                 contactWithGround(false);
                 break;
         }

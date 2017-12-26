@@ -60,8 +60,25 @@ public class DataManager implements ConstantsSet{
             "ai_moving_1","ai_moving_2","ai_shooting_1","ai_shooting_2","ai_flying_1"
     };
     final String OBS_CONFIG_NAME[]={
-            "obs_fall","obs_shooting","obs_trap","obs_trap_temp","obs_pendulum","obs_moving_ground"
+            "obs_fall",
+            "obs_shooting",
+            "obs_trap_1",
+            "obs_trap_2",
+            "obs_trap_temp",
+            "obs_moving_ground",
+            "obs_pendulum"
     };
+    public final static int OBS_CONFIG_SIZE = 7;
+    public final static int OBS_FALL_CONFIG= 0;
+    public final static int OBS_SHOOTING_CONFIG= 1;
+    public final static int OBS_TRAP_1_CONFIG= 2;
+    public final static int OBS_TRAP_2_CONFIG= 3;
+    public final static int OBS_TRAP_TEMP_CONFIG= 4;
+    public final static int OBS_MOVING_GROUND_CONFIG= 5;
+    public final static int OBS_PENDULUM_CONFIG= 6;
+
+
+
     //Fields
     public JSONObject stageObject=null;
     public JSONObject stageConfig = null;
@@ -72,11 +89,111 @@ public class DataManager implements ConstantsSet{
     public JSONObject obstacleConfigs[] = null;
     public JSONObject aiConfigs[]=null;
 
-
     public ArrayList<ObstacleData> obstacleDataList;
     public ArrayList<StaticData> staticMapDataList;
     public ArrayList<AiData> aiDataList;
     //LoadStageConfig
+
+
+    public String getObsSrc(int obsType){
+       try{
+           return obstacleConfigs[obsType].getString("src");
+
+       }catch (Exception e){
+           Log.d(TAG,"error "+e.getMessage());
+       }
+       return null;
+   }
+    public String getObsSrc(int obsType, int i){
+        try{
+            return obstacleConfigs[obsType].getString("src"+i);
+
+        }catch (Exception e){
+            Log.d(TAG,"error "+e.getMessage());
+        }
+        return null;
+    }
+    public int getObsWidth(int obsType){
+       try{
+           return obstacleConfigs[obsType].getInt("src_width");
+       }catch (Exception e){
+           Log.d(TAG,"error "+e.getMessage());
+       }
+       return -1;
+   }
+    public int getObsWidth(int obsType, int i){
+       try{
+           return obstacleConfigs[obsType].getInt("src_width"+i);
+       }catch (Exception e){
+           Log.d(TAG,"error "+e.getMessage());
+       }
+       return -1;
+   }
+    public int getObsHeight(int obsType){
+       try{
+            return obstacleConfigs[obsType].getInt("src_height");
+       }catch (Exception e){
+           Log.d(TAG,"error "+e.getMessage());
+       }
+       return -1;
+   }
+    public int getObsHeight(int obsType, int i){
+        try{
+            return obstacleConfigs[obsType].getInt("src_height"+i);
+        }catch (Exception e){
+            Log.d(TAG,"error "+e.getMessage());
+        }
+        return -1;
+    }
+    public int getObsRow(int obsType){
+        try{
+            return obstacleConfigs[obsType].getInt("row");
+        }catch(Exception e){
+            Log.d(TAG,"error "+e.getMessage());
+        }
+        return -1;
+    }
+    public int getObsRow(int obsType, int i){
+       try{
+            return obstacleConfigs[obsType].getInt("row"+i);
+       }catch(Exception e){
+           Log.d(TAG,"error "+e.getMessage());
+       }
+       return -1;
+   }
+    public int getObsCol(int obsType){
+        try{
+            return obstacleConfigs[obsType].getInt("col");
+        }catch (Exception e){
+            Log.d(TAG,"error "+e.getMessage());
+        }
+        return -1;
+    }
+    public int getObsCol(int obsType, int i){
+        try{
+            return obstacleConfigs[obsType].getInt("col"+i);
+        }catch (Exception e){
+            Log.d(TAG,"error "+e.getMessage());
+        }
+        return -1;
+    }
+    public float getScale(int obsType){
+        try{
+            return obstacleConfigs[obsType].getInt("scale");
+        }catch (Exception e){
+            Log.d(TAG,"error "+e.getMessage());
+        }
+        return -1;
+    }
+    public float getScale(int obsType, int i){
+        try{
+            return obstacleConfigs[obsType].getInt("scale"+i);
+        }catch (Exception e){
+            Log.d(TAG,"error "+e.getMessage());
+        }
+        return -1;
+    }
+
     public void loadStageData(int pStage){
 
         SQLiteDatabase db = dbManager.getReadableDatabase();
@@ -86,6 +203,7 @@ public class DataManager implements ConstantsSet{
 
         loadMapData(pStage);
     }
+
 
     private void loadStageConfig(int pStage, SQLiteDatabase db){
         Log.d(TAG,"loadStageConfigData("+pStage+")");
@@ -130,6 +248,7 @@ public class DataManager implements ConstantsSet{
         Log.d(TAG,"loadStageConfigData("+pStage+")");
     }
 
+
     private void loadMapData(int pStage){
         Log.d(TAG,"loadMapData( "+pStage+" )");
         try{
@@ -161,9 +280,13 @@ public class DataManager implements ConstantsSet{
                         vClass = DataBlock.ATK_OBS_CLASS;
                         vType = EntityType.OBS_FALL;
                         break;
-                    case "obs_trap":
+                    case "obs_trap_1":
                         vClass=DataBlock.ATK_OBS_CLASS;
-                        vType = EntityType.OBS_TRAP;
+                        vType = EntityType.OBS_TRAP_1;
+                        break;
+                    case "obs_trap_2":
+                        vClass=DataBlock.ATK_OBS_CLASS;
+                        vType = EntityType.OBS_TRAP_2;
                         break;
                     case "obs_trap_temp":
                         vClass=DataBlock.ATK_OBS_CLASS;
@@ -224,6 +347,7 @@ public class DataManager implements ConstantsSet{
         }
     }
 
+
     private static JSONObject loadJSONFromAsset(Context context, String filename){
         String json = null;
         JSONObject object = null;
@@ -242,11 +366,13 @@ public class DataManager implements ConstantsSet{
         return object;
     }
 
+
     public static void prepareManager(BaseGameActivity activity,DBManager dbManager){
         Log.d(TAG,"prepareManager");
         getInstance().activity = activity;
         getInstance().dbManager = dbManager;
     }
+
 
     public static DataManager getInstance(){ return INSTANCE;}
 }

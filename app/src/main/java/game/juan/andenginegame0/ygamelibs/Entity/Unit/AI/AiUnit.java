@@ -48,7 +48,7 @@ public class AiUnit extends Unit {
     }
 
     public void createAi(GameScene pGameScene, DataBlock pDataBlock){
-        this.setScale(0.5f);
+        //this.setScale(0.5f);
         setGravity(pGameScene.getGravity());
       //  PlayerData ud = new PlayerData(pDataBlock.getClassifyData(),pDataBlock.getType(),(int)(pDataBlock.getPosX()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),(int)(pDataBlock.getPosY()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT));
         AiData aiData = new AiData(pDataBlock.getClassifyData(),pDataBlock.getType(),(int)(pDataBlock.getPosX()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),(int)(pDataBlock.getPosY()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT));
@@ -56,7 +56,7 @@ public class AiUnit extends Unit {
         createUnit(pGameScene,aiData,new AiData(DataBlock.PLAYER_FOOT_CLASS,pDataBlock.getType(),(int)(pDataBlock.getPosX()),(int)pDataBlock.getPosY()));
 
     }
-    boolean ret = true;
+
     public void setCmdList(int[] plist, float[] pduList){
         this.mCmdList = plist;
         this.mCmdDuList = pduList;
@@ -72,7 +72,7 @@ public class AiUnit extends Unit {
 
         if(!isAlive()) return;
 
-        if(ret) return;
+
 
         mCmdElapsed += pSecondsElapsed;
         if(mCmdElapsed>=mCmdDuList[mCmd]){

@@ -6,7 +6,7 @@
       "src":"player_s.png",
       "data":
       {
-        "body":"vertices",     "body_vx":[-16,-16,-8,8,16,16,8,-8],"body_vy":[-8,8,16,16,8,-8,-16,-16],
+        "body":"circle",     "body_vx":[0,16,-8,8,16,16,8,-8],"body_vy":[0,16,16,16,8,-8,-16,-16],
         "foot":"circle",      "foot_vx":[0,8],"foot_vy":[0,8],
         "hp":3,
         "speed":10,     "jump":20,
@@ -25,7 +25,12 @@
         "beAttackedLock"        :"strong",
         "jumpFrameIndex"         :[24,25,26],
         "jumpFrameDuration"      :[50,50,50],
-        "jumpLock"              :"none"
+        "jumpLock"              :"none",
+
+        "src"                   :"player_s.png",
+        "src_width"             : 1024,
+        "src_height"            : 1024,
+        "scale"                 :0.5
       }
     },
     {
@@ -38,8 +43,8 @@
         "hp":3,
         "speed":10,     "jump":20,
         "lock"                :3,
-        "movingFrameIndex"    :[0  ,1  ,2  ,3  ,4  ,5  ,0],
-        "movingFrameDuration" :[25 ,50 ,50 ,50 ,50 ,50 ,25],
+        "movingFrameIndex"    :[8  ,9 ],
+        "movingFrameDuration" :[70 ,70],
         "movingLock"          : "none",
         "attackFrameIndex"    :[12  ,13 ,14 ,15 ,12],
         "attackFrameDuration" :[50  ,100,100,100,50],
@@ -54,7 +59,14 @@
         "jumpFrameDuration"      :[50,50,50],
         "jumpLock"              :"none",
         "cmdList"               :[0,2,1,0],
-        "cmdDu"                 :[3,1,1,3]
+        "cmdDu"                 :[3,1,1,3],
+
+        "src"                   :"rat.png",
+        "src_width"             : 1024,
+        "src_height"            : 1024,
+        "row"                   : 10,
+        "col"                   : 10,
+        "scale"                 :0.5
       }
     },
     {
@@ -83,7 +95,14 @@
         "jumpFrameDuration"      :[50,50,50],
         "jumpLock"              :"none",
         "cmdList"               :[0,2,1,0],
-        "cmdDu"                 :[3,1,1,3]
+        "cmdDu"                 :[3,1,1,3],
+
+        "src"                   :"rat.png",
+        "src_width"             : 1024,
+        "src_height"            : 1024,
+        "row"                   : 10,
+        "col"                   : 10,
+        "scale"                 :0.5
       }
     },
     {
@@ -112,7 +131,14 @@
         "jumpFrameDuration"      :[50,50,50],
         "jumpLock"              :"none",
         "cmdList"               :[0,2,1,0],
-        "cmdDu"                 :[3,1,1,3]
+        "cmdDu"                 :[3,1,1,3],
+
+        "src"                   :"rat.png",
+        "src_width"             : 1024,
+        "src_height"            : 1024,
+        "row"                   : 10,
+        "col"                   : 10,
+        "scale"                 :0.5
       }
     },
     {
@@ -141,7 +167,14 @@
         "jumpFrameDuration"      :[50,50,50],
         "jumpLock"              :"none",
         "cmdList"               :[0,2,1,0],
-        "cmdDu"                 :[3,1,1,3]
+        "cmdDu"                 :[3,1,1,3],
+
+        "src"                   :"rat.png",
+        "src_width"             : 1024,
+        "src_height"            : 1024,
+        "row"                   : 10,
+        "col"                   : 10,
+        "scale"                 :0.5
       }
     },
     {
@@ -170,7 +203,14 @@
         "jumpFrameDuration"      :[50,50,50],
         "jumpLock"              :"none",
         "cmdList"               :[0,2,1,0],
-        "cmdDu"                 :[3,1,1,3]
+        "cmdDu"                 :[3,1,1,3],
+
+        "src"                   :"rat.png",
+        "src_width"             : 1024,
+        "src_height"            : 1024,
+        "row"                   : 10,
+        "col"                   : 10,
+        "scale"                 :0.5
       }
     },
     {
@@ -182,7 +222,14 @@
         "body"  : "vertices",   "body_vx":[-16,-16,-8,8,16,16,8,-8],"body_vy":[-8,8,16,16,8,-8,-16,-16],
         "animFrameIndex":[0,1,2,3,4], "animFrameDuration":[40,40,40,50,50],
         "animLock":"strong",
-        "idle_time":2,          "working_time":2
+        "idle_time":2,          "working_time":2,
+
+        "src"                   :"egg0.png",
+        "src_width"             : 320,
+        "src_height"            : 64,
+        "scale"                 : 0.5,
+        "col"                   : 5,
+        "row"                   : 1
       }
     },
     {
@@ -194,16 +241,46 @@
         "body"  : "vertices",   "body_vx":[-16,-16,-8,8,16,16,8,-8],"body_vy":[-8,8,16,16,8,-8,-16,-16],
         "animFrameIndex":[0,1,2,3,4], "animFrameDuration":[40,40,40,50,50],
         "animLock":"strong",
-        "idle_time":2,          "working_time":2
+        "idle_time":2,          "working_time":2,
+
+        "src"                   :"egg1.png",
+        "src_width"             : 320,
+        "src_height"            : 64,
+        "scale"                 : 0.5,
+        "col"                   : 5,
+        "row"                   : 1
       }
     },
     {
-      "id":"wood_throne",
+      "id":"thorn0",
       "src":"",
       "data":
       {
         "anim"  : "no",
-        "body"  : "vertices",   "body_vx":[-16,-16,16,16],"body_vy":[-16,16,16,-16]
+        "body"  : "vertices",   "body_vx":[-16,-16,16,16],"body_vy":[-16,16,16,-16],
+
+        "src"                   :"thorn0.png",
+        "src_width"             : 128,
+        "src_height"            : 128,
+        "scale"                 : 0.5,
+        "col"                   : 1,
+        "row"                   : 1
+      }
+    },
+    {
+      "id":"thorn1",
+      "src":"",
+      "data":
+      {
+        "anim"  : "no",
+        "body"  : "vertices",   "body_vx":[-16,-16,16,16],"body_vy":[-16,16,16,-16],
+
+        "src"                   :"thorn1.png",
+        "src_width"             : 128,
+        "src_height"            : 128,
+        "scale"                 : 0.5,
+        "col"                   : 1,
+        "row"                   : 1
       }
     },
     {
@@ -214,7 +291,14 @@
         "anim"  : "yes",
         "body"  : "vertices",   "body_vx":[-16,-16,16,16],"body_vy":[-16,16,16,-16],
         "animFrameIndex":[0,0], "animFrameDuration":[0,0],
-        "animLock":"strong"
+        "animLock":"strong",
+
+        "src"                   :"trap_temp.png",
+        "src_width"             : 128,
+        "src_height"            : 64,
+        "scale"                 : 1,
+        "col"                   : 6,
+        "row"                   : 1
       }
     },
     {
@@ -222,7 +306,13 @@
       "src":"",
       "data":
       {
-        "src2"  :""       ,"src3": "",
+        "src0": "pendulum0.png",           "src1"  :"pendulum_bar0.png"             ,"src2": "pendulum_std0.png",
+        "src_width0" :128,     "src_width1":8         ,"src_width2":64,
+        "src_height0":128,     "src_height1":128        ,"src_height2":26,
+        "row0":1,            "row1":1               ,"row2":1,
+        "col0":1,            "col1":1               ,"col2":1,
+        "scale0":1,          "scale1":1,            "scale2":1,
+
         "body1" :"vertices",  "body1_vx":[-16,-16,-8,8,16,16,8,-8],"body1_vy":[-8,8,16,16,8,-8,-16,-16],
         "body2" :"vertices",  "body2_vx":[-4,-4,4,4], "body2_vy":[-64,64,64,-64],
         "body3" :"vertices",  "body3_vx":[-16,-16,16,16],"body3_vy":[-16,16,16,-16],
@@ -234,7 +324,13 @@
       "src":"",
       "data":
       {
-        "body" :"vertices",  "body_vx":[-64,-64,64,64],"body_vy":[-16,16,16,-16]
+        "body" :"vertices",  "body_vx":[-64,-64,64,64],"body_vy":[-16,16,16,-16],
+        "src"                   :"moving_ground0.png",
+        "src_width"             : 128,
+        "src_height"            : 32,
+        "scale"                 : 1,
+        "col"                   : 6,
+        "row"                   : 1
       }
     }
   ]
