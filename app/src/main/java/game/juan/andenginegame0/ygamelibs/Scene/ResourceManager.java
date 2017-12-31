@@ -150,7 +150,7 @@ public class ResourceManager {
   private void loadMainFont(){
     FontFactory.setAssetBasePath("font/");
     final ITexture mainFontTexture = new BitmapTextureAtlas(gameActivity.getTextureManager(), 256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-    mainFont = FontFactory.createStrokeFromAsset(gameActivity.getFontManager(), mainFontTexture, gameActivity.getAssets(), "gamefont.ttf", 50, true, Color.WHITE.getABGRPackedInt(), 2, Color.WHITE.getABGRPackedInt());
+    mainFont = FontFactory.createStrokeFromAsset(gameActivity.getFontManager(), mainFontTexture, gameActivity.getAssets(), "gamefont.ttf", 30, true, Color.WHITE.getABGRPackedInt(), 0, Color.WHITE.getABGRPackedInt());
     mainFont.load();
   }
   public void loadMainSceneGraphics(){
@@ -170,6 +170,7 @@ public class ResourceManager {
     loadPlayerGraphics();
     loadAiGraphics();
     loadObstacleGraphics();
+    loadMapTileGraphics();
     loadGameUI();
   }
 
@@ -215,7 +216,7 @@ public class ResourceManager {
       for(int i=0;i<3;i++){
         mapTextureAtlas[i] = new BitmapTextureAtlas(gameActivity.getTextureManager(),32,32,TextureOptions.BILINEAR);
         mapRegion[i] = BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(mapTextureAtlas[i],gameActivity,"0_"+i+1+".png",0,0);
+                createFromAsset(mapTextureAtlas[i],gameActivity,"0_"+(i+1)+".png",0,0);
         mapTextureAtlas[i].load();
       }
 
@@ -361,6 +362,26 @@ public class ResourceManager {
     for(ITiledTextureRegion textureRegion:obstacleRegions){
       textureRegion=null;
     }
+  }
+
+  public ITextureRegion tileRegion;
+  public BitmapTextureAtlas tileTextureAtlas;
+  public void loadMapTileGraphics(){
+    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/map/");
+/*
+    mControllerAtlas = new BitmapTextureAtlas[CONTROLLER_SIZE];
+    mControllerTRs = new ITextureRegion[CONTROLLER_SIZE];
+    mControllerAtlas[UI_LEFT] = new BitmapTextureAtlas(gameActivity.getTextureManager(),
+            68,67,TextureOptions.BILINEAR);
+    mControllerTRs[UI_LEFT] = BitmapTextureAtlasTextureRegionFactory.
+            createFromAsset(mControllerAtlas[UI_LEFT],gameActivity,"left.png",0,0);
+    mControllerAtlas[UI_LEFT].load();*/
+    tileTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),
+        32,32,TextureOptions.BILINEAR);
+    tileRegion = BitmapTextureAtlasTextureRegionFactory
+            .createFromAsset(tileTextureAtlas,gameActivity,"0_1.png",0,0);
+    tileTextureAtlas.load();
+
   }
 
 

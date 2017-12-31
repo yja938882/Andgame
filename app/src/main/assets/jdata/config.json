@@ -257,7 +257,7 @@
       "data":
       {
         "anim"  : "no",
-        "body"  : "vertices",   "body_vx":[-16,-16,16,16],"body_vy":[-16,16,16,-16],
+        "body"  : "vertices",   "body_vx":[-32,-32,32,32],"body_vy":[-32,32,32,-32],
 
         "src"                   :"thorn0.png",
         "src_width"             : 128,
@@ -273,7 +273,7 @@
       "data":
       {
         "anim"  : "no",
-        "body"  : "vertices",   "body_vx":[-16,-16,16,16],"body_vy":[-16,16,16,-16],
+        "body"  : "vertices",   "body_vx":[-32,-32,32,32],"body_vy":[-32,32,32,-32],
 
         "src"                   :"thorn1.png",
         "src_width"             : 128,
@@ -290,14 +290,14 @@
       {
         "anim"  : "yes",
         "body"  : "vertices",   "body_vx":[-16,-16,16,16],"body_vy":[-16,16,16,-16],
-        "animFrameIndex":[0,0], "animFrameDuration":[0,0],
+        "animFrameIndex":[0,1,2,3,4], "animFrameDuration":[25,25,25,25,25],
         "animLock":"strong",
 
-        "src"                   :"trap_temp.png",
-        "src_width"             : 128,
+        "src"                   :"rat_trap.png",
+        "src_width"             : 640,
         "src_height"            : 64,
         "scale"                 : 1,
-        "col"                   : 6,
+        "col"                   : 5,
         "row"                   : 1
       }
     },

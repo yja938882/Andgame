@@ -24,6 +24,7 @@ import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.UncoloredSprite;
 import org.andengine.entity.text.Text;
+import org.andengine.entity.text.TextOptions;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
@@ -211,6 +212,8 @@ public class SplashScene extends BaseScene {
     private void loadingFinished(){
         loadingFinished = true;
         touchToStartText =new Text(CAMERA_WIDTH/2,500,resourcesManager.mainFont,"Touch to Start",vbom);
+       // touchToStartText.setScale(0.5f,1.0f);
+        //touchToStartText.setTextOptions(new TextOptions());
         touchToStartText.setX(touchToStartText.getX()-touchToStartText.getWidth()/2);
         attachChild(touchToStartText);
     }

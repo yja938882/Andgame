@@ -48,7 +48,6 @@ public abstract class GameEntity extends AnimatedSprite{
 
     public void createVerticesBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType){
         final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
-        Log.d("cheep!!!","createVetices Body");
         mBodies[pBodyIndex] = PhysicsFactory.createTrianglulatedBody(pGameScene.getWorld(),
                 this,createBodyShape(pVertices),pBodyType,fixtureDef);
         mBodies[pBodyIndex].setUserData(pDataBlock);
@@ -58,7 +57,6 @@ public abstract class GameEntity extends AnimatedSprite{
     }
     public void createCircleBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType){
         final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
-        Log.d("cheep!!!","createCircle Body");
         mBodies[pBodyIndex] = PhysicsFactory.createCircleBody(pGameScene.getWorld(),
                 pVertices[0].x,pVertices[0].y,pVertices[1].x,pBodyType,fixtureDef);
         mBodies[pBodyIndex].setUserData(pDataBlock);
@@ -121,7 +119,6 @@ public abstract class GameEntity extends AnimatedSprite{
         return this.mBodies[pIndex];
     }
     protected void transform(float pX, float pY){
-        Log.d("Bullet","transform : "+pX+","+pY);
         mBodies[0].setTransform(pX/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,pY/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,0.0f);
     }
     protected void transformPhysically(float pX, float pY){
@@ -196,7 +193,6 @@ public abstract class GameEntity extends AnimatedSprite{
                 if(mElapsedCount>=mMaxCount){
                     mActionLock = false;
                     mElapsedCount =0;
-                    Log.d("TEMP!!_DEBUG","LOCK Free :"+mMaxCount);
                     lockFree();
                 }
             }

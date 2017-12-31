@@ -77,7 +77,6 @@ public abstract class Unit extends GameEntity{
 
     /*===Method======================================*/
     public void setAction(int pAction){
-        Log.d("cheep","set Action "+pAction);
         this.mAction = pAction;
     }
     public void setGravity(Vector2 pGravity){
@@ -249,9 +248,7 @@ public abstract class Unit extends GameEntity{
         setupBody(2);
         switch (bodySType){
             case VERTICAL_SHAPE:
-                Log.d("cheep!!!","body vertices");
                 createVerticesBody(pGameScene,BODY,pBodyData,bodyShape, BodyDef.BodyType.DynamicBody);
-                Log.d("cheep!!!","b len :"+bodyShape.length);
                 // createOctagonBody(pGameScene,BODY,pBodyData,bodyShape, BodyDef.BodyType.DynamicBody);
                 break;
             case CIRCLE_SHAPE:
@@ -263,7 +260,6 @@ public abstract class Unit extends GameEntity{
 
         switch (footSType){
             case VERTICAL_SHAPE:
-                Log.d("cheep!!!","vs");
                 createVerticesBody(pGameScene,FOOT,pFootData,footShape, BodyDef.BodyType.DynamicBody);
                 break;
             case CIRCLE_SHAPE:
@@ -281,7 +277,6 @@ public abstract class Unit extends GameEntity{
         revoluteJointDef.localAnchorA.set(0,bodyHeight/2);
         revoluteJointDef.localAnchorB.set(0,0);
         pGameScene.getWorld().createJoint(revoluteJointDef);
-        Log.d("cheep!!!","bh :"+bodyHeight/2);
 
 
         transform(pBodyData.getPosX(),pBodyData.getPosY());
@@ -367,12 +362,10 @@ public abstract class Unit extends GameEntity{
             fd = pConfigData.getJSONArray("dieFrameDuration");
             dieFrameIndex = new int[fi.length()];
             dieFrameDuration = new long[fd.length()];
-            Log.d("TEMP!!_DEBUG","fd length :"+fd.length());
             for(int i=0;i<fi.length();i++){
                 dieFrameIndex[i] = fi.getInt(i);
                 dieFrameDuration[i] = fd.getLong(i);
             }
-            Log.d("TEMP!!_DEBUG","d length :"+dieFrameDuration.length);
 
 
             lockLimit = 0;
@@ -381,7 +374,6 @@ public abstract class Unit extends GameEntity{
                 lockLimit += ((float) du / 1000f);
             }*/
             for(int i=0;i<dieFrameDuration.length;i++){
-                Log.d("TEMP!!_DEBUG"," "+i+" "+dieFrameDuration[i]);
                 lockLimit += ((float) dieFrameDuration[i] / 1000f);
             }
             setActionLock(DIE_LOCK_INDEX,lockLimit);

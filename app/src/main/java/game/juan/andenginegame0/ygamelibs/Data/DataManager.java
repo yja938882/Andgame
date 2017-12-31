@@ -263,6 +263,7 @@ public class DataManager implements ConstantsSet{
                 StaticData staticData =
                         new StaticData(DataBlock.GROUND_CLASS,StaticType.GROUND,obj.getInt("sx"),obj.getInt("sy"));
                 staticData.setVertices(obj.getJSONArray("vx"),obj.getJSONArray("vy"));
+                staticData.setTypes(obj.getJSONArray("t"),obj.getJSONArray("tx"),obj.getJSONArray("ty"));
                 staticMapDataList.add(staticData);
             }
 
@@ -346,6 +347,7 @@ public class DataManager implements ConstantsSet{
            // exit(0);
         }
     }
+
 
 
     private static JSONObject loadJSONFromAsset(Context context, String filename){

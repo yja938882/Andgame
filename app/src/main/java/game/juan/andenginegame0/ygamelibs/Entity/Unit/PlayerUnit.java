@@ -49,7 +49,6 @@ public class PlayerUnit extends Unit{
 
     @Override
     protected void attack() {
-        Log.d("cheep!!!","attack");
         super.attack();
         if(!isFlippedHorizontal())
             mWeapon.shot(getPhysicsBodyPos(),new Vector2(15,0));
