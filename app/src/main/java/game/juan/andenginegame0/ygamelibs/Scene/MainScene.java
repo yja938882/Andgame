@@ -3,8 +3,13 @@ package game.juan.andenginegame0.ygamelibs.Scene;
 import android.util.Log;
 
 import org.andengine.entity.primitive.Rectangle;
+import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.color.Color;
+
+import game.juan.andenginegame0.ygamelibs.Data.DataManager;
+
+import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_WIDTH;
 
 /**
  * Created by juan on 2017. 12. 19..
@@ -30,6 +35,9 @@ public class MainScene extends BaseScene {
         r.setColor(Color.WHITE);
         this.attachChild(r);
         this.registerTouchArea(r);
+
+        Text t =new Text(CAMERA_WIDTH/2,200,resourcesManager.mainFont,""+ DataManager.getInstance().player_level,vbom);
+        this.attachChild(t);
     }
 
     @Override

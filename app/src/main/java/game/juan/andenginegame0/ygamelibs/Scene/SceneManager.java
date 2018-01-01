@@ -1,5 +1,6 @@
 package game.juan.andenginegame0.ygamelibs.Scene;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import org.andengine.engine.Engine;
@@ -7,6 +8,7 @@ import org.andengine.engine.camera.BoundCamera;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.IGameInterface;
 
+import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 import game.juan.andenginegame0.ygamelibs.UI.UIManager;
 
 /**
@@ -100,6 +102,7 @@ public class SceneManager {
     public void loadMainScene(){
         Log.d(TAG,"loadMainScene");
         ResourceManager.getInstance().loadMainSceneGraphics();
+        DataManager.getInstance().loadPlayerGameData();
     }
     public void createMainScene(){
         Log.d(TAG,"createMainScene");

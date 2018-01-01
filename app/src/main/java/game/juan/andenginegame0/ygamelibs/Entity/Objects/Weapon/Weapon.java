@@ -20,8 +20,12 @@ public class Weapon{
         this.mManagedBulletSize = pSize;
     }
     public void setBullet(Bullet pBullet){
-     //   for(int i=0;i<mManagedBulletSize;i++)
-            mBullets[0] = pBullet;
+        for(int i=0;i<mManagedBulletSize;i++){
+            //mBullets[i] = pBullet;
+
+        }
+
+
     }
 
     public void shot(Vector2 pSrc, Vector2 pDest){

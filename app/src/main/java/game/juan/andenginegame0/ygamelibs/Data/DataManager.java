@@ -19,6 +19,10 @@ import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerData;
 import game.juan.andenginegame0.ygamelibs.Static.StaticData;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
+import static game.juan.andenginegame0.ygamelibs.Data.DBManager.EXP_D;
+import static game.juan.andenginegame0.ygamelibs.Data.DBManager.LEVEL_D;
+import static game.juan.andenginegame0.ygamelibs.Data.DBManager.MONEY_D;
+import static game.juan.andenginegame0.ygamelibs.Data.DBManager.PLAYER_COUNT_D;
 import static java.lang.System.exit;
 
 
@@ -31,9 +35,12 @@ public class DataManager implements ConstantsSet{
     private static final String TAG= "[cheep] DataManager";
     public static final DataManager INSTANCE = new DataManager();
     public DBManager dbManager;
-   // private SQLiteDatabase db;
-   // private  int dbVersion =21;
-    //String dbName ="config.db";
+
+    public int player_level;
+    public int money;
+    public int exp;
+    public int play_count;
+
     /*==Fields==========================*/
 
     private BaseGameActivity activity;
@@ -59,6 +66,9 @@ public class DataManager implements ConstantsSet{
     final String AI_CONFIG_NAME[]={
             "ai_moving_1","ai_moving_2","ai_shooting_1","ai_shooting_2","ai_flying_1"
     };
+
+    public final static int AI_CONFIG_SIZE = 7;
+    public final static int AI_MOVING_CONFIG = 0;
     final String OBS_CONFIG_NAME[]={
             "obs_fall",
             "obs_shooting",
@@ -92,6 +102,9 @@ public class DataManager implements ConstantsSet{
     public ArrayList<ObstacleData> obstacleDataList;
     public ArrayList<StaticData> staticMapDataList;
     public ArrayList<AiData> aiDataList;
+
+    public JSONObject playerBulletConfigs[] = null;
+
     //LoadStageConfig
 
 
@@ -194,6 +207,47 @@ public class DataManager implements ConstantsSet{
         return -1;
     }
 
+    public String getAiSrc(int aiType){
+        try{
+            return aiConfigs[aiType].getString("src");
+        }catch (Exception e){
+            Log.d(TAG,"error"+e.getMessage());
+        }
+        return null;
+    }
+    public int getAiWidth(int aiType){
+        try{
+            return aiConfigs[aiType].getInt("src_width");
+        }catch (Exception e){
+            Log.d(TAG,"error"+e.getMessage());
+        }
+        return -1;
+    }
+    public int getAiHeight(int aiType){
+        try{
+            return aiConfigs[aiType].getInt("src_height");
+        }catch (Exception e){
+            Log.d(TAG,"error"+e.getMessage());
+        }
+        return -1;
+    }
+    public int getAiCol(int aiType){
+        try{
+            return aiConfigs[aiType].getInt("col");
+        }catch (Exception e){
+            Log.d(TAG,"error"+e.getMessage());
+        }
+        return -1;
+    }
+    public int getAiRow(int aiType){
+        try{
+            return aiConfigs[aiType].getInt("row");
+        }catch (Exception e){
+            Log.d(TAG,"error"+e.getMessage());
+        }
+        return -1;
+    }
+
     public void loadStageData(int pStage){
 
         SQLiteDatabase db = dbManager.getReadableDatabase();
@@ -238,6 +292,11 @@ public class DataManager implements ConstantsSet{
                 obstacleConfigs[i]=(dbManager.getConfigJSON(db,obstacleConfigKeys[i]));
                 Log.d(TAG,""+i+" - "+obstacleConfigs[i].toString());
             }
+
+            Log.d(TAG,"loadPlayerWeaponConfig("+pStage+")");
+
+            playerBulletConfigs = new JSONObject[1];
+            playerBulletConfigs[1] = dbManager.getConfigJSON(db,"p_wood");
 
 
         }catch(Exception e){
@@ -348,6 +407,20 @@ public class DataManager implements ConstantsSet{
         }
     }
 
+    private void loadPlayerWeapon(){
+        Log.d(TAG,"loadPlayerWeapon");
+
+    }
+
+    public void loadPlayerGameData(){
+        SQLiteDatabase db = dbManager.getReadableDatabase();
+        int data[] = dbManager.getPlayerGameData(db);
+        player_level = data[LEVEL_D];
+        play_count = data[PLAYER_COUNT_D];
+        money = data[MONEY_D];
+        exp = data[EXP_D];
+
+    }
 
 
     private static JSONObject loadJSONFromAsset(Context context, String filename){

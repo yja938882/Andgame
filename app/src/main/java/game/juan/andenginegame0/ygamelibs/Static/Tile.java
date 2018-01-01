@@ -41,7 +41,7 @@ public class Tile extends DynamicSpriteBatch {
     @Override
     protected boolean onUpdateSpriteBatch() {
 
-        if(tileSprite[managed_index].getX() < camera.getCenterX()-CAMERA_WIDTH/2){
+        if(tileSprite[managed_index].getX() < camera.getCenterX()-CAMERA_WIDTH/1.5f){
             if(nextpos_index<posX.length){
                 tileSprite[managed_index].setPosition(posX[nextpos_index],posY[nextpos_index]);
                 managed_index++;

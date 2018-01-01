@@ -38,22 +38,22 @@
       "src":"",
       "data":
       {
-        "body":"vertices",     "body_vx":[-16,-16,-8,8,16,16,8,-8],"body_vy":[-8,8,16,16,8,-8,-16,-16],
+        "body":"vertices",     "body_vx":[-32,-32,-16,16,32,32,16,-16],"body_vy":[-16,16,32,32,16,-16,-32,-32],
         "foot":"circle",      "foot_vx":[0,8],"foot_vy":[0,8],
         "hp":3,
         "speed":10,     "jump":20,
         "lock"                :3,
-        "movingFrameIndex"    :[8  ,9 ],
-        "movingFrameDuration" :[70 ,70],
+        "movingFrameIndex"    :[6  ,7,8 ],
+        "movingFrameDuration" :[70 ,70,70],
         "movingLock"          : "none",
         "attackFrameIndex"    :[12  ,13 ,14 ,15 ,12],
         "attackFrameDuration" :[50  ,100,100,100,50],
         "attackLock"          : "soft",
-        "dieFrameIndex"       :[40,41,42,43,44,45,46,47],
-        "dieFrameDuration"    :[50,80,80,80,80,80,80,50],
+        "dieFrameIndex"       :[13],
+        "dieFrameDuration"    :[50],
         "dieLock"             : "strong",
-        "beAttackedFrameIndex"   :[32,33,34,35,36,37,38,32],
-        "beAttackedFrameDuration":[50,50,50,50,50,50,50,50],
+        "beAttackedFrameIndex"   :[12,13],
+        "beAttackedFrameDuration":[50,50],
         "beAttackedLock"        :"strong",
         "jumpFrameIndex"         :[24,25,26],
         "jumpFrameDuration"      :[50,50,50],
@@ -62,10 +62,10 @@
         "cmdDu"                 :[3,1,1,3],
 
         "src"                   :"rat.png",
-        "src_width"             : 1024,
-        "src_height"            : 1024,
-        "row"                   : 10,
-        "col"                   : 10,
+        "src_width"             : 768,
+        "src_height"            : 768,
+        "row"                   : 6,
+        "col"                   : 6,
         "scale"                 :0.5
       }
     },
@@ -332,6 +332,21 @@
         "col"                   : 6,
         "row"                   : 1
       }
+    },
+    {
+      "id":"p_wood",
+      "src":"",
+      "data":
+      {
+        "body" :"vertices",  "body_vx":[-16,-16,16,16],"body_vy":[-8,8,8,-8],
+        "src"                   :"wood.png",
+        "src_width"             : 64,
+        "src_height"            : 64,
+        "scale"                 : 0.5,
+        "col"                   : 1,
+        "row"                   : 1
+      }
     }
   ]
+
 }

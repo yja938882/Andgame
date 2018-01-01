@@ -39,7 +39,8 @@ public class StaticManager implements ConstantsSet{
     Sprite background1;
     Sprite background2;
     AutoParallaxBackground autoParallaxBackground = new AutoParallaxBackground(0,0,0,5);
-    public DynamicSpriteBatch dynamicSpriteBatch;
+
+    Tile tiles[];
 
     public void createOnGame(final GameScene pGameScene){
         background1 = new Sprite(0,0, ResourceManager.getInstance().backgroundRegion1,
@@ -76,26 +77,35 @@ public class StaticManager implements ConstantsSet{
             }
         });
 
-        float posX[];
-        posX = new float[10];
-        for(int i=0;i<10;i++){
-            posX[i] = (32*i);
-        }
-        float posY[];
-        posY = new float[10];
-        for(int i=0;i<10;i++){
-            posY[i] = 300;
-        }
-        int tilenum =  calculateMaxTileInCam(DataManager.getInstance().staticMapDataList,2);
-        Tile tile = new Tile(ResourceManager.getInstance().tileTextureAtlas,
-                tilenum,ResourceManager.getInstance().vbom);
-        //tile.prepare(,ResourceManager.getInstance().tileRegion,posX,posY);
-      //  tile.prepare(tilenum,ResourceManager.getInstance().tileRegion);
+        tiles = new Tile[3];
 
-        tile.prepare(tilenum,ResourceManager.getInstance().tileRegion,
+        int tilenum =  calculateMaxTileInCam(DataManager.getInstance().staticMapDataList,1);
+        tiles[0] = new Tile(ResourceManager.getInstance().tileTextureAtlas[0],
+                tilenum,ResourceManager.getInstance().vbom);
+
+        tiles[0].prepare(tilenum,ResourceManager.getInstance().tileRegion[0],
+                calculateTilePosX(DataManager.getInstance().staticMapDataList,1),
+                calculateTilePosY(DataManager.getInstance().staticMapDataList,1));
+
+        tilenum =   calculateMaxTileInCam(DataManager.getInstance().staticMapDataList,2);
+        tiles[1] = new Tile(ResourceManager.getInstance().tileTextureAtlas[1],
+                tilenum,ResourceManager.getInstance().vbom);
+
+        tiles[1].prepare(tilenum,ResourceManager.getInstance().tileRegion[1],
                 calculateTilePosX(DataManager.getInstance().staticMapDataList,2),
                 calculateTilePosY(DataManager.getInstance().staticMapDataList,2));
-        pGameScene.attachChild(tile);
+
+        tilenum =   calculateMaxTileInCam(DataManager.getInstance().staticMapDataList,3);
+        tiles[2] = new Tile(ResourceManager.getInstance().tileTextureAtlas[2],
+                tilenum,ResourceManager.getInstance().vbom);
+
+        tiles[2].prepare(tilenum,ResourceManager.getInstance().tileRegion[2],
+                calculateTilePosX(DataManager.getInstance().staticMapDataList,3),
+                calculateTilePosY(DataManager.getInstance().staticMapDataList,3));
+
+        pGameScene.attachChild(tiles[0]);
+        pGameScene.attachChild(tiles[1]);
+        pGameScene.attachChild(tiles[2]);
 
 
 
@@ -137,7 +147,7 @@ public class StaticManager implements ConstantsSet{
         int max = -1;
         for(int i=0;i<count;i++) {
             rightIndex = i;
-            while (x[rightIndex] - x[leftIndex] > GameScene.CAMERA_WIDTH * 0.5f) {
+            while (x[rightIndex] - x[leftIndex] > GameScene.CAMERA_WIDTH * 1.2f) {
                 leftIndex++;
             }
             if (rightIndex - leftIndex + 1 >= max)

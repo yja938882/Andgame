@@ -37,7 +37,7 @@ public class UnitTestActivity extends BaseGameActivity {
     private View 	decorView;
     private int	uiOption;
 
-    private  int dbVersion =34;
+    private  int dbVersion =45;
     String dbName ="config.db";
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +61,7 @@ public class UnitTestActivity extends BaseGameActivity {
 
             engineOptions.getTouchOptions().setNeedsMultiTouch(true);
             engineOptions.setWakeLockOptions(WakeLockOptions.SCREEN_ON);
+            engineOptions.getAudioOptions().setNeedsSound(true);
         return engineOptions;
     }
 

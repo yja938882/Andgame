@@ -125,6 +125,7 @@ public class PlayerUnit extends Unit{
     protected void onMoving(){
         movingParticleEmitter.setCenter(getFootPos().x,getFootPos().y);
         movingParticleSystem.setParticlesSpawnEnabled(true);
+      //  ResourceManager.getInstance().playerMovingSound.play();
     }
 
     @Override

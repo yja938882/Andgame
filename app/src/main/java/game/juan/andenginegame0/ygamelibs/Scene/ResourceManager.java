@@ -1,6 +1,8 @@
 package game.juan.andenginegame0.ygamelibs.Scene;
 
 
+import org.andengine.audio.sound.Sound;
+import org.andengine.audio.sound.SoundFactory;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
@@ -27,6 +29,7 @@ import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.color.Color;
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 
+import static game.juan.andenginegame0.ygamelibs.Data.DataManager.AI_MOVING_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_CONFIG_SIZE;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_FALL_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_PENDULUM_CONFIG;
@@ -172,6 +175,7 @@ public class ResourceManager {
     loadObstacleGraphics();
     loadMapTileGraphics();
     loadGameUI();
+    loadPlayerSounds();
   }
 
     /*===Static=======*/
@@ -230,11 +234,11 @@ public class ResourceManager {
   private BitmapTextureAtlas playerTextureAtlas;
   public ITextureRegion playerMovingParticleRegion;
   private BitmapTextureAtlas playerMovingParticleTextureAtlas;
-    public ITiledTextureRegion playerBulletRegion;
-    private BitmapTextureAtlas playerBulletTextureAtlas;
+  public ITiledTextureRegion playerBulletRegion;
+  private BitmapTextureAtlas playerBulletTextureAtlas;
 
 
-    //Load Unload
+  // Player GFX load , unload
   private void loadPlayerGraphics(){
     Log.d(TAG,"loadPlayerGraphics ");
 
@@ -266,11 +270,25 @@ public class ResourceManager {
     playerMovingParticleRegion = null;
   }
 
+
+  public Sound playerMovingSound;
+
+
+  //Player SFX load , unload
+  private void loadPlayerSounds(){
+    SoundFactory.setAssetBasePath("sfx/");
+    try{
+      playerMovingSound = SoundFactory.
+              createSoundFromAsset(gameActivity.getSoundManager(),gameActivity,"walk.wav");
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+  }
+
     /*===AI===========*/
 
   //Constants
   private static final int AI_TEXTURE_SIZE =1;
-
   //Fields
   public ITiledTextureRegion aiRegions[]=null;
   private BitmapTextureAtlas aiTextureAtlas[]=null;
@@ -286,10 +304,11 @@ public class ResourceManager {
 
     BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/ai/");
 
-
-    aiTextureAtlas[0] = new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,1024);
+    DataManager dm = DataManager.getInstance();
+    aiTextureAtlas[0] = new BitmapTextureAtlas(gameActivity.getTextureManager(),dm.getAiWidth(AI_MOVING_CONFIG),dm.getAiHeight(AI_MOVING_CONFIG));
     aiRegions[0] = BitmapTextureAtlasTextureRegionFactory.
-              createTiledFromAsset(aiTextureAtlas[0],gameActivity.getAssets(),"rat.png",0,0,8,8);
+              createTiledFromAsset(aiTextureAtlas[0],gameActivity.getAssets(),dm.getAiSrc(AI_MOVING_CONFIG)
+                      ,0,0,dm.getAiCol(AI_MOVING_CONFIG),dm.getAiRow(AI_MOVING_CONFIG));
     aiTextureAtlas[0].load();
   }
   private void unloadAiGraphics(){
@@ -364,23 +383,29 @@ public class ResourceManager {
     }
   }
 
-  public ITextureRegion tileRegion;
-  public BitmapTextureAtlas tileTextureAtlas;
+  public ITextureRegion tileRegion[];
+  public BitmapTextureAtlas tileTextureAtlas[];
   public void loadMapTileGraphics(){
+    tileRegion = new ITextureRegion[3];
+    tileTextureAtlas = new BitmapTextureAtlas[3];
     BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/map/");
-/*
-    mControllerAtlas = new BitmapTextureAtlas[CONTROLLER_SIZE];
-    mControllerTRs = new ITextureRegion[CONTROLLER_SIZE];
-    mControllerAtlas[UI_LEFT] = new BitmapTextureAtlas(gameActivity.getTextureManager(),
-            68,67,TextureOptions.BILINEAR);
-    mControllerTRs[UI_LEFT] = BitmapTextureAtlasTextureRegionFactory.
-            createFromAsset(mControllerAtlas[UI_LEFT],gameActivity,"left.png",0,0);
-    mControllerAtlas[UI_LEFT].load();*/
-    tileTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),
+    tileTextureAtlas[0] = new BitmapTextureAtlas(gameActivity.getTextureManager(),
         32,32,TextureOptions.BILINEAR);
-    tileRegion = BitmapTextureAtlasTextureRegionFactory
-            .createFromAsset(tileTextureAtlas,gameActivity,"0_1.png",0,0);
-    tileTextureAtlas.load();
+    tileRegion[0] = BitmapTextureAtlasTextureRegionFactory
+            .createFromAsset(tileTextureAtlas[0],gameActivity,"0_1.png",0,0);
+    tileTextureAtlas[0].load();
+
+    tileTextureAtlas[1] = new BitmapTextureAtlas(gameActivity.getTextureManager(),
+            32,32,TextureOptions.BILINEAR);
+    tileRegion[1] = BitmapTextureAtlasTextureRegionFactory
+            .createFromAsset(tileTextureAtlas[1],gameActivity,"0_2.png",0,0);
+    tileTextureAtlas[1].load();
+
+    tileTextureAtlas[2] = new BitmapTextureAtlas(gameActivity.getTextureManager(),
+            32,32,TextureOptions.BILINEAR);
+    tileRegion[2] = BitmapTextureAtlasTextureRegionFactory
+            .createFromAsset(tileTextureAtlas[2],gameActivity,"0_3.png",0,0);
+    tileTextureAtlas[2].load();
 
   }
 
