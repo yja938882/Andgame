@@ -6,7 +6,7 @@
     "background1": "a.png", "background2":"b.png",
     "ai_size": 5,
     "ai_moving_1"     :"rat"             ,"ai_moving_2"   :"fat_rat",
-    "ai_shooting_1"   :"throwing_rat"    ,"ai_shooting_2" :"shooting_rat",
+    "ai_shooting_1"   :"shooting_rat"    ,"ai_shooting_2" :"shooting_rat",
     "ai_flying_1"     :"flying_rat",
 
     "obs_size": 7,
@@ -55,7 +55,8 @@
   ],
   "ai":
   [
-    {"type":"ai_moving_1", "x":10, "y":13,"data":[1,1]}
+    {"type":"ai_moving_1", "x":-3, "y":13,"data":[1,1]},
+    {"type":"ai_shooting_1","x":10,"y":10,"data":[1,1]}
   ]
 }
 }

@@ -37,29 +37,15 @@ public class GameScene extends BaseScene {
 
     HorizontalWorld world;
 
-    Queue<IEntity> detachQueue;
 
     private BoundCamera camera;
 
-    HUD hud;
-
-    public synchronized void pushToDetach(IEntity entity){
-        detachQueue.add(entity);
-    }
-
-    public void clearDetachQueue(){
-        while(!detachQueue.isEmpty()){
-            IEntity ie = detachQueue.remove();
-            this.detachChild(ie);
-          }
-    }
-
     private void createUpdateHandler(){
+        Log.d(TAG,"createUpdateHandler");
         this.registerUpdateHandler(new IUpdateHandler() {
             @Override
             public void onUpdate(float pSecondsElapsed) {
                EntityManager.getInstance().manage();
-                 clearDetachQueue();
                 camera.setCenter(EntityManager.getInstance().getPlayerUnit().getX(),
                         EntityManager.getInstance().getPlayerUnit().getY());
                 camera.setBounds(camera.getCenterX()-camera.getWidth()/2,
@@ -81,15 +67,11 @@ public class GameScene extends BaseScene {
     public Vector2 getGravity(){
         return this.world.gravity;
     }
-    public HUD getHud(){
-        return this.hud;
-    }
 
     @Override
     public void createScene() {
         Log.d(TAG,"createScene");
 
-        detachQueue = new LinkedList<IEntity>();
         createUpdateHandler();
         world = new HorizontalWorld();
         world.createWorld(new Vector2(0, 0),false);

@@ -82,10 +82,10 @@ public class AiUnit extends Unit {
                 mCmd=0;
         }
 
-            switch (mCmdList[mCmd]) {
-                case CMD_ATTACK:
-                    setAction(ConstantsSet.UnitAction.ACTION_ATTACK);
-                    break;
+        switch (mCmdList[mCmd]) {
+            case CMD_ATTACK:
+                setAction(ConstantsSet.UnitAction.ACTION_ATTACK);
+                break;
                 case CMD_IDLE:
                     setAction(ConstantsSet.UnitAction.ACTION_STOP);
                     break;

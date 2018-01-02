@@ -63,13 +63,19 @@ public class DataManager implements ConstantsSet{
     public static final int OBSTACLE_TYPE_SIZE = 4;
     public static final int OBSTACLE_TYPE_=0;
     public static final int AI_TYPE_SIZE = 1;
-    final String AI_CONFIG_NAME[]={
+    private final String AI_CONFIG_NAME[]={
             "ai_moving_1","ai_moving_2","ai_shooting_1","ai_shooting_2","ai_flying_1"
     };
 
-    public final static int AI_CONFIG_SIZE = 7;
-    public final static int AI_MOVING_CONFIG = 0;
-    final String OBS_CONFIG_NAME[]={
+    public final static int AI_CONFIG_SIZE = 5;
+    public final static int AI_MOVING_1_CONFIG =0;
+    public final static int AI_MOVING_2_CONFIG=1;
+    public final static int AI_SHOOTING_1_CONFIG =2;
+    public final static int AI_SHOOTING_2_CONFIG =3;
+    public final static int AI_FLYING_CONFIG=4;
+
+
+    private final String OBS_CONFIG_NAME[]={
             "obs_fall",
             "obs_shooting",
             "obs_trap_1",
@@ -385,11 +391,14 @@ public class DataManager implements ConstantsSet{
                 switch (obj.getString("type")) {
                     case "ai_moving_1":
                         vClass = DataBlock.AI_BODY_CLASS;
-                        vType = EntityType.MOVING_AI;
+                        vType = EntityType.MOVING_AI_1;
                         break;
                     case "ai_moving_2":
                         break;
                     case "ai_shooting_1":
+                        Log.d(TAG,"d is ai_shooting_1");
+                        vClass = DataBlock.AI_BODY_CLASS;
+                        vType = EntityType.SHOOTING_AI_1;
                         break;
                     case "ai_shooting_2":
                         break;

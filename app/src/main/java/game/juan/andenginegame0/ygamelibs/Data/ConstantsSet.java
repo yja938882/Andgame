@@ -29,7 +29,7 @@ public interface ConstantsSet {
         int PASSABLE_OBSTACLE   = 0x00000200;
         int INPASSABLE_OBSTACLE = 0x00000300;
 
-        int BULLET = 0x00000300;
+        int BULLET = 0x00000003;
 
         int STATIC = 0x02000000;
         int GROUND = 0x00010000;
@@ -84,20 +84,15 @@ public interface ConstantsSet {
         int ACTION_PICK=9;
     }
 
-    interface BulletAction{
-        int ACTION_READY = 0;
-        int ACTION_FLY = 1;
-        int ACTION_HIT = 2;
-        int ACTION_RELOAD = 3;
-    }
-
 
     interface EntityType{
         int PLAYER = 1;
 
-        int STOP_AI = 10;
         int FLY_AI = 11;
-        int MOVING_AI = 12;
+        int MOVING_AI_1 = 12;
+        int MOVING_AI_2 = 13;
+        int SHOOTING_AI_1 = 14;
+        int SHOOTING_AI_2 = 15;
 
         int OBS_MOVING_GROUND = 21;
         int OBS_TRAP_1 = 22;

@@ -27,16 +27,17 @@ import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerData;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Bullet;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Weapon;
-import game.juan.andenginegame0.ygamelibs.IManager;
+
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 
+import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.FLY_AI;
+import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.MOVING_AI_1;
+import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.MOVING_AI_2;
 import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.OBS_FALL;
-import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.OBS_MOVING_GROUND;
-import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.OBS_PENDULUM;
-import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.OBS_TRAP_1;
-import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.OBS_TRAP_2;
-import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.OBS_TRAP_TEMP;
+import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.SHOOTING_AI_1;
+import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.SHOOTING_AI_2;
+import static game.juan.andenginegame0.ygamelibs.Data.DataManager.AI_SHOOTING_1_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_FALL_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_MOVING_GROUND_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_PENDULUM_CONFIG;
@@ -117,12 +118,28 @@ public class EntityManager implements ConstantsSet.Classify {
     }
 
     private void createAiUnit(GameScene pGameScene, ArrayList<AiData> pAiData){
-        ArrayList<AiData> aiDataList = new ArrayList<>();
+        Log.d(TAG,"createAiUnit");
+        ArrayList<AiData> movingAiDataList = new ArrayList<>();
+        ArrayList<AiData> shootingAiDataList = new ArrayList<>();
+
         for( int i=0;i<pAiData.size();i++){
-            aiDataList.add(pAiData.get(i));
+            switch (pAiData.get(i).getType()){
+                case MOVING_AI_1:
+                    movingAiDataList.add(pAiData.get(i));
+                    break;
+                case MOVING_AI_2:
+                    break;
+                case SHOOTING_AI_1:
+                    shootingAiDataList.add(pAiData.get(i));
+                    break;
+                case SHOOTING_AI_2:
+                    break;
+                case FLY_AI:
+                    break;
+            }
         }
-        int entityListSize = calculateMaxAiInCam(aiDataList);
-        final EntityList aiList = new EntityList(pGameScene , entityListSize,aiDataList.size() - entityListSize) {
+        int entityListSize = calculateMaxAiInCam(movingAiDataList);
+        final EntityList aiList = new EntityList(pGameScene , entityListSize,movingAiDataList.size() - entityListSize) {
             @Override
             public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
                 if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
@@ -140,17 +157,47 @@ public class EntityManager implements ConstantsSet.Classify {
                     return true;
             }
         };
-        for(int i=0;i<aiDataList.size();i++){
+        for(int i=0;i<movingAiDataList.size();i++){
             if(!aiList.isEntityListFull()) {
                 aiList.add(AiFactory.createAi(pGameScene,
-                        ResourceManager.getInstance().aiRegions[0],aiDataList.get(i)));
+                        ResourceManager.getInstance().aiRegions[0],movingAiDataList.get(i)));
             }else{
-                aiList.add(aiDataList.get(i).getPosX(),aiDataList.get(i).getPosY());
+                aiList.add(movingAiDataList.get(i).getPosX(),movingAiDataList.get(i).getPosY());
             }
         }
 
-        mAiList = new ManagedEntityList(1);
+        entityListSize = calculateMaxAiInCam(shootingAiDataList);
+        Log.d(TAG,"cal e :"+entityListSize);
+        final EntityList shootingAiList= new EntityList(pGameScene , entityListSize,shootingAiDataList.size() - entityListSize) {
+            @Override
+            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
+                if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
+                float camx = pGameScene.getCamera().getCenterX();
+                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2)
+                    return false;
+                else
+                    return true;
+            }
+        };
+        for(int i=0;i<shootingAiDataList.size();i++){
+            if(!shootingAiList.isEntityListFull()) {
+                shootingAiList.add(AiFactory.createAi(pGameScene,
+                        ResourceManager.getInstance().aiRegions[AI_SHOOTING_1_CONFIG],shootingAiDataList.get(i)));
+            }else{
+                shootingAiList.add(shootingAiDataList.get(i).getPosX(),shootingAiDataList.get(i).getPosY());
+            }
+        }
+
+        mAiList = new ManagedEntityList(2);
         mAiList.setList(0,aiList);
+        mAiList.setList(1,shootingAiList);
         mAiList.ready();
     }
 

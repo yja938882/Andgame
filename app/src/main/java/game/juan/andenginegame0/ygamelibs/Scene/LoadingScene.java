@@ -17,7 +17,7 @@ import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_WIDTH;
 public class LoadingScene extends BaseScene {
     private final String TAG ="[cheep] LoadingScene";
     private Text loadingText;
-    private SceneManager.SceneType scenetoload;
+    private SceneManager.SceneType sceneToLoad;
 
     public LoadingScene(SceneManager.SceneType pSceneType){
         this.resourcesManager = ResourceManager.getInstance();
@@ -25,12 +25,13 @@ public class LoadingScene extends BaseScene {
         this.gameActivity = resourcesManager.gameActivity;
         this.vbom = resourcesManager.vbom;
         this.camera = resourcesManager.camera;
-        this.scenetoload = pSceneType;
+        this.sceneToLoad = pSceneType;
         createScene();
     }
 
     @Override
     public void createScene() {
+        Log.d(TAG,"createScene");
         setBackground(new Background(Color.BLACK));
         loadingText =new Text(CAMERA_WIDTH/2,200,resourcesManager.mainFont,"Loading ...",vbom);
         loadingText.setX(loadingText.getX()-loadingText.getWidth()/2);
@@ -39,7 +40,7 @@ public class LoadingScene extends BaseScene {
         this.registerUpdateHandler(new IUpdateHandler() {
             @Override
             public void onUpdate(float pSecondsElapsed) {
-                switch(scenetoload){
+                switch(sceneToLoad){
                     case GAME:
                         SceneManager.getInstance().loadGameScene();
                         break;
@@ -79,8 +80,6 @@ public class LoadingScene extends BaseScene {
     public void disposeScene() {
         loadingText.detachSelf();
         clearTouchAreas();
-//        loadingText.dispose();
         detachSelf();
-//        dispose();
     }
 }

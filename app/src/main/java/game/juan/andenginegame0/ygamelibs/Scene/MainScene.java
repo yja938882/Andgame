@@ -20,7 +20,7 @@ public class MainScene extends BaseScene {
     @Override
     public void createScene() {
         Log.d(TAG,"createScene");
-        Rectangle r = new Rectangle(50,50,50,50,ResourceManager.getInstance().vbom){
+        Rectangle r = new Rectangle(300,300,50,50,ResourceManager.getInstance().vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 Log.d("cheep","touch");
@@ -36,8 +36,12 @@ public class MainScene extends BaseScene {
         this.attachChild(r);
         this.registerTouchArea(r);
 
-        Text t =new Text(CAMERA_WIDTH/2,200,resourcesManager.mainFont,""+ DataManager.getInstance().player_level,vbom);
-        this.attachChild(t);
+        Text lv =new Text(20,20,resourcesManager.mainFont,"Lv : "+ DataManager.getInstance().player_level,vbom);
+        Text money = new Text(lv.getWidth()+40,20,resourcesManager.mainFont,"Money : "+DataManager.getInstance().money,vbom);
+        Text player_count = new Text(money.getX()+money.getWidth()+20,20,resourcesManager.mainFont,"Count : "+DataManager.getInstance().play_count,vbom);
+        this.attachChild(lv);
+        this.attachChild(money);
+        this.attachChild(player_count);
     }
 
     @Override

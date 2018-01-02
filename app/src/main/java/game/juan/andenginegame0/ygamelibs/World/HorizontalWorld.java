@@ -43,34 +43,27 @@ import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
  */
 
 public class HorizontalWorld {
+    /*===Constants=====================*/
+    private static final String TAG ="[cheep] HorizontalWorld";
+
     public Vector2 gravity = new Vector2(0,20);
     private PhysicsWorld physicsWorld;
-   PlayerUnit playerUnit;
 
     public PhysicsWorld getWorld(){
         return physicsWorld;
     }
+
     public void createWorld(Vector2 gravity, boolean bol){
         physicsWorld = new PhysicsWorld(gravity,bol);
         
-       physicsWorld.setContactListener(createContactLister());
+        physicsWorld.setContactListener(createContactLister());
         physicsWorld.setContinuousPhysics(true);
-
-
-    }
-    public Vector2 getGravity(){
-        return gravity;
-    }
-    public void addPlayerUnit(PlayerUnit playerUnit){
-        this.playerUnit = playerUnit;
     }
 
     private ContactListener createContactLister(){
-        final String TAG = "ContactListenr";
         ContactListener contactListener=new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
-                Log.d(TAG,"beginContact");
                 Fixture fixtureA = contact.getFixtureA();
                 Body bodyA = fixtureA.getBody();
                 Vector2 va =bodyA.getPosition();
@@ -89,7 +82,6 @@ public class HorizontalWorld {
 
             @Override
             public void endContact(Contact contact) {
-                Log.d(TAG,"end contact");
                 Fixture fixtureA = contact.getFixtureA();
                 Body bodyA = fixtureA.getBody();
                 Object oa = bodyA.getUserData();

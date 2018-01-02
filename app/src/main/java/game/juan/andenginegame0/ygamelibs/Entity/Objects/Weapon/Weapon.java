@@ -21,8 +21,7 @@ public class Weapon{
     }
     public void setBullet(Bullet pBullet){
         for(int i=0;i<mManagedBulletSize;i++){
-            //mBullets[i] = pBullet;
-
+            mBullets[i] = pBullet;
         }
 
 

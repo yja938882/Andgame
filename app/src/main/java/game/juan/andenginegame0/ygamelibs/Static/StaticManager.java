@@ -22,7 +22,7 @@ import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
-import game.juan.andenginegame0.ygamelibs.IManager;
+
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 
@@ -36,11 +36,11 @@ public class StaticManager implements ConstantsSet{
 
     public static final StaticManager INSTANCE = new StaticManager();
 
-    Sprite background1;
-    Sprite background2;
-    AutoParallaxBackground autoParallaxBackground = new AutoParallaxBackground(0,0,0,5);
+    private Sprite background1;
+    private Sprite background2;
+    private AutoParallaxBackground autoParallaxBackground = new AutoParallaxBackground(0,0,0,5);
 
-    Tile tiles[];
+    private Tile tiles[];
 
     public void createOnGame(final GameScene pGameScene){
         background1 = new Sprite(0,0, ResourceManager.getInstance().backgroundRegion1,

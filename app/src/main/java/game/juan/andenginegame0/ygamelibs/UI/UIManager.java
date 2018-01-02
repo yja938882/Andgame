@@ -18,7 +18,7 @@ import org.andengine.ui.activity.BaseGameActivity;
 
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
-import game.juan.andenginegame0.ygamelibs.IManager;
+
 import game.juan.andenginegame0.ygamelibs.Scene.SceneManager;
 import game.juan.andenginegame0.ygamelibs.UI.ConditionUI.CoinUI;
 import game.juan.andenginegame0.ygamelibs.UI.ConditionUI.HealthUI;

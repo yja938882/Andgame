@@ -29,7 +29,8 @@ import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.color.Color;
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.AI_MOVING_CONFIG;
+import static game.juan.andenginegame0.ygamelibs.Data.DataManager.AI_MOVING_1_CONFIG;
+import static game.juan.andenginegame0.ygamelibs.Data.DataManager.AI_SHOOTING_1_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_CONFIG_SIZE;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_FALL_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_PENDULUM_CONFIG;
@@ -259,7 +260,7 @@ public class ResourceManager {
 
       playerBulletTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),64,64);
       playerBulletRegion  = BitmapTextureAtlasTextureRegionFactory.
-              createTiledFromAsset(playerBulletTextureAtlas,gameActivity.getAssets(),"bullet0.png",0,0,1,1);
+              createTiledFromAsset(playerBulletTextureAtlas,gameActivity.getAssets(),"wood.png",0,0,1,1);
       playerBulletTextureAtlas.load();
   }
   private void unloadPlayerGraphics(){
@@ -288,7 +289,8 @@ public class ResourceManager {
     /*===AI===========*/
 
   //Constants
-  private static final int AI_TEXTURE_SIZE =1;
+  private static final int AI_TEXTURE_SIZE =3;
+
   //Fields
   public ITiledTextureRegion aiRegions[]=null;
   private BitmapTextureAtlas aiTextureAtlas[]=null;
@@ -305,11 +307,18 @@ public class ResourceManager {
     BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/ai/");
 
     DataManager dm = DataManager.getInstance();
-    aiTextureAtlas[0] = new BitmapTextureAtlas(gameActivity.getTextureManager(),dm.getAiWidth(AI_MOVING_CONFIG),dm.getAiHeight(AI_MOVING_CONFIG));
-    aiRegions[0] = BitmapTextureAtlasTextureRegionFactory.
-              createTiledFromAsset(aiTextureAtlas[0],gameActivity.getAssets(),dm.getAiSrc(AI_MOVING_CONFIG)
-                      ,0,0,dm.getAiCol(AI_MOVING_CONFIG),dm.getAiRow(AI_MOVING_CONFIG));
-    aiTextureAtlas[0].load();
+    aiTextureAtlas[AI_MOVING_1_CONFIG] = new BitmapTextureAtlas(gameActivity.getTextureManager(),dm.getAiWidth(AI_MOVING_1_CONFIG),dm.getAiHeight(AI_MOVING_1_CONFIG));
+    aiRegions[AI_MOVING_1_CONFIG] = BitmapTextureAtlasTextureRegionFactory.
+              createTiledFromAsset(aiTextureAtlas[AI_MOVING_1_CONFIG],gameActivity.getAssets(),dm.getAiSrc(AI_MOVING_1_CONFIG)
+                      ,0,0,dm.getAiCol(AI_MOVING_1_CONFIG),dm.getAiRow(AI_MOVING_1_CONFIG));
+    aiTextureAtlas[AI_MOVING_1_CONFIG].load();
+
+    aiTextureAtlas[AI_SHOOTING_1_CONFIG] = new BitmapTextureAtlas(gameActivity.getTextureManager(),dm.getAiWidth(AI_SHOOTING_1_CONFIG),dm.getAiHeight(AI_SHOOTING_1_CONFIG));
+    aiRegions[AI_SHOOTING_1_CONFIG] = BitmapTextureAtlasTextureRegionFactory.
+            createTiledFromAsset(aiTextureAtlas[AI_SHOOTING_1_CONFIG],gameActivity.getAssets(),dm.getAiSrc(AI_SHOOTING_1_CONFIG)
+                    ,0,0,dm.getAiCol(AI_SHOOTING_1_CONFIG),dm.getAiRow(AI_SHOOTING_1_CONFIG));
+    aiTextureAtlas[AI_SHOOTING_1_CONFIG].load();
+
   }
   private void unloadAiGraphics(){
     for(BitmapTextureAtlas bitmapTextureAtlas:aiTextureAtlas){

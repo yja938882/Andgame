@@ -11,8 +11,8 @@ import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 public abstract class UnitData extends DataBlock{
     /*===Fields========================*/
     private int mGroundContactCounter=0;
-    boolean isNeedToBeAttacked = false;
-    boolean isNeedToBeStopJumpAnim = false;
+    private boolean isNeedToBeAttacked = false;
+    private boolean isNeedToBeStopJumpAnim = false;
     /*===Constructor===================*/
     public UnitData(int pClass, int pType, int pX, int pY) {
         super(pClass, pType, pX, pY);

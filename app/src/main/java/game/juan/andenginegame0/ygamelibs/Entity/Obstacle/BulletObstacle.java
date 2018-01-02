@@ -55,13 +55,7 @@ public class BulletObstacle extends GameEntity{
     public BulletObstacle(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
-    /*
-    @Override
-    public void createBody(GameScene pGameScene, int pBodyIndex, DataBlock pDataBlock, float pWidth, float pHeight, BodyDef.BodyType pBodyType) {
-        super.createBody(pGameScene,pBodyIndex,pDataBlock,pWidth,pHeight,pBodyType);
-        final Vector2 vertices[] = {new }
-        getBody(0).setFixedRotation(true);
-    }*/
+
     public void createObstacle(GameScene pGameScene, DataBlock pDataBlock){
         setupBody(1);
         if(bodySType ==VERTICAL_SHAPE){

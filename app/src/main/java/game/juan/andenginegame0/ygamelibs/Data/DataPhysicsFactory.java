@@ -18,7 +18,7 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
         short category=0x000, mask=0x000;
         float friction = ConstantsSet.Physics.FRICTION_UNIT;
         switch(pClass){
-            case ENTITY|OBJECT|BULLET|PLAYER:
+            case ENTITY|OBJECT|PLAYER|BULLET:
                 category = PLAYER_BULLET_CATG_BITS;
                 mask = PLAYER_BULLET_MASK_BITS;
                 break;
@@ -38,6 +38,10 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
             case ENTITY|UNIT|AI|FOOT:
                 category = AI_FOOT_CATG_BITS;
                 mask = AI_FOOT_MASK_BITS;
+                break;
+            case ENTITY|OBJECT|AI|BULLET:
+                category = AI_BULLET_CATG_BITS;
+                mask = AI_BULLET_MASK_BITS;
                 break;
             case ENTITY|OBSTACLE|ATTACK_OBSTACLE:
                 category = OBSTACLE_BULLET_CATG_BITS;

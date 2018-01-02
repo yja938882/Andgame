@@ -11,7 +11,6 @@ import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 public class ObstacleData extends DataBlock {
 
     private boolean isNeedToReload = false;
-    float mData[];
     public ObstacleData(int pClass, int pType, int pX, int pY) {
         super(pClass, pType, pX, pY);
     }
