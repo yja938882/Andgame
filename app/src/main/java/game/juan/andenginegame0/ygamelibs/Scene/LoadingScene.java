@@ -42,13 +42,17 @@ public class LoadingScene extends BaseScene {
             public void onUpdate(float pSecondsElapsed) {
                 switch(sceneToLoad){
                     case GAME:
+                        Log.d(TAG,"loading game scene...");
                         SceneManager.getInstance().loadGameScene();
                         break;
                     case MAIN:
+                        Log.d(TAG,"loading main scene...");
                         break;
                     case INVEN:
+                        Log.d(TAG,"loading inventory scene...");
                         break;
                     case SHOP:
+                        Log.d(TAG,"loading shop scene...");
                         break;
                 }
                 unregisterUpdateHandler(this);

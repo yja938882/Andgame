@@ -29,9 +29,7 @@ public class TutActivity extends BaseGameActivity{
                 , ScreenOrientation.PORTRAIT_FIXED,
                 new FixedResolutionPolicy(1024,600)
                 ,mCamera);
-        //new FillResolutionPolicy()
 
-//
         engineOptions.getTouchOptions().setNeedsMultiTouch(true);
         return engineOptions;
     }

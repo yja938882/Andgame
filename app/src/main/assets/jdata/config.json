@@ -160,21 +160,23 @@
         "dieFrameIndex"       :[20],
         "dieFrameDuration"    :[50],
         "dieLock"             : "strong",
-        "beAttackedFrameIndex"   :[30],
-        "beAttackedFrameDuration":[50],
+        "beAttackedFrameIndex"   :[18],
+        "beAttackedFrameDuration":[100],
         "beAttackedLock"        :"strong",
         "jumpFrameIndex"         :[24,25,26],
         "jumpFrameDuration"      :[50,50,50],
         "jumpLock"              :"none",
         "cmdList"               :[0,4,0,4],
-        "cmdDu"                 :[3,1,3,1],
+        "cmdDu"                 :[3,0.5,3,0.5],
 
         "src"                   :"bow_rat.png",
         "src_width"             : 768,
         "src_height"            : 768,
         "row"                   : 6,
         "col"                   : 6,
-        "scale"                 :0.5
+        "scale"                 :0.5,
+
+        "weapon"                :"arrow"
       }
     },
     {
@@ -257,7 +259,7 @@
       "data":
       {
         "anim"  : "no",
-        "body"  : "vertices",   "body_vx":[-32,-32,32,32],"body_vy":[-32,32,32,-32],
+        "body"  : "vertices",   "body_vx":[-64,-64,64,64],"body_vy":[32,64,64,32],
 
         "src"                   :"thorn0.png",
         "src_width"             : 128,
@@ -273,7 +275,7 @@
       "data":
       {
         "anim"  : "no",
-        "body"  : "vertices",   "body_vx":[-32,-32,32,32],"body_vy":[-32,32,32,-32],
+        "body"  : "vertices",    "body_vx":[-64,-64,64,64],"body_vy":[32,64,64,32],
 
         "src"                   :"thorn1.png",
         "src_width"             : 128,
@@ -340,6 +342,20 @@
       {
         "body" :"vertices",  "body_vx":[-16,-16,16,16],"body_vy":[-8,8,8,-8],
         "src"                   :"wood.png",
+        "src_width"             : 64,
+        "src_height"            : 64,
+        "scale"                 : 0.5,
+        "col"                   : 1,
+        "row"                   : 1
+      }
+    },
+    {
+      "id":"arrow",
+      "src":"",
+      "data":
+      {
+        "body" :"vertices",  "body_vx":[-16,-16,16,16],"body_vy":[-8,8,8,-8],
+        "src"                   :"arrow.png",
         "src_width"             : 64,
         "src_height"            : 64,
         "scale"                 : 0.5,

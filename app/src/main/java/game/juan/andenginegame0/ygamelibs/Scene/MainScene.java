@@ -23,9 +23,7 @@ public class MainScene extends BaseScene {
         Rectangle r = new Rectangle(300,300,50,50,ResourceManager.getInstance().vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                Log.d("cheep","touch");
                 if(pSceneTouchEvent.isActionDown()){
-                    Log.d("cheep","touch");
                     SceneManager.getInstance().createLoadingScene(SceneManager.SceneType.GAME);
                     SceneManager.getInstance().disposeMainScene();
                 }

@@ -64,7 +64,7 @@ public class DataManager implements ConstantsSet{
     public static final int OBSTACLE_TYPE_=0;
     public static final int AI_TYPE_SIZE = 1;
     private final String AI_CONFIG_NAME[]={
-            "ai_moving_1","ai_moving_2","ai_shooting_1","ai_shooting_2","ai_flying_1"
+            "ai_moving_0","ai_moving_1","ai_shooting_0","ai_shooting_1","ai_flying_0"
     };
 
     public final static int AI_CONFIG_SIZE = 5;
@@ -101,9 +101,11 @@ public class DataManager implements ConstantsSet{
 
     public String obstacleConfigKeys[]=null;
     public String aiConfigKeys[]=null;
+    public String aiWeaponConfigKeys[] = null;
 
     public JSONObject obstacleConfigs[] = null;
     public JSONObject aiConfigs[]=null;
+    public JSONObject aiWeaponConfigs[]=null;
 
     public ArrayList<ObstacleData> obstacleDataList;
     public ArrayList<StaticData> staticMapDataList;
@@ -119,7 +121,7 @@ public class DataManager implements ConstantsSet{
            return obstacleConfigs[obsType].getString("src");
 
        }catch (Exception e){
-           Log.d(TAG,"error "+e.getMessage());
+           Log.d(TAG,"error [getObsSrc] "+e.getMessage());
        }
        return null;
    }
@@ -128,7 +130,7 @@ public class DataManager implements ConstantsSet{
             return obstacleConfigs[obsType].getString("src"+i);
 
         }catch (Exception e){
-            Log.d(TAG,"error "+e.getMessage());
+            Log.d(TAG,"error getObsStc "+e.getMessage());
         }
         return null;
     }
@@ -136,7 +138,7 @@ public class DataManager implements ConstantsSet{
        try{
            return obstacleConfigs[obsType].getInt("src_width");
        }catch (Exception e){
-           Log.d(TAG,"error "+e.getMessage());
+           Log.d(TAG,"error [getObsConfig]"+e.getMessage());
        }
        return -1;
    }
@@ -217,7 +219,7 @@ public class DataManager implements ConstantsSet{
         try{
             return aiConfigs[aiType].getString("src");
         }catch (Exception e){
-            Log.d(TAG,"error"+e.getMessage());
+            Log.d(TAG,"error [getAiSrc]"+e.getMessage());
         }
         return null;
     }
@@ -249,10 +251,52 @@ public class DataManager implements ConstantsSet{
         try{
             return aiConfigs[aiType].getInt("row");
         }catch (Exception e){
-            Log.d(TAG,"error"+e.getMessage());
+            Log.d(TAG,"error [getAiRow] "+e.getMessage());
         }
         return -1;
     }
+
+    public String getAiWeaponSrc(int pBullet){
+        try{
+            return aiWeaponConfigs[pBullet].getString("src");
+        }catch (Exception e){
+            Log.d(TAG,"error [getAiWeaponSrc]"+e.getMessage());
+        }
+        return null;
+    }
+    public int getAiWeaponWidth(int pBullet){
+        try{
+            return aiWeaponConfigs[pBullet].getInt("src_width");
+        }catch (Exception e){
+            Log.d(TAG,"error [getAiWeaponWidth]"+e.getMessage());
+        }
+        return -1;
+    }
+    public int getAiWeaponHeight(int pBullet){
+        try{
+            return aiWeaponConfigs[pBullet].getInt("src_height");
+        }catch (Exception e){
+            Log.d(TAG,"error [getAiWeaponHeight]"+e.getMessage());
+        }
+        return -1;
+    }
+    public int getAiWeaponCol(int pBullet){
+        try{
+            return aiWeaponConfigs[pBullet].getInt("col");
+        }catch (Exception e){
+            Log.d(TAG,"error [getAiWeaponCol]"+e.getMessage());
+        }
+        return -1;
+    }
+    public int getAiWeaponRow(int pBullet){
+        try{
+            return aiWeaponConfigs[pBullet].getInt("row");
+        }catch (Exception e){
+            Log.d(TAG,"error [getAiWeaponRow]"+e.getMessage());
+        }
+        return -1;
+    }
+
 
     public void loadStageData(int pStage){
 
@@ -275,16 +319,30 @@ public class DataManager implements ConstantsSet{
             Log.d(TAG,"loadAiConfig("+pStage+")");
             if (aiConfigKeys == null)
                 aiConfigKeys = new String[stageConfig.getInt("ai_size")];
+            if(aiWeaponConfigKeys==null)
+                aiWeaponConfigKeys = new String[2];
+            if(aiWeaponConfigs==null)
+                aiWeaponConfigs = new JSONObject[2];
+
             for(int i=0;i<AI_CONFIG_NAME.length;i++){
                 aiConfigKeys[i] = stageConfig.getString(AI_CONFIG_NAME[i]);
             }
             if(aiConfigs ==null)
                 aiConfigs = new JSONObject[stageConfig.getInt("ai_size")];
             for(int i=0;i<AI_CONFIG_NAME.length;i++){
-                Log.d(TAG,aiConfigKeys[i]);
+                Log.d(TAG,"-- "+aiConfigKeys[i]);
                 aiConfigs[i] = (dbManager.getConfigJSON(db,aiConfigKeys[i]));
-                Log.d(TAG,aiConfigs[i].toString());
+                if(AI_CONFIG_NAME[i].equals("ai_shooting_0")){
+                    aiWeaponConfigKeys[0] = aiConfigs[i].getString("weapon");
+                    aiWeaponConfigs[0] = (dbManager.getConfigJSON(db,aiWeaponConfigKeys[0]));
+                }
+                if(AI_CONFIG_NAME[i].equals("ai_shooting_1")){
+                    aiWeaponConfigKeys[1] = aiConfigs[i].getString("weapon");
+                    aiWeaponConfigs[1] = (dbManager.getConfigJSON(db,aiWeaponConfigKeys[1]));
+                }
             }
+
+
 
             Log.d(TAG,"loadObstacleConfig("+pStage+")");
             if (obstacleConfigKeys == null)
@@ -303,6 +361,7 @@ public class DataManager implements ConstantsSet{
 
             playerBulletConfigs = new JSONObject[1];
             playerBulletConfigs[1] = dbManager.getConfigJSON(db,"p_wood");
+
 
 
         }catch(Exception e){

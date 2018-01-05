@@ -49,7 +49,7 @@ public class AiFactory implements ConstantsSet.EntityType{
         // aiUnit.setScale(0.5f);
         aiUnit.setConfigData(DataManager.getInstance().aiConfigs[AI_SHOOTING_1_CONFIG]);
         Weapon  weapon = new Weapon(1);
-        Bullet bullet = new Bullet(0,0,ResourceManager.getInstance().playerBulletRegion,
+        Bullet bullet = new Bullet(0,0,ResourceManager.getInstance().ai_0_BulletRegion,
                 ResourceManager.getInstance().vbom);
         final Vector2[] shapes={new Vector2(0,16),new Vector2(16,0)};
         bullet.createBullet(pGameScene,new PlayerBulletData(DataBlock.AI_BLT_CLASS,ConstantsSet.EntityType.BULLET,0,0),shapes);

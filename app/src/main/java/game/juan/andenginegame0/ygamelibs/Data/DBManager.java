@@ -93,7 +93,6 @@ public class DBManager extends SQLiteOpenHelper{
         return ret;
     }
     public JSONObject getConfigJSON(SQLiteDatabase db, String pKeyName){
-        Log.d("JSON!!","get cf");
         JSONObject object=null;
         String sql = "select * from "+CONFIG_TABLE+" where "+KEY_NAME+" ='"+pKeyName+"';";
         Cursor cursor = db.rawQuery(sql,null);

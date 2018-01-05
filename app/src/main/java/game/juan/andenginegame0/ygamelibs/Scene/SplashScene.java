@@ -85,20 +85,20 @@ public class SplashScene extends BaseScene {
 
 
         truckSprite = new Sprite(0,0,ResourceManager.getInstance().truckRegion,ResourceManager.getInstance().vbom);
-        this.attachChild(truckSprite);
+       // this.attachChild(truckSprite);
 
-        cheepSprite = new AnimatedSprite(100,384,ResourceManager.getInstance().cheepRegion,ResourceManager.getInstance().vbom);
+        cheepSprite = new AnimatedSprite(CAMERA_WIDTH/2-64,384,ResourceManager.getInstance().cheepRegion,ResourceManager.getInstance().vbom);
         cheepSprite.setScale(0.5f);
         this.attachChild(cheepSprite);
-        movingParticleEmitter = new PointParticleEmitter(404,420);
+        movingParticleEmitter = new PointParticleEmitter(CAMERA_WIDTH/2-64,480);
         this.movingParticleSystem =new BatchedSpriteParticleSystem(movingParticleEmitter,3,10,10
                 ,ResourceManager.getInstance().truckParticleRegion,ResourceManager.getInstance().vbom);
-        movingParticleSystem.addParticleInitializer(new VelocityParticleInitializer<UncoloredSprite>(-2,-10,-10,-20));
-        movingParticleSystem.addParticleInitializer(new AccelerationParticleInitializer<UncoloredSprite>(-1,-3,-1,-3));
+        movingParticleSystem.addParticleInitializer(new VelocityParticleInitializer<UncoloredSprite>(-4,-15,-10,-20));
+        movingParticleSystem.addParticleInitializer(new AccelerationParticleInitializer<UncoloredSprite>(-2,-3,-1,-3));
         movingParticleSystem.addParticleInitializer(new ExpireParticleInitializer<UncoloredSprite>(4f));
         movingParticleSystem.addParticleInitializer(new ScaleParticleInitializer<UncoloredSprite>(0.5f,1f));
-        movingParticleSystem.addParticleModifier(new ScaleParticleModifier<UncoloredSprite>(0f,1.5f,0.4f,1.5f));
-        movingParticleSystem.addParticleModifier(new AlphaParticleModifier<UncoloredSprite>(0,1.5f,0.6f,0.3f));
+        movingParticleSystem.addParticleModifier(new ScaleParticleModifier<UncoloredSprite>(0f,1.5f,0.2f,1.2f));
+        movingParticleSystem.addParticleModifier(new AlphaParticleModifier<UncoloredSprite>(0,1.5f,0.8f,0.6f));
 
         attachChild(movingParticleSystem);
         movingParticleSystem.setParticlesSpawnEnabled(true);
@@ -108,7 +108,7 @@ public class SplashScene extends BaseScene {
             @Override
             protected void onManagedUpdate(float pSecondsElapsed) {
                 super.onManagedUpdate(pSecondsElapsed);
-                setX(getX()-1);
+                setX(getX()-3);
                 if(this.getX()+1024<=0){
                     setX(1024);
                 }
@@ -118,7 +118,7 @@ public class SplashScene extends BaseScene {
             @Override
             protected void onManagedUpdate(float pSecondsElapsed) {
                 super.onManagedUpdate(pSecondsElapsed);
-                setX(getX()-1);
+                setX(getX()-3);
                 if(this.getX()+1024<=0){
                     setX(1024);
                 }
@@ -211,9 +211,10 @@ public class SplashScene extends BaseScene {
     }
     private void loadingFinished(){
         loadingFinished = true;
-        touchToStartText =new Text(CAMERA_WIDTH/2,500,resourcesManager.mainFont,"Touch to Start",vbom);
+        touchToStartText =new Text(CAMERA_WIDTH/2,/*530*/300,resourcesManager.mainFont,"Touch to Start",vbom);
        // touchToStartText.setScale(0.5f,1.0f);
         //touchToStartText.setTextOptions(new TextOptions());
+        touchToStartText.setAlpha(2f);
         touchToStartText.setX(touchToStartText.getX()-touchToStartText.getWidth()/2);
         attachChild(touchToStartText);
     }

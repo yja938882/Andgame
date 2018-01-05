@@ -27,8 +27,6 @@ import game.juan.andenginegame0.ygamelibs.Scene.SplashScene;
 public class UnitTestActivity extends BaseGameActivity {
 
 
-    private ResourceManager resourceManager;
-
     boolean scheduleEngineStart;
 
     private BoundCamera mCamera;
@@ -37,11 +35,13 @@ public class UnitTestActivity extends BaseGameActivity {
     private View 	decorView;
     private int	uiOption;
 
-    private  int dbVersion =50;
+    private  int dbVersion =57;
     String dbName ="config.db";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //immersive mode
         decorView = getWindow().getDecorView();
         uiOption = getWindow().getDecorView().getSystemUiVisibility();
         if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH )
@@ -50,9 +50,10 @@ public class UnitTestActivity extends BaseGameActivity {
             uiOption |= View.SYSTEM_UI_FLAG_FULLSCREEN;
         if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT )
             uiOption |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        decorView.setSystemUiVisibility(uiOption);
     }
 
-        @Override
+    @Override
     public EngineOptions onCreateEngineOptions() {
             mCamera = new BoundCamera(0,0,GameScene.CAMERA_WIDTH,GameScene.CAMERA_HEIGHT);
             EngineOptions engineOptions = new EngineOptions(true
@@ -70,6 +71,7 @@ public class UnitTestActivity extends BaseGameActivity {
         // TODO Auto-generated method stub
          super.onWindowFocusChanged(hasFocus);
 
+        //immersive mode
         decorView = getWindow().getDecorView();
         uiOption = getWindow().getDecorView().getSystemUiVisibility();
         if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH )
@@ -86,7 +88,6 @@ public class UnitTestActivity extends BaseGameActivity {
     @Override
     public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws Exception {
         ResourceManager.prepareManager(mEngine,this,mCamera,getVertexBufferObjectManager());
-        resourceManager = ResourceManager.getInstance();
 
         final DBManager dbManager = new DBManager(this,dbName,null,dbVersion);
         DataManager.prepareManager(this,dbManager);
@@ -102,23 +103,6 @@ public class UnitTestActivity extends BaseGameActivity {
 
     @Override
     public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) throws Exception {
-       /* mEngine.registerUpdateHandler(new TimerHandler(2f, new ITimerCallback() {
-            @Override
-            public void onTimePassed(TimerHandler pTimerHandler) {
-                mEngine.unregisterUpdateHandler(pTimerHandler);
-                mGameScene.setCullingEnabled(true);
-                mGameScene.createResources();
-                mGameScene.loadResources();
-                //mSplashScene.disposeScene();
-                SceneManager.getInstance().disposeSplashScene();
-                //SceneManager.getInstance().getCurrentScene().disposeScene();
-                mGameScene.createScene(mCamera);
-                mEngine.setScene(mGameScene);
-                //mEngine.setScene(mGameScene);
-            }
-        }));
-        */
-
         pOnPopulateSceneCallback.onPopulateSceneFinished();
     }
 

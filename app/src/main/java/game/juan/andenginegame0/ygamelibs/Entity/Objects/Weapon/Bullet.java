@@ -36,12 +36,13 @@ public class Bullet extends GameEntity {
     public void shotAtoB(Vector2 pSrc , Vector2 pDest){
         Log.d("cheep","s a to b");
         this.getBody(0).setActive(true);
+        this.getBody(0).setAngularVelocity(0f);
         this.setVisible(true);
         this.setLinearVelocity(0,0,0);
         this.transformPhysically(pSrc.x,pSrc.y);
         //this.getBody(0).applyLinearImpulse(pDest,getBody(0).getWorldCenter());
         this.setLinearVelocity(0,pDest);
-        this.getBody(0).setAngularVelocity(10f);
+        //this.getBody(0).setAngularVelocity(10f);
     }
     @Override
     protected void onManagedUpdate(float pSecondsElapsed) {

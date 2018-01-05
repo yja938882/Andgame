@@ -21,7 +21,7 @@ public abstract class DataBlock implements ConstantsSet.Classify {
     *           |                   |-Ai                 |-Body
     *           |                   |                    |-Foot
     *           |===================|====================|=============
-    *           |-Object            |-Player             |Bullet
+    *           |-Object            |-Player             |-Bullet
     *           |                   |====================|
     *           |                   |- AI                |
     *           |===================|====================|=============

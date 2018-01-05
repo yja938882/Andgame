@@ -92,8 +92,8 @@ public class UIManager implements ConstantsSet {
                 ResourceManager.getInstance().vbom);
 
         mControllers[UI_UP]= new OneWayMoveController(433*2,
-                191*2,ResourceManager.getInstance().mControllerTRs[UI_UP].getWidth(),
-                ResourceManager.getInstance().mControllerTRs[UI_UP].getHeight(),
+                170*2,ResourceManager.getInstance().mControllerTRs[UI_UP].getWidth()*2,
+                ResourceManager.getInstance().mControllerTRs[UI_UP].getHeight()*2,
                 ResourceManager.getInstance().mControllerTRs[UI_UP],
                 ResourceManager.getInstance().vbom);
 

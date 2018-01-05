@@ -81,8 +81,9 @@ public class GameScene extends BaseScene {
         this.registerUpdateHandler(world.getWorld());
 
         EntityManager.getInstance().createOnGame(this);
-        UIManager.getInstance().createOnGame(this);
         StaticManager.getInstance().createOnGame(this);
+
+        UIManager.getInstance().createOnGame(this);
 
 
         //For debugging

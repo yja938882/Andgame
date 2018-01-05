@@ -26,6 +26,8 @@ import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 
+import static game.juan.andenginegame0.ygamelibs.Scene.ResourceManager.MAX_TILE_SIZE;
+
 /**
  * Created by juan on 2017. 11. 28..
  *
@@ -38,6 +40,9 @@ public class StaticManager implements ConstantsSet{
 
     private Sprite background1;
     private Sprite background2;
+    private Sprite display1;
+    private Sprite display2;
+    private Sprite display3;
     private AutoParallaxBackground autoParallaxBackground = new AutoParallaxBackground(0,0,0,5);
 
     private Tile tiles[];
@@ -52,6 +57,13 @@ public class StaticManager implements ConstantsSet{
         autoParallaxBackground.attachParallaxEntity(parallaxBackground);
         autoParallaxBackground.attachParallaxEntity(parallaxEntity);
         autoParallaxBackground.setParallaxChangePerSecond(2);
+
+        display1= new Sprite(200,0,ResourceManager.getInstance().displayRegion1,ResourceManager.getInstance().vbom);
+        display2 = new Sprite(400,280,ResourceManager.getInstance().displayRegion2,ResourceManager.getInstance().vbom);
+        display3 = new Sprite(500,0,ResourceManager.getInstance().displayRegion3,ResourceManager.getInstance().vbom);
+       // pGameScene.attachChild(display2);
+       // pGameScene.attachChild(display1);
+        //pGameScene.attachChild(display3);
 
         pGameScene.setBackground(autoParallaxBackground);
         ArrayList<StaticData> mlist = DataManager.getInstance().staticMapDataList;
@@ -77,38 +89,18 @@ public class StaticManager implements ConstantsSet{
             }
         });
 
-        tiles = new Tile[3];
-
-        int tilenum =  calculateMaxTileInCam(DataManager.getInstance().staticMapDataList,1);
-        tiles[0] = new Tile(ResourceManager.getInstance().tileTextureAtlas[0],
-                tilenum,ResourceManager.getInstance().vbom);
-
-        tiles[0].prepare(tilenum,ResourceManager.getInstance().tileRegion[0],
-                calculateTilePosX(DataManager.getInstance().staticMapDataList,1),
-                calculateTilePosY(DataManager.getInstance().staticMapDataList,1));
-
-        tilenum =   calculateMaxTileInCam(DataManager.getInstance().staticMapDataList,2);
-        tiles[1] = new Tile(ResourceManager.getInstance().tileTextureAtlas[1],
-                tilenum,ResourceManager.getInstance().vbom);
-
-        tiles[1].prepare(tilenum,ResourceManager.getInstance().tileRegion[1],
-                calculateTilePosX(DataManager.getInstance().staticMapDataList,2),
-                calculateTilePosY(DataManager.getInstance().staticMapDataList,2));
-
-        tilenum =   calculateMaxTileInCam(DataManager.getInstance().staticMapDataList,3);
-        tiles[2] = new Tile(ResourceManager.getInstance().tileTextureAtlas[2],
-                tilenum,ResourceManager.getInstance().vbom);
-
-        tiles[2].prepare(tilenum,ResourceManager.getInstance().tileRegion[2],
-                calculateTilePosX(DataManager.getInstance().staticMapDataList,3),
-                calculateTilePosY(DataManager.getInstance().staticMapDataList,3));
-
-        pGameScene.attachChild(tiles[0]);
-        pGameScene.attachChild(tiles[1]);
-        pGameScene.attachChild(tiles[2]);
-
-
-
+        tiles = new Tile[MAX_TILE_SIZE];
+        for(int i=0;i<MAX_TILE_SIZE;i++){
+            int tilenum = calculateMaxTileInCam(DataManager.getInstance().staticMapDataList,i);
+            if(tilenum<0)
+                continue;
+            tiles[i] = new Tile(ResourceManager.getInstance().mapTextureAtlas[i],
+                    tilenum,ResourceManager.getInstance().vbom);
+            tiles[i].prepare(tilenum,ResourceManager.getInstance().mapRegion[i],
+                    calculateTilePosX(DataManager.getInstance().staticMapDataList,i),
+                    calculateTilePosY(DataManager.getInstance().staticMapDataList,i));
+            pGameScene.attachChild(tiles[i]);
+        }
     }
 
     public static StaticManager getInstance(){
