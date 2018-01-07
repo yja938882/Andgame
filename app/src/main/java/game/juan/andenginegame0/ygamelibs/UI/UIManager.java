@@ -104,6 +104,7 @@ public class UIManager implements ConstantsSet {
                 ResourceManager.getInstance().mControllerTRs[UI_SKILL1],
                 ResourceManager.getInstance().vbom);
 
+
         mControllers[UI_SKILL2] = new AttackController(384*2,
                 250*2,
                 ResourceManager.getInstance().mControllerTRs[UI_SKILL2].getWidth(),

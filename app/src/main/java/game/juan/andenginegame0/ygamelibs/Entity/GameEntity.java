@@ -65,14 +65,6 @@ public abstract class GameEntity extends AnimatedSprite{
         }
     }
 
-
-/*
-    public void createActionLock(final int pLockSize){
-        this.mActionLocks = new ActionLock[pLockSize];
-        for(int i=0;i<pLockSize;i++){
-            mActionLocks[i] = new ActionLock();
-        }
-    }*/
     protected void setActionLock(int pIndex, final float pMaxSeconds){
         mActionLocks[pIndex].setMaxCount(pMaxSeconds);
     }
@@ -115,7 +107,7 @@ public abstract class GameEntity extends AnimatedSprite{
     boolean  isActive(){
         return this.mActive;
     }
-    protected Body getBody(int pIndex){
+    public Body getBody(int pIndex){
         return this.mBodies[pIndex];
     }
     protected void transform(float pX, float pY){

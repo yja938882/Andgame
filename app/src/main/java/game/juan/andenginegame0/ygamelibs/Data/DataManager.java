@@ -360,7 +360,7 @@ public class DataManager implements ConstantsSet{
             Log.d(TAG,"loadPlayerWeaponConfig("+pStage+")");
 
             playerBulletConfigs = new JSONObject[1];
-            playerBulletConfigs[1] = dbManager.getConfigJSON(db,"p_wood");
+            playerBulletConfigs[0] = dbManager.getConfigJSON(db,"p_wood");
 
 
 
@@ -455,7 +455,6 @@ public class DataManager implements ConstantsSet{
                     case "ai_moving_2":
                         break;
                     case "ai_shooting_1":
-                        Log.d(TAG,"d is ai_shooting_1");
                         vClass = DataBlock.AI_BODY_CLASS;
                         vType = EntityType.SHOOTING_AI_1;
                         break;

@@ -50,7 +50,6 @@ public class SplashScene extends BaseScene {
 
     private Sprite splashLayer2;
     private Sprite splashLayer2_1;
-    private Sprite truckSprite;
     private Sprite titleSprite;
     private AnimatedSprite cheepSprite;
     private Sprite moonSprite;
@@ -84,13 +83,10 @@ public class SplashScene extends BaseScene {
         this.attachChild(moonSprite);
 
 
-        truckSprite = new Sprite(0,0,ResourceManager.getInstance().truckRegion,ResourceManager.getInstance().vbom);
-       // this.attachChild(truckSprite);
-
-        cheepSprite = new AnimatedSprite(CAMERA_WIDTH/2-64,384,ResourceManager.getInstance().cheepRegion,ResourceManager.getInstance().vbom);
+        cheepSprite = new AnimatedSprite(CAMERA_WIDTH/2-64,334,ResourceManager.getInstance().cheepRegion,ResourceManager.getInstance().vbom);
         cheepSprite.setScale(0.5f);
         this.attachChild(cheepSprite);
-        movingParticleEmitter = new PointParticleEmitter(CAMERA_WIDTH/2-64,480);
+        movingParticleEmitter = new PointParticleEmitter(CAMERA_WIDTH/2-32,440);
         this.movingParticleSystem =new BatchedSpriteParticleSystem(movingParticleEmitter,3,10,10
                 ,ResourceManager.getInstance().truckParticleRegion,ResourceManager.getInstance().vbom);
         movingParticleSystem.addParticleInitializer(new VelocityParticleInitializer<UncoloredSprite>(-4,-15,-10,-20));
@@ -196,10 +192,6 @@ public class SplashScene extends BaseScene {
         splashLayer2_1.detachSelf();
         splashLayer2_1.dispose();
 
-
-        truckSprite.detachSelf();
-        truckSprite.dispose();
-
         cheepSprite.detachSelf();
         cheepSprite.dispose();
 
@@ -211,9 +203,7 @@ public class SplashScene extends BaseScene {
     }
     private void loadingFinished(){
         loadingFinished = true;
-        touchToStartText =new Text(CAMERA_WIDTH/2,/*530*/300,resourcesManager.mainFont,"Touch to Start",vbom);
-       // touchToStartText.setScale(0.5f,1.0f);
-        //touchToStartText.setTextOptions(new TextOptions());
+        touchToStartText =new Text(CAMERA_WIDTH/2,/*530*/500,resourcesManager.mainFont,"Touch to Start",vbom);
         touchToStartText.setAlpha(2f);
         touchToStartText.setX(touchToStartText.getX()-touchToStartText.getWidth()/2);
         attachChild(touchToStartText);

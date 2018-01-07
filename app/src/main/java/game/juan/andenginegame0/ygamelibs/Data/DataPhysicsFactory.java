@@ -17,10 +17,13 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
         FixtureDef fixtureDef = null;
         short category=0x000, mask=0x000;
         float friction = ConstantsSet.Physics.FRICTION_UNIT;
+        float elasticity = 0;
+        float density = DENSITY_UNIT;
         switch(pClass){
             case ENTITY|OBJECT|PLAYER|BULLET:
-                category = PLAYER_BULLET_CATG_BITS;
-                mask = PLAYER_BULLET_MASK_BITS;
+                density = DENSITY_ITEM;
+                category = PLAYER_ITEM_CATG_BITS;
+                mask = PLAYER_ITEM_MASK_BITS;
                 break;
             case ENTITY|UNIT|PLAYER|BODY:
                 category = PLAYER_BODY_CATG_BITS;
@@ -34,6 +37,7 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
             case ENTITY|UNIT|AI|BODY:
                 category = AI_BODY_CATG_BITS;
                 mask = AI_BODY_MASK_BITS;
+                elasticity = 0.5f;
                  break;
             case ENTITY|UNIT|AI|FOOT:
                 category = AI_FOOT_CATG_BITS;
@@ -60,7 +64,7 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
                 mask = GROUND_MASK_BITS;
                  break;
         }
-        fixtureDef = PhysicsFactory.createFixtureDef(ConstantsSet.Physics.DENSITY_UNIT,0f, friction);
+        fixtureDef = PhysicsFactory.createFixtureDef(density,elasticity, friction);
         fixtureDef.filter.categoryBits = category;
         fixtureDef.filter.maskBits = mask;
         return fixtureDef;

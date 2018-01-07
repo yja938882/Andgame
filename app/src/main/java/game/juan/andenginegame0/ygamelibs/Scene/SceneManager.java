@@ -129,7 +129,6 @@ public class SceneManager {
         loadingScene = null;
     }
 
-
     /*===Game Scene==========*/
     public void loadGameScene() {
         Log.d(TAG,"loadingGameScene");

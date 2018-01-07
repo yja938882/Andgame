@@ -61,7 +61,6 @@ public class ResourceManager {
   public ITextureRegion splashLayer1Region;
   public ITextureRegion splashLayer2Region;
   public ITextureRegion moonRegion;
-  public ITextureRegion truckRegion;
   public ITiledTextureRegion cheepRegion;
   public ITextureRegion truckParticleRegion;
   public ITextureRegion titleRegion;
@@ -71,7 +70,6 @@ public class ResourceManager {
   private BitmapTextureAtlas splash1TextureAtlas;
   private BitmapTextureAtlas splash2TextureAtlas;
   private BitmapTextureAtlas moonTextureAtlas;
-  private BitmapTextureAtlas truckTextureAtlas;
   private BitmapTextureAtlas cheepTextureAtlas;
   private BitmapTextureAtlas truckParticleTextureAtlas;
   private BitmapTextureAtlas titleTextureAtlas;
@@ -94,11 +92,6 @@ public class ResourceManager {
               createFromAsset(splash2TextureAtlas,gameActivity,"splash_layer2.png",0,0);
     splash2TextureAtlas.load();
 
-    truckTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,600);
-    truckRegion = BitmapTextureAtlasTextureRegionFactory.
-            createFromAsset(truckTextureAtlas,gameActivity,"truck.png",0,0);
-    truckTextureAtlas.load();
-
     moonTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,600);
     moonRegion = BitmapTextureAtlasTextureRegionFactory.
             createFromAsset(moonTextureAtlas,gameActivity,"moon.png",0,0);
@@ -114,7 +107,7 @@ public class ResourceManager {
             createFromAsset(truckParticleTextureAtlas,gameActivity,"particle.png",0,0);
     truckParticleTextureAtlas.load();
 
-    titleTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),318,110);
+    titleTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),326,122);
     titleRegion = BitmapTextureAtlasTextureRegionFactory.
             createFromAsset(titleTextureAtlas,gameActivity,"title.png",0,0);
     titleTextureAtlas.load();
@@ -129,8 +122,6 @@ public class ResourceManager {
     splash2TextureAtlas.unload();
     splashLayer2Region =null;
 
-    truckTextureAtlas.unload();
-    truckRegion = null;
 
     moonTextureAtlas.unload();
     moonRegion =null;
@@ -138,8 +129,6 @@ public class ResourceManager {
     cheepTextureAtlas.unload();
     cheepRegion = null;
 
-    truckParticleTextureAtlas.unload();
-    truckParticleRegion = null;
 
     titleTextureAtlas.unload();
     titleRegion=null;
@@ -264,6 +253,9 @@ public class ResourceManager {
   public ITextureRegion playerMovingParticleRegion;
   private BitmapTextureAtlas playerMovingParticleTextureAtlas;
 
+  public ITextureRegion playerBeAttackedParticleRegion;
+  private BitmapTextureAtlas playerBeAttackedParticleTextureAtlas;
+
   public ITiledTextureRegion playerBulletRegion;
   private BitmapTextureAtlas playerBulletTextureAtlas;
 
@@ -284,6 +276,11 @@ public class ResourceManager {
     playerMovingParticleRegion  = BitmapTextureAtlasTextureRegionFactory.
             createFromAsset(playerMovingParticleTextureAtlas,gameActivity.getAssets(),"ptest.png",0,0);
     playerMovingParticleTextureAtlas.load();
+
+    playerBeAttackedParticleTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),16,16);
+    playerBeAttackedParticleRegion = BitmapTextureAtlasTextureRegionFactory
+            .createFromAsset(playerBeAttackedParticleTextureAtlas,gameActivity.getAssets(),"t.png",0,0);
+    playerBeAttackedParticleTextureAtlas.load();
 
       BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/object/");
 

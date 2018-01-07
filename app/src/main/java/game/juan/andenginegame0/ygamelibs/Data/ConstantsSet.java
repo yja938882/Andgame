@@ -43,6 +43,7 @@ public interface ConstantsSet {
         float DENSITY_UNIT = 1.0f;
         float FRICTION_UNIT=2.0f;
         float FRICTION_ZERO=0.0f;
+        float DENSITY_ITEM = 0.5f;
         /*===Category Bits========================*/
         short PLAYER_BODY_CATG_BITS        = 0x0001;
         short PLAYER_FOOT_CATG_BITS        = 0x0002;
@@ -55,6 +56,8 @@ public interface ConstantsSet {
         short OBSTACLE_BULLET_CATG_BITS    = 0x0100;
         short PASSABLE_OBSTACLE_CATG_BITS  = 0x0000;
 
+        short PLAYER_ITEM_CATG_BITS = 0x0200;
+
         /*===Mask Bits============================*/
         short PLAYER_BODY_MASK_BITS     = OBSTACLE_CATG_BITS|OBSTACLE_BULLET_CATG_BITS|
                 AI_BODY_CATG_BITS|AI_BULLET_CATG_BITS|GROUND_CATG_BITS|PLAYER_FOOT_CATG_BITS;
@@ -65,11 +68,12 @@ public interface ConstantsSet {
         short AI_FOOT_MASK_BITS         = GROUND_CATG_BITS;
         short AI_BULLET_MASK_BITS       = GROUND_CATG_BITS | PLAYER_BODY_CATG_BITS;
         short GROUND_MASK_BITS          = PLAYER_FOOT_CATG_BITS |PLAYER_BULLET_CATG_BITS|PLAYER_BODY_CATG_BITS|
-                AI_BODY_CATG_BITS|AI_FOOT_CATG_BITS|AI_BULLET_CATG_BITS|OBSTACLE_BULLET_CATG_BITS;
+                AI_BODY_CATG_BITS|AI_FOOT_CATG_BITS|AI_BULLET_CATG_BITS|OBSTACLE_BULLET_CATG_BITS|PLAYER_ITEM_CATG_BITS;
         short OBSTACLE_MASK_BITS        = PLAYER_BODY_CATG_BITS;
         short OBSTACLE_BULLET_MASK_BITS = PLAYER_BODY_CATG_BITS|GROUND_CATG_BITS|PLAYER_FOOT_CATG_BITS;
         short PASSABLE_OBSTACLE_MASK_BITS = PASSABLE_OBSTACLE_CATG_BITS;
 
+        short PLAYER_ITEM_MASK_BITS = GROUND_CATG_BITS;
     }
     interface UnitAction{
         int ACTION_MOVE_RIGHT =0;

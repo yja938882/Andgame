@@ -48,16 +48,16 @@ public class AiFactory implements ConstantsSet.EntityType{
                 iTiledTextureRegion, ResourceManager.getInstance().vbom);
         // aiUnit.setScale(0.5f);
         aiUnit.setConfigData(DataManager.getInstance().aiConfigs[AI_SHOOTING_1_CONFIG]);
-        Weapon  weapon = new Weapon(1);
-        Bullet bullet = new Bullet(0,0,ResourceManager.getInstance().ai_0_BulletRegion,
-                ResourceManager.getInstance().vbom);
-        final Vector2[] shapes={new Vector2(0,16),new Vector2(16,0)};
-        bullet.createBullet(pGameScene,new PlayerBulletData(DataBlock.AI_BLT_CLASS,ConstantsSet.EntityType.BULLET,0,0),shapes);
-        pGameScene.attachChild(bullet);
+      //  Weapon  weapon = new Weapon(1);
+       // Bullet bullet = new Bullet(0,0,ResourceManager.getInstance().ai_0_BulletRegion,
+         //       ResourceManager.getInstance().vbom);
+        //bullet.setConfigData(DataManager.getInstance().playerBulletConfigs[0]);
+        //bullet.createBullet(pGameScene,new PlayerBulletData(DataBlock.AI_BLT_CLASS,ConstantsSet.EntityType.BULLET,0,0));
+        //pGameScene.attachChild(bullet);
 
-        weapon.setBullet(bullet);
+        //weapon.setBullet(bullet);
 
-        aiUnit.setWeapon(weapon);
+        //aiUnit.setWeapon(weapon);
 
 
         aiUnit.createAi(pGameScene,pDataBlock);

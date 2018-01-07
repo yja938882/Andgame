@@ -16,13 +16,11 @@ public class AiData extends UnitData {
 
     @Override
     public void beginContactWith(int pClass) {
-        Log.d("TEMP_DEBUG","b c");
             switch (pClass){
                 case GROUND_CLASS:
                     contactWithGround(true);
                     break;
                 case DataBlock.PLAYER_BLT_CLASS:
-                    Log.d("TEMP_DEBUG","PLAY BLT HIT");
                     setNeedToBeAttacked(true);
                     break;
             }

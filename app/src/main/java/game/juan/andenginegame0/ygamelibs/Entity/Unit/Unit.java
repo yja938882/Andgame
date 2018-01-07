@@ -22,8 +22,8 @@ import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
 public abstract class Unit extends GameEntity{
     /*===Constants============================*/
-    private static final int BODY =0;
-    private static final int FOOT =1;
+    protected static final int BODY =0;
+    protected static final int FOOT =1;
 
     public static final int VERTICAL_SHAPE =0;
     public static final int CIRCLE_SHAPE =1;
@@ -41,11 +41,11 @@ public abstract class Unit extends GameEntity{
     /*===Fields===============================*/
     private float MAX_SPEED = 10;
     private float SPEED = 5f;
-    private Vector2 JUMP_FORCE = new Vector2(0,-20);
+    public Vector2 JUMP_FORCE = new Vector2(0,-20);
     private Vector2 GRAVITY = new Vector2(0,0);
 
-    private long attackFrameDuration[];
-    private int attackFrameIndex[];
+    private long attackFrameDuration[]; //공격 프레임 시간
+    private int attackFrameIndex[]; //공격 프레임
     private long dieFrameDuration[];
     private int dieFrameIndex[];
     private long movingFrameDuration[];
@@ -66,7 +66,7 @@ public abstract class Unit extends GameEntity{
     private int mAction = ConstantsSet.UnitAction.ACTION_STOP;
 
     private boolean alive = true;
-
+    protected float addjumpForce=0;
 
     /*===Constructor===========================*/
     public Unit(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
@@ -85,7 +85,7 @@ public abstract class Unit extends GameEntity{
 
     /*===Inner Method================================*/
 
-    private void update(){
+    protected void update(){
 
        // Log.d("cheep","ac0  "+mAction);
         if(jumpLock)
@@ -124,6 +124,7 @@ public abstract class Unit extends GameEntity{
                 this.setFlippedHorizontal(false);
                 getBody(FOOT).setAngularVelocity(30f);
                 if(footData.isInTheAir()){
+                    getBody(FOOT).applyForce(new Vector2(4,0),getBody(FOOT).getWorldCenter());
                       if(!isAnimationRunning()) {
                         animate(jumpFrameDuration, jumpFrameIndex, true);
                     }
@@ -134,11 +135,13 @@ public abstract class Unit extends GameEntity{
                     }
                     onMoving();
                 }
+                onMoveRight();
                 break;
             case ConstantsSet.UnitAction.ACTION_MOVE_LEFT:
                 this.setFlippedHorizontal(true);
                 getBody(FOOT).setAngularVelocity(-30f);
                 if(footData.isInTheAir()){
+                    getBody(FOOT).applyForce(new Vector2(-4,0),getBody(FOOT).getWorldCenter());
                       if(!isAnimationRunning()) {
                         animate(jumpFrameDuration, jumpFrameIndex, true);
                     }
@@ -149,12 +152,13 @@ public abstract class Unit extends GameEntity{
                    }
                     onMoving();
                 }
-
+                onMoveLeft();
                 break;
             case ConstantsSet.UnitAction.ACTION_JUMP:
-
+                Log.d("JUMP","Ac jump");
                 if(jumpLock)
                     return;
+                Log.d("JUMP","real jump");
                 if(!footData.isInTheAir()){
                     jumpLock = true;
                     applyLinearImpulse(BODY,JUMP_FORCE);
@@ -249,11 +253,11 @@ public abstract class Unit extends GameEntity{
         switch (bodySType){
             case VERTICAL_SHAPE:
                 createVerticesBody(pGameScene,BODY,pBodyData,bodyShape, BodyDef.BodyType.DynamicBody);
-                // createOctagonBody(pGameScene,BODY,pBodyData,bodyShape, BodyDef.BodyType.DynamicBody);
+                //createOctagonBody(pGameScene,BODY,pBodyData,bodyShape, BodyDef.BodyType.DynamicBody);
                 break;
             case CIRCLE_SHAPE:
                 createCircleBody(pGameScene,BODY,pBodyData,bodyShape, BodyDef.BodyType.DynamicBody);
-                // createRectBody(pGameScene,BODY,pBodyData,bodyShape[0],bodyShape[1],bodyShape[2],bodyShape[3], BodyDef.BodyType.DynamicBody);
+                //createRectBody(pGameScene,BODY,pBodyData,bodyShape[0],bodyShape[1],bodyShape[2],bodyShape[3], BodyDef.BodyType.DynamicBody);
                 break;
 
         }
@@ -330,14 +334,6 @@ public abstract class Unit extends GameEntity{
                 movingFrameIndex[i] = fi.getInt(i);
                 movingFrameDuration[i] = fd.getLong(i);
             }
-           /* String wlock = pConfigData.getString("movingLock");
-            if(!wlock.contains("none")){
-                float lockLimit =0;
-                for(long du : movingFrameDuration){
-                    lockLimit+=((float)du/1000f);
-                }
-                setActionLock(pLockIndex++,lockLimit);
-            }*/
 
             fi=pConfigData.getJSONArray("attackFrameIndex");
             fd= pConfigData.getJSONArray("attackFrameDuration");
@@ -348,14 +344,12 @@ public abstract class Unit extends GameEntity{
                 attackFrameDuration[i] = fd.getLong(i);
 
             }
-           // wlock = pConfigData.getString("attackLock");
-            //if(!wlock.contains("none")){
+
                 float lockLimit =0;
                 for(long du : attackFrameDuration){
                     lockLimit+=((float)du/1000f);
                 }
                 setActionLock(ATTACK_LOCK_INDEX,lockLimit);
-            //}
 
 
             fi=pConfigData.getJSONArray("dieFrameIndex");
@@ -369,10 +363,7 @@ public abstract class Unit extends GameEntity{
 
 
             lockLimit = 0;
-           /* for (long du : dieFrameDuration) {
-                Log.d("TEMP!!_DEBUG",""+du);
-                lockLimit += ((float) du / 1000f);
-            }*/
+
             for(int i=0;i<dieFrameDuration.length;i++){
                 lockLimit += ((float) dieFrameDuration[i] / 1000f);
             }
@@ -386,8 +377,6 @@ public abstract class Unit extends GameEntity{
                 beAttackedFrameIndex[i] = fi.getInt(i);
                 beAttackedFrameDuration[i] = fd.getLong(i);
             }
-            //wlock = pConfigData.getString("beAttackedLock");
-            //if(!wlock.contains("none")){
 
                 lockLimit = 0;
                 for (long du : beAttackedFrameDuration) {
@@ -395,7 +384,6 @@ public abstract class Unit extends GameEntity{
                 }
 
                 setActionLock(BEATTACKED_LOCK_INDEX,lockLimit);
-            //}
 
 
             createSoftActionLock();
@@ -479,5 +467,9 @@ public abstract class Unit extends GameEntity{
         invincibleTimer = 0f;
         this.setAlpha(1.0f);
     }
-
+    protected int getAction(){
+        return mAction;
+    }
+    protected  void onMoveRight(){}
+    protected void onMoveLeft(){}
 }

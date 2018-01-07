@@ -10,7 +10,10 @@ public class ObjectData extends DataBlock {
     public ObjectData(int pClass, int pType, int pX, int pY) {
         super(pClass, pType, pX, pY);
     }
-    boolean isNeedToBeDisappear = false;
+
+    private boolean isHit = false;
+    private boolean isContactWithGround = false;
+
     @Override
     public void beginContactWith(int pClass) {
     }
@@ -19,6 +22,8 @@ public class ObjectData extends DataBlock {
     public void endContactWith(int pClass) {
     }
 
-    public boolean isNeedToBeDisappear(){return isNeedToBeDisappear;}
-    public void setNeedToBeDisappear(boolean n){this.isNeedToBeDisappear = n;}
+    public boolean isHit(){return this.isHit;}
+    public void setIsHit(boolean n){this.isHit = n;}
+    public boolean isContactWithGround(){return this.isContactWithGround;}
+    public void setContactWithGround(boolean g){this.isContactWithGround = g;}
 }

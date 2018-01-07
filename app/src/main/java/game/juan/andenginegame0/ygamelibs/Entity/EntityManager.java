@@ -1,9 +1,11 @@
 package game.juan.andenginegame0.ygamelibs.Entity;
 
 
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 
 import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
@@ -19,6 +21,9 @@ import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.PlayerBulletData;
+import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.PlayerWeaponData;
+import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.ThrowingWeapon;
+import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Weapon;
 import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.ObstacleData;
 import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.ObstacleFactory;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.AI.AiData;
@@ -26,7 +31,6 @@ import game.juan.andenginegame0.ygamelibs.Entity.Unit.AI.AiFactory;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerData;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Bullet;
-import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Weapon;
 
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
@@ -62,6 +66,7 @@ public class EntityManager implements ConstantsSet.Classify {
 
     private ManagedEntityList mObstacleList;
     private ManagedEntityList mAiList;
+
 
 
     /*===Constructor==============*/
@@ -102,19 +107,21 @@ public class EntityManager implements ConstantsSet.Classify {
         playerUnit.setConfigData(DataManager.getInstance().playerConfig);
         Log.d("cheep!!!",DataManager.getInstance().playerConfig.toString());
         playerUnit.setMovingParticleSystem(pGameScene);
-        Weapon weapon = new Weapon(1);
-        Bullet bullet = new Bullet(0,0,ResourceManager.getInstance().playerBulletRegion,
-                ResourceManager.getInstance().vbom);
-        final Vector2[] shapes={new Vector2(0,16),new Vector2(16,0)};
-        bullet.createBullet(pGameScene,new PlayerBulletData(DataBlock.PLAYER_BLT_CLASS,ConstantsSet.EntityType.BULLET,0,0),shapes);
-        pGameScene.attachChild(bullet);
 
-        weapon.setBullet(bullet);
-
-        playerUnit.setWeapon(weapon);
         playerUnit.createPlayer(pGameScene,pd);
         playerUnit.setActive(true);
+
         pGameScene.attachChild(playerUnit);
+
+              ThrowingWeapon weapon = new ThrowingWeapon(100,400,ResourceManager.getInstance().playerBulletRegion,ResourceManager.getInstance().vbom);
+        weapon.setConfigData(DataManager.getInstance().playerBulletConfigs[0]);
+        weapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));
+        weapon.setVisible(true);
+        weapon.transformPhysically(100f/32f,500f/32f);
+
+
+
+        pGameScene.attachChild(weapon);
     }
 
     private void createAiUnit(GameScene pGameScene, ArrayList<AiData> pAiData){

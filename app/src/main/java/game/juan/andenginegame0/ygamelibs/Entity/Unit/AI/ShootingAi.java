@@ -23,9 +23,9 @@ public class ShootingAi extends  AiUnit {
     @Override
     public void attackFinished() {
         super.attackFinished();
-        if(!isFlippedHorizontal())
-            mWeapon.shot(getPhysicsBodyPos(),new Vector2(15,0));
-        else
-            mWeapon.shot(getPhysicsBodyPos(),new Vector2(-15,0));
+       // if(!isFlippedHorizontal())
+      //      mWeapon.shot(getPhysicsBodyPos(),new Vector2(15,0));
+       // else
+        //    mWeapon.shot(getPhysicsBodyPos(),new Vector2(-15,0));
     }
 }
