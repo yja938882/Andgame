@@ -250,6 +250,9 @@ public class ResourceManager {
   public ITiledTextureRegion playerRegion;
   private BitmapTextureAtlas playerTextureAtlas;
 
+  public ITextureRegion playerHandRegion;
+  private BitmapTextureAtlas playerHandTextureAtlas;
+
   public ITextureRegion playerMovingParticleRegion;
   private BitmapTextureAtlas playerMovingParticleTextureAtlas;
 
@@ -259,6 +262,8 @@ public class ResourceManager {
   public ITiledTextureRegion playerBulletRegion;
   private BitmapTextureAtlas playerBulletTextureAtlas;
 
+  public ITiledTextureRegion playerBulletRegion2;
+  private BitmapTextureAtlas playerBulletTextureAtlas2;
 
   // Player GFX load , unload
   private void loadPlayerGraphics(){
@@ -282,12 +287,22 @@ public class ResourceManager {
             .createFromAsset(playerBeAttackedParticleTextureAtlas,gameActivity.getAssets(),"t.png",0,0);
     playerBeAttackedParticleTextureAtlas.load();
 
+    playerHandTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),48,48);
+    playerHandRegion = BitmapTextureAtlasTextureRegionFactory.
+            createFromAsset(playerHandTextureAtlas,gameActivity.getAssets(),"hand.png",0,0);
+    playerHandTextureAtlas.load();
+
       BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/object/");
 
-    playerBulletTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),64,64);
+    playerBulletTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),229,98);
     playerBulletRegion  = BitmapTextureAtlasTextureRegionFactory.
-            createTiledFromAsset(playerBulletTextureAtlas,gameActivity.getAssets(),"wood.png",0,0,1,1);
+            createTiledFromAsset(playerBulletTextureAtlas,gameActivity.getAssets(),"axe.png",0,0,1,1);
     playerBulletTextureAtlas.load();
+
+    playerBulletTextureAtlas2 = new BitmapTextureAtlas(gameActivity.getTextureManager(),64,64);
+    playerBulletRegion2  = BitmapTextureAtlasTextureRegionFactory.
+            createTiledFromAsset(playerBulletTextureAtlas2,gameActivity.getAssets(),"wood.png",0,0,1,1);
+    playerBulletTextureAtlas2.load();
   }
   private void unloadPlayerGraphics(){
     playerTextureAtlas.unload();

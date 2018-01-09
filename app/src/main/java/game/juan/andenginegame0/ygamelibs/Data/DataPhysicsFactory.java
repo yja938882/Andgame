@@ -20,6 +20,11 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
         float elasticity = 0;
         float density = DENSITY_UNIT;
         switch(pClass){
+            case ENTITY|OBJECT|PLAYER|NEAR:
+                density = DENSITY_ITEM;
+                category = PLAYER_NEAR_CATG_BITS;
+                mask = PLAYER_NEAR_MASK_BITS;
+                break;
             case ENTITY|OBJECT|PLAYER|BULLET:
                 density = DENSITY_ITEM;
                 category = PLAYER_ITEM_CATG_BITS;
@@ -67,6 +72,8 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
         fixtureDef = PhysicsFactory.createFixtureDef(density,elasticity, friction);
         fixtureDef.filter.categoryBits = category;
         fixtureDef.filter.maskBits = mask;
+        fixtureDef.isSensor=false;
+
         return fixtureDef;
     }
 

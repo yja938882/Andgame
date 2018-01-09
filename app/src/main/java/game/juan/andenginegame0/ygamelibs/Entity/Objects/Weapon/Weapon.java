@@ -29,14 +29,19 @@ public abstract class Weapon extends GameEntity {
     protected static final int CIRCLE_SHAPE =1;
 
     private boolean isPicked = false;   //장착 되었는지 아닌지
-    private Sprite mWeaponSprite = null; //장착시 표시될 스프라이트
+    protected Sprite mWeaponSprite = null; //장착시 표시될 스프라이트
     protected Filter itemFilter;    //아이템 상태 일 경우 필터
-    protected Filter weaponFilter;  //무기 상태 일 경우 필터
+    protected Filter weaponFilter;  //원거리 무기 상태 일 경우 필터
+    protected Filter nearFilter; //단거리 무기 상태일 경우 필터
 
     protected int bodyType;     //무기의 물리적 형태 원형 or 다각형
     protected Vector2[] bodyShape; //무기의 물리적 형테 데이터
 
     protected int durability;
+
+    private int type; //무기의 타입 원거리 or근거리
+    public static final int TYPE_NEAR = 0;
+    public static final int TYPE_DISTANCE = 1;
 
     public Weapon(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
@@ -51,6 +56,11 @@ public abstract class Weapon extends GameEntity {
         weaponFilter = new Filter();
         weaponFilter.categoryBits = ConstantsSet.Physics.PLAYER_BULLET_CATG_BITS;
         weaponFilter.maskBits = ConstantsSet.Physics.PLAYER_BULLET_MASK_BITS;
+
+
+        nearFilter = new Filter();
+        nearFilter.maskBits = ConstantsSet.Physics.PLAYER_NEAR_MASK_BITS;
+        nearFilter.categoryBits = ConstantsSet.Physics.PLAYER_NEAR_CATG_BITS;
     }
 
 
@@ -63,7 +73,7 @@ public abstract class Weapon extends GameEntity {
         else
             this.createVerticesBody(pGameScene,0,pDataBlock,bodyShape, BodyDef.BodyType.DynamicBody);
         this.mWeaponSprite.setVisible(false);
-        pGameScene.attachChild(mWeaponSprite);
+       // pGameScene.attachChild(mWeaponSprite);
     }
 
     @Override
@@ -93,18 +103,17 @@ public abstract class Weapon extends GameEntity {
         PlayerUnit playerUnit = EntityManager.getInstance().playerUnit;
         if(this.collidesWith(playerUnit)){
             playerUnit.setAccessibleWeapon(this);
+            Log.d("TTTT","cw");
         }else if(playerUnit.getAccessibleWeapon()==this){
             playerUnit.setAccessibleWeapon(null);
+            Log.d("TTTT","this");
         }
     }
 
     //이 무기를 주움
     public void pick(){
         this.isPicked = true;
-        this.setActive(false);
-        getBody(0).getFixtureList().get(0).setRestitution(0.5f);
-        getBody(0).getFixtureList().get(0).setFriction(0.1f);
-        this.setVisible(false);
+       // this.setActive(false);
     }
 
     //이 무기를 버림 or 사용함
@@ -150,4 +159,11 @@ public abstract class Weapon extends GameEntity {
 
     //구성 데이터 설정
     public abstract void setConfigData(JSONObject pConfigData);
+
+    public int getType(){
+        return type;
+    }
+    public void setType(int t){
+        this.type = t;
+    }
 }

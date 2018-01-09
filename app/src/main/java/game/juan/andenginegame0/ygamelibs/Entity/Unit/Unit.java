@@ -45,7 +45,7 @@ public abstract class Unit extends GameEntity{
     private Vector2 GRAVITY = new Vector2(0,0);
 
     private long attackFrameDuration[]; //공격 프레임 시간
-    private int attackFrameIndex[]; //공격 프레임
+    protected int attackFrameIndex[]; //공격 프레임
     private long dieFrameDuration[];
     private int dieFrameIndex[];
     private long movingFrameDuration[];

@@ -30,6 +30,7 @@ public interface ConstantsSet {
         int INPASSABLE_OBSTACLE = 0x00000300;
 
         int BULLET = 0x00000003;
+        int NEAR   = 0x00000004;
 
         int STATIC = 0x02000000;
         int GROUND = 0x00010000;
@@ -57,11 +58,12 @@ public interface ConstantsSet {
         short PASSABLE_OBSTACLE_CATG_BITS  = 0x0000;
 
         short PLAYER_ITEM_CATG_BITS = 0x0200;
+        short PLAYER_NEAR_CATG_BITS = 0x0400;
 
         /*===Mask Bits============================*/
         short PLAYER_BODY_MASK_BITS     = OBSTACLE_CATG_BITS|OBSTACLE_BULLET_CATG_BITS|
                 AI_BODY_CATG_BITS|AI_BULLET_CATG_BITS|GROUND_CATG_BITS|PLAYER_FOOT_CATG_BITS;
-        short PLAYER_FOOT_MASK_BITS     = GROUND_CATG_BITS|PLAYER_BODY_CATG_BITS|OBSTACLE_BULLET_CATG_BITS;
+        short PLAYER_FOOT_MASK_BITS     = GROUND_CATG_BITS|OBSTACLE_BULLET_CATG_BITS;
         short PLAYER_BULLET_MASK_BITS   = GROUND_CATG_BITS|AI_BODY_CATG_BITS;
         short AI_BODY_MASK_BITS         = AI_BODY_CATG_BITS|GROUND_CATG_BITS|PLAYER_BODY_CATG_BITS|
                 PLAYER_BULLET_CATG_BITS;
@@ -74,6 +76,7 @@ public interface ConstantsSet {
         short PASSABLE_OBSTACLE_MASK_BITS = PASSABLE_OBSTACLE_CATG_BITS;
 
         short PLAYER_ITEM_MASK_BITS = GROUND_CATG_BITS;
+        short PLAYER_NEAR_MASK_BITS = 0;
     }
     interface UnitAction{
         int ACTION_MOVE_RIGHT =0;

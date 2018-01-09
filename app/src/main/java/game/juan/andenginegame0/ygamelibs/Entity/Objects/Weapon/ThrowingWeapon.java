@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
+import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
 /**
@@ -31,10 +32,20 @@ public class ThrowingWeapon extends Weapon {
     public ThrowingWeapon(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
         gravity = new Vector2(0,8);
+        setType(TYPE_DISTANCE);
     }
 
     @Override
     public void use(Vector2 pSrc, int pWay) {
+        //   this.pickedWeapon = null;
+        //  this.pickedSprite=null;
+       // EntityManager.getInstance().playerUnit.setPickedSprite(null);
+       // EntityManager.getInstance().playerUnit.setPickedWeapon(null);
+        EntityManager.getInstance().playerUnit.resetEquipSprite();
+        EntityManager.getInstance().playerUnit.resetEquipWeapon();
+
+
+        this.unpick();
         Body body = this.getBody(0);
 
         body.getFixtureList().get(0).setFilterData(weaponFilter);
@@ -72,7 +83,6 @@ public class ThrowingWeapon extends Weapon {
             this.shoot_gravity = new Vector2(0,(float)pConfigData.getDouble("shoot_gravity"));
             this.shoot_vx = (float)pConfigData.getDouble("shoot_vx");
             this.shoot_vy =(float)pConfigData.getDouble("shoot_vy");
-            Log.d("PICk","sh"+shoot_gravity.y);
 
             bodyShape = new Vector2[bodyX.length()];
             for(int i=0;i<bodyX.length();i++){
@@ -93,13 +103,15 @@ public class ThrowingWeapon extends Weapon {
     protected void onManagedUpdate(float pSecondsElapsed) {
         super.onManagedUpdate(pSecondsElapsed);
         this.getBody(0).applyForce(gravity,this.getBody(0).getWorldCenter());
-        Log.d("PICK",""+gravity.y);
     }
 
     @Override
     public void pick(){
         super.pick();
+        this.getBody(0).setActive(false);
+        getBody(0).getFixtureList().get(0).setRestitution(0.5f);
+        getBody(0).getFixtureList().get(0).setFriction(0.1f);
+        this.setVisible(false);
         this.gravity.set(shoot_gravity);
-        Log.d("PICK",gravity.y +"  "+gravity.y);
     }
 }

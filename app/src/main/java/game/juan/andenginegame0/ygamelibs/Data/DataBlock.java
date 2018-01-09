@@ -45,7 +45,7 @@ public abstract class DataBlock implements ConstantsSet.Classify {
     public static final int PLAYER_BODY_CLASS = ENTITY|UNIT|PLAYER|BODY;
     public static final int PLAYER_FOOT_CLASS = ENTITY|UNIT|PLAYER|FOOT;
     public static final int PLAYER_BLT_CLASS =ENTITY|OBJECT|PLAYER|BULLET;
-
+    public static final int PLAYER_NEAR_CLASS =ENTITY|OBJECT|PLAYER|NEAR;
     public static final int AI_BODY_CLASS=ENTITY|UNIT|AI|BODY;
     public static final int AI_FOOT_CLASS=ENTITY|UNIT|AI|FOOT;
     public static final int AI_BLT_CLASS = ENTITY|OBJECT|AI|BULLET;

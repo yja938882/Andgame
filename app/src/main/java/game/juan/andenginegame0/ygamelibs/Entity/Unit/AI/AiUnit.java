@@ -2,6 +2,7 @@ package game.juan.andenginegame0.ygamelibs.Entity.Unit.AI;
 
 import android.util.Log;
 
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
+import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.Unit;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
@@ -66,6 +68,10 @@ public class AiUnit extends Unit {
     protected void onManagedUpdate(float pSecondsElapsed) {
         updateCmd(pSecondsElapsed);
         super.onManagedUpdate(pSecondsElapsed);
+        Sprite s = EntityManager.getInstance().playerUnit.getEquippedSprite();
+        if(s!=null && s.collidesWith(this)&&EntityManager.getInstance().playerUnit.isAttacking()){
+            ((AiData)(this.getBody(0).getUserData())).setNeedToBeAttacked(true);
+        }
     }
 
     public void updateCmd(float pSecondsElapsed){
@@ -99,6 +105,7 @@ public class AiUnit extends Unit {
                     setAction(ConstantsSet.UnitAction.ACTION_MOVE_RIGHT);
                     break;
             }
+
     }
     @Override
     public void setConfigData(JSONObject p){

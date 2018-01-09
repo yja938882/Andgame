@@ -359,10 +359,10 @@ public class DataManager implements ConstantsSet{
 
             Log.d(TAG,"loadPlayerWeaponConfig("+pStage+")");
 
-            playerBulletConfigs = new JSONObject[1];
-            playerBulletConfigs[0] = dbManager.getConfigJSON(db,"p_wood");
-
-
+            playerBulletConfigs = new JSONObject[2];
+         //   playerBulletConfigs[0] = dbManager.getConfigJSON(db,"p_wood");
+            playerBulletConfigs[0] = dbManager.getConfigJSON(db,"p_axe");
+            playerBulletConfigs[1] = dbManager.getConfigJSON(db,"p_wood");
 
         }catch(Exception e){
             Log.d(TAG,"Error - "+e.getMessage());

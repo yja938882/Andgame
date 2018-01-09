@@ -156,6 +156,7 @@ public class SplashScene extends BaseScene {
             public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
                 Log.d("TOUCH","TOUCED");
                 if(loadingFinished && !disposScene) {
+                    movingParticleSystem.setParticlesSpawnEnabled(false);
                     disposScene= true;
                     SceneManager.getInstance().createMainScene();
                     SceneManager.getInstance().disposeSplashScene();

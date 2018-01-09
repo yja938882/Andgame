@@ -14,8 +14,8 @@
         "movingFrameIndex"    :[0  ,1  ,2  ,3  ,4  ,5  ,0],
         "movingFrameDuration" :[25 ,50 ,50 ,50 ,50 ,50 ,25],
         "movingLock"          : "none",
-        "attackFrameIndex"    :[12  ,13 ,14 ,15 ],
-        "attackFrameDuration" :[50  ,50 ,50 ,50 ],
+        "attackFrameIndex"    :[12   ,15 ],
+        "attackFrameDuration" :[140  ,140 ],
         "attackLock"          : "soft",
         "dieFrameIndex"       :[50],
         "dieFrameDuration"    :[0],
@@ -367,6 +367,24 @@
         "row"                   : 1,
         "angle_velocity"        : 0,
         "shoot_gravity"         : 8,
+        "shoot_vx"              : 8,
+        "shoot_vy"              : 0
+      }
+    },
+    {
+      "id":"p_axe",
+      "src":"",
+      "data":
+      {
+        "body" :"vertices",  "body_vx":[-28,-28,28,28],"body_vy":[-4,4,4,-4],
+        "src"                   :"axe.png",
+        "src_width"             : 64,
+        "src_height"            : 64,
+        "scale"                 : 0.5,
+        "col"                   : 1,
+        "row"                   : 1,
+        "angle_velocity"        : 5,
+        "shoot_gravity"         : 0,
         "shoot_vx"              : 8,
         "shoot_vy"              : 0
       }

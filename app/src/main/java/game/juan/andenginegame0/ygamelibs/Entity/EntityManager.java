@@ -21,6 +21,7 @@ import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.PlayerBulletData;
+import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.NearWeapon;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.PlayerWeaponData;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.ThrowingWeapon;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Weapon;
@@ -82,8 +83,6 @@ public class EntityManager implements ConstantsSet.Classify {
 
 
    public void manage(){
-       // if(mObstacleList!=null)
-         //   mObstacleList.manage();
         if(mObstacleList!=null){
             mObstacleList.manage();
         }
@@ -101,7 +100,7 @@ public class EntityManager implements ConstantsSet.Classify {
 
     private void createPlayerUnit(GameScene pGameScene){
         Log.d(TAG,"createPlayerUnit");
-        playerUnit = new PlayerUnit(50,300, ResourceManager.getInstance().playerRegion,
+        playerUnit = new PlayerUnit(50,400, ResourceManager.getInstance().playerRegion,
                 ResourceManager.getInstance().vbom);
         PlayerData pd = new PlayerData(DataBlock.PLAYER_BODY_CLASS, ConstantsSet.EntityType.PLAYER,(int)(50f/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),((int)(50/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT)));
         playerUnit.setConfigData(DataManager.getInstance().playerConfig);
@@ -113,15 +112,22 @@ public class EntityManager implements ConstantsSet.Classify {
 
         pGameScene.attachChild(playerUnit);
 
-              ThrowingWeapon weapon = new ThrowingWeapon(100,400,ResourceManager.getInstance().playerBulletRegion,ResourceManager.getInstance().vbom);
+        //     ThrowingWeapon weapon = new ThrowingWeapon(100,400,ResourceManager.getInstance().playerBulletRegion,ResourceManager.getInstance().vbom);
+        NearWeapon weapon = new NearWeapon(100,500,ResourceManager.getInstance().playerBulletRegion,ResourceManager.getInstance().vbom);
         weapon.setConfigData(DataManager.getInstance().playerBulletConfigs[0]);
         weapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));
         weapon.setVisible(true);
-        weapon.transformPhysically(100f/32f,500f/32f);
-
-
-
+        weapon.transformPhysically(100f/32f,580f/32f);
         pGameScene.attachChild(weapon);
+
+        ThrowingWeapon tweapon = new ThrowingWeapon(100,500,ResourceManager.getInstance().playerBulletRegion2,ResourceManager.getInstance().vbom);
+        tweapon.setConfigData(DataManager.getInstance().playerBulletConfigs[1]);
+        tweapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));
+        tweapon.setVisible(true);
+        tweapon.transformPhysically(180f/32f,580f/32f);
+        pGameScene.attachChild(tweapon);
+
+
     }
 
     private void createAiUnit(GameScene pGameScene, ArrayList<AiData> pAiData){
