@@ -38,6 +38,7 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
             case ENTITY|UNIT|PLAYER|FOOT:
                 category = PLAYER_FOOT_CATG_BITS;
                 mask = PLAYER_FOOT_MASK_BITS;
+                friction = 1f;
                  break;
             case ENTITY|UNIT|AI|BODY:
                 category = AI_BODY_CATG_BITS;
@@ -61,13 +62,13 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
                 mask = PASSABLE_OBSTACLE_MASK_BITS;
                 break;
             case ENTITY|OBSTACLE|INPASSABLE_OBSTACLE:
-                category = GROUND_CATG_BITS;
-                mask = GROUND_MASK_BITS;
+                category = INPASSABLE_OBSTACLE_CATG_BITS;
+                mask = INPASSABLE_OBSTACLE_MASK_BITS;
                 break;
             case STATIC|GROUND:
                 category = GROUND_CATG_BITS;
                 mask = GROUND_MASK_BITS;
-                 break;
+                break;
         }
         fixtureDef = PhysicsFactory.createFixtureDef(density,elasticity, friction);
         fixtureDef.filter.categoryBits = category;

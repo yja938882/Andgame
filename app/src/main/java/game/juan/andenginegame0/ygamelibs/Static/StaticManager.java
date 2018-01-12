@@ -96,6 +96,7 @@ public class StaticManager implements ConstantsSet{
                 continue;
             tiles[i] = new Tile(ResourceManager.getInstance().mapTextureAtlas[i],
                     tilenum,ResourceManager.getInstance().vbom);
+            //tiles[i].setScale(1.5f);
             tiles[i].prepare(tilenum,ResourceManager.getInstance().mapRegion[i],
                     calculateTilePosX(DataManager.getInstance().staticMapDataList,i),
                     calculateTilePosY(DataManager.getInstance().staticMapDataList,i));
@@ -139,7 +140,7 @@ public class StaticManager implements ConstantsSet{
         int max = -1;
         for(int i=0;i<count;i++) {
             rightIndex = i;
-            while (x[rightIndex] - x[leftIndex] > GameScene.CAMERA_WIDTH * 1.2f) {
+            while (x[rightIndex] - x[leftIndex] > GameScene.CAMERA_WIDTH * 2.2f) {
                 leftIndex++;
             }
             if (rightIndex - leftIndex + 1 >= max)

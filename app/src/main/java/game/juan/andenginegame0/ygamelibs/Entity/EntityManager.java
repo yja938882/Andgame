@@ -35,6 +35,7 @@ import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Bullet;
 
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
+import game.juan.andenginegame0.ygamelibs.Util.Algorithm;
 
 import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.FLY_AI;
 import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.MOVING_AI_1;
@@ -45,7 +46,10 @@ import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.SH
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.AI_SHOOTING_1_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_FALL_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_MOVING_GROUND_CONFIG;
+import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_MOVING_WALL_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_PENDULUM_CONFIG;
+import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_ROLLING_CONFIG;
+import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_TEMP_GROUND_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_TRAP_1_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_TRAP_2_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_TRAP_TEMP_CONFIG;
@@ -75,9 +79,10 @@ public class EntityManager implements ConstantsSet.Classify {
 
     public void createOnGame(GameScene pGameScene) {
         Log.d(TAG,"createOnGame");
+        createAiUnit(pGameScene,DataManager.getInstance().aiDataList);
+
         createPlayerUnit(pGameScene);
         createObstacle(pGameScene, DataManager.getInstance().obstacleDataList);
-        createAiUnit(pGameScene,DataManager.getInstance().aiDataList);
     }
 
 
@@ -151,7 +156,7 @@ public class EntityManager implements ConstantsSet.Classify {
                     break;
             }
         }
-        int entityListSize = calculateMaxAiInCam(movingAiDataList);
+        int entityListSize = Algorithm.calculateMaxAiInCam(movingAiDataList);
         final EntityList aiList = new EntityList(pGameScene , entityListSize,movingAiDataList.size() - entityListSize) {
             @Override
             public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
@@ -179,7 +184,7 @@ public class EntityManager implements ConstantsSet.Classify {
             }
         }
 
-        entityListSize = calculateMaxAiInCam(shootingAiDataList);
+        entityListSize = Algorithm.calculateMaxAiInCam(shootingAiDataList);
         Log.d(TAG,"cal e :"+entityListSize);
         final EntityList shootingAiList= new EntityList(pGameScene , entityListSize,shootingAiDataList.size() - entityListSize) {
             @Override
@@ -221,7 +226,9 @@ public class EntityManager implements ConstantsSet.Classify {
         ArrayList<ObstacleData> trap_tempObsDataList = new ArrayList<>();
         ArrayList<ObstacleData> penObsDataList = new ArrayList<>();
         ArrayList<ObstacleData> movingGroundDataList = new ArrayList<>();
-
+        ArrayList<ObstacleData> rollingObsDataList = new ArrayList<>();
+        ArrayList<ObstacleData> tempGroundObsDataList = new ArrayList<>();
+        ArrayList<ObstacleData> movingWallObsDataList = new ArrayList<>();
         for( int i=0;i<pObstacleData.size();i++){
             switch (pObstacleData.get(i).getType()){
                 case OBS_FALL:
@@ -242,10 +249,21 @@ public class EntityManager implements ConstantsSet.Classify {
                 case ConstantsSet.EntityType.OBS_MOVING_GROUND:
                     movingGroundDataList.add(pObstacleData.get(i));
                     break;
+                case ConstantsSet.EntityType.OBS_ROLLING:
+                    rollingObsDataList.add(pObstacleData.get(i));
+                    break;
+                case ConstantsSet.EntityType.OBS_TEMP_GROUND:
+                    tempGroundObsDataList.add(pObstacleData.get(i));
+                    break;
+                case ConstantsSet.EntityType.OBS_MOVING_WALL:
+                    movingWallObsDataList.add(pObstacleData.get(i));
+                    break;
+
+
             }
         }
 
-        int entityListSize = calculateMaxObstacleInCam(fallObsDataList);
+        int entityListSize = Algorithm.calculateMaxObstacleInCam(fallObsDataList);
         final EntityList fallObsList = new EntityList(pGameScene,entityListSize,fallObsDataList.size()-entityListSize) {
             @Override
             public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
@@ -272,7 +290,7 @@ public class EntityManager implements ConstantsSet.Classify {
             }
         }
 
-        entityListSize = calculateMaxObstacleInCam(trap_tempObsDataList);
+        entityListSize = Algorithm.calculateMaxObstacleInCam(trap_tempObsDataList);
         final EntityList trapTempObsList = new EntityList(pGameScene,entityListSize,trap_tempObsDataList.size()-entityListSize) {
             @Override
             public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
@@ -299,7 +317,7 @@ public class EntityManager implements ConstantsSet.Classify {
             }
         }
 
-        entityListSize = calculateMaxObstacleInCam(trap1ObsDataList);
+        entityListSize = Algorithm.calculateMaxObstacleInCam(trap1ObsDataList);
         final EntityList trap1ObsList = new EntityList(pGameScene,entityListSize,trap1ObsDataList.size()-entityListSize) {
             @Override
             public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
@@ -326,7 +344,7 @@ public class EntityManager implements ConstantsSet.Classify {
             }
         }
 
-        entityListSize = calculateMaxObstacleInCam(trap2ObsDataList);
+        entityListSize = Algorithm.calculateMaxObstacleInCam(trap2ObsDataList);
         final EntityList trap2ObsList = new EntityList(pGameScene,entityListSize,trap2ObsDataList.size()-entityListSize) {
             @Override
             public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
@@ -354,7 +372,7 @@ public class EntityManager implements ConstantsSet.Classify {
         }
 
 
-        entityListSize = calculateMaxObstacleInCam(penObsDataList);
+        entityListSize = Algorithm.calculateMaxObstacleInCam(penObsDataList);
         final EntityList penObsList = new EntityList(pGameScene,entityListSize,penObsDataList.size()-entityListSize) {
             @Override
             public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
@@ -385,7 +403,7 @@ public class EntityManager implements ConstantsSet.Classify {
             }
         }
 
-        entityListSize = calculateMaxObstacleInCam(movingGroundDataList);
+        entityListSize = Algorithm.calculateMaxObstacleInCam(movingGroundDataList);
         final EntityList movingGroundObsList = new EntityList(pGameScene,entityListSize,movingGroundDataList.size()-entityListSize) {
             @Override
             public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
@@ -411,78 +429,103 @@ public class EntityManager implements ConstantsSet.Classify {
                 movingGroundObsList.add(movingGroundDataList.get(i).getPosX(),movingGroundDataList.get(i).getPosY());
             }
         }
+        entityListSize = Algorithm.calculateMaxObstacleInCam(rollingObsDataList);
+        final EntityList rollingObsList = new EntityList(pGameScene,entityListSize,rollingObsDataList.size()-entityListSize) {
+            @Override
+            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
+                if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
+                    return true;
+                }
+                return false;
+            }
+            @Override
+            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
+                float camx = pGameScene.getCamera().getCenterX();
+                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2)
+                    return false;
+                else
+                    return true;
+            }
+        };
+        for(int i=0;i<rollingObsDataList.size();i++){
+            if(!rollingObsList.isEntityListFull()) {
+                rollingObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
+                        ResourceManager.getInstance().obstacleRegions[OBS_ROLLING_CONFIG], rollingObsDataList.get(i)));
+            }else{
+                rollingObsList.add(rollingObsDataList.get(i).getPosX(),rollingObsDataList.get(i).getPosY());
+            }
+        }
+
+        entityListSize = Algorithm.calculateMaxObstacleInCam(tempGroundObsDataList);
+        final EntityList tempGroundObsList = new EntityList(pGameScene,entityListSize,tempGroundObsDataList.size()-entityListSize) {
+            @Override
+            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
+                if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
+                    return true;
+                }
+                return false;
+            }
+            @Override
+            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
+                float camx = pGameScene.getCamera().getCenterX();
+                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2)
+                    return false;
+                else
+                    return true;
+            }
+        };
+        for(int i=0;i<tempGroundObsDataList.size();i++){
+            if(!tempGroundObsList.isEntityListFull()) {
+                tempGroundObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
+                        ResourceManager.getInstance().obstacleRegions[OBS_TEMP_GROUND_CONFIG], tempGroundObsDataList.get(i)));
+            }else{
+                tempGroundObsList.add(tempGroundObsDataList.get(i).getPosX(),tempGroundObsDataList.get(i).getPosY());
+            }
+        }
+
+        entityListSize = Algorithm.calculateMaxObstacleInCam(movingWallObsDataList);
+        final EntityList movingWallObsList = new EntityList(pGameScene,entityListSize,movingWallObsDataList.size()-entityListSize) {
+            @Override
+            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
+                if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
+                    return true;
+                }
+                return false;
+            }
+            @Override
+            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
+                float camx = pGameScene.getCamera().getCenterX();
+                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2)
+                    return false;
+                else
+                    return true;
+            }
+        };
+        for(int i=0;i<movingWallObsDataList.size();i++){
+            if(!movingWallObsList.isEntityListFull()) {
+                movingWallObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
+                        ResourceManager.getInstance().obstacleRegions[OBS_MOVING_WALL_CONFIG], movingWallObsDataList.get(i)));
+            }else{
+                movingWallObsList.add(movingWallObsDataList.get(i).getPosX(),movingWallObsDataList.get(i).getPosY());
+            }
+        }
 
 
-        mObstacleList = new ManagedEntityList(6);
+
+
+        mObstacleList = new ManagedEntityList(9);
         mObstacleList.setList(0,fallObsList);
         mObstacleList.setList(1,trap1ObsList);
         mObstacleList.setList(2,trap2ObsList);
         mObstacleList.setList(3,trapTempObsList);
         mObstacleList.setList(4,penObsList);
         mObstacleList.setList(5,movingGroundObsList);
+        mObstacleList.setList(6,rollingObsList);
+        mObstacleList.setList(7,tempGroundObsList);
+        mObstacleList.setList(8,movingWallObsList);
         mObstacleList.ready();
     }
 
-    class AscendingObj implements Comparator<DataBlock>{
-        @Override
-        public int compare(DataBlock A, DataBlock B){
-            return A.getFloatPosX().compareTo(B.getFloatPosX());
-        }
-    }
-
-    private int calculateMaxObstacleInCam(ArrayList<ObstacleData> pDataList){
-        AscendingObj ascendingObj = new AscendingObj();
-        Collections.sort(pDataList,ascendingObj);
-        int rightIndex =0;
-        int leftIndex =0;
-        int max = -1;
-        for(int i=0;i<pDataList.size();i++){
-            rightIndex =i;
-            while(pDataList.get(rightIndex).getPosX() - pDataList.get(leftIndex).getPosX() > GameScene.CAMERA_WIDTH*1.2f){
-                leftIndex++;
-            }
-            if(rightIndex - leftIndex+1 >=max)
-                max = rightIndex-leftIndex+1;
-
-        }
-        return max;
-    }
-    private int calculateMaxAiInCam(ArrayList<AiData> pDataList){
-        AscendingObj ascendingObj = new AscendingObj();
-        Collections.sort(pDataList,ascendingObj);
-        int rightIndex =0;
-        int leftIndex =0;
-        int max = -1;
-        for(int i=0;i<pDataList.size();i++){
-            rightIndex =i;
-            while(pDataList.get(rightIndex).getPosX() - pDataList.get(leftIndex).getPosX() > GameScene.CAMERA_WIDTH*1.2f){
-                leftIndex++;
-            }
-            if(rightIndex - leftIndex+1 >=max)
-                max = rightIndex-leftIndex+1;
-
-        }
-        return max;
-    }
-    private int calculateMaxEntityInCam(ArrayList<DataBlock> pDataList){
-        AscendingObj ascendingObj = new AscendingObj();
-        Collections.sort(pDataList,ascendingObj);
-
-        int rightIndex =0;
-        int leftIndex =0;
-        int max = -1;
-        for(int i=0;i<pDataList.size();i++){
-            rightIndex =i;
-            while(pDataList.get(rightIndex).getPosX() - pDataList.get(leftIndex).getPosX() > GameScene.CAMERA_WIDTH*1.2f){
-                leftIndex++;
-            }
-            if(rightIndex - leftIndex+1 >=max)
-                max = rightIndex-leftIndex+1;
-
-        }
-
-        return max;
-    }
 
     public static EntityManager getInstance(){
         return INSTANCE;

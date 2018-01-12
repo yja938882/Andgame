@@ -82,16 +82,23 @@ public class DataManager implements ConstantsSet{
             "obs_trap_2",
             "obs_trap_temp",
             "obs_moving_ground",
+            "obs_rolling",
+            "obs_temp_ground",
+            "obs_moving_wall",
             "obs_pendulum"
+
     };
-    public final static int OBS_CONFIG_SIZE = 7;
+    public final static int OBS_CONFIG_SIZE = 10;
     public final static int OBS_FALL_CONFIG= 0;
     public final static int OBS_SHOOTING_CONFIG= 1;
     public final static int OBS_TRAP_1_CONFIG= 2;
     public final static int OBS_TRAP_2_CONFIG= 3;
     public final static int OBS_TRAP_TEMP_CONFIG= 4;
     public final static int OBS_MOVING_GROUND_CONFIG= 5;
-    public final static int OBS_PENDULUM_CONFIG= 6;
+    public final static int OBS_ROLLING_CONFIG= 6;
+    public final static int OBS_TEMP_GROUND_CONFIG= 7;
+    public final static int OBS_MOVING_WALL_CONFIG = 8;
+    public final static int OBS_PENDULUM_CONFIG= 9;
 
 
 
@@ -406,11 +413,11 @@ public class DataManager implements ConstantsSet{
                         vType = EntityType.OBS_FALL;
                         break;
                     case "obs_trap_1":
-                        vClass=DataBlock.ATK_OBS_CLASS;
+                        vClass=DataBlock.PASS_OBS_CLASS;
                         vType = EntityType.OBS_TRAP_1;
                         break;
                     case "obs_trap_2":
-                        vClass=DataBlock.ATK_OBS_CLASS;
+                        vClass=DataBlock.PASS_OBS_CLASS;
                         vType = EntityType.OBS_TRAP_2;
                         break;
                     case "obs_trap_temp":
@@ -424,13 +431,36 @@ public class DataManager implements ConstantsSet{
                     case "obs_shooting":
                         break;
                     case "obs_moving_ground":
-                        Log.d("QQQ","moving_ground!! :"+obj.toString());
-                        vClass = DataBlock.GROUND_CLASS;
+                         vClass = DataBlock.GROUND_CLASS;
                         vType = EntityType.OBS_MOVING_GROUND;
+                        break;
+                    case "obs_rolling":
+                        vClass = DataBlock.ATK_OBS_CLASS;
+                        vType = EntityType.OBS_ROLLING;
+                        break;
+                    case "obs_temp_ground":
+                        vClass = DataBlock.GROUND_CLASS;
+                        vType = EntityType.OBS_TEMP_GROUND;
+                        break;
+                    case "obs_moving_wall":
+                        vClass = DataBlock.PLAYER_FOOT_CLASS;
+                        vType = EntityType.OBS_MOVING_WALL;
                         break;
                 }
                 ObstacleData obsData =
                         new ObstacleData(vClass,vType,obj.getInt("x"),obj.getInt("y"));
+                JSONArray dataArray = obj.getJSONArray("data");
+                float data[];
+                if(dataArray.length()>0){
+                    data = new float[dataArray.length()];
+                    for(int d=0;d<dataArray.length();d++){
+                        data[d]=(float)dataArray.getDouble(d);
+                    }
+                    obsData.setData(data);
+                }
+
+
+
                 obstacleDataList.add(obsData);
             }
 

@@ -26,9 +26,8 @@ public class LoadingScene extends BaseScene {
         this.vbom = resourcesManager.vbom;
         this.camera = resourcesManager.camera;
         this.sceneToLoad = pSceneType;
-        createScene();
     }
-
+    int test = 0;
     @Override
     public void createScene() {
         Log.d(TAG,"createScene");
@@ -55,10 +54,10 @@ public class LoadingScene extends BaseScene {
                         Log.d(TAG,"loading shop scene...");
                         break;
                 }
+
                 unregisterUpdateHandler(this);
                 SceneManager.getInstance().createGameScene();
                 disposeScene();
-
             }
 
             @Override
@@ -66,8 +65,6 @@ public class LoadingScene extends BaseScene {
 
             }
         });
-
-
     }
 
     @Override

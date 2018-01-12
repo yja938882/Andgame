@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Filter;
 
+import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
@@ -18,6 +19,7 @@ import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
 import game.juan.andenginegame0.ygamelibs.Entity.GameEntity;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
+import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 
 /**
  * Created by juan on 2018. 1. 8..
@@ -103,10 +105,8 @@ public abstract class Weapon extends GameEntity {
         PlayerUnit playerUnit = EntityManager.getInstance().playerUnit;
         if(this.collidesWith(playerUnit)){
             playerUnit.setAccessibleWeapon(this);
-            Log.d("TTTT","cw");
         }else if(playerUnit.getAccessibleWeapon()==this){
             playerUnit.setAccessibleWeapon(null);
-            Log.d("TTTT","this");
         }
     }
 
@@ -165,5 +165,14 @@ public abstract class Weapon extends GameEntity {
     }
     public void setType(int t){
         this.type = t;
+    }
+
+    @Override
+    public AnimatedSprite clone() throws CloneNotSupportedException {
+        this.getTextureRegion();
+        return (AnimatedSprite)super.clone();
+    }
+    public AnimatedSprite getClone(){
+        return new AnimatedSprite(100,100,this.getTiledTextureRegion(), ResourceManager.getInstance().vbom);
     }
 }

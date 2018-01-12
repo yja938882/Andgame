@@ -5,6 +5,7 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
+import game.juan.andenginegame0.ygamelibs.Entity.Unit.Unit;
 
 /**
  * Created by juan on 2018. 1. 6..
@@ -22,7 +23,7 @@ public class PickUpController extends Controller {
 
             this.setAlpha(1.0f);
         }else{
-            EntityManager.getInstance().playerUnit.setAction(UnitAction.ACTION_STOP);
+            EntityManager.getInstance().playerUnit.setAction(Unit.ACTIVE_STOP);
             this.setAlpha(0.5f);
         }
         return true;

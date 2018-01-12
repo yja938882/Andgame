@@ -11,11 +11,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
+import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
+import game.juan.andenginegame0.ygamelibs.Util.Algorithm;
 
 /**
  * Created by juan on 2018. 1. 8..
- *
+ * 근접 무기
  */
 
 public class NearWeapon extends Weapon{
@@ -25,19 +27,11 @@ public class NearWeapon extends Weapon{
         gravity = new Vector2(0,8);
         setType(TYPE_NEAR);
         this.setActive(false);
-    //    this.getBody(0).setActive(false);
     }
 
     @Override
     public void use(Vector2 pSrc, int way) {
-        Body body = this.getBody(0);
-        body.setActive(true);
-        this.setVisible(true);
 
-     //  body.getFixtureList().get(0).setFilterData(nearFilter);
-      //  body.setActive(true);
-       // body.setAngularVelocity(5f);
-    //    this.transformPhysically(pSrc.x,pSrc.y);
     }
 
     @Override
@@ -70,20 +64,18 @@ public class NearWeapon extends Weapon{
     @Override
     protected void onManagedUpdate(float pSecondsElapsed) {
         super.onManagedUpdate(pSecondsElapsed);
-        //Log.d(this.getRotation()
-    //    this.mWeaponSprite.setRotation(0.5f);
         this.getBody(0).applyForce(gravity,getBody(0).getWorldCenter());
+       // if(Algorithm.CheckCircleCollision(
+         //       EntityManager.getInstance().playerUnit.getBody(0),new Vector2(0,0),32f,
+           //     this.getBody(0),new Vector2(0,0),32f)){
+        //}
     }
 
     @Override
     public void pick(){
         super.pick();
         this.getBody(0).setActive(false);
-        this.getBody(0).getFixtureList().get(0).setFilterData(nearFilter);
-        //this.getBody(0).
-        //this.setActive(true);
-       // this.getBody(0).setActive(true);
-
+        this.setVisible(false);
         gravity.set(0,0);
     }
 }

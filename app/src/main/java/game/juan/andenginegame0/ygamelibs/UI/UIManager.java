@@ -19,6 +19,7 @@ import org.andengine.ui.activity.BaseGameActivity;
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
 
+import game.juan.andenginegame0.ygamelibs.Entity.Unit.Unit;
 import game.juan.andenginegame0.ygamelibs.Scene.SceneManager;
 import game.juan.andenginegame0.ygamelibs.UI.ConditionUI.CoinUI;
 import game.juan.andenginegame0.ygamelibs.UI.ConditionUI.HealthUI;
@@ -105,19 +106,19 @@ public class UIManager implements ConstantsSet {
                 ResourceManager.getInstance().vbom);
 
 
-        mControllers[UI_SKILL2] = new AttackController(384*2,
-                250*2,
+        mControllers[UI_SKILL2] = new AttackController(0.5f*384*2,
+                0.5f*250*2,
                 ResourceManager.getInstance().mControllerTRs[UI_SKILL2].getWidth(),
                 ResourceManager.getInstance().mControllerTRs[UI_SKILL2].getHeight(),
                 ResourceManager.getInstance().mControllerTRs[UI_SKILL2],
                 ResourceManager.getInstance().vbom);
 
-        mControllers[UI_ATTACK].create( EntityManager.getInstance().playerUnit, UnitAction.ACTION_ATTACK,mHud);
-        mControllers[UI_LEFT].create( EntityManager.getInstance().playerUnit, UnitAction.ACTION_MOVE_LEFT,mHud);
-        mControllers[UI_RIGHT].create( EntityManager.getInstance().playerUnit,UnitAction.ACTION_MOVE_RIGHT,mHud);
-        mControllers[UI_UP].create( EntityManager.getInstance().playerUnit,UnitAction.ACTION_JUMP,mHud);
-        mControllers[UI_SKILL1].create( EntityManager.getInstance().playerUnit,UnitAction.ACTION_SKILL1,mHud);
-        mControllers[UI_SKILL2].create( EntityManager.getInstance().playerUnit,UnitAction.ACTION_SKILL2,mHud);
+        mControllers[UI_ATTACK].create( EntityManager.getInstance().playerUnit, Unit.ACTIVE_ATTACK,mHud);
+        mControllers[UI_LEFT].create( EntityManager.getInstance().playerUnit, Unit.ACTIVE_MOVE_LEFT,mHud);
+        mControllers[UI_RIGHT].create( EntityManager.getInstance().playerUnit,Unit.ACTIVE_MOVE_RIGHT,mHud);
+        mControllers[UI_UP].create( EntityManager.getInstance().playerUnit,Unit.ACTIVE_JUMP,mHud);
+        mControllers[UI_SKILL1].create( EntityManager.getInstance().playerUnit,Unit.ACTIVE_PICK,mHud);
+       // mControllers[UI_SKILL2].create( EntityManager.getInstance().playerUnit,Unit.ACTIVE_PICK,mHud);
 
 
         mHealthUI = new HealthUI(3,10,10,36,36,4);
@@ -134,6 +135,7 @@ public class UIManager implements ConstantsSet {
                 ResourceManager.getInstance().mainFont,ResourceManager.getInstance().engine,mHud);
         ResourceManager.getInstance().camera.setHUD(mHud);
 
+        EntityManager.getInstance().playerUnit.getBag().init();
     }
     }
 

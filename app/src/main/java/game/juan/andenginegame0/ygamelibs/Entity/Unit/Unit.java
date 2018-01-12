@@ -3,9 +3,11 @@ package game.juan.andenginegame0.ygamelibs.Entity.Unit;
 import android.util.Log;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 
+import org.andengine.entity.modifier.JumpModifier;
 import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
@@ -18,10 +20,24 @@ import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
 /**
  * Created by juan on 2017. 11. 25..
+ * 유닛
  */
 
 public abstract class Unit extends GameEntity{
     /*===Constants============================*/
+    public final static int ACTIVE_STOP = 0;    //멈춤
+    public final static int ACTIVE_MOVE_RIGHT = 1;//오른쪽 이동
+    public final static int ACTIVE_MOVE_LEFT = 2; //왼쪽 이동
+    public final static int ACTIVE_ATTACK = 3;  //공격
+    public final static int ACTIVE_PICK = 4;    //줍기
+    public final static int ACTIVE_JUMP = 5;    //점프
+
+    public final static int PASSIVE_NONE = -1; //없음
+    public final static int PASSIVE_ATTACKED = 0; //공격 당함
+    public final static int PASSIVE_DIE = 1;    // 죽음
+
+
+
     protected static final int BODY =0;
     protected static final int FOOT =1;
 
@@ -37,35 +53,43 @@ public abstract class Unit extends GameEntity{
     private static final int SOFT_LOCK_SIZE =1;
     private static final int JUMP_SOFT_LOCK_INDEX =0;
 
-    //public static final int
+
     /*===Fields===============================*/
-    private float MAX_SPEED = 10;
-    private float SPEED = 5f;
     public Vector2 JUMP_FORCE = new Vector2(0,-20);
     private Vector2 GRAVITY = new Vector2(0,0);
 
-    private long attackFrameDuration[]; //공격 프레임 시간
-    protected int attackFrameIndex[]; //공격 프레임
-    private long dieFrameDuration[];
-    private int dieFrameIndex[];
-    private long movingFrameDuration[];
-    private int movingFrameIndex[];
-    private long beAttackedFrameDuration[];
-    private int beAttackedFrameIndex[];
-    private long jumpFrameDuration[];
-    private int  jumpFrameIndex[];
-
-    private boolean jumpLock= false;
-    private int jumpCounter =0;
+    protected long attackFrameDuration[]; //공격 프레임 시간
+    protected int attackFrameIndex[];     //공격 프레임
+    protected long dieFrameDuration[];    //죽음 프레임 시간
+    protected int dieFrameIndex[];        //죽음 프레임
+    protected long movingFrameDuration[]; //움직임 프레임 시간
+    protected int movingFrameIndex[];     //움직임 프레임
+    protected long beAttackedFrameDuration[];//공격받음 프레임 시간
+    protected int beAttackedFrameIndex[];    //공격받음 프레임
+    protected long jumpFrameDuration[];    //점프 프레임 시간
+    protected int  jumpFrameIndex[];       //점프 프레임
 
     private Vector2[] bodyShape;
     private Vector2[] footShape;
     private int bodySType;
     private int footSType;
 
-    private int mAction = ConstantsSet.UnitAction.ACTION_STOP;
+    protected int mActive = ACTIVE_STOP; //유닛이 입력에 의해 실행할 액션
+    protected int mPassive = PASSIVE_NONE; //유닛이 상태에 의해 실행할 액션
+
+    protected boolean isInTheAir;   //유닛이 공중에 있는지
+    protected boolean isAttacked;   //유닛이 공격을 당했는지
+    protected boolean isNeedToStopJumpAnim; //공중에서 애니메이션 상태를 정지해야하는지
 
     private boolean alive = true;
+
+    protected boolean isJumpLock;   //연속 점프 방지
+    protected float jumpDelay = 0f; //점프 딜레이
+    protected float jumpTimer = 0f; //점프 타이머
+
+
+
+
     protected float addjumpForce=0;
 
     /*===Constructor===========================*/
@@ -77,7 +101,7 @@ public abstract class Unit extends GameEntity{
 
     /*===Method======================================*/
     public void setAction(int pAction){
-        this.mAction = pAction;
+        this.mActive = pAction;
     }
     public void setGravity(Vector2 pGravity){
         this.GRAVITY = pGravity;
@@ -85,6 +109,91 @@ public abstract class Unit extends GameEntity{
 
     /*===Inner Method================================*/
 
+    @Override
+    protected void onManagedUpdate(float pSecondsElapsed) {
+        super.onManagedUpdate(pSecondsElapsed);
+
+        onManageState(pSecondsElapsed);
+
+        onManagePassiveAction(this.mPassive);
+
+        onManageActiveAction(this.mActive);
+
+        if(!alive)
+            setActive(false);
+        applyForce(BODY,GRAVITY);
+        applyForce(FOOT,GRAVITY);
+    }
+
+
+    /* protected void onManageState()
+    * 캐릭터의 상태 관리
+    */
+    protected void onManageState(float pSecondsElapsed){
+        UnitData FootData = ((UnitData)getBody(FOOT).getUserData());
+        UnitData BodyData = ((UnitData)getBody(BODY).getUserData());
+
+        isInTheAir = FootData.isInTheAir(); // 공중에 있는지 상태 확인
+
+        if(BodyData.isNeedToBeAttacked()||FootData.isNeedToBeAttacked()){//공격을 당했는지 확인
+            this.mPassive = Unit.PASSIVE_ATTACKED;
+            BodyData.setNeedToBeAttacked(false);
+            FootData.setNeedToBeAttacked(false);
+        }
+
+        if(FootData.isNeedToBeStopJumpAnim()){//공중에서의 애니메이션을 멈춰야 하는지
+            stopAnimation(0);
+            FootData.setNeedToBeStopJumpAnim(false);
+        }
+        if(isJumpLock){ //연속 점프 방지
+            jumpTimer += pSecondsElapsed;
+            if(jumpTimer>= jumpDelay){
+                jumpTimer=0f;
+                isJumpLock = false;
+            }
+        }
+
+    }
+
+    /*protected void manageActiveAction(int active)
+    * 상황에 의한 행동 관리 : 없음 , 공격당함, 죽음
+    * @param int passive 에 해당하는 행동 실행
+    */
+    protected void onManagePassiveAction(int passive){
+        switch (passive){
+            case PASSIVE_ATTACKED:
+                onPassiveAttacked();
+                break;
+            case PASSIVE_DIE    :   onPassiveDie();         break;
+        }
+    }
+    protected abstract void onPassiveAttacked();
+
+    protected abstract void onPassiveDie();
+
+
+    /*protected void manageActiveAction(int active)
+    * 입력에 의한 행동 관리 : 좌우 이동, 멈춤, 점프
+    * @param int active 에 해당하는 행동 실행
+    */
+    protected void onManageActiveAction( int active){
+        switch(active){
+            case ACTIVE_STOP:       onActiveStop();     break;
+            case ACTIVE_MOVE_RIGHT: onActiveMoveRight();break;
+            case ACTIVE_MOVE_LEFT:  onActiveMoveLeft(); break;
+            case ACTIVE_JUMP:       onActiveJump();     break;
+            case ACTIVE_PICK:       onActivePick();     break;
+            case ACTIVE_ATTACK:     onActiveAttack();   break;
+        }
+    }
+    protected abstract void onActiveStop();
+    protected abstract void onActiveMoveRight();
+    protected abstract void onActiveMoveLeft();
+    protected abstract void onActiveJump();
+    protected abstract void onActivePick();
+    protected abstract void onActiveAttack();
+
+/*
     protected void update(){
 
        // Log.d("cheep","ac0  "+mAction);
@@ -97,30 +206,39 @@ public abstract class Unit extends GameEntity{
         boolean isInTheAir;
         UnitData bodyData =(UnitData) getDataBlock(BODY);
         UnitData footData = (UnitData)getDataBlock(FOOT);
-        if( (bodyData).isNeedToBeAttacked() || (footData).isNeedToBeAttacked()){
-            if(!invincible)
-                mAction = ConstantsSet.UnitAction.ACTION_HITTED;
-            (bodyData).setNeedToBeAttacked(false);
-            (footData).setNeedToBeAttacked(false);
-          }
+
       //  Log.d("cheep","ac1   "+mAction);
         if(footData.isNeedToBeStopJumpAnim()) {
             footData.setNeedToBeStopJumpAnim(false);
             stopAnimation(0);
          }
+        if( (bodyData).isNeedToBeAttacked() || (footData).isNeedToBeAttacked()){
+            Log.d("HITEST","be attacked!!! invinsible :"+invincible);
+            if(!invincible){
+                mAction = ConstantsSet.UnitAction.ACTION_HITTED;
+            }else{
+                mAction = ConstantsSet.UnitAction.ACTION_STOP;
+            }
+
+            (bodyData).setNeedToBeAttacked(false);
+            (footData).setNeedToBeAttacked(false);
+        }
+
         if(!alive){
             mAction = ConstantsSet.UnitAction.ACTION_DIE;
         }
 
         if(isLocked()) {
+          //  Log.d("HITEST","locked");
              return;
         }
+//Log.d("THIEST","action "+mAction);
     switch (mAction){
             case ConstantsSet.UnitAction.ACTION_DIE:
                 LockAction(DIE_LOCK_INDEX);
                 animate(dieFrameDuration,dieFrameIndex,false);
                 break;
-            case ConstantsSet.UnitAction.ACTION_MOVE_RIGHT:
+            case ConstantsSet.UnitAction.ACTION_MOVE_RIGHT: //오른쪽으로 이동
                 this.setFlippedHorizontal(false);
                 getBody(FOOT).setAngularVelocity(30f);
                 if(footData.isInTheAir()){
@@ -137,7 +255,7 @@ public abstract class Unit extends GameEntity{
                 }
                 onMoveRight();
                 break;
-            case ConstantsSet.UnitAction.ACTION_MOVE_LEFT:
+            case ConstantsSet.UnitAction.ACTION_MOVE_LEFT: //왼쪽으로 이동
                 this.setFlippedHorizontal(true);
                 getBody(FOOT).setAngularVelocity(-30f);
                 if(footData.isInTheAir()){
@@ -155,10 +273,8 @@ public abstract class Unit extends GameEntity{
                 onMoveLeft();
                 break;
             case ConstantsSet.UnitAction.ACTION_JUMP:
-                Log.d("JUMP","Ac jump");
                 if(jumpLock)
                     return;
-                Log.d("JUMP","real jump");
                 if(!footData.isInTheAir()){
                     jumpLock = true;
                     applyLinearImpulse(BODY,JUMP_FORCE);
@@ -175,7 +291,6 @@ public abstract class Unit extends GameEntity{
                     stopAnimation(0);
                     onStop();
                 }
-
                 break;
             case ConstantsSet.UnitAction.ACTION_ATTACK:
                 LockAction(ATTACK_LOCK_INDEX);
@@ -194,20 +309,10 @@ public abstract class Unit extends GameEntity{
             case ConstantsSet.UnitAction.ACTION_SKILL2:
                 break;
         }
-    }
-    protected void attack(){
+    }*/
 
-    }
-    protected abstract void beAttacked();
     protected void setAlive(boolean a){this.alive = a;}
     protected boolean isAlive(){return this.alive;}
-    @Override
-    protected void onManagedUpdate(float pSecondsElapsed) {
-        super.onManagedUpdate(pSecondsElapsed);
-        update();
-        applyForce(BODY,GRAVITY);
-        applyForce(FOOT,GRAVITY);
-    }
 
     @Override
     public void revive(float pPx, float pPy) {
@@ -249,7 +354,7 @@ public abstract class Unit extends GameEntity{
         transform(pBodyData.getPosX(),pBodyData.getPosY());
     }
     public void createUnit(GameScene pGameScene , UnitData pBodyData, UnitData pFootData){
-        setupBody(2);
+     //   setupBody(2);
         switch (bodySType){
             case VERTICAL_SHAPE:
                 createVerticesBody(pGameScene,BODY,pBodyData,bodyShape, BodyDef.BodyType.DynamicBody);
@@ -320,11 +425,9 @@ public abstract class Unit extends GameEntity{
             e.printStackTrace();
         }
     }
+
     private void setAnimationConfigData(JSONObject pConfigData){
         try {
-            //createActionLock(pConfigData.getInt("lock"));
-            createActionLock();
-            int pLockIndex =0;
 
             JSONArray fi = pConfigData.getJSONArray("movingFrameIndex");
             JSONArray fd = pConfigData.getJSONArray("movingFrameDuration");
@@ -345,13 +448,6 @@ public abstract class Unit extends GameEntity{
 
             }
 
-                float lockLimit =0;
-                for(long du : attackFrameDuration){
-                    lockLimit+=((float)du/1000f);
-                }
-                setActionLock(ATTACK_LOCK_INDEX,lockLimit);
-
-
             fi=pConfigData.getJSONArray("dieFrameIndex");
             fd = pConfigData.getJSONArray("dieFrameDuration");
             dieFrameIndex = new int[fi.length()];
@@ -360,14 +456,6 @@ public abstract class Unit extends GameEntity{
                 dieFrameIndex[i] = fi.getInt(i);
                 dieFrameDuration[i] = fd.getLong(i);
             }
-
-
-            lockLimit = 0;
-
-            for(int i=0;i<dieFrameDuration.length;i++){
-                lockLimit += ((float) dieFrameDuration[i] / 1000f);
-            }
-            setActionLock(DIE_LOCK_INDEX,lockLimit);
 
             fi=pConfigData.getJSONArray("beAttackedFrameIndex");
             fd = pConfigData.getJSONArray("beAttackedFrameDuration");
@@ -378,15 +466,6 @@ public abstract class Unit extends GameEntity{
                 beAttackedFrameDuration[i] = fd.getLong(i);
             }
 
-                lockLimit = 0;
-                for (long du : beAttackedFrameDuration) {
-                    lockLimit += ((float) du / 1000f);
-                }
-
-                setActionLock(BEATTACKED_LOCK_INDEX,lockLimit);
-
-
-            createSoftActionLock();
             fi=pConfigData.getJSONArray("jumpFrameIndex");
             fd=pConfigData.getJSONArray("jumpFrameDuration");
             jumpFrameIndex = new int[fi.length()];
@@ -395,81 +474,26 @@ public abstract class Unit extends GameEntity{
                 jumpFrameIndex[i] = fi.getInt(i);
                 jumpFrameDuration[i] = fd.getLong(i);
             }
-            lockLimit = 0;
-            for (long du : jumpFrameDuration) {
-                lockLimit += ((float) du / 1000f);
-            }
-            setSoftActionLock(0,lockLimit+0.5f);
-
-
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
 
-    public void createActionLock(){
-        this.mActionLocks = new ActionLock[LOCK_SIZE];
-
-        mActionLocks[ATTACK_LOCK_INDEX] = new ActionLock() {
-            @Override
-            public void lockFree() {
-                attackFinished();
-            }
-        };
-        mActionLocks[BEATTACKED_LOCK_INDEX] = new ActionLock() {
-            @Override
-            public void lockFree() {
-                beAttackedFinished();
-            }
-        };
-        mActionLocks[DIE_LOCK_INDEX] = new ActionLock() {
-            @Override
-            public void lockFree() {
-                dieFinished();
-            }
-        };
-    }
-    public void createSoftActionLock() {
-        this.mSoftActionLocks = new ActionLock[SOFT_LOCK_SIZE];
-        mSoftActionLocks[JUMP_SOFT_LOCK_INDEX] = new ActionLock() {
-            @Override
-            public void lockFree() {
-            }
-
-        };
-    }
-
-
-
-    public abstract void attackFinished();
-    public abstract void beAttackedFinished();
-    public abstract void dieFinished();
-    protected void onMoving(){
-
-    }
-    protected void onStop(){
-
-    }
-
-
     protected boolean invincible = false;
-    protected float invincibleTimeLimit = 2f;
+    protected float invincibleTimeLimit = 5f;
     protected float invincibleTimer = 0f;
     protected int invincibleAlphaCounter =0;
 
     protected void setInvincible(){
         invincible = true;
-        //  getBody(0).getFixtureList().get(0).setFilterData();
     }
     protected void unsetInvincible(){
         invincible = false;
         invincibleTimer = 0f;
         this.setAlpha(1.0f);
     }
-    protected int getAction(){
-        return mAction;
-    }
-    protected  void onMoveRight(){}
-    protected void onMoveLeft(){}
+
+
+
 }

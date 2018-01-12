@@ -99,11 +99,11 @@ public class BulletObstacle extends GameEntity{
     }
 
     private void update(){
-        if(isLocked())
-            return;
+       // if(isLocked())
+          //  return;
         switch (mState){
             case STATE_IDLE:
-                setVisible(false);
+             //   setVisible(false);
                 break;
             case STATE_SHOT:
                 this.getBody(0).setActive(true);
@@ -127,7 +127,7 @@ public class BulletObstacle extends GameEntity{
                 mState = STATE_IDLE;
                 break;
             case STATE_HIT:
-                LockAction(0);
+             //   LockAction(0);
                 this.animate(hitFrameDuration,hitFrameIndex,false);
                 mState = STATE_RELOAD;
                 break;
@@ -156,7 +156,7 @@ public class BulletObstacle extends GameEntity{
             for(long du : hitFrameDuration){
                 lockLimit+=((float)du)/1000f;
             }
-            setActionLock(0,lockLimit);
+           // setActionLock(0,lockLimit);
 
             setTimeLimit((float)pConfigData.getDouble("idle_time"),(float)pConfigData.getDouble("working_time"));
 

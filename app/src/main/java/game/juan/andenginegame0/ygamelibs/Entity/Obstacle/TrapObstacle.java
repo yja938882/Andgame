@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Entity.Obstacle;
 
+import android.util.Log;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 
@@ -9,8 +11,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
+import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
 import game.juan.andenginegame0.ygamelibs.Entity.GameEntity;
+import game.juan.andenginegame0.ygamelibs.Entity.Unit.AI.AiData;
+import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerData;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
+import game.juan.andenginegame0.ygamelibs.Util.Algorithm;
 
 /**
  * Created by juan on 2017. 11. 30..
@@ -58,6 +64,7 @@ public class TrapObstacle extends GameEntity{
     }*/
     public void createObstacle(GameScene pGameScene, DataBlock pDataBlock){
         setupBody(1);
+        this.setScale(0.5f);
         if(bodySType==VERTICAL_SHAPE){
             createVerticesBody(pGameScene,0,pDataBlock,bodyShape, BodyDef.BodyType.StaticBody);
         }else{
@@ -75,10 +82,17 @@ public class TrapObstacle extends GameEntity{
     @Override
     protected void onManagedUpdate(float pSecondsElapsed) {
         super.onManagedUpdate(pSecondsElapsed);
+        if(Algorithm.CheckCircleCollision(
+                EntityManager.getInstance().playerUnit.getBody(0),new Vector2(0,0),32f,
+                this.getBody(0),new Vector2(0,16),32f)){
+            ((PlayerData)EntityManager.getInstance().playerUnit.getBody(0).getUserData()).setNeedToBeAttacked(true);
+
+        }
+
         if(!isTemp)
             return;
-        if(isLocked())
-            return;
+       // if(isLocked())
+       //     return;
         switch (mState){
             case STATE_IDLE:
                 if(((ObstacleData)getDataBlock(0)).isNeedToReload()){
@@ -86,7 +100,7 @@ public class TrapObstacle extends GameEntity{
                 }
                 break;
             case STATE_HIT:
-                LockAction(0);
+         //       LockAction(0);
                 this.animate(hitFrameDuration,hitFrameIndex,false);
                 mState = STATE_SLEEP;
                 break;
@@ -101,6 +115,7 @@ public class TrapObstacle extends GameEntity{
                 mState = STATE_IDLE;
                 break;
         }
+
     }
     public void setHitFrame(final long pFrameDuration[] , final int pFrameIndex[], int pLockIndex ){
         this.hitFrameDuration = pFrameDuration;
@@ -110,7 +125,7 @@ public class TrapObstacle extends GameEntity{
             for(long du : hitFrameDuration){
                 lockLimit+=((float)du)/1000f;
             }
-            setActionLock(pLockIndex,lockLimit);
+            //setActionLock(pLockIndex,lockLimit);
         }
     }
     public void setConfigData(JSONObject pConfigData){
@@ -138,7 +153,7 @@ public class TrapObstacle extends GameEntity{
             for(long du : hitFrameDuration){
                 lockLimit+=((float)du)/1000f;
             }
-            setActionLock(0,lockLimit);
+           // setActionLock(0,lockLimit);
 
         }catch (Exception e){
             e.printStackTrace();

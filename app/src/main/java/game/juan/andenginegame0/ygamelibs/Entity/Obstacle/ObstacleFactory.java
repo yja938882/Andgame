@@ -10,13 +10,17 @@ import org.andengine.ui.activity.BaseGameActivity;
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
+import game.juan.andenginegame0.ygamelibs.Data.DataPhysicsFactory;
 import game.juan.andenginegame0.ygamelibs.Entity.GameEntity;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_FALL_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_MOVING_GROUND_CONFIG;
+import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_MOVING_WALL_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_PENDULUM_CONFIG;
+import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_ROLLING_CONFIG;
+import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_TEMP_GROUND_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_TRAP_1_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_TRAP_2_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_TRAP_TEMP_CONFIG;
@@ -35,7 +39,6 @@ public class ObstacleFactory implements ConstantsSet.EntityType{
     public static GameEntity createSimpleObstacle(GameScene pGameScene , ITiledTextureRegion iTiledTextureRegion,ObstacleData pObstacleData){
         switch (pObstacleData.getType()){
             case OBS_TRAP_TEMP:
-                Log.d("cheep!!!","tramp temp!");
                 return createTrapTemp_Obstacle(pGameScene,iTiledTextureRegion,pObstacleData);
             case OBS_TRAP_1 :
                 return createTrap1_Obstacle(pGameScene,iTiledTextureRegion,pObstacleData);
@@ -47,11 +50,27 @@ public class ObstacleFactory implements ConstantsSet.EntityType{
                 break;
             case OBS_MOVING_GROUND:
                 return createMovingGround_Obstacle(pGameScene,iTiledTextureRegion,pObstacleData);
+            case OBS_ROLLING:
+                return createRolling_Obstacle(pGameScene, iTiledTextureRegion,pObstacleData);
+            case OBS_TEMP_GROUND:
+                return createTempGround_Obstacle(pGameScene, iTiledTextureRegion,pObstacleData);
+            case OBS_MOVING_WALL:
+                return createMovingWall_Obstacle(pGameScene, iTiledTextureRegion,pObstacleData);
 
         }
         return null;
     }
 
+    private static RollingObstacle createRolling_Obstacle(GameScene pGameScene , ITiledTextureRegion iTiledTextureRegion,DataBlock pDataBlock){
+        RollingObstacle rollingObstacle = new RollingObstacle(pDataBlock.getPosX(),pDataBlock.getPosY(),
+                iTiledTextureRegion,ResourceManager.getInstance().vbom);
+        rollingObstacle.setConfigData(DataManager.getInstance().obstacleConfigs[OBS_ROLLING_CONFIG]);
+        rollingObstacle.createObstacle(pGameScene,pDataBlock);
+        rollingObstacle.setOrigin(pDataBlock.getPosX()+rollingObstacle.getWidthScaled()/2f,pDataBlock.getPosY()+rollingObstacle.getHeightScaled()/2f);
+        rollingObstacle.setActive(true);
+        pGameScene.attachChild(rollingObstacle);
+        return rollingObstacle;
+    }
 
    private static BulletObstacle createFall_Obstacle(GameScene pGameScene , ITiledTextureRegion iTiledTextureRegion,DataBlock pDataBlock){
         final BulletObstacle fallingObstacle = new BulletObstacle(pDataBlock.getPosX(),pDataBlock.getPosY(),
@@ -96,6 +115,24 @@ public class ObstacleFactory implements ConstantsSet.EntityType{
        movingGround.createObstacle(pGameScene,pDataBlock);
        pGameScene.attachChild(movingGround);
        return movingGround;
+    }
+
+    private static TempGround createTempGround_Obstacle(GameScene pGameScene, ITiledTextureRegion iTiledTextureRegion, DataBlock pDataBlock) {
+        TempGround tempGround = new TempGround(pDataBlock.getPosX(), pDataBlock.getPosY(),
+                iTiledTextureRegion,ResourceManager.getInstance().vbom);
+        tempGround.setConfigData(DataManager.getInstance().obstacleConfigs[OBS_TEMP_GROUND_CONFIG]);
+        tempGround.createObstacle(pGameScene,pDataBlock);
+        pGameScene.attachChild(tempGround);
+        return tempGround;
+    }
+
+    private static MovingWall createMovingWall_Obstacle(GameScene pGameScene, ITiledTextureRegion iTiledTextureRegion, DataBlock pDataBlock){
+        MovingWall movingWall = new MovingWall(pDataBlock.getPosX(), pDataBlock.getPosY(),
+                iTiledTextureRegion,ResourceManager.getInstance().vbom);
+        movingWall.setConfigData(DataManager.getInstance().obstacleConfigs[OBS_MOVING_WALL_CONFIG]);
+        movingWall.createObstacle(pGameScene,pDataBlock);
+
+        return movingWall;
     }
 
     /*

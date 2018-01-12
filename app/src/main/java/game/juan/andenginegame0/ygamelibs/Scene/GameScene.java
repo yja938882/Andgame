@@ -11,6 +11,7 @@ import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.color.Color;
@@ -79,19 +80,21 @@ public class GameScene extends BaseScene {
         this.camera = ResourceManager.getInstance().camera;
         this.camera.setBoundsEnabled(true);
         this.registerUpdateHandler(world.getWorld());
-
         EntityManager.getInstance().createOnGame(this);
         StaticManager.getInstance().createOnGame(this);
+
+
 
         UIManager.getInstance().createOnGame(this);
 
 
+
         //For debugging
-       // DebugRenderer dr = new DebugRenderer(world.getWorld(),vbom);
-       // dr.setColor(Color.BLUE);
-       // dr.setDrawBodies(true);
-       // dr.setDrawJoints(true);
-       // this.attachChild(dr);
+        //DebugRenderer dr = new DebugRenderer(world.getWorld(),vbom);
+        //dr.setColor(Color.BLUE);
+        //dr.setDrawBodies(true);
+        //dr.setDrawJoints(true);
+        //this.attachChild(dr);
     }
 
     @Override

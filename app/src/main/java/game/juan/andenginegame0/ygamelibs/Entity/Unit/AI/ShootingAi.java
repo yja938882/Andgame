@@ -19,7 +19,7 @@ public class ShootingAi extends  AiUnit {
     public void setWeapon(Weapon weapon){
         this.mWeapon = weapon;
     }
-
+/*
     @Override
     public void attackFinished() {
         super.attackFinished();
@@ -27,5 +27,5 @@ public class ShootingAi extends  AiUnit {
       //      mWeapon.shot(getPhysicsBodyPos(),new Vector2(15,0));
        // else
         //    mWeapon.shot(getPhysicsBodyPos(),new Vector2(-15,0));
-    }
+    }*/
 }

@@ -37,11 +37,7 @@ public class ThrowingWeapon extends Weapon {
 
     @Override
     public void use(Vector2 pSrc, int pWay) {
-        //   this.pickedWeapon = null;
-        //  this.pickedSprite=null;
-       // EntityManager.getInstance().playerUnit.setPickedSprite(null);
-       // EntityManager.getInstance().playerUnit.setPickedWeapon(null);
-        EntityManager.getInstance().playerUnit.resetEquipSprite();
+
         EntityManager.getInstance().playerUnit.resetEquipWeapon();
 
 
@@ -58,11 +54,11 @@ public class ThrowingWeapon extends Weapon {
         this.transformPhysically(pSrc.x,pSrc.y);
        // this.setLinearVelocity(0,pWay);
         body.setAngularVelocity(angular_velocity);
-        if(pWay == ConstantsSet.UnitAction.ACTION_MOVE_RIGHT){
-            this.setLinearVelocity(0,shoot_vx,shoot_vy);
-        }else{
-            this.setLinearVelocity(0,-shoot_vx,shoot_vy);
-        }
+      //  if(pWay == ConstantsSet.UnitAction.ACTION_MOVE_RIGHT){
+        //    this.setLinearVelocity(0,shoot_vx,shoot_vy);
+       // }else{
+         //   this.setLinearVelocity(0,-shoot_vx,shoot_vy);
+        //}
     }
 
     @Override
@@ -108,10 +104,11 @@ public class ThrowingWeapon extends Weapon {
     @Override
     public void pick(){
         super.pick();
+        this.setVisible(false);
         this.getBody(0).setActive(false);
         getBody(0).getFixtureList().get(0).setRestitution(0.5f);
         getBody(0).getFixtureList().get(0).setFriction(0.1f);
-        this.setVisible(false);
+
         this.gravity.set(shoot_gravity);
     }
 }

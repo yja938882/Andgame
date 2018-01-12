@@ -19,7 +19,7 @@ public class CoinItem extends AnimatedSpriteItem {
 
     public CoinItem(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
-     //   setDestPos(600,300);
+
     }
     public void setPlayer(PlayerUnit player){
         this.playerUnit = player;
@@ -36,7 +36,7 @@ public class CoinItem extends AnimatedSpriteItem {
         if(this.isVisible()&&!moving){
             if (this.collidesWith(playerUnit)){
                 moving = true;
-                playerUnit.getCoin(10);
+               // playerUnit.getCoin(10);
               //  sc.pushToDetach(this);
               //  sc.attachToHud(this);
             }

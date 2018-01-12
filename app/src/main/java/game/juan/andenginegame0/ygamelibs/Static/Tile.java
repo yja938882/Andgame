@@ -35,8 +35,8 @@ public class Tile extends DynamicSpriteBatch {
         mTileSprite = new Sprite[pMaxTileSize];
         maxTileSize = pMaxTileSize;
         for(int i=0;i<pMaxTileSize;i++){
-            mTileSprite[i] = new Sprite(pX[i]-16,pY[i]-16,pTextureRegion, ResourceManager.getInstance().vbom);
-            mTileSprite[i].setScale(0.5f);
+            mTileSprite[i] = new Sprite(pX[i],pY[i],pTextureRegion, ResourceManager.getInstance().vbom);
+        //    mTileSprite[i].setScale(0.5f);
         }
         this.posX = pX;
         this.posY = pY;
@@ -49,7 +49,7 @@ public class Tile extends DynamicSpriteBatch {
 
         if(mTileSprite[managedIndex].getX() < camera.getCenterX()-CAMERA_WIDTH/1.5f){
             if(nextPosIndex<posX.length){
-                mTileSprite[managedIndex].setPosition(posX[nextPosIndex]-16,posY[nextPosIndex]-16);
+                mTileSprite[managedIndex].setPosition(posX[nextPosIndex],posY[nextPosIndex]);
                 managedIndex++;
                 nextPosIndex++;
             }

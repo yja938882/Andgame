@@ -9,11 +9,14 @@
     "ai_shooting_0"   :"shooting_rat"    ,"ai_shooting_1" :"shooting_rat",
     "ai_flying_0"     :"flying_rat",
 
-    "obs_size": 7,
+    "obs_size": 10,
     "obs_fall"      :"egg0"               ,"obs_shooting"      :"egg1",
     "obs_trap_1"    :"thorn0"             ,"obs_trap_2"        :"thorn1",
     "obs_trap_temp" :"rat_trap",
-    "obs_pendulum"  :"saw"                ,"obs_moving_ground" :"moving_ground0"
+    "obs_pendulum"  :"saw"                ,"obs_moving_ground" :"moving_ground0",
+    "obs_rolling"   :"rolling_stone",
+    "obs_temp_ground":"temp_ground",
+    "obs_moving_wall":"moving_wall0"
 
 
   },
@@ -22,40 +25,40 @@
   "blocks":
   [
     {
-      "vx" :[0  ,0  ,1  , 1],
+      "vx" :[0  ,0  ,2  , 2],
       "vy" :[0  ,30 ,30 , 0],
       "sx" :-10,
       "sy" :0,
-      "t"  :[1,2,3],
-      "tx" :["0~1","1~24","24~25"],
-      "ty" :["0~1","0~1","0~1"]
+      "t"  :[8],
+      "tx" :["0~1"],
+      "ty" :["0~15"]
     },
     {
-      "vx" :[0, 0,  42, 42, 39  ,39 ,28 ,28],
+      "vx" :[0, 0,  44, 44, 40  ,40 ,28 ,28],
       "vy" :[0  ,4, 4 ,  0, 0   ,2  ,2  ,0],
-      "sx" :-9,
+      "sx" :-8,
       "sy" :22,
-      "t"  :[1     ,2     ,2     ,6     ,1      ,2],
-      "tx" :["0~28","0~28","0~28","0~28","28~39","28~42"],
-      "ty" :["0~1" ,"1~2" ,"2~3" ,"3~4" ,"2~3"  ,"3~4"]
+      "t"  :[4     ,8     ,4      ,4      ,8],
+      "tx" :["0~14","0~14","14~20","20~22","20~22"],
+      "ty" :["0~1" ,"1~2" ,"1~2"  ,"0~1","1~2"]
     },
     {
-      "vx" :[ 0, 0,  3,  3] ,
-      "vy" :[ 0, 1,  1,  0] ,
-      "sx" : 23,
+      "vx" :[ 0, 0,  4,  4] ,
+      "vy" :[ 0, 2,  2,  0] ,
+      "sx" : 24,
       "sy" : 19,
-      "t"  :[1,2,3],
-      "tx" :["0~3"],
-      "ty" :["0~1"]
+      "t"  :[14  ,13],
+      "tx" :["0~1","1~2"],
+      "ty" :["0~1","0~1"]
     },
     {
-      "vx" :[ 0, 0,   20, 20 ,12 , 10] ,
-      "vy" :[ 1, 2,   2 , 0 , 0 , 1] ,
-      "sx" : 36,
+      "vx" :[ 0, 0,   20, 20 ,14 , 10] ,
+      "vy" :[ 2, 4,   4 , 0 , 0 , 2] ,
+      "sx" : 38,
       "sy" : 19,
-      "t"  :[0    ,5    ,4 ,0,2],
-      "tx" :["0~10","10~11","11~12","12~20","10~20"],
-      "ty" :["1~2" , "0~1" ,"0~1" ,"0~1","1~2"]
+      "t"  :[4    ,8    ,  0   ,2     ,4 ],
+      "tx" :["0~5","5~10","5~6","6~7","7~10"],
+      "ty" :["1~2","1~2", "0~1" ,"0~1" ,"0~1"]
     },
     {
       "vx" :[ 0, 0,   20, 20 ] ,
@@ -63,7 +66,7 @@
       "sx" : 60,
       "sy" : 19,
       "t"  :[0  ],
-      "tx" :["0~20"],
+      "tx" :["0~1"],
       "ty" :["0~1"]
     }
   ],
@@ -71,17 +74,23 @@
   [
     {"type": "obs_fall" , "x": 57 , "y":  6, "data":[1,1]},
     {"type":"obs_trap_temp","x":-3,"y":14,"data":[1,1]},
-    {"type": "obs_trap_1" , "x": 21 , "y":  22, "data":[1,1]},
-    {"type": "obs_trap_2" , "x": 23 , "y":  22, "data":[1,1]},
-    {"type": "obs_trap_1" , "x": 25 , "y":  22, "data":[1,1]},
-    {"type": "obs_trap_2" , "x": 28 , "y":  22, "data":[1,1]},
+    {"type": "obs_trap_1" , "x": 21 , "y":  23, "data":[1,1]},
+    {"type": "obs_trap_2" , "x": 23 , "y":  23, "data":[1,1]},
+    {"type": "obs_trap_1" , "x": 25 , "y":  23, "data":[1,1]},
+    {"type": "obs_trap_2" , "x": 27 , "y":  23, "data":[1,1]},
+    {"type": "obs_trap_1" , "x": 29 , "y":  23, "data":[1,1]},
+    {"type": "obs_trap_2" , "x": 31 , "y":  23, "data":[1,1]},
     {"type":"obs_pendulum","x":65,"y":3, "data":[1,1]},
     {"type":"obs_shooting","x":35,"y":7,"data" :[1,1]},
-    {"type":"obs_moving_ground","x":-10,"y":15,"data":[1,1]}
+    {"type":"obs_moving_ground","x":-10,"y":15,"data":[1,1]},
+    {"type":"obs_rolling","x":15,"y":20,"data":[1,1]},
+    {"type":"obs_temp_ground","x":50,"y":20,"data":[1,1]},
+    {"type":"obs_moving_wall","x":16,"y":10,"data":[4,1]}
+
   ],
   "ai":
   [
-    {"type":"ai_moving_1", "x":60, "y":13,"data":[1,1]},
+    {"type":"ai_moving_1", "x":20, "y":13,"data":[1,1]},
     {"type":"ai_shooting_1","x":70,"y":10,"data":[1,1]}
   ]
 }

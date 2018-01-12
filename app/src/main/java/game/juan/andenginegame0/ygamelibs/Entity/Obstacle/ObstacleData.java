@@ -14,8 +14,9 @@ public class ObstacleData extends DataBlock {
     public ObstacleData(int pClass, int pType, int pX, int pY) {
         super(pClass, pType, pX, pY);
     }
+    float[] data;
     public float[] getData(){
-        return null;
+        return data;
     }
 
     @Override
@@ -28,6 +29,9 @@ public class ObstacleData extends DataBlock {
                 break;
 
         }
+    }
+    public void setData(float[] pData){
+        this.data = pData;
     }
 
     @Override

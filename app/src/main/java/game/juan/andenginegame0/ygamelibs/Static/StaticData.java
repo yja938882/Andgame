@@ -112,7 +112,7 @@ public class StaticData extends DataBlock{
             if(types[i] == tile){
                 for( int s = tsx[i];s<tex[i];s++){
                     for(int k = tsy[i] ; k<tey[i];k++){
-                        posX[inner_i++] = (s*32f+getPosX());
+                        posX[inner_i++] = (s*64f+getPosX());
                     }
                 }
             }
@@ -129,7 +129,7 @@ public class StaticData extends DataBlock{
                 for( int s = tsy[i];s<tey[i];s++){
 
                     for(int k=tsx[i] ; k<tex[i];k++){
-                        posY[inner_i++] = (s*32f + getPosY());
+                        posY[inner_i++] = (s*64f + getPosY());
                     }
 
                     Log.d("cheep"," pos y : "+posY[inner_i-1]);

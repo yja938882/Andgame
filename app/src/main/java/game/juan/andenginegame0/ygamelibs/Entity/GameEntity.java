@@ -22,31 +22,43 @@ import java.util.List;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Data.DataPhysicsFactory;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
+import game.juan.andenginegame0.ygamelibs.Util.Algorithm;
 
 /**
  * Created by juan on 2017. 11. 25..
- * Define GameEntity as a which Object has Physics Body and Sprite
+ * 게임 엔티티
  */
 
 public abstract class GameEntity extends AnimatedSprite{
     /*===Fields===============================*/
-    private Body[] mBodies;
+    private Body[] mBodies; // 물리 몸체 배열
     private boolean mActive = false;
-    protected ActionLock[] mActionLocks;
-    protected ActionLock[] mSoftActionLocks;
 
+    protected ActionLock[] mActionLocks; //액션 의 시작 , 끝 을 나타내는 Lock
 
     /*===Constructor===========================*/
     public GameEntity(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
 
-    /*===Setup================================*/
-    public void setupBody(final int pBodySize){
+
+    /* protected void setupBody(final int pBodySize)
+    *  물리 몸체 배열 초기화
+    *  @param pBodySize 의 길이 만큼 몸체 배열 생성
+    */
+    protected void setupBody(final int pBodySize){
         mBodies = new Body[pBodySize];
     }
 
-    public void createVerticesBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType){
+    /* protected void createVerticesBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType)
+    *  다각형 형태의 몸체 생성
+    *  @param pGmeScene 의 길이 만큼 몸체 배열 생성
+    *  @param pBodyIndex 생성할 바디의 바디 리스트 상의 인덱스
+    *  @param pDataBlock
+    *  @param pVertices 생성할 몸체의 꼭지점들
+    *  @param pBodyType 몸체의 종류
+    */
+    protected void createVerticesBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType){
         final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
         mBodies[pBodyIndex] = PhysicsFactory.createTrianglulatedBody(pGameScene.getWorld(),
                 this,createBodyShape(pVertices),pBodyType,fixtureDef);
@@ -55,7 +67,16 @@ public abstract class GameEntity extends AnimatedSprite{
             pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(this, mBodies[0]));
         }
     }
-    public void createCircleBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType){
+
+    /* protected void createCircleBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType)
+    *  원형 형태의 몸체 생성
+    *  @param pGmeScene 의 길이 만큼 몸체 배열 생성
+    *  @param pBodyIndex 생성할 바디의 바디 리스트 상의 인덱스
+    *  @param pDataBlock
+    *  @param pVertices 생성할 몸체의 정보
+    *  @param pBodyType 몸체의 종류
+    */
+    protected void createCircleBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType){
         final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
         mBodies[pBodyIndex] = PhysicsFactory.createCircleBody(pGameScene.getWorld(),
                 pVertices[0].x,pVertices[0].y,pVertices[1].x,pBodyType,fixtureDef);
@@ -65,7 +86,7 @@ public abstract class GameEntity extends AnimatedSprite{
             pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(this, mBodies[0]));
         }
     }
-
+/*
     protected void setActionLock(int pIndex, final float pMaxSeconds){
         mActionLocks[pIndex].setMaxCount(pMaxSeconds);
     }
@@ -76,23 +97,8 @@ public abstract class GameEntity extends AnimatedSprite{
         mActionLocks[pIndex].lock();
     }
     protected void SoftLockAction(int pIndex){mActionLocks[pIndex].lock();}
-
+*/
     /*==Overriding============================*/
-    @Override
-    protected void onManagedUpdate(float pSecondsElapsed) {
-        super.onManagedUpdate(pSecondsElapsed);
-        if(mActionLocks==null)
-            return;
-        for(ActionLock al : mActionLocks){
-            al.onManagedUpdate(pSecondsElapsed);
-        }
-        if(mSoftActionLocks==null)
-            return;
-        for(ActionLock al : mSoftActionLocks){
-            al.onManagedUpdate(pSecondsElapsed);
-        }
-
-    }
 
     /*===Setter & Getter======================*/
     public void setActive(boolean pActive){
@@ -135,6 +141,30 @@ public abstract class GameEntity extends AnimatedSprite{
     protected void applyLinearImpulse(int pIndex, Vector2 pImpulse){
         this.mBodies[pIndex].applyLinearImpulse(pImpulse,mBodies[pIndex].getWorldCenter());
     }
+
+    /*protected void initActionLock(final int pSize)
+    * @pram pSzie 길이의 ActionLock 생성
+    */
+    protected void initActionLock(final int pSize){
+
+        this.mActionLocks = new ActionLock[pSize];
+        Log.d("QQQQQQ"," length :"+mActionLocks.length);
+    }
+    /* protected void setupActionLock(final int index, int[] pFrameIndex, long[] pFrameDuration,final ActionLock actionLock)
+    * @param index ActionLock 배열 내에 생성할 위치
+    * @param pFrameDuration 해당 액션락 프레임 시간
+    * @param actionLock 액션 락에 대한 정의
+    */
+    protected void setupActionLock(final int index,long[] pFrameDuration,ActionLock actionLock){
+        float lockLimit = 0f;
+        for(long du : pFrameDuration){
+            lockLimit+=((float)du/1000f);
+        }
+        mActionLocks[index] = actionLock;
+        mActionLocks[index].setMaxCount(lockLimit);
+    }
+
+/*
     protected boolean isLocked(){
         for(ActionLock al:mActionLocks){
             if(al.isLocked()) {
@@ -142,7 +172,7 @@ public abstract class GameEntity extends AnimatedSprite{
             }
         }
         return false;
-    }
+    }*/
 
     /*===Abstract Method=======================*/
     public abstract void revive(float pPx, float pPy);
@@ -180,7 +210,7 @@ public abstract class GameEntity extends AnimatedSprite{
         void setMaxCount(float pMaxCount){
             this.mMaxCount = pMaxCount;
         }
-        void onManagedUpdate(float pSecondsElapsed){
+        public void onManagedUpdate(float pSecondsElapsed){
             if(mActionLock){
                 mElapsedCount+=pSecondsElapsed;
                 if(mElapsedCount>=mMaxCount){
@@ -190,12 +220,16 @@ public abstract class GameEntity extends AnimatedSprite{
                 }
             }
         }
-        void lock(){
+        public void lock(){
             this.mActionLock = true;
         }
         public boolean isLocked(){
             return mActionLock;
         }
         public abstract void lockFree();
+    }
+
+    public boolean isContactWith(GameEntity pGameEntity, int pOtherBodyIndex){
+        return false;
     }
 }

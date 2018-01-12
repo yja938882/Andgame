@@ -60,6 +60,7 @@ public class ResourceManager {
   public ITextureRegion splashLayer0Region;
   public ITextureRegion splashLayer1Region;
   public ITextureRegion splashLayer2Region;
+  public ITextureRegion splashLayer3Region;
   public ITextureRegion moonRegion;
   public ITiledTextureRegion cheepRegion;
   public ITextureRegion truckParticleRegion;
@@ -69,6 +70,7 @@ public class ResourceManager {
   private BitmapTextureAtlas splash0TextureAtlas;
   private BitmapTextureAtlas splash1TextureAtlas;
   private BitmapTextureAtlas splash2TextureAtlas;
+  private BitmapTextureAtlas splash3TextureAtlas;
   private BitmapTextureAtlas moonTextureAtlas;
   private BitmapTextureAtlas cheepTextureAtlas;
   private BitmapTextureAtlas truckParticleTextureAtlas;
@@ -91,6 +93,11 @@ public class ResourceManager {
     splashLayer2Region = BitmapTextureAtlasTextureRegionFactory.
               createFromAsset(splash2TextureAtlas,gameActivity,"splash_layer2.png",0,0);
     splash2TextureAtlas.load();
+
+    splash3TextureAtlas =new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,600);
+    splashLayer3Region = BitmapTextureAtlasTextureRegionFactory.
+            createFromAsset(splash3TextureAtlas,gameActivity,"splash_layer3.png",0,0);
+    splash3TextureAtlas.load();
 
     moonTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,600);
     moonRegion = BitmapTextureAtlasTextureRegionFactory.
@@ -225,7 +232,7 @@ public class ResourceManager {
     backgroundRegion2 = null;
   }
 
-  public static final int MAX_TILE_SIZE = 9;
+  public static final int MAX_TILE_SIZE = 18;
 
   private void loadMapGraphics(int pStage){
       Log.d(TAG,"loadMapGraphics");
@@ -259,6 +266,9 @@ public class ResourceManager {
   public ITextureRegion playerBeAttackedParticleRegion;
   private BitmapTextureAtlas playerBeAttackedParticleTextureAtlas;
 
+  public ITextureRegion playerAttackParticleRegion;
+  private BitmapTextureAtlas playerAttackParticleTextureAtlas;
+
   public ITiledTextureRegion playerBulletRegion;
   private BitmapTextureAtlas playerBulletTextureAtlas;
 
@@ -282,9 +292,15 @@ public class ResourceManager {
             createFromAsset(playerMovingParticleTextureAtlas,gameActivity.getAssets(),"ptest.png",0,0);
     playerMovingParticleTextureAtlas.load();
 
-    playerBeAttackedParticleTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),16,16);
+    playerAttackParticleTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),32,32);
+    playerAttackParticleRegion = BitmapTextureAtlasTextureRegionFactory.
+            createFromAsset(playerAttackParticleTextureAtlas,gameActivity.getAssets(),"t.png",0,0);
+    playerAttackParticleTextureAtlas.load();
+
+
+    playerBeAttackedParticleTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),32,32);
     playerBeAttackedParticleRegion = BitmapTextureAtlasTextureRegionFactory
-            .createFromAsset(playerBeAttackedParticleTextureAtlas,gameActivity.getAssets(),"t.png",0,0);
+            .createFromAsset(playerBeAttackedParticleTextureAtlas,gameActivity.getAssets(),"tul.png",0,0);
     playerBeAttackedParticleTextureAtlas.load();
 
     playerHandTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),48,48);
@@ -292,7 +308,9 @@ public class ResourceManager {
             createFromAsset(playerHandTextureAtlas,gameActivity.getAssets(),"hand.png",0,0);
     playerHandTextureAtlas.load();
 
-      BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/object/");
+
+
+    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/object/");
 
     playerBulletTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),229,98);
     playerBulletRegion  = BitmapTextureAtlasTextureRegionFactory.
@@ -399,6 +417,9 @@ public class ResourceManager {
   public ITiledTextureRegion obstacleRegions[]=null;
   private BitmapTextureAtlas obstacleTextureAtlas[]=null;
 
+  public ITextureRegion movingWallParticleRegion=null;
+  private BitmapTextureAtlas movingWallParticleTextureAtlas=null;
+
   //Load Unload
 
   private void loadObstacleGraphics(){
@@ -428,6 +449,12 @@ public class ResourceManager {
                       dm.getObsRow(OBS_PENDULUM_CONFIG,i));
       obstacleTextureAtlas[OBS_PENDULUM_CONFIG+i].load();
     }
+
+    movingWallParticleTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),
+            32,32);
+    movingWallParticleRegion = BitmapTextureAtlasTextureRegionFactory.
+            createFromAsset(movingWallParticleTextureAtlas,gameActivity.getAssets(),"moving_p.png",0,0);
+    movingWallParticleTextureAtlas.load();
   }
   private void loadObstacleTexture(int pConfigIndex, DataManager pDataManager){
     Log.d(TAG,"--loading obstacle Texture :"+pConfigIndex);
@@ -462,8 +489,11 @@ public class ResourceManager {
   public static final int  UI_SKILL2 =4;
   public static final int  UI_UP =5;
 
-    public ITextureRegion mControllerTRs[]=null;
+    public ITextureRegion mControllerTRs[]=null;  //움직임 컨트롤러 TextureRegion
     private BitmapTextureAtlas mControllerAtlas[]=null;
+
+    public ITextureRegion mBagItemTextureRegion = null;
+    private BitmapTextureAtlas bagTextureAtlas;
 
     public ITiledTextureRegion heartTextureRegion;
     public ITextureRegion settingTextureRegion;
@@ -477,6 +507,12 @@ public class ResourceManager {
 
     private void loadGameUI(){
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/ui/");
+
+        bagTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),
+                80,80,TextureOptions.BILINEAR);
+        mBagItemTextureRegion = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(bagTextureAtlas,gameActivity,"bag_item.png",0,0);
+        bagTextureAtlas.load();
 
         mControllerAtlas = new BitmapTextureAtlas[CONTROLLER_SIZE];
         mControllerTRs = new ITextureRegion[CONTROLLER_SIZE];

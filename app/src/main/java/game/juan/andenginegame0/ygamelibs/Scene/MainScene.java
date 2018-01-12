@@ -13,6 +13,7 @@ import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_WIDTH;
 
 /**
  * Created by juan on 2017. 12. 19..
+ * 메인 화면
  */
 
 public class MainScene extends BaseScene {
@@ -54,8 +55,7 @@ public class MainScene extends BaseScene {
 
     @Override
     public void disposeScene() {
-       // splashSprite.detachSelf();
-       // splashSprite.dispose();
+
         this.detachSelf();
         this.dispose();
     }
