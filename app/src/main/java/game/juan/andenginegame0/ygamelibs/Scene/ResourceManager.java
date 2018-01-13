@@ -1,21 +1,12 @@
 package game.juan.andenginegame0.ygamelibs.Scene;
 
 
+import android.util.Log;
+
 import org.andengine.audio.sound.Sound;
 import org.andengine.audio.sound.SoundFactory;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.BoundCamera;
-import org.andengine.engine.camera.Camera;
-import org.andengine.opengl.texture.bitmap.BitmapTexture;
-import org.andengine.opengl.vbo.VertexBufferObjectManager;
-
-import android.graphics.Bitmap;
-import android.provider.ContactsContract;
-import android.util.Log;
-
-import org.andengine.engine.Engine;
-import org.andengine.engine.camera.Camera;
-import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.ITexture;
@@ -27,17 +18,15 @@ import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.color.Color;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.AI_MOVING_1_CONFIG;
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.AI_SHOOTING_1_CONFIG;
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.AI_SHOOTING_2_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_CONFIG_SIZE;
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_FALL_CONFIG;
 import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_PENDULUM_CONFIG;
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_SHOOTING_CONFIG;
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_TRAP_1_CONFIG;
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_TRAP_2_CONFIG;
 /*
  * Created by juan on 2017. 12. 18..
  * ResourceManager
@@ -55,7 +44,7 @@ public class ResourceManager {
   public VertexBufferObjectManager vbom;
 
 
-    /*===SplashScene==============================*/
+  /*===SplashScene==============================*/
 
   public ITextureRegion splashLayer0Region;
   public ITextureRegion splashLayer1Region;
@@ -143,8 +132,8 @@ public class ResourceManager {
 
   }
 
-    /*===MainScene================================*/
 
+  /*===MainScene================================*/
   public Font mainFont;
 
 
@@ -162,6 +151,36 @@ public class ResourceManager {
 
   }
 
+  /*===ShopScene================================*/
+  public ITextureRegion itemsRegion[];
+  private BitmapTextureAtlas itemsTextureAtlas[];
+
+  public void loadShopScene(){
+    loadShopSceneGraphics();
+  }
+
+  private void loadShopSceneGraphics(){
+    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/object/players/");
+
+    DataManager.getInstance().loadShopSellItemData();
+     ArrayList<JSONObject> arrayList = DataManager.getInstance().shopItemList;
+     int size = arrayList.size();
+     itemsRegion = new ITextureRegion[size];
+     itemsTextureAtlas = new BitmapTextureAtlas[size];
+    try{
+      for(int i=0;i<size;i++){
+        JSONObject obj = (JSONObject)arrayList.get(i);
+        itemsTextureAtlas[i] = new BitmapTextureAtlas(gameActivity.getTextureManager(),obj.getInt("src_width"),obj.getInt("src_height"),TextureOptions.BILINEAR);
+        itemsRegion[i] = BitmapTextureAtlasTextureRegionFactory.
+                createFromAsset(itemsTextureAtlas[i],gameActivity,obj.getString("src"),0,0);
+        itemsTextureAtlas[i].load();
+      }
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+
+  }
+
   /*===GameScene================================*/
 
   public void loadStage(int pStage){
@@ -172,13 +191,12 @@ public class ResourceManager {
     loadPlayerGraphics();
     loadAiGraphics();
     loadObstacleGraphics();
+    loadItemInGameTexture();
 
     loadGameUI();
     loadPlayerSounds();
   }
-
-    /*===Static=======*/
-
+  /*===Static=======*/
   //Fields
   public ITextureRegion backgroundRegion1;
   private BitmapTextureAtlas background_1_TextureAtlas;
@@ -251,7 +269,7 @@ public class ResourceManager {
 
   }
 
-  /*===Player GFX============================*/
+  /*===Player GFX===*/
 
   //Fields
   public ITiledTextureRegion playerRegion;
@@ -269,11 +287,11 @@ public class ResourceManager {
   public ITextureRegion playerAttackParticleRegion;
   private BitmapTextureAtlas playerAttackParticleTextureAtlas;
 
-  public ITiledTextureRegion playerBulletRegion;
-  private BitmapTextureAtlas playerBulletTextureAtlas;
+//  public ITiledTextureRegion playerBulletRegion;
+//  private BitmapTextureAtlas playerBulletTextureAtlas;
 
-  public ITiledTextureRegion playerBulletRegion2;
-  private BitmapTextureAtlas playerBulletTextureAtlas2;
+ // public ITiledTextureRegion playerBulletRegion2;
+ // private BitmapTextureAtlas playerBulletTextureAtlas2;
 
   // Player GFX load , unload
   private void loadPlayerGraphics(){
@@ -309,18 +327,18 @@ public class ResourceManager {
     playerHandTextureAtlas.load();
 
 
-
+/*
     BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/object/");
 
-    playerBulletTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),229,98);
+    playerBulletTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),512,128);
     playerBulletRegion  = BitmapTextureAtlasTextureRegionFactory.
-            createTiledFromAsset(playerBulletTextureAtlas,gameActivity.getAssets(),"axe.png",0,0,1,1);
+            createTiledFromAsset(playerBulletTextureAtlas,gameActivity.getAssets(),"spear.png",0,0,1,1);
     playerBulletTextureAtlas.load();
 
     playerBulletTextureAtlas2 = new BitmapTextureAtlas(gameActivity.getTextureManager(),64,64);
     playerBulletRegion2  = BitmapTextureAtlasTextureRegionFactory.
             createTiledFromAsset(playerBulletTextureAtlas2,gameActivity.getAssets(),"wood.png",0,0,1,1);
-    playerBulletTextureAtlas2.load();
+    playerBulletTextureAtlas2.load();*/
   }
   private void unloadPlayerGraphics(){
     playerTextureAtlas.unload();
@@ -330,9 +348,7 @@ public class ResourceManager {
     playerMovingParticleRegion = null;
   }
 
-
   public Sound playerMovingSound;
-
 
   //Player SFX load , unload
   private void loadPlayerSounds(){
@@ -345,7 +361,7 @@ public class ResourceManager {
     }
   }
 
-  /*===AI GFX================================*/
+  /*===AI GFX==*/
   //Constants
   private static final int AI_TEXTURE_SIZE =5;
 
@@ -374,6 +390,7 @@ public class ResourceManager {
     }
  //   ai_0_BulletTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),
    //         )
+
     BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/object/");
     ai_0_BulletTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),
             dm.getAiWeaponWidth(0),dm.getAiWeaponHeight(0));
@@ -477,7 +494,51 @@ public class ResourceManager {
   }
 
   /*===Objects================================*/
+  public ITiledTextureRegion itemsInGameRegions[] = null; //게임에서 사용되는 TextureRegion
+  private BitmapTextureAtlas itemsInGameTextureAtlas[]=null;
 
+  public HashMap<String,ITiledTextureRegion> itemInGameHashMap;
+  private void loadItemInGameTexture(){
+    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/object/players/");
+
+
+    itemInGameHashMap = new HashMap<String,ITiledTextureRegion>();
+    //1. 플레이어가 가지고 시작할 아이템 텍스쳐
+
+
+    String keys[]={
+      "spear","nipper","fork"
+    };
+    JSONObject array[] = new JSONObject[keys.length];
+    for(int i=0;i<keys.length;i++){
+      array[i] = DataManager.getInstance().getItemData(keys[i]);
+    }
+
+    int size = keys.length;
+    itemsInGameRegions = new ITiledTextureRegion[size];
+    itemsInGameTextureAtlas = new BitmapTextureAtlas[size];
+    try{
+      for(int i=0;i<size;i++){
+        itemsInGameTextureAtlas[i] = new BitmapTextureAtlas(gameActivity.getTextureManager(),
+              array[i].getInt("src_width"),array[i].getInt("src_height"));
+        itemsInGameRegions[i]  = BitmapTextureAtlasTextureRegionFactory.
+              createTiledFromAsset(itemsInGameTextureAtlas[i],gameActivity.getAssets(),
+                      array[i].getString("src"),0,0,1,1);
+        itemsInGameTextureAtlas[i].load();
+
+        itemInGameHashMap.put(keys[i],itemsInGameRegions[i]);
+
+      }
+    }catch (Exception e) {
+      e.printStackTrace();
+    }
+
+
+    //itemInGameHashMap.put(player_test,DataManager.getInstance().getI)
+
+    //2. 맵상에서 배치되어있는 아이템 텍스쳐
+    //3. AI 가 드랍할 확률이 있는 아이템 텍스쳐
+  }
 
 
   /*===UserInterface==========================*/

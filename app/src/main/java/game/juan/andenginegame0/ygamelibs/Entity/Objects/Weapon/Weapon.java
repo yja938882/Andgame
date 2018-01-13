@@ -69,7 +69,7 @@ public abstract class Weapon extends GameEntity {
     //무기의 물리적 데이터 생성
     public void create(GameScene pGameScene, DataBlock pDataBlock){
         setupBody(1);
-        this.setScale(0.5f);
+        this.setScale(0.3f);
         if(bodyType==CIRCLE_SHAPE)
             this.createCircleBody(pGameScene,0,pDataBlock,bodyShape, BodyDef.BodyType.DynamicBody);
         else

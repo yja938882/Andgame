@@ -38,7 +38,7 @@ import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_WIDTH;
  */
 
 public class MovingWall extends GameEntity {
-
+    /*===Constants==========================*/
     public static final int VERTICAL_SHAPE =0;
     public static final int CIRCLE_SHAPE =1;
     public static final int NONE_SHAPE = 2;
@@ -51,33 +51,30 @@ public class MovingWall extends GameEntity {
     private final float IDLE_LIMIT = 2f;
     private final float REACHED_LIMIT = 1f;
 
-    private Vector2 bodyShape[];
+    private Vector2 bodyShape[];    //물리 몸체 형태
     private int bodySType;
-    private float dest;
-    private float origin;
-    private int mode = MODE_IDLE;
+    private float dest;         // 이동 목적지
+    private float origin;       // 시작 위치
+    private int mode = MODE_IDLE;   //현재 상태
 
-    private BatchedSpriteParticleSystem particleSystem; // 피해 효과 파티클 시스템
+    private BatchedSpriteParticleSystem particleSystem; //
     private RectangleParticleEmitter particleEmitter; // 피해 효과 파티클 생성기
 
 
     public MovingWall(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
 
-        //attackedParticleEmitter = new PointParticleEmitter(0, 0);
+
         particleEmitter = new RectangleParticleEmitter(0,0,this.getWidth(),10);
         this.particleSystem = new BatchedSpriteParticleSystem(particleEmitter,
-                10, 20, 20,
+                10, 30, 30,
                 ResourceManager.getInstance().movingWallParticleRegion, ResourceManager.getInstance().vbom);
-        particleSystem.addParticleInitializer(new VelocityParticleInitializer<UncoloredSprite>(-10, 10, -20, -10));
+        particleSystem.addParticleInitializer(new VelocityParticleInitializer<UncoloredSprite>(-10, 10, -25, -15));
         particleSystem.addParticleInitializer(new AccelerationParticleInitializer<UncoloredSprite>(-10, 10, -3, -5));
         particleSystem.addParticleInitializer(new ExpireParticleInitializer<UncoloredSprite>(2f));
         particleSystem.addParticleInitializer(new ScaleParticleInitializer<UncoloredSprite>(0.5f, 1f));
         particleSystem.addParticleModifier(new ScaleParticleModifier<UncoloredSprite>(0f, 1f, 0.5f, 0.8f));
         particleSystem.addParticleModifier(new AlphaParticleModifier<UncoloredSprite>(0, 1, 0.9f, 0.3f));
-
-     //   particleSystem.addParticleModifier(new RotationParticleModifier<UncoloredSprite>(0f,10f,0.0f,90f));
-        //attackedParticleEmitter.setCenter(500, 200);
         particleSystem.setParticlesSpawnEnabled(false);
 
 

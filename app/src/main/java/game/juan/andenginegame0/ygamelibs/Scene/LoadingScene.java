@@ -43,6 +43,7 @@ public class LoadingScene extends BaseScene {
                     case GAME:
                         Log.d(TAG,"loading game scene...");
                         SceneManager.getInstance().loadGameScene();
+                        SceneManager.getInstance().createGameScene();
                         break;
                     case MAIN:
                         Log.d(TAG,"loading main scene...");
@@ -52,11 +53,13 @@ public class LoadingScene extends BaseScene {
                         break;
                     case SHOP:
                         Log.d(TAG,"loading shop scene...");
+                        SceneManager.getInstance().loadShopScene();
+                        SceneManager.getInstance().createShopScene();
                         break;
                 }
 
                 unregisterUpdateHandler(this);
-                SceneManager.getInstance().createGameScene();
+
                 disposeScene();
             }
 

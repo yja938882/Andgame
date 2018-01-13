@@ -74,8 +74,8 @@ public class NearWeapon extends Weapon{
     @Override
     public void pick(){
         super.pick();
-        this.getBody(0).setActive(false);
         this.setVisible(false);
+        this.getBody(0).setActive(false);
         gravity.set(0,0);
     }
 }

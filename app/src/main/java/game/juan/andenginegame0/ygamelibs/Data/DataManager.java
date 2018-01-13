@@ -368,8 +368,8 @@ public class DataManager implements ConstantsSet{
 
             playerBulletConfigs = new JSONObject[2];
          //   playerBulletConfigs[0] = dbManager.getConfigJSON(db,"p_wood");
-            playerBulletConfigs[0] = dbManager.getConfigJSON(db,"p_axe");
-            playerBulletConfigs[1] = dbManager.getConfigJSON(db,"p_wood");
+            playerBulletConfigs[0] = dbManager.getItemJSON(db,"spear");//dbManager.getConfigJSON(db,"p_axe");
+            playerBulletConfigs[1] =dbManager.getItemJSON(db,"nipper");
 
         }catch(Exception e){
             Log.d(TAG,"Error - "+e.getMessage());
@@ -518,6 +518,20 @@ public class DataManager implements ConstantsSet{
         exp = data[EXP_D];
 
     }
+
+    public ArrayList<JSONObject> shopItemList;
+
+    public void loadShopSellItemData(){
+        SQLiteDatabase db = dbManager.getReadableDatabase();
+        shopItemList=dbManager.getAllSellingItem(db);
+    }
+
+    public JSONObject getItemData(String pKeyName){
+        SQLiteDatabase db = dbManager.getReadableDatabase();
+        return dbManager.getItemJSON(db,pKeyName);
+    }
+
+
 
 
     private static JSONObject loadJSONFromAsset(Context context, String filename){

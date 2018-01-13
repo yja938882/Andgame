@@ -23,6 +23,7 @@ public class ObstacleData extends DataBlock {
     public void beginContactWith(int pClass) {
         switch (pClass){
             case PLAYER_BODY_CLASS:
+            case PLAYER_FOOT_CLASS:
                 setNeedToReload(true);
             case GROUND_CLASS:
                 setNeedToReload(true);

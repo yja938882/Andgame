@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
+import game.juan.andenginegame0.ygamelibs.Entity.Unit.Unit;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
 /**
@@ -38,9 +39,9 @@ public class ThrowingWeapon extends Weapon {
     @Override
     public void use(Vector2 pSrc, int pWay) {
 
-        EntityManager.getInstance().playerUnit.resetEquipWeapon();
-
-
+        //EntityManager.getInstance().playerUnit.resetEquipWeapon();
+        EntityManager.getInstance().playerUnit.throwWeapon();
+       // EntityManager.getInstance().playerUnit.deleteItem();
         this.unpick();
         Body body = this.getBody(0);
 
@@ -52,13 +53,13 @@ public class ThrowingWeapon extends Weapon {
         this.gravity.set(shoot_gravity);
 
         this.transformPhysically(pSrc.x,pSrc.y);
-       // this.setLinearVelocity(0,pWay);
+
         body.setAngularVelocity(angular_velocity);
-      //  if(pWay == ConstantsSet.UnitAction.ACTION_MOVE_RIGHT){
-        //    this.setLinearVelocity(0,shoot_vx,shoot_vy);
-       // }else{
-         //   this.setLinearVelocity(0,-shoot_vx,shoot_vy);
-        //}
+        if(pWay == Unit.ACTIVE_MOVE_RIGHT){
+            this.setLinearVelocity(0,shoot_vx,shoot_vy);
+        }else{
+            this.setLinearVelocity(0,-shoot_vx,shoot_vy);
+        }
     }
 
     @Override

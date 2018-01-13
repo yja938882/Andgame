@@ -36,8 +36,8 @@ import org.json.JSONObject;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Weapon;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
-import game.juan.andenginegame0.ygamelibs.UI.BagUI.PlayerBag;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
+import game.juan.andenginegame0.ygamelibs.UI.UIManager;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_HEIGHT;
@@ -84,20 +84,19 @@ public class PlayerUnit extends Unit {
     private Sprite hand;
 
     private Body handBody;     // 손, 장착 스프라이트가 이곳에 connect 된다
+    private PhysicsConnector physicsConnector;// 손과 스프라이트를 connect
     float handDownSpeed = 10f;
 
     private boolean invinsible = false;
 
     private Vibrator vibrator;
 
-    private PlayerBag bag;
     /*===Constructor===========================*/
 
     public PlayerUnit(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
         vibrator = (Vibrator) (ResourceManager.getInstance().gameActivity.getSystemService(VIBRATOR_SERVICE));
         jumpDelay = 0.5f;
-        bag = new PlayerBag();
     }
 
     /*===상태 관리============*/
@@ -276,6 +275,7 @@ public class PlayerUnit extends Unit {
     @Override
     protected void onActiveAttack() {
         mActionLocks[ATTACK_LOCK].lock();
+      //  takeOffWeapon();
         animate(attackFrameDuration,attackFrameIndex,false);
         //setAction(ConstantsSet.UnitAction.ACTION_STOP);
         if (this.equippedSprite == null || this.equippedWeapon == null)   //장착한 아이템이 없을경우
@@ -425,93 +425,6 @@ public class PlayerUnit extends Unit {
     }
 
 
-    public void setAccessibleWeapon(Weapon pWeapon) {
-        this.accessibleWeapon = pWeapon;
-    }
-
-    public Weapon getAccessibleWeapon() {
-        return this.accessibleWeapon;
-    }
-
-    public void resetEquipWeapon() {
-        this.equippedSprite.setVisible(false);
-        this.equippedWeapon = null;
-        this.equippedSprite = null;
-
-
-    }
-
-
-    public Sprite getEquippedSprite() {
-        return equippedSprite;
-    }
-
-
-    public Weapon getEquippedWeapon() {
-        return this.equippedWeapon;
-    }
-
-    public Body getHandBody() {
-        return this.handBody;
-    }
-
-    /* private void pick()
-    * 무기를 주워 가방에 넣는다(pushToBag)
-    * 가방이 가득 차있을 경우 return
-    * 현재 장착한 무기가 없을 경우 장착한다. equipWeapon
-    */
-    private void pick() {
-        int bag_index=-1;
-        if (accessibleWeapon == null) //주울수 있는 무기가 없을 경우 return
-            return;
-        if(bag.isFull()) {//가방이 꽉 차 있을경우 return
-            return;
-        }else{  //가방에 공간이 있으면 넣는다
-            bag_index = bag.put(accessibleWeapon); // 가방에 넣는다
-        }
-        if (equippedWeapon == null) { //장착한 무기가 없는경우
-            bag.equip(bag_index);
-      //      equipWeapon(accessibleWeapon); //무기를 장착한다.
-        }else{//장착한 무기가 있는경우
-
-        }
-
-
-
-//        Log.d("PUTTEST","PLAYER _PICK!");
-        accessibleWeapon.pick(); // 무기를 줍는다
-
-
-
-       //     UIManager.getInstance().mHud.attachChild(accessibleWeapon.getClone());
-
-    }
-
-    /*private void equipWeapon(Weapon pWeapon)
-    * 무기를 장착한다.
-    * @param Weapon pWeapon 장착할 무기
-    */
-    public void equipWeapon(Weapon pWeapon) {
-
-
-        this.equippedSprite = pWeapon.getWeaponSprite(); //장착한 스프라이트에 등록
-        this.equippedSprite.setZIndex(-1);
-        equippedWeapon = pWeapon;
-        scene.getWorld().registerPhysicsConnector(new PhysicsConnector(equippedSprite, handBody));
-        if (!equippedSprite.hasParent())
-            scene.attachChild(equippedSprite);
-        scene.sortChildren();
-        equippedSprite.setFlippedHorizontal(this.isFlippedHorizontal());
-        this.equippedSprite.setVisible(true);
-    }
-
-    /* public void pushToBag(Weapon weapon)
-    * 가방에 넣는다.
-    * @param Weapon pWeapon 가방에 넣을 무기
-    */
-    public void pushToBag(Weapon pWeapon) {
-
-    }
 
     @Override
     public void setConfigData(JSONObject pConfigData) {
@@ -541,6 +454,132 @@ public class PlayerUnit extends Unit {
     }
 
 
-    public PlayerBag getBag(){return bag;}
+
+
+    private final static int MAX_ITEM = 4;
+    private final static float SLOT_X = 300;
+    private final static float SLOT_Y = 500;
+    private final static float SLOT_SIZE = 80;
+    private final static float SLOT_MARGIN = 4;
+
+    private WeaponSlot items[]; //플레이어가 소유한 아이템들
+    private int curItemIndex = -1; //현재 사용중인 아이템 인덱스
+
+    public void createItemSlot(){
+        items = new WeaponSlot[4];
+        for(int i=0;i<4;i++){
+            items[i] = new WeaponSlot(i,SLOT_X+(SLOT_SIZE+SLOT_MARGIN)*i,SLOT_Y,
+                    ResourceManager.getInstance().mBagItemTextureRegion,ResourceManager.getInstance().vbom);
+            UIManager.getInstance().mHud.attachChild(items[i]);
+            UIManager.getInstance().mHud.registerTouchArea(items[i]);
+        }
+    }
+
+
+    public void setAccessibleWeapon(Weapon pWeapon) {
+        this.accessibleWeapon = pWeapon;
+    }
+    public Weapon getAccessibleWeapon() {
+        return this.accessibleWeapon;
+    }
+    public void resetEquipWeapon() {
+        this.equippedSprite.setVisible(false);
+        this.equippedWeapon = null;
+        this.equippedSprite = null;
+    }
+
+
+    public Sprite getEquippedSprite() {
+        return equippedSprite;
+    }
+
+
+    public Weapon getEquippedWeapon() {
+        return this.equippedWeapon;
+    }
+
+    public Body getHandBody() {
+        return this.handBody;
+    }
+
+    /* private void pick()
+    * 무기를 주워 가방에 넣는다(pushToBag)
+    * 가방이 가득 차있을 경우 return
+    * 현재 장착한 무기가 없을 경우 장착한다. equipWeapon
+    */
+    private void pick() {
+        if (accessibleWeapon == null) //주울수 있는 무기가 없을 경우 return
+            return;
+        int slotindex=-1;
+        for(int i=0;i<MAX_ITEM;i++){
+            if(!items[i].hasItem()){
+                accessibleWeapon.pick();     // 무기를 줍는다
+                items[i].put(accessibleWeapon);// 가방에 넣는다
+                slotindex = i;
+                break;
+            }
+        }
+        if(slotindex==-1){ //가방이 가득 차 있으면
+            return;
+        }
+        if (equippedWeapon == null) { //장착한 무기가 없는경우 방금 주은무기를 장착
+            equipWeapon(slotindex);
+            this.curItemIndex = slotindex;
+        }
+    }
+
+
+    /*private void equipWeapon(Weapon pWeapon)
+    * 무기를 장착한다.
+    * @param int pSlotIndex 장착할 무기가 있는 slot 인덱스
+    */
+    public void equipWeapon(int pSlotIndex) {
+        Log.d("WTEST","equitWeapon");
+        if(this.curItemIndex==pSlotIndex){
+            return;
+        }
+        if(this.equippedWeapon!=null){ //현재 장착한 무기가 있다면
+            takeOffWeapon();
+        }
+        for(int i=0;i<MAX_ITEM;i++){
+            if(i==pSlotIndex){
+                this.equippedWeapon = items[pSlotIndex].select();
+                this.curItemIndex = pSlotIndex;
+            }else{
+                items[i].deselect();
+            }
+        }
+        this.equippedSprite = this.equippedWeapon.getWeaponSprite(); // 스프라이트 등록
+        this.equippedSprite.setZIndex(-1);
+        physicsConnector = new PhysicsConnector(equippedSprite,handBody);//손과 무기 connect
+        scene.getWorld().registerPhysicsConnector(physicsConnector);
+        if (!equippedSprite.hasParent())
+            scene.attachChild(equippedSprite);
+
+        scene.sortChildren();
+        equippedSprite.setFlippedHorizontal(this.isFlippedHorizontal());
+        this.equippedSprite.setVisible(true);
+    }
+
+    /* public void takeOffWeapon()
+    * 현재 장착한 무기를 벗어서 가방에 둔다
+    */
+    public void takeOffWeapon(){
+        scene.getWorld().unregisterPhysicsConnector(physicsConnector);
+        this.equippedSprite.setVisible(false);
+        this.equippedWeapon = null;
+        this.equippedSprite = null;
+        if(this.curItemIndex!=-1) {
+            this.items[curItemIndex].deselect();
+            curItemIndex = -1;
+        }
+    }
+
+    public void throwWeapon(){
+        items[curItemIndex].pop();
+        takeOffWeapon();
+
+    }
+
 
 }

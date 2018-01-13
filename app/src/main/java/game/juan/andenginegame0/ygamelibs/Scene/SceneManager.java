@@ -140,4 +140,15 @@ public class SceneManager {
         setScene(gameScene);
     }
 
+    /*===Shop Scene============*/
+    public void loadShopScene(){
+        Log.d(TAG,"loadingShopScene");
+        ResourceManager.getInstance().loadShopScene();
+    }
+
+    public void createShopScene(){
+        Log.d(TAG,"createShopScene");
+        shopScene = new ShopScene();
+        setScene(shopScene);
+    }
 }

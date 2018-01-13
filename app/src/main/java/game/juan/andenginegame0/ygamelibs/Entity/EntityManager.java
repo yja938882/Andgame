@@ -114,18 +114,20 @@ public class EntityManager implements ConstantsSet.Classify {
 
         playerUnit.createPlayer(pGameScene,pd);
         playerUnit.setActive(true);
+        playerUnit.createItemSlot();
 
         pGameScene.attachChild(playerUnit);
 
-        //     ThrowingWeapon weapon = new ThrowingWeapon(100,400,ResourceManager.getInstance().playerBulletRegion,ResourceManager.getInstance().vbom);
-        NearWeapon weapon = new NearWeapon(100,500,ResourceManager.getInstance().playerBulletRegion,ResourceManager.getInstance().vbom);
+        //     ThrowingWeapon weapon = new ThrowingWeap on(100,400,ResourceManager.getInstance().playerBulletRegion,ResourceManager.getInstance().vbom);
+        NearWeapon weapon = new NearWeapon(100,500,ResourceManager.getInstance().itemInGameHashMap.get("spear"),ResourceManager.getInstance().vbom);
         weapon.setConfigData(DataManager.getInstance().playerBulletConfigs[0]);
+        Log.d("TTTTT",DataManager.getInstance().playerBulletConfigs[0].toString());
         weapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));
         weapon.setVisible(true);
         weapon.transformPhysically(100f/32f,580f/32f);
         pGameScene.attachChild(weapon);
 
-        ThrowingWeapon tweapon = new ThrowingWeapon(100,500,ResourceManager.getInstance().playerBulletRegion2,ResourceManager.getInstance().vbom);
+        ThrowingWeapon tweapon = new ThrowingWeapon(100,500,ResourceManager.getInstance().itemInGameHashMap.get("nipper"),ResourceManager.getInstance().vbom);
         tweapon.setConfigData(DataManager.getInstance().playerBulletConfigs[1]);
         tweapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));
         tweapon.setVisible(true);
@@ -468,10 +470,13 @@ public class EntityManager implements ConstantsSet.Classify {
             @Override
             public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
                 float camx = pGameScene.getCamera().getCenterX();
-                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2)
+                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2) {
+                    Log.d("TGTEST", " ac false!!");
                     return false;
-                else
+                } else {
+                    Log.d("TGTEST", " ac true!!");
                     return true;
+                }
             }
         };
         for(int i=0;i<tempGroundObsDataList.size();i++){

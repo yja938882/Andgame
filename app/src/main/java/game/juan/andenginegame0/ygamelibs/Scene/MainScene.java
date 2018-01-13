@@ -35,6 +35,20 @@ public class MainScene extends BaseScene {
         this.attachChild(r);
         this.registerTouchArea(r);
 
+        Rectangle r1 = new Rectangle(400,300,50,50,ResourceManager.getInstance().vbom){
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                if(pSceneTouchEvent.isActionDown()){
+                    SceneManager.getInstance().createLoadingScene(SceneManager.SceneType.SHOP);
+                    SceneManager.getInstance().disposeMainScene();
+                }
+                return true;
+            }
+        };
+        r1.setColor(Color.RED);
+        this.attachChild(r1);
+        this.registerTouchArea(r1);
+
         Text lv =new Text(20,20,resourcesManager.mainFont,"Lv : "+ DataManager.getInstance().player_level,vbom);
         Text money = new Text(lv.getWidth()+40,20,resourcesManager.mainFont,"Money : "+DataManager.getInstance().money,vbom);
         Text player_count = new Text(money.getX()+money.getWidth()+20,20,resourcesManager.mainFont,"Count : "+DataManager.getInstance().play_count,vbom);

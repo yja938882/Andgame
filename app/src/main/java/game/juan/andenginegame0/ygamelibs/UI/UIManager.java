@@ -113,11 +113,11 @@ public class UIManager implements ConstantsSet {
                 ResourceManager.getInstance().mControllerTRs[UI_SKILL2],
                 ResourceManager.getInstance().vbom);
 
-        mControllers[UI_ATTACK].create( EntityManager.getInstance().playerUnit, Unit.ACTIVE_ATTACK,mHud);
-        mControllers[UI_LEFT].create( EntityManager.getInstance().playerUnit, Unit.ACTIVE_MOVE_LEFT,mHud);
-        mControllers[UI_RIGHT].create( EntityManager.getInstance().playerUnit,Unit.ACTIVE_MOVE_RIGHT,mHud);
-        mControllers[UI_UP].create( EntityManager.getInstance().playerUnit,Unit.ACTIVE_JUMP,mHud);
-        mControllers[UI_SKILL1].create( EntityManager.getInstance().playerUnit,Unit.ACTIVE_PICK,mHud);
+        mControllers[UI_ATTACK].create( Unit.ACTIVE_ATTACK,mHud);
+        mControllers[UI_LEFT].create(Unit.ACTIVE_MOVE_LEFT,mHud);
+        mControllers[UI_RIGHT].create(Unit.ACTIVE_MOVE_RIGHT,mHud);
+        mControllers[UI_UP].create(Unit.ACTIVE_JUMP,mHud);
+        mControllers[UI_SKILL1].create(Unit.ACTIVE_PICK,mHud);
        // mControllers[UI_SKILL2].create( EntityManager.getInstance().playerUnit,Unit.ACTIVE_PICK,mHud);
 
 
@@ -135,7 +135,6 @@ public class UIManager implements ConstantsSet {
                 ResourceManager.getInstance().mainFont,ResourceManager.getInstance().engine,mHud);
         ResourceManager.getInstance().camera.setHUD(mHud);
 
-        EntityManager.getInstance().playerUnit.getBag().init();
     }
     }
 

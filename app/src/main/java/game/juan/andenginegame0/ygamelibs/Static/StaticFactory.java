@@ -44,7 +44,7 @@ public class StaticFactory {
         Mesh UniqueBodyMesh = new Mesh(pStaticData.getPosX(),pStaticData.getPosY(), MeshTriangles,
                 UniqueBodyVerticesTriangulated.size(), DrawMode.TRIANGLES,
                 ResourceManager.getInstance().vbom);
-        UniqueBodyMesh.setColor(0f, 0f, 0f);
+       // UniqueBodyMesh.setColor(0f, 0f, 0f);
         pGameScene.attachChild(UniqueBodyMesh);
 
         Body uniqueBody = PhysicsFactory.createTrianglulatedBody(
