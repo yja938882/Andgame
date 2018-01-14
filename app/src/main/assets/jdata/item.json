@@ -9,7 +9,8 @@
         "type":"throwing",
         "src":"boomerang.png" , "src_width": 128, "src_height":64,
         "scale":1,"row":1,"col":1,
-        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16]
+        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+        "durability":3
       }
     },
     {
@@ -20,7 +21,8 @@
         "type":"throwing",
         "src":"cleaver.png" , "src_width": 128, "src_height":64,
         "scale":1,"row":1,"col":1,
-        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16]
+        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+        "durability":3
       }
     },
     {
@@ -64,7 +66,8 @@
         "type":"throwing",
         "src":"hand_ax.png" , "src_width": 128, "src_height":64,
         "scale":1,"row":1,"col":1,
-        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16]
+        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+        "durability":3
       }
     },
     {
@@ -75,7 +78,8 @@
         "type":"near",
         "src":"hand_spike.png" , "src_width": 512, "src_height":128,
         "scale":1,"row":1,"col":1,
-        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16]
+        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+        "durability":3
       }
     },
     {
@@ -86,7 +90,8 @@
         "type":"near",
         "src":"long_ax.png" , "src_width": 512, "src_height":128,
         "scale":1,"row":1,"col":1,
-        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16]
+        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+        "durability":3
       }
     },
     {
@@ -98,6 +103,7 @@
         "src":"nipper.png" , "src_width": 128, "src_height":64,
         "scale":1,"row":1,"col":1,
         "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+        "durability":3,
         "angle_velocity"        : 5,
         "shoot_gravity"         : 0,
         "shoot_vx"              : 8,
@@ -112,7 +118,12 @@
         "type":"near",
         "src":"rake.png" , "src_width": 512, "src_height":192,
         "scale":1,"row":1,"col":1,
-        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16]
+        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+        "durability":3,
+        "angle_velocity"        : 5,
+        "shoot_gravity"         : 0,
+        "shoot_vx"              : 8,
+        "shoot_vy" : 0
       }
     },
     {
@@ -123,7 +134,8 @@
         "type":"throwing",
         "src":"shuriken.png" , "src_width": 64, "src_height":64,
         "scale":1,"row":1,"col":1,
-        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16]
+        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+        "durability":3
       }
     },
     {
@@ -134,7 +146,8 @@
         "type":"near",
         "src":"spade.png" , "src_width": 512, "src_height":128,
         "scale":1,"row":1,"col":1,
-        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16]
+        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+        "durability":3
       }
     },
     {
@@ -146,6 +159,7 @@
         "src":"spear.png" , "src_width": 512, "src_height":128,
         "scale":1,"row":1,"col":1,
         "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+        "durability":3,
         "angle_velocity"        : 5,
         "shoot_gravity"         : 0,
         "shoot_vx"              : 8,
@@ -160,7 +174,8 @@
         "type":"near",
         "src":"spike.png" , "src_width": 512, "src_height":128,
         "scale":1,"row":1,"col":1,
-        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16]
+        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+        "durability":3
       }
     },
     {
@@ -171,7 +186,8 @@
         "type":"near",
         "src":"steal_rake.png" , "src_width": 512, "src_height":192,
         "scale":1,"row":1,"col":1,
-        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16]
+        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+        "durability":3
       }
     },
     {
@@ -182,7 +198,8 @@
         "type":"throwing",
         "src":"trowel.png" , "src_width": 128, "src_height":64,
         "scale":1,"row":1,"col":1,
-        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16]
+        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+        "durability":3
       }
     }
   ]

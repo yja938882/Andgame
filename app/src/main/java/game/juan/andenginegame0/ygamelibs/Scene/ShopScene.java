@@ -1,6 +1,18 @@
 package game.juan.andenginegame0.ygamelibs.Scene;
 
+import android.provider.ContactsContract;
+
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.input.touch.TouchEvent;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+import game.juan.andenginegame0.ygamelibs.Data.DBManager;
+import game.juan.andenginegame0.ygamelibs.Data.DataManager;
+
+import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_WIDTH;
 
 /**
  * Created by juan on 2018. 1. 14..
@@ -12,6 +24,8 @@ public class ShopScene extends BaseScene{
     private final static float ITEM_CONTAINER_SIZE=80f;
     private final static float ITEM_SIZE = 64f;
     private Sprite itemList[];
+    private ArrayList<Sprite> inventorySpriteList;
+    private ArrayList<JSONObject> inventoryList;
     @Override
     public void createScene() {
         int size = ResourceManager.getInstance().itemsRegion.length;
@@ -32,6 +46,27 @@ public class ShopScene extends BaseScene{
                 itemPosY+=ITEM_CONTAINER_SIZE;
             }
         }
+     //   DataManager.getInstance().loadShopSellItemData();
+        this.inventoryList = DataManager.getInstance().getInventoryList();
+        try {
+            for (int i = 0; i < inventoryList.size(); i++) {
+                Sprite sprite = new Sprite(400, 50,
+                        ResourceManager.getInstance().shopItemHashMap.get(inventoryList.get(i).getString("item_name")), ResourceManager.getInstance().vbom);
+                this.attachChild(sprite);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+        Rectangle rectangle = new Rectangle(CAMERA_WIDTH-100,0,50,50,ResourceManager.getInstance().vbom){
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+            }
+        };
+
+        this.attachChild(rectangle);
     }
 
     @Override

@@ -52,6 +52,12 @@ public class DBManager extends SQLiteOpenHelper{
         String INVENTORY ="inventory";
     }
 
+    private static final String INVENTORY_TABLE ="INVENTORY_TABLE"; //인벤토리 테이블
+    interface InventoryTable{
+        String KEY_ID ="key_name";
+        String ITEM_QUANTITY ="item_quantity";
+    }
+
     Context c;
 
     public DBManager(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -69,6 +75,7 @@ public class DBManager extends SQLiteOpenHelper{
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + CONFIG_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PLAYER_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ITEM_TABLE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + INVENTORY_TABLE);
         // Create tables again
         onCreate(sqLiteDatabase);
     }
@@ -124,6 +131,17 @@ public class DBManager extends SQLiteOpenHelper{
         SQL_create_ITEM_TABLE.append(" TEXT)");
         db.execSQL(SQL_create_ITEM_TABLE.toString());
         loadItemData(db);
+
+        //인벤토리 테이블 생성
+        StringBuilder SQL_create_INVENTORY_TABLE = new StringBuilder("CREATE TABLE ");
+        SQL_create_INVENTORY_TABLE.append(INVENTORY_TABLE);
+        SQL_create_INVENTORY_TABLE.append("(");
+        SQL_create_INVENTORY_TABLE.append(InventoryTable.KEY_ID);
+        SQL_create_INVENTORY_TABLE.append(" TEXT PRIMARY KEY,");
+        SQL_create_INVENTORY_TABLE.append(InventoryTable.ITEM_QUANTITY);
+        SQL_create_INVENTORY_TABLE.append(" INTEGER)");
+        db.execSQL(SQL_create_INVENTORY_TABLE.toString());
+        insertItemToInventoryTable(db,"spear",1);
     }
 
     /* private void loadConfigurationData(SQLiteDatabase db)
@@ -289,7 +307,6 @@ public class DBManager extends SQLiteOpenHelper{
             }
         }
         cursor.close();
-        Log.d("QQQQQ",object.toString());
         return object;
     }
     public ArrayList<JSONObject> getAllSellingItem(SQLiteDatabase db){
@@ -318,41 +335,54 @@ public class DBManager extends SQLiteOpenHelper{
         return array;
     }
 
-
-
-    public String selectPlayerData(SQLiteDatabase db, String key){
-        String sql = "select * from "+PLAYER_TABLE+" where "+PlayerTable.KEY_NAME+" ='"+key+"';";
-        Cursor result = db.rawQuery(sql,null);
-        String ret="";
-        result.moveToFirst();
-        while(!result.isAfterLast()){
-            String keyd = "player : "+result.getString(0);
-            String src = "level : "+ result.getString(1);
-            String data = "exp : "+result.getString(2);
-            String pc = "play count : "+result.getString(3);
-            String money = "money :"+result.getString(4);
-            String stat = "stat :"+result.getString(5);
-            String inven = "inven :"+result.getString(6);
-
-            ret+=keyd;
-            ret+=" ";
-            ret+=src;
-            ret+=" ";
-            ret+=data;
-            ret+=" ";
-            ret+=pc+"\n";
-            ret+=money;
-            ret+=" ";
-            ret+=stat;
-            ret+=" ";
-            ret+=inven;
-            ret+="\n";
-            result.moveToNext();
-        }
-        Log.d("TEST","resit+ "+ret);
-        result.close();
-        return ret;
+    /* public void insertItemToInventoryTable(SQLiteDatabase db, String pItemKey, int number)
+    * @param db
+    * @param pItemKey 추가할 아이템 이름
+    * @param number 처음 구매 갯수
+    */
+    public void insertItemToInventoryTable(SQLiteDatabase db, String pItemKey, int number){
+        StringBuilder SQL_insertItem = new StringBuilder("insert into ");
+        SQL_insertItem.append(INVENTORY_TABLE);
+        SQL_insertItem.append("(");
+        SQL_insertItem.append(InventoryTable.KEY_ID);
+        SQL_insertItem.append(",");
+        SQL_insertItem.append(InventoryTable.ITEM_QUANTITY);
+        SQL_insertItem.append(") ");
+        SQL_insertItem.append("values (");
+        SQL_insertItem.append("'");
+        SQL_insertItem.append(pItemKey);
+        SQL_insertItem.append("',");
+        SQL_insertItem.append(number);
+        SQL_insertItem.append(");");
+        db.execSQL(SQL_insertItem.toString());
     }
+
+    public ArrayList<JSONObject> getAllItemInInventoryTable(SQLiteDatabase db){
+        StringBuilder SQL_selectAllInventory = new StringBuilder("select * from ");
+        SQL_selectAllInventory.append(INVENTORY_TABLE);
+
+        Cursor cursor = db.rawQuery(SQL_selectAllInventory.toString(),null);
+        cursor.moveToFirst();
+
+        ArrayList<JSONObject> arrayList = new ArrayList<JSONObject>();
+        while(!cursor.isAfterLast()){
+            try {
+                JSONObject object= new JSONObject();
+                String itemName = cursor.getString(0);
+                int itemQuantity = cursor.getInt(1);
+                object.put("item_name",itemName);
+                object.put("quantity",itemQuantity);
+                arrayList.add(object);
+                cursor.moveToNext();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        cursor.close();
+        return arrayList;
+    }
+
+
 
     private void insertConfig(SQLiteDatabase db, String pKey, String pSrc, String pData){
         db.execSQL("insert into "+CONFIG_TABLE+" values('"+pKey+"','"+pSrc+"','"+pData+"');");

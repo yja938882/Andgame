@@ -17,7 +17,7 @@ public class DBTestActivity extends AppCompatActivity {
 
     private DBManager mDBManager;
     String dbName ="config.db";
-    int dbVersion =87;
+    int dbVersion =94;
     private SQLiteDatabase db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +29,21 @@ public class DBTestActivity extends AppCompatActivity {
             db = mDBManager.getReadableDatabase();
             TextView tv = (TextView)findViewById(R.id.dbtid);
             //tv.setText(mDBManager.getItemJSON(db,"spear").toString());//mDBManager.selectPlayerData(db,"player"));
-            String ret ="";
-           ArrayList<JSONObject> arrayList =  mDBManager.getAllSellingItem(db);
-           for(int i=0;i<arrayList.size();i++){
-               ret +=(arrayList.get(i).toString()+"\n");
-           }
-           tv.setText(ret);
+          //  String ret ="";
+           //ArrayList<JSONObject> arrayList =  mDBManager.getAllSellingItem(db);
+          // for(int i=0;i<arrayList.size();i++){
+            //   ret +=(arrayList.get(i).toString()+"\n");
+           //}
+
+           ArrayList<JSONObject> itemList = mDBManager.getAllItemInInventoryTable(db);
+            if(itemList.size()<=0)
+                return;
+            String ret1 ="";
+            for(int i=0;i<itemList.size();i++){
+                ret1+=(itemList.get(i).toString()+"\n");
+            }
+
+           tv.setText(ret1);
         }catch (SQLiteException e){
             e.printStackTrace();
         }

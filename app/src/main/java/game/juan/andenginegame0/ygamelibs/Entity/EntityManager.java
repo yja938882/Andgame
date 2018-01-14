@@ -119,7 +119,7 @@ public class EntityManager implements ConstantsSet.Classify {
         pGameScene.attachChild(playerUnit);
 
         //     ThrowingWeapon weapon = new ThrowingWeap on(100,400,ResourceManager.getInstance().playerBulletRegion,ResourceManager.getInstance().vbom);
-        NearWeapon weapon = new NearWeapon(100,500,ResourceManager.getInstance().itemInGameHashMap.get("spear"),ResourceManager.getInstance().vbom);
+        NearWeapon weapon = new NearWeapon(100,500,ResourceManager.getInstance().itemInGameHashMap.get("rake"),ResourceManager.getInstance().vbom);
         weapon.setConfigData(DataManager.getInstance().playerBulletConfigs[0]);
         Log.d("TTTTT",DataManager.getInstance().playerBulletConfigs[0].toString());
         weapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));

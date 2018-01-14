@@ -368,7 +368,7 @@ public class DataManager implements ConstantsSet{
 
             playerBulletConfigs = new JSONObject[2];
          //   playerBulletConfigs[0] = dbManager.getConfigJSON(db,"p_wood");
-            playerBulletConfigs[0] = dbManager.getItemJSON(db,"spear");//dbManager.getConfigJSON(db,"p_axe");
+            playerBulletConfigs[0] = dbManager.getItemJSON(db,"rake");//dbManager.getConfigJSON(db,"p_axe");
             playerBulletConfigs[1] =dbManager.getItemJSON(db,"nipper");
 
         }catch(Exception e){
@@ -530,6 +530,10 @@ public class DataManager implements ConstantsSet{
         SQLiteDatabase db = dbManager.getReadableDatabase();
         return dbManager.getItemJSON(db,pKeyName);
     }
+    public ArrayList<JSONObject> getInventoryList(){
+        SQLiteDatabase db = dbManager.getReadableDatabase();
+        return dbManager.getAllItemInInventoryTable(db);
+    }
 
 
 
@@ -552,13 +556,11 @@ public class DataManager implements ConstantsSet{
         return object;
     }
 
-
     public static void prepareManager(BaseGameActivity activity,DBManager dbManager){
         Log.d(TAG,"prepareManager");
         getInstance().activity = activity;
         getInstance().dbManager = dbManager;
     }
-
 
     public static DataManager getInstance(){ return INSTANCE;}
 }

@@ -154,7 +154,7 @@ public class ResourceManager {
   /*===ShopScene================================*/
   public ITextureRegion itemsRegion[];
   private BitmapTextureAtlas itemsTextureAtlas[];
-
+  public HashMap<String,ITextureRegion> shopItemHashMap;
   public void loadShopScene(){
     loadShopSceneGraphics();
   }
@@ -167,6 +167,7 @@ public class ResourceManager {
      int size = arrayList.size();
      itemsRegion = new ITextureRegion[size];
      itemsTextureAtlas = new BitmapTextureAtlas[size];
+     shopItemHashMap = new HashMap<String,ITextureRegion>();
     try{
       for(int i=0;i<size;i++){
         JSONObject obj = (JSONObject)arrayList.get(i);
@@ -174,6 +175,9 @@ public class ResourceManager {
         itemsRegion[i] = BitmapTextureAtlasTextureRegionFactory.
                 createFromAsset(itemsTextureAtlas[i],gameActivity,obj.getString("src"),0,0);
         itemsTextureAtlas[i].load();
+
+        shopItemHashMap.put(obj.getString("id"),itemsRegion[i]);
+
       }
     }catch (Exception e){
       e.printStackTrace();
@@ -507,7 +511,7 @@ public class ResourceManager {
 
 
     String keys[]={
-      "spear","nipper","fork"
+      "rake","nipper","fork"
     };
     JSONObject array[] = new JSONObject[keys.length];
     for(int i=0;i<keys.length;i++){
@@ -527,7 +531,6 @@ public class ResourceManager {
         itemsInGameTextureAtlas[i].load();
 
         itemInGameHashMap.put(keys[i],itemsInGameRegions[i]);
-
       }
     }catch (Exception e) {
       e.printStackTrace();
