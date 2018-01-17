@@ -1,41 +1,8 @@
 {
-  "entity":
+  "ai":
   [
     {
-      "id":"player",
-      "src":"player_s.png",
-      "data":
-      {
-        "body":"circle",     "body_vx":[0,16,-8,8,16,16,8,-8],"body_vy":[0,16,16,16,8,-8,-16,-16],
-        "foot":"circle",      "foot_vx":[0,8],"foot_vy":[0,8],
-        "hp":3,
-        "speed":10,     "jump":20,
-        "lock"                :3,
-        "movingFrameIndex"    :[0  ,1  ,2  ,3  ,4  ,5  ,0],
-        "movingFrameDuration" :[25 ,50 ,50 ,50 ,50 ,50 ,25],
-        "movingLock"          : "none",
-        "attackFrameIndex"    :[12   ,15 ],
-        "attackFrameDuration" :[140  ,140 ],
-        "attackLock"          : "soft",
-        "dieFrameIndex"       :[50],
-        "dieFrameDuration"    :[0],
-        "dieLock"             : "strong",
-        "beAttackedFrameIndex"   :[32,33,34,35,36,37,38,32],
-        "beAttackedFrameDuration":[50,50,50,50,50,50,50,50],
-        "beAttackedLock"        :"strong",
-        "jumpFrameIndex"         :[24,25,26],
-        "jumpFrameDuration"      :[50,50,50],
-        "jumpLock"              :"none",
-
-        "src"                   :"player_s.png",
-        "src_width"             : 1024,
-        "src_height"            : 1024,
-        "scale"                 :0.5
-      }
-    },
-    {
       "id":"rat",
-      "src":"",
       "data":
       {
         "body":"vertices",     "body_vx":[-32,-32,-16,16,32,32,16,-16],"body_vy":[-16,16,32,32,16,-16,-32,-32],
@@ -67,6 +34,7 @@
         "row"                   : 6,
         "col"                   : 6,
         "scale"                 :0.5
+      ,"add_id" :[]
       }
     },
     {
@@ -102,12 +70,12 @@
         "src_height"            : 1024,
         "row"                   : 10,
         "col"                   : 10,
-        "scale"                 :0.5
+        "scale"                 :0.5,
+        "add_id" :[]
       }
     },
     {
       "id":"throwing_rat",
-      "src":"",
       "data":
       {
         "body":"vertices",     "body_vx":[-16,-16,-8,8,16,16,8,-8],"body_vy":[-8,8,16,16,8,-8,-16,-16],
@@ -138,7 +106,8 @@
         "src_height"            : 1024,
         "row"                   : 10,
         "col"                   : 10,
-        "scale"                 :0.5
+        "scale"                 :0.5,
+        "add_id" :[]
       }
     },
     {
@@ -175,13 +144,11 @@
         "row"                   : 6,
         "col"                   : 6,
         "scale"                 :0.5,
-
-        "weapon"                :"arrow"
+        "add_id" :["arrow"]
       }
     },
     {
       "id":"flying_rat",
-      "src":"",
       "data":
       {
         "body":"vertices",     "body_vx":[-16,-16,-8,8,16,16,8,-8],"body_vy":[-8,8,16,16,8,-8,-16,-16],
@@ -212,184 +179,12 @@
         "src_height"            : 1024,
         "row"                   : 10,
         "col"                   : 10,
-        "scale"                 :0.5
-      }
-    },
-    {
-      "id":"egg0",
-      "src":"",
-      "data":
-      {
-        "iforce" :[0,0],           "aforce":[0,10],
-        "body"  : "vertices",   "body_vx":[-16,-16,-8,8,16,16,8,-8],"body_vy":[-8,8,16,16,8,-8,-16,-16],
-        "animFrameIndex":[0,1,2,3,4], "animFrameDuration":[40,40,40,50,50],
-        "animLock":"strong",
-        "idle_time":2,          "working_time":2,
-
-        "src"                   :"egg0.png",
-        "src_width"             : 320,
-        "src_height"            : 64,
-        "scale"                 : 0.5,
-        "col"                   : 5,
-        "row"                   : 1
-      }
-    },
-    {
-      "id":"egg1",
-      "src":"",
-      "data":
-      {
-        "iforce" :[0,0],           "aforce":[0,10],
-        "body"  : "vertices",   "body_vx":[-16,-16,-8,8,16,16,8,-8],"body_vy":[-8,8,16,16,8,-8,-16,-16],
-        "animFrameIndex":[0,1,2,3,4], "animFrameDuration":[40,40,40,50,50],
-        "animLock":"strong",
-        "idle_time":2,          "working_time":2,
-
-        "src"                   :"egg1.png",
-        "src_width"             : 320,
-        "src_height"            : 64,
-        "scale"                 : 0.5,
-        "col"                   : 5,
-        "row"                   : 1
-      }
-    },
-    {
-      "id":"thorn0",
-      "src":"",
-      "data":
-      {
-        "anim"  : "no",
-        "body"  : "vertices",   "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
-
-        "src"                   :"thorn0.png",
-        "src_width"             : 128,
-        "src_height"            : 128,
-        "scale"                 : 0.5,
-        "col"                   : 1,
-        "row"                   : 1
-      }
-    },
-    {
-      "id":"thorn1",
-      "src":"",
-      "data":
-      {
-        "anim"  : "no",
-        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
-
-        "src"                   :"thorn1.png",
-        "src_width"             : 128,
-        "src_height"            : 128,
-        "scale"                 : 0.5,
-        "col"                   : 1,
-        "row"                   : 1
-      }
-    },
-    {
-      "id":"rat_trap",
-      "src":"",
-      "data":
-      {
-        "anim"  : "yes",
-        "body"  : "vertices",   "body_vx":[-16,-16,16,16],"body_vy":[-16,16,16,-16],
-        "animFrameIndex":[0,1,2,3,4], "animFrameDuration":[25,25,25,25,25],
-        "animLock":"strong",
-
-        "src"                   :"rat_trap.png",
-        "src_width"             : 640,
-        "src_height"            : 64,
-        "scale"                 : 1,
-        "col"                   : 5,
-        "row"                   : 1
-      }
-    },
-    {
-      "id":"rolling_stone",
-      "src":"",
-      "data":
-      {
-        "iforce" :[0,0],           "aforce":[0,10],
-        "anim"  : "yes",
-        "body"  : "circle",   "body_vx":[-64,-64,64,64],"body_vy":[-16,16,16,-16],
-        "animFrameIndex":[0,1,2,3,4], "animFrameDuration":[25,25,25,25,25],
-        "animLock":"strong",
-
-        "src"                   :"thorn0.png",
-        "src_width"             : 128,
-        "src_height"            : 128,
-        "scale"                 : 1,
-        "col"                   : 1,
-        "row"                   : 1
-      }
-    },
-    {
-      "id":"temp_ground0",
-      "src":"",
-      "data":
-      {
-        "iforce" :[0,0],           "aforce":[0,10],
-        "anim"  : "yes",
-        "body"  : "vertices",   "body_vx":[-96,-96,96,96],"body_vy":[-32,32,32,-32],
-        "animFrameIndex":[0,1,2,3,4], "animFrameDuration":[25,25,25,25,25],
-        "animLock":"strong",
-
-        "src"                   :"temp_ground0.png",
-        "src_width"             : 192,
-        "src_height"            : 64,
-        "scale"                 : 1,
-        "col"                   : 1,
-        "row"                   : 1
-      }
-    },
-    {
-      "id":"saw",
-      "src":"",
-      "data":
-      {
-        "src0": "pendulum0.png",           "src1"  :"pendulum_bar0.png"             ,"src2": "pendulum_std0.png",
-        "src_width0" :128,     "src_width1":8         ,"src_width2":64,
-        "src_height0":128,     "src_height1":128        ,"src_height2":26,
-        "row0":1,            "row1":1               ,"row2":1,
-        "col0":1,            "col1":1               ,"col2":1,
-        "scale0":1,          "scale1":1,            "scale2":1,
-
-        "body1" :"vertices",  "body1_vx":[-16,-16,-8,8,16,16,8,-8],"body1_vy":[-8,8,16,16,8,-8,-16,-16],
-        "body2" :"vertices",  "body2_vx":[-4,-4,4,4], "body2_vy":[-64,64,64,-64],
-        "body3" :"vertices",  "body3_vx":[-16,-16,16,16],"body3_vy":[-16,16,16,-16],
-        "motor_speed" : 10
-      }
-    },
-    {
-      "id":"moving_ground0",
-      "src":"",
-      "data":
-      {
-        "body" :"vertices",  "body_vx":[-64,-64,64,64],"body_vy":[-16,16,16,-16],
-        "src"                   :"moving_ground0.png",
-        "src_width"             : 128,
-        "src_height"            : 32,
-        "scale"                 : 1,
-        "col"                   : 6,
-        "row"                   : 1
-      }
-    },
-    {
-      "id":"moving_wall0",
-      "src":"",
-      "data":
-      {
-        "body" :"vertices",  "body_vx":[-80,-80,80,80],"body_vy":[-256,256,256,-256],
-        "src"                   :"moving_wall0.png",
-        "src_width"             : 160,
-        "src_height"            : 512,
-        "scale"                 : 1,
-        "col"                   : 1,
-        "row"                   : 1
+        "scale"                 :0.5,
+        "add_id" :[]
       }
     },
     {
       "id":"arrow",
-      "src":"",
       "data":
       {
         "anim"  : "no",
@@ -402,7 +197,8 @@
         "src_height"            : 64,
         "scale"                 : 1,
         "col"                   : 1,
-        "row"                   : 1
+        "row"                   : 1,
+        "add_id" :[]
       }
     }
   ]

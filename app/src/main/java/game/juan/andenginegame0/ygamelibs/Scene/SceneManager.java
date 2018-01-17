@@ -82,7 +82,8 @@ public class SceneManager {
 
     public void loadSplashScene(){
         Log.d(TAG,"loadSplashScene");
-        ResourceManager.getInstance().loadSplashSceneGraphics();
+       // ResourceManager.getInstance().loadSplashSceneGraphics();
+        ResourceManager.getInstance().loadSplashScene();
     }
     public void createSplashScene(IGameInterface.OnCreateSceneCallback pOnCreateSceneCallback){
         Log.d(TAG,"createSplashScene");
@@ -92,7 +93,7 @@ public class SceneManager {
     }
     public void disposeSplashScene(){
         Log.d(TAG,"disposeSplashScene");
-        ResourceManager.getInstance().unloadSplashSceneGraphics();
+        ResourceManager.getInstance().unloadSplashScene();
         splashScene.disposeScene();
         splashScene = null;
     }
@@ -132,7 +133,7 @@ public class SceneManager {
     /*===Game Scene==========*/
     public void loadGameScene() {
         Log.d(TAG,"loadingGameScene");
-        ResourceManager.getInstance().loadStage(0);
+        ResourceManager.getInstance().loadGameScene(0);
     }
     public void createGameScene(){
         Log.d(TAG,"createGameScene");

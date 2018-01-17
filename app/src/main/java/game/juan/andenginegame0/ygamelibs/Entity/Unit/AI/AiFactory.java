@@ -14,7 +14,6 @@ import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Weapon;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.AI_SHOOTING_1_CONFIG;
 
 /**
  * Created by juan on 2017. 12. 10..
@@ -23,12 +22,12 @@ import static game.juan.andenginegame0.ygamelibs.Data.DataManager.AI_SHOOTING_1_
 public class AiFactory implements ConstantsSet.EntityType{
 
     public static GameEntity createAi(GameScene pGameScene, ITiledTextureRegion iTiledTextureRegion, AiData pAiData){
-        switch(pAiData.getType()){
+       /* switch(pAiData.getType()){
             case MOVING_AI_1:
                 return createMoving_Ai(pGameScene, iTiledTextureRegion,(DataBlock)pAiData);
             case SHOOTING_AI_1:
                 return createShooting_Ai(pGameScene,iTiledTextureRegion,pAiData);
-        }
+        }*/
         return null;
     }
 
@@ -36,7 +35,7 @@ public class AiFactory implements ConstantsSet.EntityType{
         final AiUnit aiUnit = new AiUnit(pDataBlock.getPosX(),pDataBlock.getPosY(),
                 iTiledTextureRegion, ResourceManager.getInstance().vbom);
        aiUnit.setScale(0.7f);
-        aiUnit.setConfigData(DataManager.getInstance().aiConfigs[0]);
+        //aiUnit.setConfigData(DataManager.getInstance().aiConfigs[0]);
         aiUnit.createAi(pGameScene,pDataBlock);
         aiUnit.setActive(true);
         pGameScene.attachChild(aiUnit);
@@ -47,7 +46,7 @@ public class AiFactory implements ConstantsSet.EntityType{
         final ShootingAi aiUnit = new ShootingAi(pDataBlock.getPosX(),pDataBlock.getPosY(),
                 iTiledTextureRegion, ResourceManager.getInstance().vbom);
         // aiUnit.setScale(0.5f);
-        aiUnit.setConfigData(DataManager.getInstance().aiConfigs[AI_SHOOTING_1_CONFIG]);
+      //  aiUnit.setConfigData(DataManager.getInstance().aiConfigs[AI_SHOOTING_1_CONFIG]);
       //  Weapon  weapon = new Weapon(1);
        // Bullet bullet = new Bullet(0,0,ResourceManager.getInstance().ai_0_BulletRegion,
          //       ResourceManager.getInstance().vbom);
@@ -60,7 +59,7 @@ public class AiFactory implements ConstantsSet.EntityType{
         //aiUnit.setWeapon(weapon);
 
 
-        aiUnit.createAi(pGameScene,pDataBlock);
+      //  aiUnit.createAi(pGameScene,pDataBlock);
         aiUnit.setActive(true);
         pGameScene.attachChild(aiUnit);
 

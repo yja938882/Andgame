@@ -13,7 +13,9 @@ public class AiData extends UnitData {
     public AiData(int pClass, int pType, int pX, int pY) {
         super(pClass, pType, pX, pY);
     }
-
+    public AiData(int pClass, int pType, int pX, int pY,String pId) {
+        super(pClass, pType, pX, pY,pId);
+    }
     @Override
     public void beginContactWith(int pClass) {
             switch (pClass){

@@ -59,6 +59,7 @@ public abstract class DataBlock implements ConstantsSet.Classify {
     private float posX;
     private float posY;
     private  int mType;
+    private String id;
 
 
     /*===Constructor================*/
@@ -67,6 +68,14 @@ public abstract class DataBlock implements ConstantsSet.Classify {
         this.posX = pX*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
         this.posY = pY*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
         this.mType=pType;
+    }
+    public DataBlock(int pClass,int pType, int pX, int pY,String pId){
+        mClassifyData =pClass;
+        this.posX = pX*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+        this.posY = pY*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+        this.mType=pType;
+        this.id="";
+        this.id+=pId;
     }
     /*===Setter & Getter===========*/
     public int getClassifyData(){
@@ -86,6 +95,7 @@ public abstract class DataBlock implements ConstantsSet.Classify {
         this.mClassifyData = pClass;
     }
     public Float getFloatPosX(){return posX;}
+    public String getId(){return this.id;}
     /*===Abstract==================*/
     public abstract void beginContactWith(int pClass);
     public abstract void endContactWith(int pClass);

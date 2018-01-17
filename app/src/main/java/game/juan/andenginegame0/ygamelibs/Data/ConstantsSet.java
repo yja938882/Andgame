@@ -102,14 +102,11 @@ public interface ConstantsSet {
         int PLAYER = 1;
 
         int FLY_AI = 11;
-        int MOVING_AI_1 = 12;
-        int MOVING_AI_2 = 13;
-        int SHOOTING_AI_1 = 14;
-        int SHOOTING_AI_2 = 15;
+        int MOVING_AI = 12;
+        int SHOOTING_AI = 14;
 
         int OBS_MOVING_GROUND = 21;
-        int OBS_TRAP_1 = 22;
-        int OBS_TRAP_2 =23;
+        int OBS_TRAP=22;
         int OBS_TRAP_TEMP = 24;
         int OBS_PENDULUM = 25;
         int OBS_FALL = 26;

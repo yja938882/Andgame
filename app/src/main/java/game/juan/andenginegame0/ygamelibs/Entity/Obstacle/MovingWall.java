@@ -68,7 +68,7 @@ public class MovingWall extends GameEntity {
         particleEmitter = new RectangleParticleEmitter(0,0,this.getWidth(),10);
         this.particleSystem = new BatchedSpriteParticleSystem(particleEmitter,
                 10, 30, 30,
-                ResourceManager.getInstance().movingWallParticleRegion, ResourceManager.getInstance().vbom);
+                ResourceManager.getInstance().gfxHashMap.get("player_moving_particle"), ResourceManager.getInstance().vbom);
         particleSystem.addParticleInitializer(new VelocityParticleInitializer<UncoloredSprite>(-10, 10, -25, -15));
         particleSystem.addParticleInitializer(new AccelerationParticleInitializer<UncoloredSprite>(-10, 10, -3, -5));
         particleSystem.addParticleInitializer(new ExpireParticleInitializer<UncoloredSprite>(2f));

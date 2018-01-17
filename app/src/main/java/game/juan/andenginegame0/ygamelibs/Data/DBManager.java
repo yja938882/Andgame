@@ -26,11 +26,16 @@ public class DBManager extends SQLiteOpenHelper{
     /*===Constants===================*/
     private static final String TAG="[cheep] DBManager";
 
-    private static final String CONFIG_TABLE="CONFIG_TABLE";    // 초기 설정 테이블
-    interface ConfigTable{
+    private static final String AI_TABLE ="AI_TABLE";           // Ai 테이블
+    interface AiTable{
         String KEY_NAME ="key_name";
-        String DATA ="data";
-        String SRC="src";
+        String DATA= "data";
+    }
+
+    private static final String OBS_TABLE = "OBS_TABLE";        //Obs 테이블
+    interface ObsTable{
+        String KEY_NAME="key_name";
+        String DATA="data";
     }
 
     private static final String ITEM_TABLE="ITEM_TABLE";        //아이템 테이블
@@ -49,7 +54,7 @@ public class DBManager extends SQLiteOpenHelper{
         String PLAY_COUNT="play_count";
         String MONEY = "money";
         String STAT="stat";
-        String INVENTORY ="inventory";
+        String DATA="data";
     }
 
     private static final String INVENTORY_TABLE ="INVENTORY_TABLE"; //인벤토리 테이블
@@ -72,7 +77,8 @@ public class DBManager extends SQLiteOpenHelper{
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + CONFIG_TABLE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + AI_TABLE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + OBS_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PLAYER_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ITEM_TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + INVENTORY_TABLE);
@@ -85,18 +91,27 @@ public class DBManager extends SQLiteOpenHelper{
     * @param db 에 Config table, Player table, item table 생성
     */
     private void createTable(SQLiteDatabase db){
-        //기본 설정 파일 생성
-        StringBuilder SQL_create_CONFIG_TABLE= new StringBuilder("CREATE TABLE ");
-        SQL_create_CONFIG_TABLE.append(CONFIG_TABLE);
-        SQL_create_CONFIG_TABLE.append("(");
-        SQL_create_CONFIG_TABLE.append(ConfigTable.KEY_NAME);
-        SQL_create_CONFIG_TABLE.append(" TEXT PRIMARY KEY ,");
-        SQL_create_CONFIG_TABLE.append(ConfigTable.SRC);
-        SQL_create_CONFIG_TABLE.append("TEXT,");
-        SQL_create_CONFIG_TABLE.append(ConfigTable.DATA);
-        SQL_create_CONFIG_TABLE.append(" TEXT)");
-        db.execSQL(SQL_create_CONFIG_TABLE.toString());
-        loadConfigurationData(db);
+        //Ai 설정 파일 생성
+        StringBuilder SQL_create_AI_CONFIG_TABLE= new StringBuilder("CREATE TABLE ");
+        SQL_create_AI_CONFIG_TABLE.append(AI_TABLE);
+        SQL_create_AI_CONFIG_TABLE.append("(");
+        SQL_create_AI_CONFIG_TABLE.append(AiTable.KEY_NAME);
+        SQL_create_AI_CONFIG_TABLE.append(" TEXT PRIMARY KEY ,");
+        SQL_create_AI_CONFIG_TABLE.append(AiTable.DATA);
+        SQL_create_AI_CONFIG_TABLE.append(" TEXT)");
+        db.execSQL(SQL_create_AI_CONFIG_TABLE.toString());
+        loadAiData(db);
+
+        //Obs 설정 파일 생성
+        StringBuilder SQL_create_OBS_CONFIG_TABLE= new StringBuilder("CREATE TABLE ");
+        SQL_create_OBS_CONFIG_TABLE.append(OBS_TABLE);
+        SQL_create_OBS_CONFIG_TABLE.append("(");
+        SQL_create_OBS_CONFIG_TABLE.append(ObsTable.KEY_NAME);
+        SQL_create_OBS_CONFIG_TABLE.append(" TEXT PRIMARY KEY ,");
+        SQL_create_OBS_CONFIG_TABLE.append(ObsTable.DATA);
+        SQL_create_OBS_CONFIG_TABLE.append(" TEXT)");
+        db.execSQL(SQL_create_OBS_CONFIG_TABLE.toString());
+        loadObsData(db);
 
         //플레이어 테이블 생성
         StringBuilder SQL_create_PlAYER_TABLE = new StringBuilder("CREATE TABLE ");
@@ -114,7 +129,7 @@ public class DBManager extends SQLiteOpenHelper{
         SQL_create_PlAYER_TABLE.append(" INTEGER,");
         SQL_create_PlAYER_TABLE.append(PlayerTable.STAT);
         SQL_create_PlAYER_TABLE.append(" TEXT,");
-        SQL_create_PlAYER_TABLE.append(PlayerTable.INVENTORY);
+        SQL_create_PlAYER_TABLE.append(PlayerTable.DATA);
         SQL_create_PlAYER_TABLE.append(" TEXT)");
         db.execSQL(SQL_create_PlAYER_TABLE.toString());
         initPlayerTable(db);
@@ -144,52 +159,72 @@ public class DBManager extends SQLiteOpenHelper{
         insertItemToInventoryTable(db,"spear",1);
     }
 
-    /* private void loadConfigurationData(SQLiteDatabase db)
-    * @param db 에 초기 데이터를 로드 시킨다
+    /* Ai 데이터를 DB에 로딩
+    * @param db 에 초기 ai 데이터를 로드 시킨다
     */
-    private void loadConfigurationData(SQLiteDatabase db){
+    private void loadAiData(SQLiteDatabase db){
         try{
-            JSONObject configObject = loadJSONFromAsset(c,"jdata/config.json");
-            JSONArray entityArray = configObject.getJSONArray("entity");
+            JSONObject configObject = loadJSONFromAsset(c,"jdata/aiconfig.json");
+            JSONArray entityArray = configObject.getJSONArray("ai");
             for(int i=0;i<entityArray.length();i++){
-                insertConfig(db,
+                insertAiConfig(db,
                         ((JSONObject)entityArray.get(i)).getString("id"),
-                        ((JSONObject)entityArray.get(i)).getString("src"),
                         ((JSONObject)entityArray.get(i)).getJSONObject("data").toString());
             }
         }
         catch (Exception e){
-            e.printStackTrace();
+            Log.d(TAG,"error :"+e.getMessage());
         }
     }
 
-    /*private void initPlayerTable(SQLiteDatabase db)
+    /* Obstacle 데이터를 DB에 로딩
+    * @param db 에 초기 장애물 데이터 로딩
+    */
+    private void loadObsData(SQLiteDatabase db){
+        try{
+            JSONObject configObject = loadJSONFromAsset(c,"jdata/obsconfig.json");
+            if(configObject==null)
+                return;
+            JSONArray entityArray = configObject.getJSONArray("obstacle");
+
+            for (int i = 0; i < entityArray.length(); i++) {
+                insertObsConfig(db,
+                            ((JSONObject) entityArray.get(i)).getString("id"),
+                            ((JSONObject) entityArray.get(i)).getJSONObject("data").toString());
+                }
+
+        } catch (Exception e){
+            Log.d(TAG,"error :"+e.getMessage());
+        }
+    }
+
+
+    /*
     * @param db 에 초기 플레이어 데이터를 만든다
     */
     private void initPlayerTable(SQLiteDatabase db){
         JSONObject statJsonObject;
         try{
-            statJsonObject = new JSONObject();
-            statJsonObject.put("attack",1);
-            statJsonObject.put("power",1);
-            statJsonObject.put("jump",1);
+            JSONObject configObject = loadJSONFromAsset(c,"jdata/player.json");
+
+            statJsonObject = configObject.getJSONObject("stat");
 
             StringBuilder SQL_insert_InitialPlayerData = new StringBuilder("insert into ");
             SQL_insert_InitialPlayerData.append(PLAYER_TABLE);
             SQL_insert_InitialPlayerData.append(" values('");
             SQL_insert_InitialPlayerData.append(PlayerTable.PLAYER_PRIMARY_KEY);
             SQL_insert_InitialPlayerData.append("','");
-            SQL_insert_InitialPlayerData.append(1);
+            SQL_insert_InitialPlayerData.append(configObject.getInt("level"));
             SQL_insert_InitialPlayerData.append("','");
-            SQL_insert_InitialPlayerData.append(0);
+            SQL_insert_InitialPlayerData.append(configObject.getInt("exp"));
             SQL_insert_InitialPlayerData.append("','");
-            SQL_insert_InitialPlayerData.append(5);
+            SQL_insert_InitialPlayerData.append(configObject.getInt("play_count"));
             SQL_insert_InitialPlayerData.append("','");
-            SQL_insert_InitialPlayerData.append(0);
+            SQL_insert_InitialPlayerData.append(configObject.getInt("money"));
             SQL_insert_InitialPlayerData.append("','");
             SQL_insert_InitialPlayerData.append(statJsonObject.toString());
             SQL_insert_InitialPlayerData.append("','");
-            SQL_insert_InitialPlayerData.append("inventory");
+            SQL_insert_InitialPlayerData.append((configObject.getJSONObject("data").toString()));
             SQL_insert_InitialPlayerData.append("')");
             db.execSQL(SQL_insert_InitialPlayerData.toString());
 
@@ -216,7 +251,6 @@ public class DBManager extends SQLiteOpenHelper{
         }
         catch (Exception e){
             Log.d(TAG,"error : "+e.getMessage());
-            //e.printStackTrace();
         }
     }
 
@@ -246,40 +280,58 @@ public class DBManager extends SQLiteOpenHelper{
 
         return gamedata;
     }
-
-
-
-
-    public String selectData(SQLiteDatabase db,String pKeyName){
-        String sql = "select * from "+CONFIG_TABLE+" where "+ConfigTable.KEY_NAME+" ='"+pKeyName+"';";
-        Cursor result = db.rawQuery(sql,null);
-        String ret="";
-        result.moveToFirst();
-        while(!result.isAfterLast()){
-            String key = result.getString(0);
-            String src = result.getString(1);
-            String data = result.getString(2);
-            ret+=key;
-            ret+=" ";
-            ret+=src;
-            ret+=" ";
-            ret+=data;
-            ret+="\n";
-            result.moveToNext();
-        }
-        result.close();
-        return ret;
-    }
-    public JSONObject getConfigJSON(SQLiteDatabase db, String pKeyName){
+    public JSONObject getPlayerConfigJSON(SQLiteDatabase db){
         JSONObject object=null;
-        String sql = "select * from "+CONFIG_TABLE+" where "+ConfigTable.KEY_NAME+" ='"+pKeyName+"';";
+        String sql = "select * from "+PLAYER_TABLE+" where "+PlayerTable.KEY_NAME+" ='"+PlayerTable.PLAYER_PRIMARY_KEY+"';";
         Cursor cursor = db.rawQuery(sql,null);
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
             try {
-                object = new JSONObject(cursor.getString(2));
+                object = new JSONObject(cursor.getString(7));
                 cursor.moveToNext();
-                Log.d("JSON!!","obj : "+object);
+            }catch (Exception e){
+                Log.d(TAG,"error : "+e.getMessage());
+            }
+        }
+        cursor.close();
+        return object;
+
+    }
+
+    /* Ai 데이터를 JSON 형태로 반환
+    * @param db
+    * @param pKeyName 에 대응하는 ai data 반환
+    */
+    public JSONObject getAiJSON(SQLiteDatabase db, String pKeyName){
+        JSONObject object=null;
+        String sql = "select * from "+AI_TABLE+" where "+AiTable.KEY_NAME+" ='"+pKeyName+"';";
+        Cursor cursor = db.rawQuery(sql,null);
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            try {
+                object = new JSONObject(cursor.getString(1));
+                cursor.moveToNext();
+            }catch (Exception e){
+                Log.d(TAG,"error : "+e.getMessage());
+            }
+        }
+        cursor.close();
+        return object;
+    }
+
+    /* Obs 데이터를 JSON 형태로 반환
+    * @param db
+    * @param pKeyName 에 대응하는 obstacle data 반환
+    */
+    public JSONObject getObsJSON(SQLiteDatabase db, String pKeyName){
+        JSONObject object=null;
+        String sql = "select * from "+OBS_TABLE+" where "+ObsTable.KEY_NAME+" ='"+pKeyName+"';";
+        Cursor cursor = db.rawQuery(sql,null);
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            try {
+                object = new JSONObject(cursor.getString(1));
+                cursor.moveToNext();
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -287,7 +339,9 @@ public class DBManager extends SQLiteOpenHelper{
         cursor.close();
         return object;
     }
-    public JSONObject getItemJSON(SQLiteDatabase db, String pKeyName){
+
+
+    JSONObject getItemJSON(SQLiteDatabase db, String pKeyName){
         JSONObject object=null;
         StringBuilder SQL_selectItem = new StringBuilder("select * from ");
         SQL_selectItem.append(ITEM_TABLE);
@@ -309,7 +363,7 @@ public class DBManager extends SQLiteOpenHelper{
         cursor.close();
         return object;
     }
-    public ArrayList<JSONObject> getAllSellingItem(SQLiteDatabase db){
+    ArrayList<JSONObject> getAllSellingItem(SQLiteDatabase db){
         ArrayList<JSONObject> array = new ArrayList<>();
 
         StringBuilder SQL_selectItem = new StringBuilder("select * from ");
@@ -335,12 +389,12 @@ public class DBManager extends SQLiteOpenHelper{
         return array;
     }
 
-    /* public void insertItemToInventoryTable(SQLiteDatabase db, String pItemKey, int number)
+    /* Item data
     * @param db
     * @param pItemKey 추가할 아이템 이름
     * @param number 처음 구매 갯수
     */
-    public void insertItemToInventoryTable(SQLiteDatabase db, String pItemKey, int number){
+    private void insertItemToInventoryTable(SQLiteDatabase db, String pItemKey, int number){
         StringBuilder SQL_insertItem = new StringBuilder("insert into ");
         SQL_insertItem.append(INVENTORY_TABLE);
         SQL_insertItem.append("(");
@@ -357,6 +411,9 @@ public class DBManager extends SQLiteOpenHelper{
         db.execSQL(SQL_insertItem.toString());
     }
 
+    /* 인벤토리 테이블 내의 모든 데이터 반환
+     * @param db
+     */
     public ArrayList<JSONObject> getAllItemInInventoryTable(SQLiteDatabase db){
         StringBuilder SQL_selectAllInventory = new StringBuilder("select * from ");
         SQL_selectAllInventory.append(INVENTORY_TABLE);
@@ -384,25 +441,28 @@ public class DBManager extends SQLiteOpenHelper{
 
 
 
-    private void insertConfig(SQLiteDatabase db, String pKey, String pSrc, String pData){
-        db.execSQL("insert into "+CONFIG_TABLE+" values('"+pKey+"','"+pSrc+"','"+pData+"');");
+    private void insertAiConfig(SQLiteDatabase db, String pKey, String pData){
+        db.execSQL("insert into "+AI_TABLE+" values('"+pKey+"','"+pData+"');");
+    }
+    private void insertObsConfig(SQLiteDatabase db, String pKey, String pData){
+        db.execSQL("insert into "+OBS_TABLE+" values('"+pKey+"','"+pData+"');");
     }
     private void insertItem(SQLiteDatabase db, String pKey, String pSell, String pData){
         db.execSQL("insert into "+ITEM_TABLE+" values('"+pKey+"','"+pSell+"','"+pData+"');");
     }
 
-
-
-
-
+    /* Assets 에 있는 JSON 파일 로드
+    * @param context
+    * @param filename : 읽어드릴 json 파일
+    */
     private static JSONObject loadJSONFromAsset(Context context, String filename){
-        String json = null;
-        JSONObject object = null;
+        String json;
+        JSONObject object;
         try {
             InputStream is = context.getAssets().open(filename);
             int size = is.available();
             byte[] buffer = new byte[size];
-            is.read(buffer);
+            int result_size= is.read(buffer);
             is.close();
             json = new String(buffer, "UTF-8");
             object = new JSONObject(json);

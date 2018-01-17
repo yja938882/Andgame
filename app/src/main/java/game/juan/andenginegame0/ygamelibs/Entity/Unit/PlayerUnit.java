@@ -314,7 +314,7 @@ public class PlayerUnit extends Unit {
         fixtureDef.filter.categoryBits = 0;
         fixtureDef.filter.maskBits = 0;
         armBody = PhysicsFactory.createBoxBody(pGameScene.getWorld(), 0, 0, 20, 5, BodyDef.BodyType.DynamicBody, fixtureDef);
-        hand = new Sprite(0, 0, ResourceManager.getInstance().playerHandRegion, ResourceManager.getInstance().vbom);
+        hand = new Sprite(0, 0, ResourceManager.getInstance().gfxHashMap.get("player_hand"), ResourceManager.getInstance().vbom);
         hand.setScale(0.5f);
         scene.getWorld().registerPhysicsConnector(new PhysicsConnector(hand, armBody));
         pGameScene.attachChild(hand);
@@ -365,7 +365,7 @@ public class PlayerUnit extends Unit {
         movingParticleEmitter = new PointParticleEmitter(0, 0);
         this.movingParticleSystem = new BatchedSpriteParticleSystem(movingParticleEmitter,
                 10, 20, 20,
-                ResourceManager.getInstance().playerMovingParticleRegion, ResourceManager.getInstance().vbom);
+                ResourceManager.getInstance().gfxHashMap.get("player_moving_particle"), ResourceManager.getInstance().vbom);
         movingParticleSystem.addParticleInitializer(new VelocityParticleInitializer<UncoloredSprite>(0, 0, -10, -20));
         movingParticleSystem.addParticleInitializer(new AccelerationParticleInitializer<UncoloredSprite>(3, 30, 10, 50));
         movingParticleSystem.addParticleInitializer(new ExpireParticleInitializer<UncoloredSprite>(1.2f));
@@ -382,7 +382,7 @@ public class PlayerUnit extends Unit {
         attackedParticleEmitter = new RectangleParticleEmitter(0,0,CAMERA_WIDTH*1.5f,CAMERA_HEIGHT*1.5f);
         this.attackedParticleSystem = new BatchedSpriteParticleSystem(attackedParticleEmitter,
                 10, 50, 50,
-                ResourceManager.getInstance().playerBeAttackedParticleRegion, ResourceManager.getInstance().vbom);
+                ResourceManager.getInstance().gfxHashMap.get("player_attack_particle"), ResourceManager.getInstance().vbom);
         attackedParticleSystem.addParticleInitializer(new RotationParticleInitializer<UncoloredSprite>(-90f,90f));
         attackedParticleSystem.addParticleInitializer(new VelocityParticleInitializer<UncoloredSprite>(-10, 10, 0, 10));
         attackedParticleSystem.addParticleInitializer(new AccelerationParticleInitializer<UncoloredSprite>(-10, 10, -5, 5));
@@ -398,7 +398,7 @@ public class PlayerUnit extends Unit {
 
         attackParticleEmitter = new PointParticleEmitter(0,0);
         this.attackParticleSystem = new BatchedSpriteParticleSystem(attackParticleEmitter,10,100,100,
-                ResourceManager.getInstance().playerAttackParticleRegion,ResourceManager.getInstance().vbom);
+                ResourceManager.getInstance().gfxHashMap.get("player_attack_particle"),ResourceManager.getInstance().vbom);
         attackParticleSystem.addParticleInitializer(new VelocityParticleInitializer<UncoloredSprite>(-100, 100, -100, 100));
         attackParticleSystem.addParticleInitializer(new AccelerationParticleInitializer<UncoloredSprite>(-20, 20, -20, 20));
         attackParticleSystem.addParticleInitializer(new ExpireParticleInitializer<UncoloredSprite>(0.3f));

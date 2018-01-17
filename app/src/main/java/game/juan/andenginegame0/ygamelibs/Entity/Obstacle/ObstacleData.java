@@ -14,6 +14,9 @@ public class ObstacleData extends DataBlock {
     public ObstacleData(int pClass, int pType, int pX, int pY) {
         super(pClass, pType, pX, pY);
     }
+    public ObstacleData(int pClass, int pType, int pX, int pY,String pId) {
+        super(pClass, pType, pX, pY,pId);
+    }
     float[] data;
     public float[] getData(){
         return data;

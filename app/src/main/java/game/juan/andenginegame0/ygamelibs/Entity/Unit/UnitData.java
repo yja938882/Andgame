@@ -17,7 +17,9 @@ public abstract class UnitData extends DataBlock{
     public UnitData(int pClass, int pType, int pX, int pY) {
         super(pClass, pType, pX, pY);
     }
-
+    public UnitData(int pClass, int pType, int pX, int pY,String pId) {
+        super(pClass, pType, pX, pY,pId);
+    }
    /*===Method=========================*/
    public boolean isInTheAir(){
        return mGroundContactCounter<=0;

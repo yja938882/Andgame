@@ -1,0 +1,217 @@
+{
+  "obstacle":
+  [
+    {
+      "id":"egg0",
+      "data":
+      {
+        "iforce" :[0,0],           "aforce":[0,10],
+        "body"  : "vertices",   "body_vx":[-16,-16,-8,8,16,16,8,-8],"body_vy":[-8,8,16,16,8,-8,-16,-16],
+        "animFrameIndex":[0,1,2,3,4], "animFrameDuration":[40,40,40,50,50],
+        "animLock":"strong",
+        "idle_time":2,          "working_time":2,
+
+        "src"                   :"egg0.png",
+        "src_width"             : 320,  "src_height"            : 64,
+        "scale"                 : 0.5,
+        "col"                   : 5,    "row"                   : 1,
+        "add_id" :[]
+      }
+    },
+    {
+      "id":"egg1",
+      "data":
+      {
+        "iforce" :[0,0],           "aforce":[0,10],
+        "body"  : "vertices",   "body_vx":[-16,-16,-8,8,16,16,8,-8],"body_vy":[-8,8,16,16,8,-8,-16,-16],
+        "animFrameIndex":[0,1,2,3,4], "animFrameDuration":[40,40,40,50,50],
+        "animLock":"strong",
+        "idle_time":2,          "working_time":2,
+
+        "src"                   :"egg1.png",
+        "src_width"             : 320,  "src_height"            : 64,
+        "scale"                 : 0.5,
+        "col"                   : 5, "row"                   : 1,
+        "add_id" :[]
+      }
+    },
+    {
+      "id":"thorn0",
+      "data":
+      {
+        "anim"  : "no",
+        "body"  : "vertices",   "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+
+        "src"                   :"thorn0.png",
+        "src_width"             : 128,  "src_height"            : 128,
+        "scale"                 : 0.5,
+        "col"                   : 1, "row"                   : 1,
+        "add_id" :[]
+      }
+    },
+    {
+      "id":"thorn1",
+      "data":
+      {
+        "anim"  : "no",
+        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+
+        "src"                   :"thorn1.png",
+        "src_width"             : 128, "src_height"            : 128,
+        "scale"                 : 0.5,
+        "col"                   : 1, "row"                   : 1,
+        "add_id" :[]
+      }
+    },
+    {
+      "id":"rat_trap",
+      "data":
+      {
+        "anim"  : "yes",
+        "body"  : "vertices",   "body_vx":[-16,-16,16,16],"body_vy":[-16,16,16,-16],
+        "animFrameIndex":[0,1,2,3,4], "animFrameDuration":[25,25,25,25,25],
+        "animLock":"strong",
+
+        "src"                   :"rat_trap.png",
+        "src_width"             : 640,
+        "src_height"            : 64,
+        "scale"                 : 1,
+        "col"                   : 5,
+        "row"                   : 1,
+        "add_id" :[]
+      }
+    },
+    {
+      "id":"rolling_stone",
+      "data":
+      {
+        "iforce" :[0,0],           "aforce":[0,10],
+        "anim"  : "yes",
+        "body"  : "circle",   "body_vx":[-64,-64,64,64],"body_vy":[-16,16,16,-16],
+        "animFrameIndex":[0,1,2,3,4], "animFrameDuration":[25,25,25,25,25],
+        "animLock":"strong",
+
+        "src"                   :"thorn0.png",
+        "src_width"             : 128,
+        "src_height"            : 128,
+        "scale"                 : 1,
+        "col"                   : 1,
+        "row"                   : 1,
+        "add_id" :[]
+      }
+    },
+    {
+      "id":"temp_ground0",
+      "src":"",
+      "data":
+      {
+        "iforce" :[0,0],           "aforce":[0,10],
+        "anim"  : "yes",
+        "body"  : "vertices",   "body_vx":[-96,-96,96,96],"body_vy":[-32,32,32,-32],
+        "animFrameIndex":[0,1,2,3,4], "animFrameDuration":[25,25,25,25,25],
+        "animLock":"strong",
+
+        "src"                   :"temp_ground0.png",
+        "src_width"             : 192,
+        "src_height"            : 64,
+        "scale"                 : 1,
+        "col"                   : 1,
+        "row"                   : 1,
+        "add_id" :[]
+      }
+    },
+    {
+      "id":"saw",
+      "src":"",
+      "data":
+      {
+        "src" :"pendulum0.png",
+        "src_width" :128, "src_height":128,
+        "row":1, "col":1,
+        "scale":1,
+
+        "body" :"vertices",  "body_vx":[-16,-16,-8,8,16,16,8,-8],"body_vy":[-8,8,16,16,8,-8,-16,-16],
+        "motor_speed" : 10,
+        "add_id" :["saw_bar" ,"saw_end"]
+      }
+    },
+    {
+      "id":"saw_bar",
+      "src":"",
+      "data":
+      {
+        "src" :"pendulum_bar0.png",
+        "src_width" :8,     "src_height":128         ,
+        "body" :"vertices",  "body_vx":[-4,-4,4,4], "body_vy":[-64,64,64,-64],
+        "col"                   : 1,
+        "row"                   : 1,
+
+        "add_id" :[]
+      }
+    },
+    {
+      "id":"saw_end",
+      "src":"",
+      "data":
+      {
+        "src" :"pendulum_std0.png",
+        "src_width" :64,     "src_height":26         ,
+        "body" :"vertices",  "body_vx":[-4,-4,4,4], "body_vy":[-64,64,64,-64],
+        "col"                   : 1,
+        "row"                   : 1,
+        "add_id" :[]
+      }
+    }
+  ,
+    {
+      "id":"moving_ground0",
+      "src":"",
+      "data":
+      {
+        "body" :"vertices",  "body_vx":[-64,-64,64,64],"body_vy":[-16,16,16,-16],
+        "src"                   :"moving_ground0.png",
+        "src_width"             : 128,
+        "src_height"            : 32,
+        "scale"                 : 1,
+        "col"                   : 6,
+        "row"                   : 1,
+        "add_id" :[]
+      }
+    },
+    {
+      "id":"moving_wall0",
+      "src":"",
+      "data":
+      {
+        "body" :"vertices",  "body_vx":[-80,-80,80,80],"body_vy":[-256,256,256,-256],
+        "src"                   :"moving_wall0.png",
+        "src_width"             : 160,
+        "src_height"            : 512,
+        "scale"                 : 1,
+        "col"                   : 1,
+        "row"                   : 1,
+        "add_id" :[]
+      }
+    },
+    {
+      "id":"arrow",
+      "src":"",
+      "data":
+      {
+        "anim"  : "no",
+        "body"  : "vertices",   "body_vx":[-16,-16,16,16],"body_vy":[-16,16,16,-16],
+        "animFrameIndex":[0,1,2,3,4], "animFrameDuration":[25,25,25,25,25],
+        "animLock":"strong",
+
+        "src"                   :"arrow.png",
+        "src_width"             : 64,
+        "src_height"            : 64,
+        "scale"                 : 1,
+        "col"                   : 1,
+        "row"                   : 1,
+        "add_id" :[]
+      }
+    }
+  ]
+
+}

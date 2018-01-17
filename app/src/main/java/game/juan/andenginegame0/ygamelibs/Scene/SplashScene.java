@@ -69,8 +69,8 @@ public class SplashScene extends BaseScene {
     public void createScene() {
         //스플래시 화면 레이어 0, 1 설정
         autoParallaxBackgroundBack = new AutoParallaxBackground(0,0,0,5);
-        splashLayer0 = new Sprite(0,0,ResourceManager.getInstance().splashLayer0Region,ResourceManager.getInstance().vbom);
-        splashLayer1 = new Sprite(0,0,ResourceManager.getInstance().splashLayer1Region,ResourceManager.getInstance().vbom);
+        splashLayer0 = new Sprite(0,0,ResourceManager.getInstance().gfxHashMap.get("layer0")/*ResourceManager.getInstance().splashLayer0Region*/,ResourceManager.getInstance().vbom);
+        splashLayer1 = new Sprite(0,0,ResourceManager.getInstance().gfxHashMap.get("layer1")/*ResourceManager.getInstance().splashLayer1Region*/,ResourceManager.getInstance().vbom);
         ParallaxBackground.ParallaxEntity layer0 = new ParallaxBackground.ParallaxEntity(-2f,splashLayer0);
         ParallaxBackground.ParallaxEntity layer1 = new ParallaxBackground.ParallaxEntity(-4f,splashLayer1);
         autoParallaxBackgroundBack.attachParallaxEntity(layer0);
@@ -78,11 +78,11 @@ public class SplashScene extends BaseScene {
         setBackground(autoParallaxBackgroundBack);
 
         //달 스프라이트 설정
-        moonSprite = new Sprite(0,0,ResourceManager.getInstance().moonRegion,ResourceManager.getInstance().vbom);
+        moonSprite = new Sprite(0,0,ResourceManager.getInstance().gfxHashMap.get("moon")/*ResourceManager.getInstance().moonRegion*/,ResourceManager.getInstance().vbom);
         this.attachChild(moonSprite);
 
         //캐릭터 애니메이션 설정
-        cheepSprite = new AnimatedSprite(CAMERA_WIDTH/2-64,325,ResourceManager.getInstance().cheepRegion,ResourceManager.getInstance().vbom);
+        cheepSprite = new AnimatedSprite(CAMERA_WIDTH/2-64,325,ResourceManager.getInstance().gfxHashMap.get("cheep")/*ResourceManager.getInstance().cheepRegion*/,ResourceManager.getInstance().vbom);
         cheepSprite.setScale(0.65f);
         this.attachChild(cheepSprite);
         cheepSprite.animate(40);
@@ -90,7 +90,7 @@ public class SplashScene extends BaseScene {
         //캐릭터 이동 효과 설정
         movingParticleEmitter = new PointParticleEmitter(CAMERA_WIDTH/2-20,440);
         this.movingParticleSystem =new BatchedSpriteParticleSystem(movingParticleEmitter,1,4,15
-                ,ResourceManager.getInstance().truckParticleRegion,ResourceManager.getInstance().vbom);
+                ,ResourceManager.getInstance().gfxHashMap.get("particle")/*ResourceManager.getInstance().truckParticleRegion*/,ResourceManager.getInstance().vbom);
         movingParticleSystem.addParticleInitializer(new VelocityParticleInitializer<UncoloredSprite>(-6,-15,-6,-16));
         movingParticleSystem.addParticleInitializer(new AccelerationParticleInitializer<UncoloredSprite>(-3,-3,-1,-3));
         movingParticleSystem.addParticleInitializer(new ExpireParticleInitializer<UncoloredSprite>(5f));
@@ -101,9 +101,9 @@ public class SplashScene extends BaseScene {
         movingParticleSystem.setParticlesSpawnEnabled(true);
 
         //스플래시 화면 레이어 2, 2-1 ,3설정
-        splashLayer3 = new Sprite(0,0,ResourceManager.getInstance().splashLayer3Region,ResourceManager.getInstance().vbom);
-        splashLayer2_1 = new Sprite(CAMERA_WIDTH,0,ResourceManager.getInstance().splashLayer2Region,ResourceManager.getInstance().vbom);
-        splashLayer2 = new Sprite(0,0,ResourceManager.getInstance().splashLayer2Region,ResourceManager.getInstance().vbom){
+        splashLayer3 = new Sprite(0,0,ResourceManager.getInstance().gfxHashMap.get("layer3")/*ResourceManager.getInstance().splashLayer3Region*/,ResourceManager.getInstance().vbom);
+        splashLayer2_1 = new Sprite(CAMERA_WIDTH,0,ResourceManager.getInstance().gfxHashMap.get("layer2")/*ResourceManager.getInstance().splashLayer2Region*/,ResourceManager.getInstance().vbom);
+        splashLayer2 = new Sprite(0,0,ResourceManager.getInstance().gfxHashMap.get("layer2")/*ResourceManager.getInstance().splashLayer2Region*/,ResourceManager.getInstance().vbom){
             @Override
             protected void onManagedUpdate(float pSecondsElapsed) {
                 super.onManagedUpdate(pSecondsElapsed);
@@ -128,8 +128,8 @@ public class SplashScene extends BaseScene {
 
 
         //타이틀 스프라이트 설정
-        titleSprite = new Sprite(CAMERA_WIDTH/2 - ResourceManager.getInstance().titleRegion.getWidth()/2
-                ,130,ResourceManager.getInstance().titleRegion,ResourceManager.getInstance().vbom);
+        titleSprite = new Sprite(CAMERA_WIDTH/2 - ResourceManager.getInstance().gfxHashMap.get("title").getWidth()/2
+                ,130,ResourceManager.getInstance().gfxHashMap.get("title")/*ResourceManager.getInstance().titleRegion*/,ResourceManager.getInstance().vbom);
         this.attachChild(titleSprite);
 
 

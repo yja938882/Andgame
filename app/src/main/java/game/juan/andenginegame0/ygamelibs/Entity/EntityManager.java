@@ -38,22 +38,9 @@ import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.Util.Algorithm;
 
 import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.FLY_AI;
-import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.MOVING_AI_1;
-import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.MOVING_AI_2;
+import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.MOVING_AI;
 import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.OBS_FALL;
-import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.SHOOTING_AI_1;
-import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.SHOOTING_AI_2;
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.AI_SHOOTING_1_CONFIG;
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_FALL_CONFIG;
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_MOVING_GROUND_CONFIG;
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_MOVING_WALL_CONFIG;
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_PENDULUM_CONFIG;
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_ROLLING_CONFIG;
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_TEMP_GROUND_CONFIG;
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_TRAP_1_CONFIG;
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_TRAP_2_CONFIG;
-import static game.juan.andenginegame0.ygamelibs.Data.DataManager.OBS_TRAP_TEMP_CONFIG;
-
+import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.EntityType.SHOOTING_AI;
 /**
  * Created by juan on 2017. 11. 25..
  *
@@ -72,17 +59,15 @@ public class EntityManager implements ConstantsSet.Classify {
     private ManagedEntityList mObstacleList;
     private ManagedEntityList mAiList;
 
-
-
     /*===Constructor==============*/
     /*===Method===================*/
 
     public void createOnGame(GameScene pGameScene) {
         Log.d(TAG,"createOnGame");
-        createAiUnit(pGameScene,DataManager.getInstance().aiDataList);
+       // createAiUnit(pGameScene,DataManager.getInstance().aiDataList);
 
         createPlayerUnit(pGameScene);
-        createObstacle(pGameScene, DataManager.getInstance().obstacleDataList);
+       // createObstacle(pGameScene, DataManager.getInstance().obstacleDataList);
     }
 
 
@@ -105,7 +90,7 @@ public class EntityManager implements ConstantsSet.Classify {
 
     private void createPlayerUnit(GameScene pGameScene){
         Log.d(TAG,"createPlayerUnit");
-        playerUnit = new PlayerUnit(50,400, ResourceManager.getInstance().playerRegion,
+        playerUnit = new PlayerUnit(50,400, ResourceManager.getInstance().gfxHashMap.get("player"),
                 ResourceManager.getInstance().vbom);
         PlayerData pd = new PlayerData(DataBlock.PLAYER_BODY_CLASS, ConstantsSet.EntityType.PLAYER,(int)(50f/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),((int)(50/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT)));
         playerUnit.setConfigData(DataManager.getInstance().playerConfig);
@@ -120,15 +105,15 @@ public class EntityManager implements ConstantsSet.Classify {
 
         //     ThrowingWeapon weapon = new ThrowingWeap on(100,400,ResourceManager.getInstance().playerBulletRegion,ResourceManager.getInstance().vbom);
         NearWeapon weapon = new NearWeapon(100,500,ResourceManager.getInstance().itemInGameHashMap.get("rake"),ResourceManager.getInstance().vbom);
-        weapon.setConfigData(DataManager.getInstance().playerBulletConfigs[0]);
-        Log.d("TTTTT",DataManager.getInstance().playerBulletConfigs[0].toString());
+       // weapon.setConfigData(DataManager.getInstance().playerBulletConfigs[0]);
+        //Log.d("TTTTT",DataManager.getInstance().playerBulletConfigs[0].toString());
         weapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));
         weapon.setVisible(true);
         weapon.transformPhysically(100f/32f,580f/32f);
         pGameScene.attachChild(weapon);
 
         ThrowingWeapon tweapon = new ThrowingWeapon(100,500,ResourceManager.getInstance().itemInGameHashMap.get("nipper"),ResourceManager.getInstance().vbom);
-        tweapon.setConfigData(DataManager.getInstance().playerBulletConfigs[1]);
+      //  tweapon.setConfigData(DataManager.getInstance().playerBulletConfigs[1]);
         tweapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));
         tweapon.setVisible(true);
         tweapon.transformPhysically(180f/32f,580f/32f);
@@ -144,16 +129,13 @@ public class EntityManager implements ConstantsSet.Classify {
 
         for( int i=0;i<pAiData.size();i++){
             switch (pAiData.get(i).getType()){
-                case MOVING_AI_1:
+                case MOVING_AI:
                     movingAiDataList.add(pAiData.get(i));
                     break;
-                case MOVING_AI_2:
-                    break;
-                case SHOOTING_AI_1:
+                case SHOOTING_AI:
                     shootingAiDataList.add(pAiData.get(i));
                     break;
-                case SHOOTING_AI_2:
-                    break;
+
                 case FLY_AI:
                     break;
             }
@@ -179,8 +161,8 @@ public class EntityManager implements ConstantsSet.Classify {
         };
         for(int i=0;i<movingAiDataList.size();i++){
             if(!aiList.isEntityListFull()) {
-                aiList.add(AiFactory.createAi(pGameScene,
-                        ResourceManager.getInstance().aiRegions[0],movingAiDataList.get(i)));
+          //      aiList.add(AiFactory.createAi(pGameScene,
+            //            ResourceManager.getInstance().aiRegions[0],movingAiDataList.get(i)));
             }else{
                 aiList.add(movingAiDataList.get(i).getPosX(),movingAiDataList.get(i).getPosY());
             }
@@ -208,8 +190,8 @@ public class EntityManager implements ConstantsSet.Classify {
         };
         for(int i=0;i<shootingAiDataList.size();i++){
             if(!shootingAiList.isEntityListFull()) {
-                shootingAiList.add(AiFactory.createAi(pGameScene,
-                        ResourceManager.getInstance().aiRegions[AI_SHOOTING_1_CONFIG],shootingAiDataList.get(i)));
+                //shootingAiList.add(AiFactory.createAi(pGameScene,
+                  //      ResourceManager.getInstance().aiRegions[AI_SHOOTING_1_CONFIG],shootingAiDataList.get(i)));
             }else{
                 shootingAiList.add(shootingAiDataList.get(i).getPosX(),shootingAiDataList.get(i).getPosY());
             }
@@ -236,12 +218,12 @@ public class EntityManager implements ConstantsSet.Classify {
                 case OBS_FALL:
                     fallObsDataList.add(pObstacleData.get(i));
                     break;
-                case ConstantsSet.EntityType.OBS_TRAP_1:
+                case ConstantsSet.EntityType.OBS_TRAP:
                     trap1ObsDataList.add(pObstacleData.get(i));
                     break;
-                case ConstantsSet.EntityType.OBS_TRAP_2:
+              /*  case ConstantsSet.EntityType.OBS_TRAP_2:
                     trap2ObsDataList.add(pObstacleData.get(i));
-                    break;
+                    break;*/
                 case ConstantsSet.EntityType.OBS_TRAP_TEMP:
                     trap_tempObsDataList.add(pObstacleData.get(i));
                     break;
@@ -285,8 +267,8 @@ public class EntityManager implements ConstantsSet.Classify {
         };
         for(int i=0;i<fallObsDataList.size();i++){
             if(!fallObsList.isEntityListFull()) {
-                 fallObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
-                         ResourceManager.getInstance().obstacleRegions[OBS_FALL_CONFIG], fallObsDataList.get(i)));
+                // fallObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
+                  //       ResourceManager.getInstance().obstacleRegions[OBS_FALL_CONFIG], fallObsDataList.get(i)));
             }else{
                 fallObsList.add(fallObsDataList.get(i).getPosX(),fallObsDataList.get(i).getPosY());
             }
@@ -312,8 +294,8 @@ public class EntityManager implements ConstantsSet.Classify {
         };
         for(int i=0;i<trap_tempObsDataList.size();i++){
             if(!trapTempObsList.isEntityListFull()) {
-                trapTempObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
-                        ResourceManager.getInstance().obstacleRegions[OBS_TRAP_TEMP_CONFIG], trap_tempObsDataList.get(i)));
+               // trapTempObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
+                 //       ResourceManager.getInstance().obstacleRegions[OBS_TRAP_TEMP_CONFIG], trap_tempObsDataList.get(i)));
             }else{
                 trapTempObsList.add(trap_tempObsDataList.get(i).getPosX(),trap_tempObsDataList.get(i).getPosY());
             }
@@ -339,8 +321,8 @@ public class EntityManager implements ConstantsSet.Classify {
         };
         for(int i=0;i<trap1ObsDataList.size();i++){
             if(!trap1ObsList.isEntityListFull()) {
-                trap1ObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
-                        ResourceManager.getInstance().obstacleRegions[OBS_TRAP_1_CONFIG], trap1ObsDataList.get(i)));
+               // trap1ObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
+                 //       ResourceManager.getInstance().obstacleRegions[OBS_TRAP_1_CONFIG], trap1ObsDataList.get(i)));
             }else{
                 trap1ObsList.add(trap1ObsDataList.get(i).getPosX(),trap1ObsDataList.get(i).getPosY());
             }
@@ -366,8 +348,8 @@ public class EntityManager implements ConstantsSet.Classify {
         };
         for(int i=0;i<trap2ObsDataList.size();i++){
             if(!trap2ObsList.isEntityListFull()) {
-                trap2ObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
-                        ResourceManager.getInstance().obstacleRegions[OBS_TRAP_2_CONFIG], trap2ObsDataList.get(i)));
+               // trap2ObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
+                 //       ResourceManager.getInstance().obstacleRegions[OBS_TRAP_2_CONFIG], trap2ObsDataList.get(i)));
             }else{
                 trap2ObsList.add(trap2ObsDataList.get(i).getPosX(),trap2ObsDataList.get(i).getPosY());
             }
@@ -394,11 +376,11 @@ public class EntityManager implements ConstantsSet.Classify {
         };
         for(int i=0;i<penObsDataList.size();i++){
             if(!penObsList.isEntityListFull()) {
-                penObsList.add(ObstacleFactory.createObstacle_Pendulum(pGameScene,
+               /* penObsList.add(ObstacleFactory.createObstacle_Pendulum(pGameScene,
                         ResourceManager.getInstance().obstacleRegions[OBS_PENDULUM_CONFIG+2],
                         ResourceManager.getInstance().obstacleRegions[OBS_PENDULUM_CONFIG+1],
                         ResourceManager.getInstance().obstacleRegions[OBS_PENDULUM_CONFIG],
-                        penObsDataList.get(i)));
+                        penObsDataList.get(i)));*/
 
             }else{
                 penObsList.add(penObsDataList.get(i).getPosX(),penObsDataList.get(i).getPosY());
@@ -425,8 +407,9 @@ public class EntityManager implements ConstantsSet.Classify {
         };
         for(int i=0;i<movingGroundDataList.size();i++){
             if(!movingGroundObsList.isEntityListFull()) {
-                movingGroundObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
+              /*  movingGroundObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
                         ResourceManager.getInstance().obstacleRegions[OBS_MOVING_GROUND_CONFIG], movingGroundDataList.get(i)));
+                */
             }else{
                 movingGroundObsList.add(movingGroundDataList.get(i).getPosX(),movingGroundDataList.get(i).getPosY());
             }
@@ -451,8 +434,9 @@ public class EntityManager implements ConstantsSet.Classify {
         };
         for(int i=0;i<rollingObsDataList.size();i++){
             if(!rollingObsList.isEntityListFull()) {
-                rollingObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
+             /*   rollingObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
                         ResourceManager.getInstance().obstacleRegions[OBS_ROLLING_CONFIG], rollingObsDataList.get(i)));
+            */
             }else{
                 rollingObsList.add(rollingObsDataList.get(i).getPosX(),rollingObsDataList.get(i).getPosY());
             }
@@ -481,8 +465,9 @@ public class EntityManager implements ConstantsSet.Classify {
         };
         for(int i=0;i<tempGroundObsDataList.size();i++){
             if(!tempGroundObsList.isEntityListFull()) {
-                tempGroundObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
+             /*   tempGroundObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
                         ResourceManager.getInstance().obstacleRegions[OBS_TEMP_GROUND_CONFIG], tempGroundObsDataList.get(i)));
+            */
             }else{
                 tempGroundObsList.add(tempGroundObsDataList.get(i).getPosX(),tempGroundObsDataList.get(i).getPosY());
             }
@@ -508,8 +493,9 @@ public class EntityManager implements ConstantsSet.Classify {
         };
         for(int i=0;i<movingWallObsDataList.size();i++){
             if(!movingWallObsList.isEntityListFull()) {
-                movingWallObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
+               /* movingWallObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
                         ResourceManager.getInstance().obstacleRegions[OBS_MOVING_WALL_CONFIG], movingWallObsDataList.get(i)));
+            */
             }else{
                 movingWallObsList.add(movingWallObsDataList.get(i).getPosX(),movingWallObsDataList.get(i).getPosY());
             }
