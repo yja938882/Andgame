@@ -16,6 +16,8 @@ import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
@@ -64,10 +66,10 @@ public class EntityManager implements ConstantsSet.Classify {
 
     public void createOnGame(GameScene pGameScene) {
         Log.d(TAG,"createOnGame");
-       // createAiUnit(pGameScene,DataManager.getInstance().aiDataList);
+        createAiUnit(pGameScene,DataManager.getInstance().aiDataList);
 
         createPlayerUnit(pGameScene);
-       // createObstacle(pGameScene, DataManager.getInstance().obstacleDataList);
+        createObstacle(pGameScene, DataManager.getInstance().obstacleDataList);
     }
 
 
@@ -90,7 +92,7 @@ public class EntityManager implements ConstantsSet.Classify {
 
     private void createPlayerUnit(GameScene pGameScene){
         Log.d(TAG,"createPlayerUnit");
-        playerUnit = new PlayerUnit(50,400, ResourceManager.getInstance().gfxHashMap.get("player"),
+        playerUnit = new PlayerUnit(50,400, ResourceManager.getInstance().gfxTextureRegionHashMap.get("player"),
                 ResourceManager.getInstance().vbom);
         PlayerData pd = new PlayerData(DataBlock.PLAYER_BODY_CLASS, ConstantsSet.EntityType.PLAYER,(int)(50f/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),((int)(50/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT)));
         playerUnit.setConfigData(DataManager.getInstance().playerConfig);
@@ -104,7 +106,7 @@ public class EntityManager implements ConstantsSet.Classify {
         pGameScene.attachChild(playerUnit);
 
         //     ThrowingWeapon weapon = new ThrowingWeap on(100,400,ResourceManager.getInstance().playerBulletRegion,ResourceManager.getInstance().vbom);
-        NearWeapon weapon = new NearWeapon(100,500,ResourceManager.getInstance().itemInGameHashMap.get("rake"),ResourceManager.getInstance().vbom);
+/*        NearWeapon weapon = new NearWeapon(100,500,ResourceManager.getInstance().itemInGameHashMap.get("rake"),ResourceManager.getInstance().vbom);
        // weapon.setConfigData(DataManager.getInstance().playerBulletConfigs[0]);
         //Log.d("TTTTT",DataManager.getInstance().playerBulletConfigs[0].toString());
         weapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));
@@ -117,13 +119,13 @@ public class EntityManager implements ConstantsSet.Classify {
         tweapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));
         tweapon.setVisible(true);
         tweapon.transformPhysically(180f/32f,580f/32f);
-        pGameScene.attachChild(tweapon);
+        pGameScene.attachChild(tweapon);*/
 
 
     }
 
     private void createAiUnit(GameScene pGameScene, ArrayList<AiData> pAiData){
-        Log.d(TAG,"createAiUnit");
+        /*Log.d(TAG,"createAiUnit");
         ArrayList<AiData> movingAiDataList = new ArrayList<>();
         ArrayList<AiData> shootingAiDataList = new ArrayList<>();
 
@@ -200,323 +202,93 @@ public class EntityManager implements ConstantsSet.Classify {
         mAiList = new ManagedEntityList(2);
         mAiList.setList(0,aiList);
         mAiList.setList(1,shootingAiList);
-        mAiList.ready();
+        mAiList.ready();*/
     }
 
     private void createObstacle(GameScene pGameScene, ArrayList<ObstacleData> pObstacleData){
-        ArrayList<ObstacleData> fallObsDataList = new ArrayList<>();
-        ArrayList<ObstacleData> trap1ObsDataList = new ArrayList<>();
-        ArrayList<ObstacleData> trap2ObsDataList = new ArrayList<>();
-        ArrayList<ObstacleData> trap_tempObsDataList = new ArrayList<>();
-        ArrayList<ObstacleData> penObsDataList = new ArrayList<>();
-        ArrayList<ObstacleData> movingGroundDataList = new ArrayList<>();
-        ArrayList<ObstacleData> rollingObsDataList = new ArrayList<>();
-        ArrayList<ObstacleData> tempGroundObsDataList = new ArrayList<>();
-        ArrayList<ObstacleData> movingWallObsDataList = new ArrayList<>();
-        for( int i=0;i<pObstacleData.size();i++){
-            switch (pObstacleData.get(i).getType()){
-                case OBS_FALL:
-                    fallObsDataList.add(pObstacleData.get(i));
-                    break;
-                case ConstantsSet.EntityType.OBS_TRAP:
-                    trap1ObsDataList.add(pObstacleData.get(i));
-                    break;
-              /*  case ConstantsSet.EntityType.OBS_TRAP_2:
-                    trap2ObsDataList.add(pObstacleData.get(i));
-                    break;*/
-                case ConstantsSet.EntityType.OBS_TRAP_TEMP:
-                    trap_tempObsDataList.add(pObstacleData.get(i));
-                    break;
-                case ConstantsSet.EntityType.OBS_PENDULUM:
-                    penObsDataList.add(pObstacleData.get(i));
-                    break;
-                case ConstantsSet.EntityType.OBS_MOVING_GROUND:
-                    movingGroundDataList.add(pObstacleData.get(i));
-                    break;
-                case ConstantsSet.EntityType.OBS_ROLLING:
-                    rollingObsDataList.add(pObstacleData.get(i));
-                    break;
-                case ConstantsSet.EntityType.OBS_TEMP_GROUND:
-                    tempGroundObsDataList.add(pObstacleData.get(i));
-                    break;
-                case ConstantsSet.EntityType.OBS_MOVING_WALL:
-                    movingWallObsDataList.add(pObstacleData.get(i));
-                    break;
 
+        HashMap<String, ArrayList<ObstacleData>> hashMap = new HashMap<>();
 
-            }
+        ArrayList<String> idList = new ArrayList<>();
+
+        int size = pObstacleData.size();
+        for(int i=0;i<size;i++){
+           String id = pObstacleData.get(i).getId();
+           if(!hashMap.containsKey(id)){
+               hashMap.put(id,new ArrayList<ObstacleData>());
+               idList.add(id);
+           }
+           hashMap.get(id).add(pObstacleData.get(i));
         }
 
-        int entityListSize = Algorithm.calculateMaxObstacleInCam(fallObsDataList);
-        final EntityList fallObsList = new EntityList(pGameScene,entityListSize,fallObsDataList.size()-entityListSize) {
-            @Override
-            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
-                if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
-                    return true;
-                }
-                return false;
-            }
-            @Override
-            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
-                float camx = pGameScene.getCamera().getCenterX();
-                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2)
+        int id_size = idList.size();
+        final EntityList entityList[] = new EntityList[id_size];
+        for(int i=0;i<id_size;i++){
+            ArrayList<ObstacleData> obsDataList = hashMap.get(idList.get(i));
+            int entityListSize = Algorithm.calculateMaxObstacleInCam(obsDataList);
+            Log.d("TTTTTTT",""+entityListSize);
+            entityList[i] =new EntityList(pGameScene,entityListSize,obsDataList.size()-entityListSize) {
+                @Override
+                public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
                     return false;
-                else
-                    return true;
-            }
-        };
-        for(int i=0;i<fallObsDataList.size();i++){
-            if(!fallObsList.isEntityListFull()) {
-                // fallObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
-                  //       ResourceManager.getInstance().obstacleRegions[OBS_FALL_CONFIG], fallObsDataList.get(i)));
-            }else{
-                fallObsList.add(fallObsDataList.get(i).getPosX(),fallObsDataList.get(i).getPosY());
-            }
-        }
-
-        entityListSize = Algorithm.calculateMaxObstacleInCam(trap_tempObsDataList);
-        final EntityList trapTempObsList = new EntityList(pGameScene,entityListSize,trap_tempObsDataList.size()-entityListSize) {
-            @Override
-            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
-                if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
-                    return true;
                 }
-                return false;
-            }
-            @Override
-            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
-                float camx = pGameScene.getCamera().getCenterX();
-                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2)
+
+                @Override
+                public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
                     return false;
-                else
-                    return true;
-            }
-        };
-        for(int i=0;i<trap_tempObsDataList.size();i++){
-            if(!trapTempObsList.isEntityListFull()) {
-               // trapTempObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
-                 //       ResourceManager.getInstance().obstacleRegions[OBS_TRAP_TEMP_CONFIG], trap_tempObsDataList.get(i)));
-            }else{
-                trapTempObsList.add(trap_tempObsDataList.get(i).getPosX(),trap_tempObsDataList.get(i).getPosY());
-            }
-        }
-
-        entityListSize = Algorithm.calculateMaxObstacleInCam(trap1ObsDataList);
-        final EntityList trap1ObsList = new EntityList(pGameScene,entityListSize,trap1ObsDataList.size()-entityListSize) {
-            @Override
-            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
-                if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
-                    return true;
                 }
-                return false;
-            }
-            @Override
-            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
-                float camx = pGameScene.getCamera().getCenterX();
-                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2)
-                    return false;
-                else
-                    return true;
-            }
-        };
-        for(int i=0;i<trap1ObsDataList.size();i++){
-            if(!trap1ObsList.isEntityListFull()) {
-               // trap1ObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
-                 //       ResourceManager.getInstance().obstacleRegions[OBS_TRAP_1_CONFIG], trap1ObsDataList.get(i)));
-            }else{
-                trap1ObsList.add(trap1ObsDataList.get(i).getPosX(),trap1ObsDataList.get(i).getPosY());
-            }
+            };
         }
+       for(int i=0;i<hashMap.get(idList.get(i)).size();i++){
+            ArrayList<ObstacleData> obsDataList = hashMap.get(idList.get(i));
 
-        entityListSize = Algorithm.calculateMaxObstacleInCam(trap2ObsDataList);
-        final EntityList trap2ObsList = new EntityList(pGameScene,entityListSize,trap2ObsDataList.size()-entityListSize) {
-            @Override
-            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
-                if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
-                    return true;
-                }
-                return false;
-            }
-            @Override
-            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
-                float camx = pGameScene.getCamera().getCenterX();
-                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2)
-                    return false;
-                else
-                    return true;
-            }
-        };
-        for(int i=0;i<trap2ObsDataList.size();i++){
-            if(!trap2ObsList.isEntityListFull()) {
-               // trap2ObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
-                 //       ResourceManager.getInstance().obstacleRegions[OBS_TRAP_2_CONFIG], trap2ObsDataList.get(i)));
+            if(!entityList[i].isEntityListFull()){
+                entityList[i].add(ObstacleFactory.createObstacle(pGameScene,obsDataList.get(i)));
             }else{
-                trap2ObsList.add(trap2ObsDataList.get(i).getPosX(),trap2ObsDataList.get(i).getPosY());
+                entityList[i].add(obsDataList.get(i).getPosX(),obsDataList.get(i).getPosY());
             }
+       }
+
+        mObstacleList = new ManagedEntityList(id_size);
+        for(int i=0;i<id_size;i++){
+            mObstacleList.setList(i,entityList[i]);
         }
-
-
-        entityListSize = Algorithm.calculateMaxObstacleInCam(penObsDataList);
-        final EntityList penObsList = new EntityList(pGameScene,entityListSize,penObsDataList.size()-entityListSize) {
-            @Override
-            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
-                if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
-                    return true;
-                }
-                return false;
-            }
-            @Override
-            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
-                float camx = pGameScene.getCamera().getCenterX();
-                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2)
-                    return false;
-                else
-                    return true;
-            }
-        };
-        for(int i=0;i<penObsDataList.size();i++){
-            if(!penObsList.isEntityListFull()) {
-               /* penObsList.add(ObstacleFactory.createObstacle_Pendulum(pGameScene,
-                        ResourceManager.getInstance().obstacleRegions[OBS_PENDULUM_CONFIG+2],
-                        ResourceManager.getInstance().obstacleRegions[OBS_PENDULUM_CONFIG+1],
-                        ResourceManager.getInstance().obstacleRegions[OBS_PENDULUM_CONFIG],
-                        penObsDataList.get(i)));*/
-
-            }else{
-                penObsList.add(penObsDataList.get(i).getPosX(),penObsDataList.get(i).getPosY());
-            }
-        }
-
-        entityListSize = Algorithm.calculateMaxObstacleInCam(movingGroundDataList);
-        final EntityList movingGroundObsList = new EntityList(pGameScene,entityListSize,movingGroundDataList.size()-entityListSize) {
-            @Override
-            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
-                if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
-                    return true;
-                }
-                return false;
-            }
-            @Override
-            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
-                float camx = pGameScene.getCamera().getCenterX();
-                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2)
-                    return false;
-                else
-                    return true;
-            }
-        };
-        for(int i=0;i<movingGroundDataList.size();i++){
-            if(!movingGroundObsList.isEntityListFull()) {
-              /*  movingGroundObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
-                        ResourceManager.getInstance().obstacleRegions[OBS_MOVING_GROUND_CONFIG], movingGroundDataList.get(i)));
-                */
-            }else{
-                movingGroundObsList.add(movingGroundDataList.get(i).getPosX(),movingGroundDataList.get(i).getPosY());
-            }
-        }
-        entityListSize = Algorithm.calculateMaxObstacleInCam(rollingObsDataList);
-        final EntityList rollingObsList = new EntityList(pGameScene,entityListSize,rollingObsDataList.size()-entityListSize) {
-            @Override
-            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
-                if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
-                    return true;
-                }
-                return false;
-            }
-            @Override
-            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
-                float camx = pGameScene.getCamera().getCenterX();
-                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2)
-                    return false;
-                else
-                    return true;
-            }
-        };
-        for(int i=0;i<rollingObsDataList.size();i++){
-            if(!rollingObsList.isEntityListFull()) {
-             /*   rollingObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
-                        ResourceManager.getInstance().obstacleRegions[OBS_ROLLING_CONFIG], rollingObsDataList.get(i)));
-            */
-            }else{
-                rollingObsList.add(rollingObsDataList.get(i).getPosX(),rollingObsDataList.get(i).getPosY());
-            }
-        }
-
-        entityListSize = Algorithm.calculateMaxObstacleInCam(tempGroundObsDataList);
-        final EntityList tempGroundObsList = new EntityList(pGameScene,entityListSize,tempGroundObsDataList.size()-entityListSize) {
-            @Override
-            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
-                if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
-                    return true;
-                }
-                return false;
-            }
-            @Override
-            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
-                float camx = pGameScene.getCamera().getCenterX();
-                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2) {
-                    Log.d("TGTEST", " ac false!!");
-                    return false;
-                } else {
-                    Log.d("TGTEST", " ac true!!");
-                    return true;
-                }
-            }
-        };
-        for(int i=0;i<tempGroundObsDataList.size();i++){
-            if(!tempGroundObsList.isEntityListFull()) {
-             /*   tempGroundObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
-                        ResourceManager.getInstance().obstacleRegions[OBS_TEMP_GROUND_CONFIG], tempGroundObsDataList.get(i)));
-            */
-            }else{
-                tempGroundObsList.add(tempGroundObsDataList.get(i).getPosX(),tempGroundObsDataList.get(i).getPosY());
-            }
-        }
-
-        entityListSize = Algorithm.calculateMaxObstacleInCam(movingWallObsDataList);
-        final EntityList movingWallObsList = new EntityList(pGameScene,entityListSize,movingWallObsDataList.size()-entityListSize) {
-            @Override
-            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
-                if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
-                    return true;
-                }
-                return false;
-            }
-            @Override
-            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
-                float camx = pGameScene.getCamera().getCenterX();
-                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2)
-                    return false;
-                else
-                    return true;
-            }
-        };
-        for(int i=0;i<movingWallObsDataList.size();i++){
-            if(!movingWallObsList.isEntityListFull()) {
-               /* movingWallObsList.add(ObstacleFactory.createSimpleObstacle(pGameScene,
-                        ResourceManager.getInstance().obstacleRegions[OBS_MOVING_WALL_CONFIG], movingWallObsDataList.get(i)));
-            */
-            }else{
-                movingWallObsList.add(movingWallObsDataList.get(i).getPosX(),movingWallObsDataList.get(i).getPosY());
-            }
-        }
-
-
-
-
-        mObstacleList = new ManagedEntityList(9);
-        mObstacleList.setList(0,fallObsList);
-        mObstacleList.setList(1,trap1ObsList);
-        mObstacleList.setList(2,trap2ObsList);
-        mObstacleList.setList(3,trapTempObsList);
-        mObstacleList.setList(4,penObsList);
-        mObstacleList.setList(5,movingGroundObsList);
-        mObstacleList.setList(6,rollingObsList);
-        mObstacleList.setList(7,tempGroundObsList);
-        mObstacleList.setList(8,movingWallObsList);
         mObstacleList.ready();
-    }
 
+    }
+    private EntityList createAiList(GameScene pGameScene, int pEntityListSize,int pPosSize ){
+        if(pEntityListSize<=0)
+            return null;
+        return new EntityList(pGameScene,pEntityListSize,pPosSize) {
+            @Override
+            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
+                return false;
+            }
+
+            @Override
+            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
+                return false;
+            }
+        };
+    }
+    private EntityList createObsList(GameScene pGameScene, int pEntityListSize,int pPosSize){
+        if(pEntityListSize<=0) {
+            Log.d("TTTTTTTT","NULL!!!!");
+            return null;
+        }
+        Log.d("TTTTTTTT","NO NULL!!!!");
+        return new EntityList(pGameScene,pEntityListSize,pPosSize) {
+            @Override
+            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
+                return false;
+            }
+
+            @Override
+            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
+                return false;
+            }
+        };
+    }
 
     public static EntityManager getInstance(){
         return INSTANCE;

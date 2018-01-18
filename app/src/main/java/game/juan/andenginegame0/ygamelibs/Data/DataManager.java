@@ -50,8 +50,6 @@ public class DataManager implements ConstantsSet{
 
     private BaseGameActivity activity;
 
-
-
     /*===Player Data=============*/
 
     //Fields
@@ -63,10 +61,11 @@ public class DataManager implements ConstantsSet{
     }
 
     /*===Stage Data===============*/
-    public ArrayList<JSONObject> playerGFXJsonList;
-    public ArrayList<JSONObject> staticGFXJsonList;
-    public ArrayList<JSONObject> aiGFXJsonList;
-    public ArrayList<JSONObject> obstacleGFXJsonList;
+    public ArrayList<JSONObject> playerGFXJsonList; // 플레이어와 관련된 GFX 설정 데이터
+    public ArrayList<JSONObject> bgGFXJsonList;     // 백그라운드와 관련된 GFX 설정 데이터
+    public ArrayList<JSONObject> staticGFXJsonList; // 맵과 관련된 GFX 설정 데이터
+    public ArrayList<JSONObject> aiGFXJsonList;     // Ai 와 관련된 GFX 설정 데이터
+    public ArrayList<JSONObject> obstacleGFXJsonList;//Obstacle 과 관련된 GFX 설정 데이터
 
     public HashMap<String, JSONObject> configHashSet;
 
@@ -74,11 +73,15 @@ public class DataManager implements ConstantsSet{
     public ArrayList<StaticData> staticMapDataList;
     public ArrayList<AiData> aiDataList;
 
+    public int obstacleConfigSize= -1;
+    public int aiConfigSize =-1;
+
     /* 스테이지를 구성하는데 필요한 데이터 로딩
     *
     */
     public void loadStageData(int pStage){
 
+        bgGFXJsonList = new ArrayList<>();
         playerGFXJsonList = new ArrayList<>();
         staticGFXJsonList = new ArrayList<>();
         aiGFXJsonList = new ArrayList<>();
@@ -90,7 +93,6 @@ public class DataManager implements ConstantsSet{
 
         configHashSet = new HashMap<>();
         HashSet<String> tileSet = new HashSet<>(); // 맵 타일 이미지
-
         HashSet<String> aiIdSet = new HashSet<>(); // AI에 관련한 id set
         HashSet<String> additional_aiIdSet = new HashSet<>(); // AI에 관련한 추가 id
 
@@ -98,9 +100,22 @@ public class DataManager implements ConstantsSet{
         HashSet<String> additional_obsIdSet = new HashSet<>(); // Obs 에 관련한 추가 id
 
         SQLiteDatabase db = dbManager.getReadableDatabase();
+        loadPlayerConfigData(db);
+
         try{
             JSONObject mapObject = loadJSONFromAsset(activity,"stage/stage"+pStage+".json");
             JSONArray stageArray = mapObject.getJSONArray("map");
+            JSONArray bgArray = mapObject.getJSONArray("bg");
+            for(int i=0;i<bgArray.length();i++){
+                JSONObject object = new JSONObject();
+                object.put("id","bg"+i);
+                object.put("src",bgArray.getString(i)+".png");
+                object.put("src_width",1024);
+                object.put("src_height",960);
+                object.put("row",1);
+                object.put("col",1);
+                bgGFXJsonList.add(object);
+            }
             int size = stageArray.length();
             for(int i=0;i<size;i++){
                 JSONObject object = stageArray.getJSONObject(i);
@@ -137,6 +152,8 @@ public class DataManager implements ConstantsSet{
             }
 
             Iterator aiIdSetIterator = aiIdSet.iterator();
+            Log.d(TAG,"ai num :"+aiIdSet.size());
+
             while(aiIdSetIterator.hasNext()){
                 String id = (String)aiIdSetIterator.next();
                 JSONObject aiObject = dbManager.getAiJSON(db,id);
@@ -158,6 +175,7 @@ public class DataManager implements ConstantsSet{
             }
 
             Iterator obsIdSetIterator = obsIdSet.iterator();
+            Log.d(TAG,"obs num :"+obsIdSet.size());
             while(obsIdSetIterator.hasNext()){
                 String id = (String)obsIdSetIterator.next();
                 JSONObject obsObject = dbManager.getObsJSON(db,id);
@@ -267,23 +285,6 @@ public class DataManager implements ConstantsSet{
                 }catch(Exception e){
                 e.printStackTrace();
         }
-    }
-    private void addIdtoIdSet(HashSet<String> hashSet, JSONObject object){
-        try {
-            hashSet.add(object.getString("id"));
-            JSONArray array = object.getJSONArray("add_id");
-            for(int i=0;i<array.length();i++){
-                hashSet.add(array.getString(i));
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-
-    private void loadPlayerWeapon(){
-        Log.d(TAG,"loadPlayerWeapon");
-
     }
 
     public void loadPlayerGameData(){

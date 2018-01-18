@@ -13,8 +13,10 @@ import org.andengine.opengl.texture.ITexture;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.bitmap.BitmapTexture;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
+import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.color.Color;
@@ -102,7 +104,7 @@ public class ResourceManager {
 
   /*===Static=======*/
   //Fields
-  public ITextureRegion backgroundRegion1;
+ /* public ITextureRegion backgroundRegion1;
   private BitmapTextureAtlas background_1_TextureAtlas;
   public ITextureRegion backgroundRegion2;
   private BitmapTextureAtlas background_2_TextureAtlas;
@@ -114,8 +116,9 @@ public class ResourceManager {
   private BitmapTextureAtlas display3TextureAtlas;
 
   public ITextureRegion mapRegion[];
-  public BitmapTextureAtlas mapTextureAtlas[];
+  public BitmapTextureAtlas mapTextureAtlas[];*/
   //Inner Methods
+  /*
   private void loadBackgroundGraphics(){
     Log.d(TAG,"loadBackgroundGraphics ");
 
@@ -152,7 +155,7 @@ public class ResourceManager {
     backgroundRegion1 = null;
     background_2_TextureAtlas.unload();
     backgroundRegion2 = null;
-  }
+  }*/
 
   public static final int MAX_TILE_SIZE = 18;
 
@@ -439,7 +442,7 @@ public class ResourceManager {
     initGFX(); // GFX 초기화
 
     loadPlayerGFX();
-
+    loadGFX("map/bg/",DataManager.getInstance().bgGFXJsonList);
     loadGFX("map/"+pStage+"/",DataManager.getInstance().staticGFXJsonList);
     loadGFX("ai/",DataManager.getInstance().aiGFXJsonList); //ai GFX 로딩
     loadGFX("obstacle/",DataManager.getInstance().obstacleGFXJsonList); //Obstacle GFX 로딩
@@ -466,12 +469,17 @@ public class ResourceManager {
 
 
   /*===GFX==============================*/
-  public HashMap<String, ITiledTextureRegion> gfxHashMap = null;
+
+
+
+  public HashMap<String, ITiledTextureRegion> gfxTextureRegionHashMap = null;
   private ArrayList<ITiledTextureRegion> gfxTextureRegions =null;
   private ArrayList<BitmapTextureAtlas> gfxTextureAtlas = null;
 
   private void initGFX(){
-      gfxHashMap = new HashMap<>();
+
+
+      gfxTextureRegionHashMap = new HashMap<>();
       gfxTextureRegions = new ArrayList<>();
       gfxTextureAtlas = new ArrayList<>();
   }
@@ -491,13 +499,14 @@ public class ResourceManager {
         bitmapTextureAtlas.load();
         gfxTextureAtlas.add(bitmapTextureAtlas);
         gfxTextureRegions.add(textureRegion);
-        gfxHashMap.put(pConfigArray.get(i).getString("id"),gfxTextureRegions.get(gfxTextureRegions.size()-1));
+        gfxTextureRegionHashMap.put(pConfigArray.get(i).getString("id"),gfxTextureRegions.get(gfxTextureRegions.size()-1));
       }
     }catch (Exception e){
       Log.d(TAG," loadGFX ["+pGfxPath+id+"] : "+e.getMessage());
       System.exit(-1);
     }
   }
+
 
   private void unLoadGFX(){
 

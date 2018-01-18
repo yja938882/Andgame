@@ -10,6 +10,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.batch.DynamicSpriteBatch;
 import org.andengine.entity.sprite.batch.SpriteBatch;
 import org.andengine.entity.sprite.batch.SpriteGroup;
+import org.andengine.opengl.texture.ITexture;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
@@ -48,9 +49,9 @@ public class StaticManager implements ConstantsSet{
     private Tile tiles[];
 
     public void createOnGame(final GameScene pGameScene){
-        background1 = new Sprite(0,0, ResourceManager.getInstance().backgroundRegion1,
+        background1 = new Sprite(0,0, ResourceManager.getInstance().gfxTextureRegionHashMap.get("bg0"),
                 ResourceManager.getInstance().vbom);
-        background2 = new Sprite(1024,0,ResourceManager.getInstance().backgroundRegion2,
+        background2 = new Sprite(1024,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("bg1"),
                 ResourceManager.getInstance().vbom);
         ParallaxBackground.ParallaxEntity parallaxBackground =new ParallaxBackground.ParallaxEntity(-5.0f,background1);
         ParallaxBackground.ParallaxEntity parallaxEntity = new ParallaxBackground.ParallaxEntity(-5.0f,background2);
@@ -58,9 +59,9 @@ public class StaticManager implements ConstantsSet{
         autoParallaxBackground.attachParallaxEntity(parallaxEntity);
         autoParallaxBackground.setParallaxChangePerSecond(2);
 
-        display1= new Sprite(200,0,ResourceManager.getInstance().displayRegion1,ResourceManager.getInstance().vbom);
-        display2 = new Sprite(400,280,ResourceManager.getInstance().displayRegion2,ResourceManager.getInstance().vbom);
-        display3 = new Sprite(500,0,ResourceManager.getInstance().displayRegion3,ResourceManager.getInstance().vbom);
+     //   display1= new Sprite(200,0,ResourceManager.getInstance().displayRegion1,ResourceManager.getInstance().vbom);
+       // display2 = new Sprite(400,280,ResourceManager.getInstance().displayRegion2,ResourceManager.getInstance().vbom);
+       // display3 = new Sprite(500,0,ResourceManager.getInstance().displayRegion3,ResourceManager.getInstance().vbom);
        // pGameScene.attachChild(display2);
        // pGameScene.attachChild(display1);
         //pGameScene.attachChild(display3);
@@ -94,10 +95,10 @@ public class StaticManager implements ConstantsSet{
             int tilenum = calculateMaxTileInCam(DataManager.getInstance().staticMapDataList,i);
             if(tilenum<0)
                 continue;
-            tiles[i] = new Tile(ResourceManager.getInstance().mapTextureAtlas[i],
+            tiles[i] = new Tile(ResourceManager.getInstance().gfxTextureRegionHashMap.get(""+i).getTexture(),
                     tilenum,ResourceManager.getInstance().vbom);
-            //tiles[i].setScale(1.5f);
-            tiles[i].prepare(tilenum,ResourceManager.getInstance().mapRegion[i],
+
+            tiles[i].prepare(tilenum,ResourceManager.getInstance().gfxTextureRegionHashMap.get(""+i).getTextureRegion(0),
                     calculateTilePosX(DataManager.getInstance().staticMapDataList,i),
                     calculateTilePosY(DataManager.getInstance().staticMapDataList,i));
             pGameScene.attachChild(tiles[i]);
