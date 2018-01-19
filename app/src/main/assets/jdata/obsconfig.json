@@ -87,13 +87,13 @@
       {
         "iforce" :[0,0],           "aforce":[0,10],
         "anim"  : "yes",
-        "body"  : "circle",   "body_vx":[-64,-64,64,64],"body_vy":[-16,16,16,-16],
+        "body"  : "circle",   "body_vx":[-64,64,64,64],"body_vy":[-16,16,16,-16],
         "animFrameIndex":[0,1,2,3,4], "animFrameDuration":[25,25,25,25,25],
         "animLock":"strong",
 
-        "src"                   :"thorn0.png",
-        "src_width"             : 128,
-        "src_height"            : 128,
+        "src"                   :"rock.png",
+        "src_width"             : 256,
+        "src_height"            : 256,
         "scale"                 : 1,
         "col"                   : 1,
         "row"                   : 1,

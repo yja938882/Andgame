@@ -46,19 +46,12 @@ public class DataManager implements ConstantsSet{
     public int exp;
     public int play_count;
 
-    /*==Fields==========================*/
 
     private BaseGameActivity activity;
 
     /*===Player Data=============*/
 
-    //Fields
-    public JSONObject playerConfig;
-
-    //Load
-    private void loadPlayerConfigData(SQLiteDatabase db){
-        playerConfig= dbManager.getPlayerConfigJSON(db);
-    }
+    public JSONObject playerConfig; // 플레이어 설정정보
 
     /*===Stage Data===============*/
     public ArrayList<JSONObject> playerGFXJsonList; // 플레이어와 관련된 GFX 설정 데이터
@@ -67,17 +60,15 @@ public class DataManager implements ConstantsSet{
     public ArrayList<JSONObject> aiGFXJsonList;     // Ai 와 관련된 GFX 설정 데이터
     public ArrayList<JSONObject> obstacleGFXJsonList;//Obstacle 과 관련된 GFX 설정 데이터
 
-    public HashMap<String, JSONObject> configHashSet;
+    public HashMap<String, JSONObject> configHashSet; //설정 정보 Hash Map
 
-    public ArrayList<ObstacleData> obstacleDataList;
-    public ArrayList<StaticData> staticMapDataList;
-    public ArrayList<AiData> aiDataList;
+    public ArrayList<ObstacleData> obstacleDataList; // 장애물 리스트
+    public ArrayList<StaticData> staticMapDataList; // 맵정보 리스트
+    public ArrayList<AiData> aiDataList;    //Ai 리스트
 
-    public int obstacleConfigSize= -1;
-    public int aiConfigSize =-1;
 
     /* 스테이지를 구성하는데 필요한 데이터 로딩
-    *
+    * @param pStage
     */
     public void loadStageData(int pStage){
 
@@ -100,7 +91,7 @@ public class DataManager implements ConstantsSet{
         HashSet<String> additional_obsIdSet = new HashSet<>(); // Obs 에 관련한 추가 id
 
         SQLiteDatabase db = dbManager.getReadableDatabase();
-        loadPlayerConfigData(db);
+        playerConfig= dbManager.getPlayerConfigJSON(db); // 플레이어 설정 정보 로드
 
         try{
             JSONObject mapObject = loadJSONFromAsset(activity,"stage/stage"+pStage+".json");
@@ -142,18 +133,13 @@ public class DataManager implements ConstantsSet{
             while(tileSetIterator.hasNext()){
                 String id = (String)tileSetIterator.next();
                 JSONObject tileObject = new JSONObject();
-                tileObject.put("id",id);
-                tileObject.put("src",id+".png");
-                tileObject.put("src_width",64);
-                tileObject.put("src_height",64);
-                tileObject.put("col",1);
-                tileObject.put("row",1);
+                tileObject.put("id",id).put("src",id+".png")
+                          .put("src_width",64).put("src_height",64)
+                          .put("col",1).put("row",1);
                 staticGFXJsonList.add(tileObject);
             }
 
             Iterator aiIdSetIterator = aiIdSet.iterator();
-            Log.d(TAG,"ai num :"+aiIdSet.size());
-
             while(aiIdSetIterator.hasNext()){
                 String id = (String)aiIdSetIterator.next();
                 JSONObject aiObject = dbManager.getAiJSON(db,id);
@@ -172,6 +158,7 @@ public class DataManager implements ConstantsSet{
                 JSONObject aiObject = dbManager.getAiJSON(db,id);
                 aiObject.put("id",id);
                 aiGFXJsonList.add(aiObject);
+                configHashSet.put(id,aiObject);
             }
 
             Iterator obsIdSetIterator = obsIdSet.iterator();
@@ -194,6 +181,11 @@ public class DataManager implements ConstantsSet{
                 JSONObject obsObject = dbManager.getObsJSON(db,id);
                 obsObject.put("id",id);
                 obstacleGFXJsonList.add(obsObject);
+                configHashSet.put(id,obsObject);
+            }
+            Iterator s = configHashSet.keySet().iterator();
+            while(s.hasNext()){
+                Log.d("HASH",(String)s.next());
             }
 
         }catch (Exception e){
@@ -217,6 +209,7 @@ public class DataManager implements ConstantsSet{
         try {
             int vClass = 0;
             int vType = 0;
+            String[] addId= null;
             switch (object.getString("type")) {
                 case "obs_fall":
                     vClass = DataBlock.ATK_OBS_CLASS;
@@ -233,6 +226,11 @@ public class DataManager implements ConstantsSet{
                 case "obs_pendulum":
                     vClass = DataBlock.GROUND_CLASS;
                     vType = EntityType.OBS_PENDULUM;
+                  //  JSONArray array = object.getString()
+                   // addId = new String[array.length()];
+                   // for(int i=0;i<array.length();i++){
+                     //   addId[i] = array.getString(i);
+                    //}
                     break;
                 case "obs_shooting":
                     break;
@@ -255,7 +253,17 @@ public class DataManager implements ConstantsSet{
             }
             ObstacleData obsData =
                     new ObstacleData(vClass,vType,object.getInt("x"),object.getInt("y"),object.getString("id"));
+//            Log.d("TEST",""+obstacleDataList.get(obstacleDataList.size()-1).getType());
+            if(addId!=null)
+                obsData.setAddid(addId);
+            JSONArray dataArray = object.getJSONArray("data");
+            final float data[] = new float[dataArray.length()];
+            for(int i=0;i<dataArray.length();i++){
+                data[i]= dataArray.getInt(i);
+            }
+            obsData.setData(data);
             obstacleDataList.add(obsData);
+
 
         }catch (Exception e){
             e.printStackTrace();

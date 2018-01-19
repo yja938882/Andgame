@@ -206,17 +206,21 @@ public class EntityManager implements ConstantsSet.Classify {
     }
 
     private void createObstacle(GameScene pGameScene, ArrayList<ObstacleData> pObstacleData){
-
+        Log.d(TAG,"createObstacle list-size :"+pObstacleData.size());
         HashMap<String, ArrayList<ObstacleData>> hashMap = new HashMap<>();
 
         ArrayList<String> idList = new ArrayList<>();
 
         int size = pObstacleData.size();
         for(int i=0;i<size;i++){
+            Log.d(TAG,""+i);
            String id = pObstacleData.get(i).getId();
            if(!hashMap.containsKey(id)){
+               Log.d(TAG,"NO CONTAIN KEY");
                hashMap.put(id,new ArrayList<ObstacleData>());
                idList.add(id);
+           }else{
+               Log.d(TAG,"CONTAIN KEY");
            }
            hashMap.get(id).add(pObstacleData.get(i));
         }
@@ -226,7 +230,6 @@ public class EntityManager implements ConstantsSet.Classify {
         for(int i=0;i<id_size;i++){
             ArrayList<ObstacleData> obsDataList = hashMap.get(idList.get(i));
             int entityListSize = Algorithm.calculateMaxObstacleInCam(obsDataList);
-            Log.d("TTTTTTT",""+entityListSize);
             entityList[i] =new EntityList(pGameScene,entityListSize,obsDataList.size()-entityListSize) {
                 @Override
                 public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
@@ -239,18 +242,21 @@ public class EntityManager implements ConstantsSet.Classify {
                 }
             };
         }
-       for(int i=0;i<hashMap.get(idList.get(i)).size();i++){
+       for(int i=0;i<id_size;i++){
             ArrayList<ObstacleData> obsDataList = hashMap.get(idList.get(i));
-
-            if(!entityList[i].isEntityListFull()){
-                entityList[i].add(ObstacleFactory.createObstacle(pGameScene,obsDataList.get(i)));
-            }else{
-                entityList[i].add(obsDataList.get(i).getPosX(),obsDataList.get(i).getPosY());
+            for(int j=0;j<obsDataList.size();j++){
+                if(!entityList[i].isEntityListFull()){
+                    entityList[i].add(ObstacleFactory.createObstacle(pGameScene,obsDataList.get(j)));
+                }else{
+                    entityList[i].add(obsDataList.get(j).getPosX(),obsDataList.get(j).getPosY());
+                }
             }
        }
-
+        Log.d("TEST!!!","id size :"+id_size);
         mObstacleList = new ManagedEntityList(id_size);
+
         for(int i=0;i<id_size;i++){
+
             mObstacleList.setList(i,entityList[i]);
         }
         mObstacleList.ready();

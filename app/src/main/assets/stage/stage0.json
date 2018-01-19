@@ -55,32 +55,32 @@
     },
     {
       "class": "obstacle",
-      "id": "thorn0", "type": "obs_trap_1" ,
+      "id": "thorn0", "type": "obs_trap" ,
       "x": 21 , "y":  23, "data":[1,1]
     },
     {
       "class": "obstacle",
-      "id": "thorn1", "type": "obs_trap_2" ,
+      "id": "thorn1", "type": "obs_trap" ,
       "x": 23 , "y":  23, "data":[1,1]
     },
     {
       "class": "obstacle",
-      "id": "thorn0", "type": "obs_trap_1" ,
+      "id": "thorn0", "type": "obs_trap" ,
       "x": 25 , "y":  23, "data":[1,1]
     },
     {
       "class": "obstacle",
-      "id": "thorn1", "type": "obs_trap_2" ,
+      "id": "thorn1", "type": "obs_trap" ,
       "x": 27 , "y":  23, "data":[1,1]
     },
     {
       "class": "obstacle",
-      "id": "thorn0", "type": "obs_trap_1" ,
+      "id": "thorn0", "type": "obs_trap" ,
       "x": 29 , "y":  23, "data":[1,1]
     },
     {
       "class": "obstacle",
-      "id": "thorn1", "type": "obs_trap_2" ,
+      "id": "thorn1", "type": "obs_trap" ,
       "x": 31 , "y":  23, "data":[1,1]
     },
     {
@@ -99,10 +99,19 @@
       "x":-10,"y":15,"data":[1,1]
     },
     {
-      "class": "obstacle",
-      "id": "rolling_stone",
+      "class": "obstacle", "id": "rolling_stone",
       "type":"obs_rolling",
-      "x":15,"y":20,"data":[1,1]
+      "x":1,"y":13,"data":[1,1]
+    },
+    {
+      "class": "obstacle", "id": "rolling_stone",
+      "type":"obs_rolling",
+      "x":2,"y":12,"data":[1,1]
+    },
+    {
+      "class": "obstacle", "id": "rolling_stone",
+      "type":"obs_rolling",
+      "x":3,"y":10,"data":[1,1]
     },
     {
       "class": "obstacle",
@@ -116,12 +125,12 @@
     },
     {
       "class": "ai",
-      "id": "fat_rat", "type":"ai_moving_1",
+      "id": "fat_rat", "type":"ai_moving",
       "x":20, "y":13,"data":[1,1]
     },
     {
       "class": "ai",
-      "id": "shooting_rat", "type":"ai_shooting_1",
+      "id": "shooting_rat", "type":"ai_shooting",
       "x":130,"y":10,"data":[1,1]
     }
   ]

@@ -21,7 +21,7 @@ public class ObstacleData extends DataBlock {
     public float[] getData(){
         return data;
     }
-
+    String addid[];
     @Override
     public void beginContactWith(int pClass) {
         switch (pClass){
@@ -37,7 +37,12 @@ public class ObstacleData extends DataBlock {
     public void setData(float[] pData){
         this.data = pData;
     }
-
+    public void setAddid(String[] pAdditionalId){
+        this.addid = pAdditionalId;
+    }
+    public String[] getAddId(){
+        return this.addid;
+    }
     @Override
     public void endContactWith(int pClass) {
 

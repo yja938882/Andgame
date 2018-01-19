@@ -56,7 +56,7 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
             case ENTITY|OBSTACLE|ATTACK_OBSTACLE:
                 category = OBSTACLE_BULLET_CATG_BITS;
                 mask = OBSTACLE_BULLET_MASK_BITS;
-                  break;
+                break;
             case ENTITY|OBSTACLE|PASSABLE_OBSTACLE:
                 category = PASSABLE_OBSTACLE_CATG_BITS;
                 mask = PASSABLE_OBSTACLE_MASK_BITS;
@@ -73,9 +73,8 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
         fixtureDef = PhysicsFactory.createFixtureDef(density,elasticity, friction);
         fixtureDef.filter.categoryBits = category;
         fixtureDef.filter.maskBits = mask;
-        fixtureDef.isSensor=false;
+       // fixtureDef.isSensor=false;
 
         return fixtureDef;
     }
-
 }

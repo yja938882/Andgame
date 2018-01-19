@@ -18,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
+import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 import game.juan.andenginegame0.ygamelibs.Entity.GameEntity;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
@@ -45,6 +46,9 @@ public class PendulumObstacle extends GameEntity {
     int bodySType2;
     int bodySType3;
 
+    String barid;
+    String endid;
+
     public PendulumObstacle(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
@@ -60,6 +64,8 @@ public class PendulumObstacle extends GameEntity {
        // s= pTextureRegion;
     }
     public void createObstacle(GameScene pGameScene, DataBlock pDataBlock){
+        setSawTexture(pGameScene,ResourceManager.getInstance().gfxTextureRegionHashMap.get(endid));
+        setAxisTexture(pGameScene,ResourceManager.getInstance().gfxTextureRegionHashMap.get(barid));
      //   mSawSprite.setScale(0.5f);
        // mAxisSprite.setHeight(mAxisSprite.getHeight()*2);
       //  mAxisSprite.setScale(2f);
@@ -166,44 +172,49 @@ public class PendulumObstacle extends GameEntity {
 
     private void setPhysicsConfigData(JSONObject pConfigData){
         try{
-            JSONArray bodyX1 = pConfigData.getJSONArray("body1_vx");
-            JSONArray bodyY1 = pConfigData.getJSONArray("body1_vy");
+            JSONArray array = pConfigData.getJSONArray("add_id");
+            JSONObject bar, end;
+            barid = (array.getString(0));
+            endid = (array.getString(1));
+            Log.d("IDTEST",barid);
+            bar = DataManager.getInstance().configHashSet.get(barid);
+            Log.d("TEST",bar.toString());
+            end = DataManager.getInstance().configHashSet.get(endid);
 
+
+            JSONArray bodyX1 = pConfigData.getJSONArray("body_vx");
+            JSONArray bodyY1 = pConfigData.getJSONArray("body_vy");
             bodyShape1 = new Vector2[bodyX1.length()];
             for(int i=0;i<bodyX1.length();i++){
                 bodyShape1[i]=new Vector2((float)(bodyX1.getDouble(i)),(float)bodyY1.getDouble((i)));
             }
-
-            JSONArray bodyX2 = pConfigData.getJSONArray("body2_vx");
-            JSONArray bodyY2 = pConfigData.getJSONArray("body2_vy");
-
+            JSONArray bodyX2 = bar.getJSONArray("body_vx");
+            JSONArray bodyY2 = bar.getJSONArray("body_vy");
             bodyShape2 = new Vector2[bodyX2.length()];
             for(int i=0;i<bodyX2.length();i++){
-                Log.d("GH","  bb "+(float)bodyY2.getDouble((i)));
                 bodyShape2[i]=new Vector2((float)(bodyX2.getDouble(i)),(float)bodyY2.getDouble((i)));
             }
 
-            JSONArray bodyX3 = pConfigData.getJSONArray("body3_vx");
-            JSONArray bodyY3 = pConfigData.getJSONArray("body3_vy");
-
+            JSONArray bodyX3 = end.getJSONArray("body_vx");
+            JSONArray bodyY3 = end.getJSONArray("body_vy");
             bodyShape3 = new Vector2[bodyX3.length()];
             for(int i=0;i<bodyX3.length();i++){
                 bodyShape3[i]=new Vector2((float)(bodyX3.getDouble(i)),(float)bodyY3.getDouble((i)));
             }
 
-           String bodyType1 = pConfigData.getString("body1");
+            String bodyType1 = pConfigData.getString("body");
             switch (bodyType1){
                 case "vertices" : bodySType1 = VERTICAL_SHAPE; break;
                 case "circle": bodySType1 = CIRCLE_SHAPE; break;
             }
 
-            String bodyType2 = pConfigData.getString("body2");
+            String bodyType2 = bar.getString("body");
             switch (bodyType2){
                 case "vertices" : bodySType2 = VERTICAL_SHAPE; break;
                 case "circle": bodySType2 = CIRCLE_SHAPE; break;
             }
 
-            String bodyType3 = pConfigData.getString("body3");
+            String bodyType3 = end.getString("body");
             switch (bodyType3){
                 case "vertices" : bodySType3 = VERTICAL_SHAPE; break;
                 case "circle": bodySType3 = CIRCLE_SHAPE; break;

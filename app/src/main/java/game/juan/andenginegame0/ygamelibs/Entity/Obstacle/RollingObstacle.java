@@ -1,13 +1,17 @@
 package game.juan.andenginegame0.ygamelibs.Entity.Obstacle;
 
+import android.util.Log;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Filter;
 
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Entity.GameEntity;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
@@ -42,13 +46,25 @@ public class RollingObstacle extends GameEntity{
     }
     public void createObstacle(GameScene pGameScene, DataBlock pDataBlock){
         setupBody(1);
+
         if(bodySType ==VERTICAL_SHAPE){
             createVerticesBody(pGameScene,0,pDataBlock,bodyShape, BodyDef.BodyType.DynamicBody);
         }else{
             createCircleBody(pGameScene,0,pDataBlock,bodyShape, BodyDef.BodyType.DynamicBody);
         }
+       /* Filter f = new Filter();
+        f.categoryBits = ConstantsSet.Physics.PLAYER_ITEM_CATG_BITS;
+        f.maskBits = ConstantsSet.Physics.PLAYER_ITEM_MASK_BITS;
+        this.getBody(0).getFixtureList().get(0).setFilterData(f);*/
         this.transform(mOriginX,mOriginY);
+        Log.d("TRANS","x :"+mOriginX+" y :"+mOriginY);
+        Log.d("CO!!!!",""+getBody(0).getFixtureList().get(0).getFilterData().categoryBits+
+        "mask : "+getBody(0).getFixtureList().get(0).getFilterData().maskBits);
+        mask = getBody(0).getFixtureList().get(0).getFilterData().maskBits;
+        cat = getBody(0).getFixtureList().get(0).getFilterData().categoryBits;
     }
+    public static short cat;
+    public static short mask;
 
     public void setConfigData(JSONObject pConfigData){
         setPhysicsConfigData(pConfigData);

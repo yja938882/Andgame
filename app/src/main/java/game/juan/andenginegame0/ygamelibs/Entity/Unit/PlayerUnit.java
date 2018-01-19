@@ -187,8 +187,6 @@ public class PlayerUnit extends Unit {
     protected void onActiveStop() {
         if (!isInTheAir) {
             getBody(FOOT).setAngularVelocity(0);
-            //stopAnimation(0);
-            Log.d("PTEST",""+getCurrentTileIndex());
             if(idleFrameIndex[0]<=getCurrentTileIndex() && idleFrameIndex[idleFrameIndex.length-1]>=getCurrentTileIndex()){
 
             }else{

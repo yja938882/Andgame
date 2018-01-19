@@ -93,8 +93,8 @@ public class SceneManager {
     }
     public void disposeSplashScene(){
         Log.d(TAG,"disposeSplashScene");
+         splashScene.disposeScene();
         ResourceManager.getInstance().unloadSplashScene();
-        splashScene.disposeScene();
         splashScene = null;
     }
 

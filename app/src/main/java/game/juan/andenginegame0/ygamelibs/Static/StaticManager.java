@@ -2,6 +2,8 @@ package game.juan.andenginegame0.ygamelibs.Static;
 
 import android.util.Log;
 
+import com.badlogic.gdx.physics.box2d.Body;
+
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.scene.background.AutoParallaxBackground;
 import org.andengine.entity.scene.background.ParallaxBackground;
@@ -24,6 +26,7 @@ import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
 
+import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.RollingObstacle;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 
@@ -44,6 +47,7 @@ public class StaticManager implements ConstantsSet{
     private Sprite display1;
     private Sprite display2;
     private Sprite display3;
+
     private AutoParallaxBackground autoParallaxBackground = new AutoParallaxBackground(0,0,0,5);
 
     private Tile tiles[];
@@ -59,17 +63,17 @@ public class StaticManager implements ConstantsSet{
         autoParallaxBackground.attachParallaxEntity(parallaxEntity);
         autoParallaxBackground.setParallaxChangePerSecond(2);
 
-     //   display1= new Sprite(200,0,ResourceManager.getInstance().displayRegion1,ResourceManager.getInstance().vbom);
-       // display2 = new Sprite(400,280,ResourceManager.getInstance().displayRegion2,ResourceManager.getInstance().vbom);
-       // display3 = new Sprite(500,0,ResourceManager.getInstance().displayRegion3,ResourceManager.getInstance().vbom);
-       // pGameScene.attachChild(display2);
-       // pGameScene.attachChild(display1);
-        //pGameScene.attachChild(display3);
 
         pGameScene.setBackground(autoParallaxBackground);
         ArrayList<StaticData> mlist = DataManager.getInstance().staticMapDataList;
         for(int i=0;i<mlist.size();i++){
-            StaticFactory.createGroundBody(pGameScene,pGameScene.getWorld(),mlist.get(i));
+            Body b = StaticFactory.createGroundBody(pGameScene,pGameScene.getWorld(),mlist.get(i));
+            Log.d(TAG,"mask :"+b.getFixtureList().get(0).getFilterData().maskBits+" cat :"+b.getFixtureList().get(0).getFilterData().categoryBits);
+          //  Log.d(TAG,""+ (((b.getFixtureList().get(0).getFilterData().maskBits))&& RollingObstacle.cat))));
+                boolean bd= (b.getFixtureList().get(0).getFilterData().maskBits& RollingObstacle.cat)!=0;
+            boolean bd2= (b.getFixtureList().get(0).getFilterData().categoryBits& RollingObstacle.mask)!=0;
+
+            Log.d(TAG,""+bd +" "+bd2);
         }
         pGameScene.registerUpdateHandler(new IUpdateHandler() {
             int d=0;

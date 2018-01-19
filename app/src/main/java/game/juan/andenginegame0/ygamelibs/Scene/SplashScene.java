@@ -44,6 +44,7 @@ import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_WIDTH;
  */
 
 public class SplashScene extends BaseScene {
+    private static final String TAG ="[cheep] SplashScene";
 
     private Sprite splashLayer0; //스플래시 화면 레이어 0
     private Sprite splashLayer1; //스플래시 화면 레이어 1
@@ -151,6 +152,7 @@ public class SplashScene extends BaseScene {
             @Override
             public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
                 if(loadingFinished && !disposScene) {
+                    Log.d(TAG,"loading finished :"+loadingFinished +" disposeScene :"+disposScene);
                     movingParticleSystem.setParticlesSpawnEnabled(false);
                     disposScene= true;
                     SceneManager.getInstance().createMainScene();

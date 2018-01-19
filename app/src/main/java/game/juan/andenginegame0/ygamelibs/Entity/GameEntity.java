@@ -86,18 +86,7 @@ public abstract class GameEntity extends AnimatedSprite{
             pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(this, mBodies[0]));
         }
     }
-/*
-    protected void setActionLock(int pIndex, final float pMaxSeconds){
-        mActionLocks[pIndex].setMaxCount(pMaxSeconds);
-    }
-    protected void setSoftActionLock(int pIndex, final float pMaxSeconds){
-        mSoftActionLocks[pIndex].setMaxCount(pMaxSeconds);
-    }
-    protected void LockAction(int pIndex){
-        mActionLocks[pIndex].lock();
-    }
-    protected void SoftLockAction(int pIndex){mActionLocks[pIndex].lock();}
-*/
+
     /*==Overriding============================*/
 
     /*===Setter & Getter======================*/
@@ -148,7 +137,6 @@ public abstract class GameEntity extends AnimatedSprite{
     protected void initActionLock(final int pSize){
 
         this.mActionLocks = new ActionLock[pSize];
-        Log.d("QQQQQQ"," length :"+mActionLocks.length);
     }
     /* protected void setupActionLock(final int index, int[] pFrameIndex, long[] pFrameDuration,final ActionLock actionLock)
     * @param index ActionLock 배열 내에 생성할 위치
