@@ -64,7 +64,6 @@ public class TrapObstacle extends GameEntity{
     }*/
     public void createObstacle(GameScene pGameScene, DataBlock pDataBlock){
         setupBody(1);
-        this.setScale(0.5f);
         if(bodySType==VERTICAL_SHAPE){
             createVerticesBody(pGameScene,0,pDataBlock,bodyShape, BodyDef.BodyType.StaticBody);
         }else{
@@ -172,6 +171,8 @@ public class TrapObstacle extends GameEntity{
                 case "vertices" : bodySType = VERTICAL_SHAPE; break;
                 case "circle": bodySType = CIRCLE_SHAPE; break;
             }
+            float scale =(float)pConfigData.getDouble("scale");
+            this.setScale(scale);
         }catch (Exception e){
             e.printStackTrace();
         }

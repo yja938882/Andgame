@@ -1,4 +1,4 @@
-package game.juan.andenginegame0.ygamelibs.Dynamic.Item;
+package game.juan.andenginegame0.ygamelibs.Dynamics;
 
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;

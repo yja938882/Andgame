@@ -1,4 +1,4 @@
-package game.juan.andenginegame0.ygamelibs.Dynamic.Item;
+package game.juan.andenginegame0.ygamelibs.Dynamics;
 
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;

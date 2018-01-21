@@ -6,23 +6,12 @@ import com.badlogic.gdx.math.Vector2;
 
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
-import org.andengine.engine.camera.SmoothCamera;
-import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.IUpdateHandler;
-import org.andengine.entity.IEntity;
-import org.andengine.entity.scene.Scene;
-import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
-import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.color.Color;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 import debugdraw.DebugRenderer;
-import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
-import game.juan.andenginegame0.ygamelibs.Dynamic.Item.ItemManager;
 import game.juan.andenginegame0.ygamelibs.Static.StaticManager;
 import game.juan.andenginegame0.ygamelibs.UI.UIManager;
 import game.juan.andenginegame0.ygamelibs.World.HorizontalWorld;
@@ -91,11 +80,11 @@ public class GameScene extends BaseScene {
 
 
         //For debugging
-       // DebugRenderer dr = new DebugRenderer(world.getWorld(),vbom);
-        //dr.setColor(Color.BLUE);
-        //dr.setDrawBodies(true);
-        //dr.setDrawJoints(true);
-        //this.attachChild(dr);
+        DebugRenderer dr = new DebugRenderer(world.getWorld(),vbom);
+        dr.setColor(Color.BLUE);
+        dr.setDrawBodies(true);
+        dr.setDrawJoints(true);
+        this.attachChild(dr);
     }
 
     @Override

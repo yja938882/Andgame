@@ -467,7 +467,7 @@ public class PlayerUnit extends Unit {
         items = new WeaponSlot[4];
         for(int i=0;i<4;i++){
             items[i] = new WeaponSlot(i,SLOT_X+(SLOT_SIZE+SLOT_MARGIN)*i,SLOT_Y,
-                    ResourceManager.getInstance().mBagItemTextureRegion,ResourceManager.getInstance().vbom);
+                    ResourceManager.getInstance().gfxTextureRegionHashMap.get("bottom_inven"),ResourceManager.getInstance().vbom);
             UIManager.getInstance().mHud.attachChild(items[i]);
             UIManager.getInstance().mHud.registerTouchArea(items[i]);
         }

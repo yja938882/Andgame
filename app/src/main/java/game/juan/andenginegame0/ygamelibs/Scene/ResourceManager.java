@@ -20,6 +20,7 @@ import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.color.Color;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -44,6 +45,52 @@ public class ResourceManager {
   public VertexBufferObjectManager vbom;
 
 
+  public HashMap<String, ITiledTextureRegion> gfxTextureRegionHashMap = null;
+  private ArrayList<ITiledTextureRegion> gfxTextureRegions =null;
+  private ArrayList<BitmapTextureAtlas> gfxTextureAtlas = null;
+
+
+  private void initGFX(){
+    gfxTextureRegionHashMap = new HashMap<>();
+    gfxTextureRegions = new ArrayList<>();
+    gfxTextureAtlas = new ArrayList<>();
+  }
+
+  private void loadGFX(String pGfxPath, ArrayList<JSONObject> pConfigArray){
+    int size = pConfigArray.size();
+    String id="";
+    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/"+pGfxPath);
+    try{
+      for(int i=0;i<size;i++){
+        id = pConfigArray.get(i).getString("id");
+        BitmapTextureAtlas bitmapTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),
+                pConfigArray.get(i).getInt("src_width"),pConfigArray.get(i).getInt("src_height"));
+        ITiledTextureRegion textureRegion = BitmapTextureAtlasTextureRegionFactory
+                .createTiledFromAsset(bitmapTextureAtlas,gameActivity,pConfigArray.get(i).getString("src")
+                        ,0,0,pConfigArray.get(i).getInt("col"),pConfigArray.get(i).getInt("row"));
+        bitmapTextureAtlas.load();
+        gfxTextureAtlas.add(bitmapTextureAtlas);
+        gfxTextureRegions.add(textureRegion);
+        gfxTextureRegionHashMap.put(pConfigArray.get(i).getString("id"),gfxTextureRegions.get(gfxTextureRegions.size()-1));
+      }
+    }catch (Exception e){
+      Log.d(TAG," loadGFX ["+pGfxPath+id+"] : "+e.getMessage());
+      System.exit(-1);
+    }
+  }
+
+
+  private void unLoadGFX(){
+
+    for(int i=0;i<gfxTextureAtlas.size();i++){
+      gfxTextureAtlas.get(i).unload();
+      gfxTextureRegions.set(i,null);
+    }
+    gfxTextureAtlas.clear();
+    gfxTextureRegions.clear();
+    gfxTextureAtlas = null;
+    gfxTextureRegions = null;
+  }
 
 
 
@@ -65,167 +112,6 @@ public class ResourceManager {
 
   }
 
-  /*===ShopScene================================*/
-  public ITextureRegion itemsRegion[];
-  private BitmapTextureAtlas itemsTextureAtlas[];
-  public HashMap<String,ITextureRegion> shopItemHashMap;
-  public void loadShopScene(){
-    loadShopSceneGraphics();
-  }
-
-  private void loadShopSceneGraphics(){
-    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/object/players/");
-
-    DataManager.getInstance().loadShopSellItemData();
-     ArrayList<JSONObject> arrayList = DataManager.getInstance().shopItemList;
-     int size = arrayList.size();
-     itemsRegion = new ITextureRegion[size];
-     itemsTextureAtlas = new BitmapTextureAtlas[size];
-     shopItemHashMap = new HashMap<String,ITextureRegion>();
-    try{
-      for(int i=0;i<size;i++){
-        JSONObject obj = (JSONObject)arrayList.get(i);
-        itemsTextureAtlas[i] = new BitmapTextureAtlas(gameActivity.getTextureManager(),obj.getInt("src_width"),obj.getInt("src_height"),TextureOptions.BILINEAR);
-        itemsRegion[i] = BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(itemsTextureAtlas[i],gameActivity,obj.getString("src"),0,0);
-        itemsTextureAtlas[i].load();
-
-        shopItemHashMap.put(obj.getString("id"),itemsRegion[i]);
-
-      }
-    }catch (Exception e){
-      e.printStackTrace();
-    }
-
-  }
-
-  /*===GameScene================================*/
-
-
-  /*===Static=======*/
-  //Fields
- /* public ITextureRegion backgroundRegion1;
-  private BitmapTextureAtlas background_1_TextureAtlas;
-  public ITextureRegion backgroundRegion2;
-  private BitmapTextureAtlas background_2_TextureAtlas;
-  public ITextureRegion displayRegion1;
-  private BitmapTextureAtlas display1TextureAtlas;
-  public ITextureRegion displayRegion2;
-  private BitmapTextureAtlas display2TextureAtlas;
-  public ITextureRegion displayRegion3;
-  private BitmapTextureAtlas display3TextureAtlas;
-
-  public ITextureRegion mapRegion[];
-  public BitmapTextureAtlas mapTextureAtlas[];*/
-  //Inner Methods
-  /*
-  private void loadBackgroundGraphics(){
-    Log.d(TAG,"loadBackgroundGraphics ");
-
-    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/bg/");
-
-    background_1_TextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(), 1024, 960, TextureOptions.BILINEAR);
-    backgroundRegion1 = BitmapTextureAtlasTextureRegionFactory.
-            createFromAsset(background_1_TextureAtlas, gameActivity, "a.png", 0, 0);
-    background_1_TextureAtlas.load();
-
-    background_2_TextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,960,TextureOptions.BILINEAR);
-    backgroundRegion2 = BitmapTextureAtlasTextureRegionFactory.
-            createFromAsset(background_2_TextureAtlas,gameActivity,"b.png",0,0);
-    background_2_TextureAtlas.load();
-
-    display1TextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),100,780,TextureOptions.BILINEAR);
-    displayRegion1 = BitmapTextureAtlasTextureRegionFactory.
-            createFromAsset(display1TextureAtlas,gameActivity,"d1.png",0,0);
-    display1TextureAtlas.load();
-
-    display2TextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),274,200);
-    displayRegion2 = BitmapTextureAtlasTextureRegionFactory.
-            createFromAsset(display2TextureAtlas,gameActivity,"d3.png",0,0);
-    display2TextureAtlas.load();
-
-    display3TextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),680,268);
-    displayRegion3 = BitmapTextureAtlasTextureRegionFactory.
-            createFromAsset(display3TextureAtlas,gameActivity,"d4.png",0,0);
-    display3TextureAtlas.load();
-
-  }
-  private void unloadBackgroundGraphics(){
-    background_1_TextureAtlas.unload();
-    backgroundRegion1 = null;
-    background_2_TextureAtlas.unload();
-    backgroundRegion2 = null;
-  }*/
-
-  public static final int MAX_TILE_SIZE = 18;
-
-
-  /*===Player GFX===*/
-
-  //Fields
- /* public ITiledTextureRegion playerRegion;
-  private BitmapTextureAtlas playerTextureAtlas;
-
-  public ITextureRegion playerHandRegion;
-  private BitmapTextureAtlas playerHandTextureAtlas;
-
-  public ITextureRegion playerMovingParticleRegion;
-  private BitmapTextureAtlas playerMovingParticleTextureAtlas;
-
-  public ITextureRegion playerBeAttackedParticleRegion;
-  private BitmapTextureAtlas playerBeAttackedParticleTextureAtlas;
-
-  public ITextureRegion playerAttackParticleRegion;
-  private BitmapTextureAtlas playerAttackParticleTextureAtlas;
-*/
-//  public ITiledTextureRegion playerBulletRegion;
-//  private BitmapTextureAtlas playerBulletTextureAtlas;
-
- // public ITiledTextureRegion playerBulletRegion2;
- // private BitmapTextureAtlas playerBulletTextureAtlas2;
-
-  // Player GFX load , unload
-/*  private void loadPlayerGraphics(){
-    Log.d(TAG,"loadPlayerGraphics ");
-
-    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/player/");
-
-    playerTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),1024,1024);
-    playerRegion  = BitmapTextureAtlasTextureRegionFactory.
-              createTiledFromAsset(playerTextureAtlas,gameActivity.getAssets(),"player_s.png",0,0,8,8);
-    playerTextureAtlas.load();
-
-
-    playerMovingParticleTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),16,16);
-    playerMovingParticleRegion  = BitmapTextureAtlasTextureRegionFactory.
-            createFromAsset(playerMovingParticleTextureAtlas,gameActivity.getAssets(),"ptest.png",0,0);
-    playerMovingParticleTextureAtlas.load();
-
-    playerAttackParticleTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),32,32);
-    playerAttackParticleRegion = BitmapTextureAtlasTextureRegionFactory.
-            createFromAsset(playerAttackParticleTextureAtlas,gameActivity.getAssets(),"t.png",0,0);
-    playerAttackParticleTextureAtlas.load();
-
-
-    playerBeAttackedParticleTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),32,32);
-    playerBeAttackedParticleRegion = BitmapTextureAtlasTextureRegionFactory
-            .createFromAsset(playerBeAttackedParticleTextureAtlas,gameActivity.getAssets(),"tul.png",0,0);
-    playerBeAttackedParticleTextureAtlas.load();
-
-    playerHandTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),48,48);
-    playerHandRegion = BitmapTextureAtlasTextureRegionFactory.
-            createFromAsset(playerHandTextureAtlas,gameActivity.getAssets(),"hand.png",0,0);
-    playerHandTextureAtlas.load();
-
-
-  }
-  private void unloadPlayerGraphics(){
-    playerTextureAtlas.unload();
-    playerRegion=null;
-
-    playerMovingParticleTextureAtlas.unload();
-    playerMovingParticleRegion = null;
-  }*/
 
   public Sound playerMovingSound;
 
@@ -299,86 +185,6 @@ public class ResourceManager {
   public static final int  UI_SKILL2 =4;
   public static final int  UI_UP =5;
 
-    public ITextureRegion mControllerTRs[]=null;  //움직임 컨트롤러 TextureRegion
-    private BitmapTextureAtlas mControllerAtlas[]=null;
-
-    public ITextureRegion mBagItemTextureRegion = null;
-    private BitmapTextureAtlas bagTextureAtlas;
-
-    public ITiledTextureRegion heartTextureRegion;
-    public ITextureRegion settingTextureRegion;
-    public ITextureRegion invenTextureRegion;
-    public ITextureRegion coinTextureRegion;
-
-    private BitmapTextureAtlas heartTextureAtlas;
-    private BitmapTextureAtlas settingTextureAtlas;
-    private BitmapTextureAtlas invenTextureAtlas;
-    private BitmapTextureAtlas coinTextureAtlas;
-
-    private void loadGameUI(){
-        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/ui/");
-
-        bagTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),
-                80,80,TextureOptions.BILINEAR);
-        mBagItemTextureRegion = BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(bagTextureAtlas,gameActivity,"bag_item.png",0,0);
-        bagTextureAtlas.load();
-
-        mControllerAtlas = new BitmapTextureAtlas[CONTROLLER_SIZE];
-        mControllerTRs = new ITextureRegion[CONTROLLER_SIZE];
-        mControllerAtlas[UI_LEFT] = new BitmapTextureAtlas(gameActivity.getTextureManager(),
-                68,67,TextureOptions.BILINEAR);
-        mControllerTRs[UI_LEFT] = BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(mControllerAtlas[UI_LEFT],gameActivity,"left.png",0,0);
-        mControllerAtlas[UI_LEFT].load();
-
-        mControllerAtlas[UI_RIGHT] = new BitmapTextureAtlas(gameActivity.getTextureManager(), 68,67,TextureOptions.BILINEAR);
-        mControllerTRs[UI_RIGHT] = BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(mControllerAtlas[UI_RIGHT],gameActivity,"right.png",0,0);
-        mControllerAtlas[UI_RIGHT].load();
-
-        mControllerAtlas[UI_ATTACK]= new BitmapTextureAtlas(gameActivity.getTextureManager(),112,123,TextureOptions.BILINEAR);
-        mControllerTRs[UI_ATTACK] = BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(mControllerAtlas[UI_ATTACK],gameActivity,"attack_btn.png",0,0);
-        mControllerAtlas[UI_ATTACK].load();
-
-        mControllerAtlas[UI_UP] = new BitmapTextureAtlas(gameActivity.getTextureManager(),72,60, TextureOptions.BILINEAR);
-        mControllerTRs[UI_UP] =BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(mControllerAtlas[UI_UP],gameActivity,"up.png",0,0);
-        mControllerAtlas[UI_UP].load();
-
-        mControllerAtlas[UI_SKILL1] = new BitmapTextureAtlas(gameActivity.getTextureManager(), 112,123,TextureOptions.BILINEAR );
-        mControllerTRs[UI_SKILL1] = BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(mControllerAtlas[UI_SKILL1],gameActivity,"skill1.png",0,0);
-        mControllerAtlas[UI_SKILL1].load();
-
-        mControllerAtlas[UI_SKILL2] = new BitmapTextureAtlas(gameActivity.getTextureManager(), 72,60,TextureOptions.BILINEAR );
-        mControllerTRs[UI_SKILL2] = BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(mControllerAtlas[UI_SKILL2],gameActivity,"skill2.png",0,0);
-        mControllerAtlas[UI_SKILL2].load();
-
-        heartTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),55,34);
-        heartTextureRegion  = BitmapTextureAtlasTextureRegionFactory.
-                createTiledFromAsset(heartTextureAtlas,gameActivity,"heart.png",0,0,2,1);
-        heartTextureAtlas.load();
-
-        settingTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),96,48);
-        settingTextureRegion  = BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(settingTextureAtlas,gameActivity,"icon_setting.png",0,0);
-        settingTextureAtlas.load();
-
-        invenTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),192,64);
-        invenTextureRegion = BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(invenTextureAtlas,gameActivity,"bottom_inven.png",0,0);
-        invenTextureAtlas.load();
-
-        coinTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(), 28,27);
-        coinTextureRegion = BitmapTextureAtlasTextureRegionFactory.
-                createFromAsset(coinTextureAtlas,gameActivity,"coin.png",0,0);
-        coinTextureAtlas.load();
-    }
-
-
   public void loadGameResources(){
     loadGameGraphics();
     loadGameAudio();
@@ -398,8 +204,13 @@ public class ResourceManager {
    */
   void loadSplashScene(){
     Log.d(TAG,"loadSplashScene");
+      initGFX();
+      loadGFX("splash/",configSplashGFXData());
+  }
+  private ArrayList<JSONObject> configSplashGFXData(){
+    Log.d(TAG,"configSplashGFXData");
+    ArrayList<JSONObject> arrayList = new ArrayList<>();
     try{
-      ArrayList<JSONObject> arrayList = new ArrayList<>();
       arrayList.add(newConfigJSON("layer0","splash_layer0.png",1024,600,1,1));
       arrayList.add(newConfigJSON("layer1","splash_layer1.png",1024,600,1,1));
       arrayList.add(newConfigJSON("layer2","splash_layer2.png",1024,600,1,1));
@@ -408,11 +219,11 @@ public class ResourceManager {
       arrayList.add(newConfigJSON("cheep","cheep.png",768,128,6,1));
       arrayList.add(newConfigJSON("particle","particle.png",16,16,1,1));
       arrayList.add(newConfigJSON("title","title.png",326,122,1,1));
-      initGFX();
-      loadGFX("splash/",arrayList);
+
     }catch (Exception e){
-      Log.d(TAG," loadSlashScene error :"+e.getMessage());
+      Log.d(TAG," configSplashGFXData error :"+e.getMessage());
     }
+    return arrayList;
   }
 
   /* 스플래시 화면 리소스 언로딩
@@ -432,93 +243,88 @@ public class ResourceManager {
    */
   void unloadMainScene(){}
 
-  /*===게임 화면===========================*/
+  /*===상점 화면 =================================*/
+  /** 상점 화면 그래픽, 인벤토리 데이터 로딩
+   */
+  void loadShopScene(){
+    DataManager.getInstance().loadShopData(); // 상점 데이터 로딩
+    initGFX(); //GFX 초기화
+    loadGFX("ui/",configShopUIData()); // 상점 UI 로딩
+    loadGFX("object/players/",DataManager.getInstance().shopItemList); //상점에서 판매하는 아이템 GFX 로딩
+  }
+
+  private ArrayList<JSONObject> configShopUIData(){
+    ArrayList<JSONObject> arrayList = new ArrayList<>();
+    try{
+      arrayList.add(newConfigJSON("shop_container","item_container.png",384,384,1,1));
+       }catch (Exception e){
+      e.printStackTrace();
+      System.exit(-1);
+    }
+    return arrayList;
+  }
+
+
+  /*===게임 화면===================================*/
+
   /* 게임화면 리소스 로딩
+   * @param pTheme 해당 테마
    * @param pStage 에 해당하는 리소스 로딩
    */
-  void loadGameScene(int pStage){
-    DataManager.getInstance().loadStageData(pStage);// 스테이지 데이터 로딩
-    loadGameUI();
+  void loadGameScene(int pTheme,int pStage){
+    DataManager.getInstance().loadStageData(pTheme,pStage);// 스테이지 데이터 로딩
     initGFX(); // GFX 초기화
-
-    loadPlayerGFX();
-    loadGFX("map/bg/",DataManager.getInstance().bgGFXJsonList);
-    loadGFX("map/"+pStage+"/",DataManager.getInstance().staticGFXJsonList);
+    loadGFX("ui/",configGameUIData()); // 게임 UI GFX 로딩
+    loadGFX("player/",configPlayerGFXData()); // 플레이어 GFX 로딩
+    loadGFX("map/bg/",DataManager.getInstance().bgGFXJsonList); // 배경 GFX 로딩
+    loadGFX("map/"+pTheme+"/",DataManager.getInstance().staticGFXJsonList); //맵 타일 GFX 로딩
     loadGFX("ai/",DataManager.getInstance().aiGFXJsonList); //ai GFX 로딩
     loadGFX("obstacle/",DataManager.getInstance().obstacleGFXJsonList); //Obstacle GFX 로딩
   }
 
-  private void loadPlayerGFX(){
-    Log.d(TAG,"loadPlayerGFX");
+  private ArrayList<JSONObject> configPlayerGFXData(){
+    Log.d(TAG,"configPlayerGFXData");
+    ArrayList<JSONObject> arrayList = new ArrayList<>();
     try{
-      ArrayList<JSONObject> arrayList = new ArrayList<>();
       arrayList.add(newConfigJSON("player","player_s.png",1024,1024,8,8));
       arrayList.add(newConfigJSON("player_moving_particle","moving_particle.png",16,16,1,1));
       arrayList.add(newConfigJSON("player_hand","hand.png",48,48,1,1));
       arrayList.add(newConfigJSON("player_attack_particle","attack_particle.png",32,32,1,1));
-
-      loadGFX("player/",arrayList);
     }catch (Exception e){
-      Log.d(TAG," loadSlashScene error :"+e.getMessage());
+      Log.d(TAG," configPlayerGFXData error :"+e.getMessage());
     }
+    return arrayList;
+  }
+
+  private ArrayList<JSONObject> configGameUIData(){
+    Log.d(TAG,"configGameUIData");
+    ArrayList<JSONObject> arrayList = new ArrayList<>();
+    try{
+      arrayList.add(newConfigJSON("bag_item","bag_item.png",80,80,1,1));
+      arrayList.add(newConfigJSON("left_btn","left.png",68,67,1,1));
+      arrayList.add(newConfigJSON("right_btn","right.png",68,67,1,1));
+      arrayList.add(newConfigJSON("attack_btn","attack_btn.png",112,123,1,1));
+      arrayList.add(newConfigJSON("up_btn","up.png",72,60,1,1));
+      arrayList.add(newConfigJSON("skill1","skill1.png",112,123,1,1));
+      arrayList.add(newConfigJSON("skill2","skill2.png",72,60,1,1));
+      arrayList.add(newConfigJSON("heart","heart.png",55,34,2,1));
+      arrayList.add(newConfigJSON("setting_icon","icon_setting.png",96,48,1,1));
+      arrayList.add(newConfigJSON("bottom_inven","bottom_inven.png",192,64,1,1));
+      arrayList.add(newConfigJSON("coin","coin.png",28,27,1,1));
+
+    }catch (Exception e){
+      Log.d(TAG," configGameUIGFXData error :"+e.getMessage());
+    }
+    return arrayList;
   }
 
   /* 게임 화면 리소스 언로딩
    */
   void unloadGameScene(){}
-
-
-  /*===GFX==============================*/
+  /*==============================================*/
 
 
 
-  public HashMap<String, ITiledTextureRegion> gfxTextureRegionHashMap = null;
-  private ArrayList<ITiledTextureRegion> gfxTextureRegions =null;
-  private ArrayList<BitmapTextureAtlas> gfxTextureAtlas = null;
-
-  private void initGFX(){
-
-
-      gfxTextureRegionHashMap = new HashMap<>();
-      gfxTextureRegions = new ArrayList<>();
-      gfxTextureAtlas = new ArrayList<>();
-  }
-
-  private void loadGFX(String pGfxPath, ArrayList<JSONObject> pConfigArray){
-    int size = pConfigArray.size();
-    String id="";
-    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/"+pGfxPath);
-    try{
-      for(int i=0;i<size;i++){
-        id = pConfigArray.get(i).getString("id");
-        BitmapTextureAtlas bitmapTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),
-                pConfigArray.get(i).getInt("src_width"),pConfigArray.get(i).getInt("src_height"));
-        ITiledTextureRegion textureRegion = BitmapTextureAtlasTextureRegionFactory
-                .createTiledFromAsset(bitmapTextureAtlas,gameActivity,pConfigArray.get(i).getString("src")
-                        ,0,0,pConfigArray.get(i).getInt("col"),pConfigArray.get(i).getInt("row"));
-        bitmapTextureAtlas.load();
-        gfxTextureAtlas.add(bitmapTextureAtlas);
-        gfxTextureRegions.add(textureRegion);
-        gfxTextureRegionHashMap.put(pConfigArray.get(i).getString("id"),gfxTextureRegions.get(gfxTextureRegions.size()-1));
-      }
-    }catch (Exception e){
-      Log.d(TAG," loadGFX ["+pGfxPath+id+"] : "+e.getMessage());
-      System.exit(-1);
-    }
-  }
-
-
-  private void unLoadGFX(){
-
-    for(int i=0;i<gfxTextureAtlas.size();i++){
-      gfxTextureAtlas.get(i).unload();
-      gfxTextureRegions.set(i,null);
-    }
-    gfxTextureAtlas.clear();
-    gfxTextureRegions.clear();
-    gfxTextureAtlas = null;
-    gfxTextureRegions = null;
-  }
   private JSONObject newConfigJSON(String pId, String pSrc, int pWidth, int pHeight,int pCol, int pRow){
     try{
       return new JSONObject().put("id",pId).put("src",pSrc)

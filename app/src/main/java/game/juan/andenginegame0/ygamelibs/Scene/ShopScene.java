@@ -1,8 +1,11 @@
 package game.juan.andenginegame0.ygamelibs.Scene;
 
 import android.provider.ContactsContract;
+import android.util.Log;
 
 import org.andengine.entity.primitive.Rectangle;
+import org.andengine.entity.scene.IOnSceneTouchListener;
+import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.color.Color;
@@ -12,6 +15,9 @@ import java.util.ArrayList;
 
 import game.juan.andenginegame0.ygamelibs.Data.DBManager;
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
+import game.juan.andenginegame0.ygamelibs.Dialogs.ShopBuyItemDialog;
+import game.juan.andenginegame0.ygamelibs.Dynamics.ShopItem.ShopItem;
+import game.juan.andenginegame0.ygamelibs.Dynamics.ShopItem.ShopItemContainer;
 
 import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_HEIGHT;
 import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_WIDTH;
@@ -22,88 +28,39 @@ import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_WIDTH;
 
 public class ShopScene extends BaseScene{
     /*===Constants===================*/
-    private final static int SHOP_COL = 4;
-    private final static float ITEM_CONTAINER_SIZE=80f;
-    private final static float ITEM_SIZE = 64f;
-    private Sprite itemList[];
-    private ArrayList<Sprite> inventorySpriteList;
-    private ArrayList<JSONObject> inventoryList;
+    private final float SHOP_ITEM_CONTAINER_X =40f;
+    private final float SHOP_ITEM_CONTAINER_Y =40f;
+
+    private final float PLAYER_ITEM_CONTAINER_X = 480f;
+    private final float PLAYER_ITEM_CONTAINER_Y = 40f;
+    ShopItemContainer sellItemContainer;
+    ShopItemContainer playerItemContainer;
     @Override
     public void createScene() {
-        int size = ResourceManager.getInstance().itemsRegion.length;
-        itemList = new Sprite[size];
-        float itemPosX = 100f;
-        float itemPosY = 100f;
-        for(int i=0;i<size;i++){
-            itemList[i] = new Sprite(itemPosX,itemPosY,ResourceManager.getInstance().itemsRegion[i],ResourceManager.getInstance().vbom){
-                @Override
-                public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                    this.setAlpha(0.3f);
-                    return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
-                }
-            };
-            float ratio = ITEM_SIZE/itemList[i].getWidth();
-            itemList[i].setWidth(ITEM_SIZE);
+        sellItemContainer = new ShopItemContainer(SHOP_ITEM_CONTAINER_X,SHOP_ITEM_CONTAINER_Y,
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("shop_container"),ResourceManager.getInstance().vbom);
 
-            //itemList[i].setRotationCenter(200,0);
-            float height = itemList[i].getHeight() * ratio;
-            itemList[i].setHeight(height);
-
-            itemList[i].setRotationCenter(ITEM_SIZE/2f,ITEM_SIZE/2f);
-            itemList[i].setRotation(-45f);
-
-            this.registerTouchArea(itemList[i]);
-            this.attachChild(itemList[i]);
-            itemPosX+=ITEM_CONTAINER_SIZE;
-            if((i+1)%SHOP_COL==0){
-                itemPosX = 100f;
-                itemPosY+=ITEM_CONTAINER_SIZE;
-            }
-        }
-         this.inventoryList = DataManager.getInstance().getInventoryList();
-        try {
-            for (int i = 0; i < inventoryList.size(); i++) {
-                Sprite sprite = new Sprite(600, 50,
-                        ResourceManager.getInstance().shopItemHashMap.get(inventoryList.get(i).getString("item_name")), ResourceManager.getInstance().vbom){
-                    @Override
-                    public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                        //this.setAlpha(0.3f);
-                        return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
-                    }
-                };
-                float ratio = ITEM_SIZE/sprite.getWidth();
-                sprite.setWidth(ITEM_SIZE);
-
-                //itemList[i].setRotationCenter(200,0);
-                float height = sprite.getHeight() * ratio;
-                sprite.setHeight(height);
-                sprite.setRotationCenter(ITEM_SIZE,ITEM_SIZE);
-                this.registerTouchArea(sprite);
-                this.attachChild(sprite);
+        sellItemContainer.setWidth(4*96f);
+        sellItemContainer.setHeight(4*96f);
+        ArrayList<JSONObject> arrayList =DataManager.getInstance().shopItemList;
+        try{
+            for(int i=0;i<arrayList.size();i++){
+                sellItemContainer.addItem(new ShopItem(0,0,
+                        ResourceManager.getInstance().gfxTextureRegionHashMap.get(arrayList.get(i).getString("id")),ResourceManager.getInstance().vbom));
             }
         }catch (Exception e){
             e.printStackTrace();
         }
+        Log.d("TEST","size :"+arrayList.size());
+        this.registerTouchArea(sellItemContainer);
+        this.attachChild(sellItemContainer);
 
+        playerItemContainer = new ShopItemContainer(PLAYER_ITEM_CONTAINER_X,PLAYER_ITEM_CONTAINER_Y,
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("shop_container"),ResourceManager.getInstance().vbom);
+        playerItemContainer.setWidth(4*96f);
+        playerItemContainer.setHeight(4*96f);
+        this.attachChild(playerItemContainer);
 
-        Rectangle rectangle0 = new Rectangle(CAMERA_WIDTH/2,CAMERA_HEIGHT/2,50,50,ResourceManager.getInstance().vbom){
-            @Override
-            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
-            }
-        };
-        rectangle0.setColor(Color.BLUE);
-        this.registerTouchArea(rectangle0);
-        this.attachChild(rectangle0);
-
-        Rectangle rectangle = new Rectangle(CAMERA_WIDTH/2+100,CAMERA_HEIGHT/2,50,50,ResourceManager.getInstance().vbom){
-            @Override
-            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
-            }
-        };
-        this.registerTouchArea(rectangle);
-        this.attachChild(rectangle);
     }
 
     @Override
@@ -120,4 +77,5 @@ public class ShopScene extends BaseScene{
     public void disposeScene() {
 
     }
+
 }

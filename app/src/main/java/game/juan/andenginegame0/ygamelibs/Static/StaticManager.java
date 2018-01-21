@@ -30,8 +30,6 @@ import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.RollingObstacle;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 
-import static game.juan.andenginegame0.ygamelibs.Scene.ResourceManager.MAX_TILE_SIZE;
-
 /**
  * Created by juan on 2017. 11. 28..
  *
@@ -94,8 +92,8 @@ public class StaticManager implements ConstantsSet{
             }
         });
 
-        tiles = new Tile[MAX_TILE_SIZE];
-        for(int i=0;i<MAX_TILE_SIZE;i++){
+        tiles = new Tile[18];
+        for(int i=0;i<18;i++){
             int tilenum = calculateMaxTileInCam(DataManager.getInstance().staticMapDataList,i);
             if(tilenum<0)
                 continue;

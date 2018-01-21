@@ -133,7 +133,7 @@ public class SceneManager {
     /*===Game Scene==========*/
     public void loadGameScene() {
         Log.d(TAG,"loadingGameScene");
-        ResourceManager.getInstance().loadGameScene(0);
+        ResourceManager.getInstance().loadGameScene(MainScene.theme,MainScene.stage);
     }
     public void createGameScene(){
         Log.d(TAG,"createGameScene");

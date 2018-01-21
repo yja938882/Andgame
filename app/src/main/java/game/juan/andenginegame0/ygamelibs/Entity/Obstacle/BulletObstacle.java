@@ -182,8 +182,8 @@ public class BulletObstacle extends GameEntity{
             JSONArray aforce = pConfigData.getJSONArray("aforce");
             setForce(new Vector2((float)iforce.getDouble(0), (float)iforce.getDouble(1)),
                     new Vector2((float)aforce.getDouble(0), (float)aforce.getDouble(1)));
-
-
+            float scale = (float)pConfigData.getDouble("scale");
+            this.setScale(scale);
         }catch (Exception e){
             e.printStackTrace();
         }

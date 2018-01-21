@@ -253,7 +253,9 @@ public class EntityManager implements ConstantsSet.Classify {
             }
        }
         Log.d("TEST!!!","id size :"+id_size);
-        mObstacleList = new ManagedEntityList(id_size);
+        if(id_size<=0)
+            return;
+         mObstacleList = new ManagedEntityList(id_size);
 
         for(int i=0;i<id_size;i++){
 

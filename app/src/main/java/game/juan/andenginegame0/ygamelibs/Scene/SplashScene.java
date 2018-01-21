@@ -138,8 +138,8 @@ public class SplashScene extends BaseScene {
             @Override
             public void onUpdate(float pSecondsElapsed) {
                 SceneManager.getInstance().loadMainScene(); //MainScene 로딩
-                loadingFinished(); //MainScene 로딩 완료
                 unregisterUpdateHandler(this);
+                loadingFinished(); //MainScene 로딩 완료
             }
 
             @Override
@@ -183,6 +183,7 @@ public class SplashScene extends BaseScene {
         splashLayer1.detachSelf();
         splashLayer1.dispose();
 
+        //this.unregisterTouchArea(this.);
         splashLayer2.detachSelf();
         splashLayer2.dispose();
 

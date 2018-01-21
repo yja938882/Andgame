@@ -17,6 +17,8 @@ import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_WIDTH;
  */
 
 public class MainScene extends BaseScene {
+    public static int theme = 0;
+    public static int stage = -1;
     private static final String TAG ="[cheep] MainScene";
     @Override
     public void createScene() {
@@ -25,6 +27,8 @@ public class MainScene extends BaseScene {
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if(pSceneTouchEvent.isActionDown()){
+                    theme=0;
+                    stage = 0;
                     SceneManager.getInstance().createLoadingScene(SceneManager.SceneType.GAME);
                     SceneManager.getInstance().disposeMainScene();
                 }
@@ -34,6 +38,25 @@ public class MainScene extends BaseScene {
         r.setColor(Color.WHITE);
         this.attachChild(r);
         this.registerTouchArea(r);
+
+        Rectangle r0 = new Rectangle(230,300,50,50,ResourceManager.getInstance().vbom){
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                if(pSceneTouchEvent.isActionDown()){
+                    theme=0;
+                    stage = 1;
+                    SceneManager.getInstance().createLoadingScene(SceneManager.SceneType.GAME);
+                    SceneManager.getInstance().disposeMainScene();
+                }
+                return true;
+            }
+        };
+        r0.setColor(Color.BLUE);
+        this.attachChild(r0);
+        this.registerTouchArea(r0);
+
+
+
 
         Rectangle r1 = new Rectangle(400,300,50,50,ResourceManager.getInstance().vbom){
             @Override

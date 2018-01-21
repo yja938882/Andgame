@@ -49,11 +49,8 @@ public class DataManager implements ConstantsSet{
 
     private BaseGameActivity activity;
 
-    /*===Player Data=============*/
-
+    /*===GameScene=============*/
     public JSONObject playerConfig; // 플레이어 설정정보
-
-    /*===Stage Data===============*/
     public ArrayList<JSONObject> playerGFXJsonList; // 플레이어와 관련된 GFX 설정 데이터
     public ArrayList<JSONObject> bgGFXJsonList;     // 백그라운드와 관련된 GFX 설정 데이터
     public ArrayList<JSONObject> staticGFXJsonList; // 맵과 관련된 GFX 설정 데이터
@@ -68,9 +65,10 @@ public class DataManager implements ConstantsSet{
 
 
     /* 스테이지를 구성하는데 필요한 데이터 로딩
+    * @param pTheme
     * @param pStage
     */
-    public void loadStageData(int pStage){
+    public void loadStageData(int pTheme, int pStage){
 
         bgGFXJsonList = new ArrayList<>();
         playerGFXJsonList = new ArrayList<>();
@@ -94,7 +92,7 @@ public class DataManager implements ConstantsSet{
         playerConfig= dbManager.getPlayerConfigJSON(db); // 플레이어 설정 정보 로드
 
         try{
-            JSONObject mapObject = loadJSONFromAsset(activity,"stage/stage"+pStage+".json");
+            JSONObject mapObject = loadJSONFromAsset(activity,"stage/stage"+pTheme+"_"+pStage+".json");
             JSONArray stageArray = mapObject.getJSONArray("map");
             JSONArray bgArray = mapObject.getJSONArray("bg");
             for(int i=0;i<bgArray.length();i++){
@@ -226,11 +224,6 @@ public class DataManager implements ConstantsSet{
                 case "obs_pendulum":
                     vClass = DataBlock.GROUND_CLASS;
                     vType = EntityType.OBS_PENDULUM;
-                  //  JSONArray array = object.getString()
-                   // addId = new String[array.length()];
-                   // for(int i=0;i<array.length();i++){
-                     //   addId[i] = array.getString(i);
-                    //}
                     break;
                 case "obs_shooting":
                     break;
@@ -253,7 +246,6 @@ public class DataManager implements ConstantsSet{
             }
             ObstacleData obsData =
                     new ObstacleData(vClass,vType,object.getInt("x"),object.getInt("y"),object.getString("id"));
-//            Log.d("TEST",""+obstacleDataList.get(obstacleDataList.size()-1).getType());
             if(addId!=null)
                 obsData.setAddid(addId);
             JSONArray dataArray = object.getJSONArray("data");
@@ -304,12 +296,20 @@ public class DataManager implements ConstantsSet{
         exp = data[EXP_D];
     }
 
+
+    /*===Shop Scene ========================*/
     public ArrayList<JSONObject> shopItemList;
 
-    public void loadShopSellItemData(){
+    /* 상점을 구성하는데 필요한 데이터 로딩
+     *
+     */
+    public void loadShopData(){
         SQLiteDatabase db = dbManager.getReadableDatabase();
-        shopItemList=dbManager.getAllSellingItem(db);
+        shopItemList=dbManager.getAllSellingItem(db); //상점에서 판매하는 아이템 정보 로딩
+
     }
+
+
 
     public JSONObject getItemData(String pKeyName){
         SQLiteDatabase db = dbManager.getReadableDatabase();
@@ -322,7 +322,11 @@ public class DataManager implements ConstantsSet{
 
 
 
-
+    /* Asset 으로 부터 JSON 파일을 읽어드린다
+     * @param context
+     * @param filename 에 해당하는 파일을 읽어드린다
+     * @return 읽은 JSON Object 반환
+     */
     private static JSONObject loadJSONFromAsset(Context context, String filename){
         String json = null;
         JSONObject object = null;

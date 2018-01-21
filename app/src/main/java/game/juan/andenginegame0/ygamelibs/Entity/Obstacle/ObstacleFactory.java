@@ -65,8 +65,7 @@ public class ObstacleFactory implements ConstantsSet.EntityType{
         RollingObstacle rollingObstacle = new RollingObstacle(pDataBlock.getPosX(),pDataBlock.getPosY(),
                 iTiledTextureRegion,ResourceManager.getInstance().vbom);
         rollingObstacle.setConfigData(DataManager.getInstance().configHashSet.get(pDataBlock.getId()));
-        rollingObstacle.setScale(0.5f);
-        rollingObstacle.setOrigin(pDataBlock.getPosX()+rollingObstacle.getWidthScaled()/2f,pDataBlock.getPosY()+rollingObstacle.getHeightScaled()/2f);
+         rollingObstacle.setOrigin(pDataBlock.getPosX()+rollingObstacle.getWidthScaled()/2f,pDataBlock.getPosY()+rollingObstacle.getHeightScaled()/2f);
 
         rollingObstacle.createObstacle(pGameScene,pDataBlock);
         Log.d("SET ORI "," x:"+pDataBlock.getPosX()+rollingObstacle.getWidthScaled()/2f+" y :"+pDataBlock.getPosY()+rollingObstacle.getHeightScaled()/2f);

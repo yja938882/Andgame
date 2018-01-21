@@ -77,40 +77,44 @@ public class UIManager implements ConstantsSet {
             mControllers = new Controller[CONTROLLER_SIZE];
 
         mControllers[UI_ATTACK]= new AttackController(428*2,229*2
-                ,ResourceManager.getInstance().mControllerTRs[UI_ATTACK].getWidth(),
-                ResourceManager.getInstance().mControllerTRs[UI_ATTACK].getHeight(),
-                ResourceManager.getInstance().mControllerTRs[UI_ATTACK],
+                ,ResourceManager.getInstance().gfxTextureRegionHashMap.get("attack_btn").getWidth(),
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("attack_btn").getHeight(),
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("attack_btn"),
                 ResourceManager.getInstance().vbom);
 
-        mControllers[UI_LEFT]=new OneWayMoveController(
-                10,CAMERA_HEIGHT-(ResourceManager.getInstance().mControllerTRs[UI_LEFT].getHeight()+ResourceManager.getInstance().mControllerTRs[UI_LEFT].getWidth())
-                ,100,100,ResourceManager.getInstance().mControllerTRs[UI_LEFT],
+        mControllers[UI_LEFT]=new OneWayMoveController(10,CAMERA_HEIGHT-(ResourceManager.getInstance().gfxTextureRegionHashMap.get("left_btn").getHeight()+
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("left_btn").getWidth())
+                ,100,100,
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("left_btn"),
                 ResourceManager.getInstance().vbom);
 
         mControllers[UI_RIGHT] = new OneWayMoveController(40+
-                ResourceManager.getInstance().mControllerTRs[UI_RIGHT].getWidth(),CAMERA_HEIGHT-(ResourceManager.getInstance().mControllerTRs[UI_RIGHT].getHeight()+ResourceManager.getInstance().mControllerTRs[UI_RIGHT].getWidth())
-                ,100,100,ResourceManager.getInstance().mControllerTRs[UI_RIGHT],
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("right_btn").getWidth(),
+                CAMERA_HEIGHT-(ResourceManager.getInstance().gfxTextureRegionHashMap.get("right_btn").getHeight()+ResourceManager.getInstance().gfxTextureRegionHashMap.get("right_btn").getWidth())
+                ,100,100,
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("left_btn"),
                 ResourceManager.getInstance().vbom);
 
         mControllers[UI_UP]= new OneWayMoveController(433*2,
-                170*2,ResourceManager.getInstance().mControllerTRs[UI_UP].getWidth()*2,
-                ResourceManager.getInstance().mControllerTRs[UI_UP].getHeight()*2,
-                ResourceManager.getInstance().mControllerTRs[UI_UP],
+                170*2,
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("up_btn").getWidth()*2,
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("up_btn").getHeight()*2,
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("up_btn"),
                 ResourceManager.getInstance().vbom);
 
         mControllers[UI_SKILL1] = new AttackController(390*2,
                 206*2,
-                ResourceManager.getInstance().mControllerTRs[UI_SKILL1].getWidth(),
-                ResourceManager.getInstance().mControllerTRs[UI_SKILL1].getHeight(),
-                ResourceManager.getInstance().mControllerTRs[UI_SKILL1],
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("skill1").getWidth(),
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("skill1").getHeight(),
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("skill1"),
                 ResourceManager.getInstance().vbom);
 
 
         mControllers[UI_SKILL2] = new AttackController(0.5f*384*2,
                 0.5f*250*2,
-                ResourceManager.getInstance().mControllerTRs[UI_SKILL2].getWidth(),
-                ResourceManager.getInstance().mControllerTRs[UI_SKILL2].getHeight(),
-                ResourceManager.getInstance().mControllerTRs[UI_SKILL2],
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("skill2").getWidth(),
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("skill2").getHeight(),
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("skill2"),
                 ResourceManager.getInstance().vbom);
 
         mControllers[UI_ATTACK].create( Unit.ACTIVE_ATTACK,mHud);
@@ -122,16 +126,16 @@ public class UIManager implements ConstantsSet {
 
 
         mHealthUI = new HealthUI(3,10,10,36,36,4);
-        mHealthUI.setup(ResourceManager.getInstance().heartTextureRegion,ResourceManager.getInstance().engine,mHud);
+        mHealthUI.setup(ResourceManager.getInstance().gfxTextureRegionHashMap.get("heart"),ResourceManager.getInstance().engine,mHud);
 
         final SettingButton settingButton = new SettingButton(CAMERA_WIDTH-80,20,50,50,
-                ResourceManager.getInstance().settingTextureRegion,ResourceManager.getInstance().vbom);
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("setting_icon"),ResourceManager.getInstance().vbom);
         settingButton.setup(SceneManager.getInstance().getCurrentScene(), ResourceManager.getInstance().gameActivity);
         mHud.registerTouchArea(settingButton);
         mHud.attachChild(settingButton);
 
         mCoinUI = new CoinUI();
-        mCoinUI.setup(ResourceManager.getInstance().coinTextureRegion,
+        mCoinUI.setup(ResourceManager.getInstance().gfxTextureRegionHashMap.get("coin"),
                 ResourceManager.getInstance().mainFont,ResourceManager.getInstance().engine,mHud);
         ResourceManager.getInstance().camera.setHUD(mHud);
 

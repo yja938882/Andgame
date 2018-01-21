@@ -17,6 +17,7 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 import game.juan.andenginegame0.ygamelibs.Entity.GameEntity;
@@ -66,39 +67,9 @@ public class PendulumObstacle extends GameEntity {
     public void createObstacle(GameScene pGameScene, DataBlock pDataBlock){
         setSawTexture(pGameScene,ResourceManager.getInstance().gfxTextureRegionHashMap.get(endid));
         setAxisTexture(pGameScene,ResourceManager.getInstance().gfxTextureRegionHashMap.get(barid));
-     //   mSawSprite.setScale(0.5f);
-       // mAxisSprite.setHeight(mAxisSprite.getHeight()*2);
-      //  mAxisSprite.setScale(2f);
-      /*  float std_x = pDataBlock.getPosX();
-        float std_y = pDataBlock.getPosY();
-        float std_w = this.getWidthScaled();
-        float std_h = this.getHeightScaled();
-        float bar_w = mAxisSprite.getWidthScaled();
-        float bar_h = mAxisSprite.getHeightScaled();
-        float end_w = mSawSprite.getWidthScaled();
-        float end_h = mSawSprite.getHeightScaled();
-        this.setPosition(std_x-this.getWidthScaled()/2,std_y-this.getHeightScaled()/2);
-        //mSawSprite.setPosition(std_x-mSawSprite.getWidthScaled()/2,std_y-mSawSprite.getHeightScaled()/2);
-        //mAxisSprite.setPosition(std_x-mAxisSprite.getWidthScaled()/2,std_y-mAxisSprite.getHeightScaled()/2);
 
-        final float s1x = mSawSprite.getWidthScaled()/2f;
-        final float s1y = mSawSprite.getHeightScaled()/4f;
-        final float s2x = mSawSprite.getWidthScaled()/4f;
-        final float s2y = mSawSprite.getHeightScaled()/2f;
-
-        final Vector2[] bodyVertices ={
-                new Vector2(-s1x,-s1y),
-                new Vector2(-s1x,s1y),
-                new Vector2(-s2x,s2y),
-                new Vector2(s2x,s2y),
-                new Vector2(s1x,s1y),
-                new Vector2(s1x,-s1y),
-                new Vector2(s2x,-s2y),
-                new Vector2(-s2x,-s2y)
-        };*/
         setupBody(3);
         //회전축
-       // this.createBody(pGameScene,0,pDataBlock,std_x, std_y, std_w, std_h,pBodyType);
         if(bodySType1==VERTICAL_SHAPE){
             createVerticesBody(pGameScene,0,pDataBlock,bodyShape1, BodyDef.BodyType.StaticBody);
         }else{
@@ -109,10 +80,11 @@ public class PendulumObstacle extends GameEntity {
         }else{
             createCircleBody(pGameScene,1,pDataBlock,bodyShape2, BodyDef.BodyType.DynamicBody);
         }
+        ObstacleData obstacleData = new ObstacleData(DataBlock.ATK_OBS_CLASS, ConstantsSet.EntityType.OBS_PENDULUM,0,0);
         if(bodySType3==VERTICAL_SHAPE){
-            createVerticesBody(pGameScene,2,pDataBlock,bodyShape3, BodyDef.BodyType.DynamicBody);
+            createVerticesBody(pGameScene,2,obstacleData,bodyShape3, BodyDef.BodyType.DynamicBody);
         }else{
-            createCircleBody(pGameScene,2,pDataBlock,bodyShape3, BodyDef.BodyType.DynamicBody);
+            createCircleBody(pGameScene,2,obstacleData,bodyShape3, BodyDef.BodyType.DynamicBody);
         }
 
         final RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
@@ -121,8 +93,8 @@ public class PendulumObstacle extends GameEntity {
         Log.d("GH",""+getHeightOfShape(bodySType2,bodyShape2));
         revoluteJointDef.localAnchorB.set(0,-getHeightOfShape(bodySType2,bodyShape2)/2f);
         revoluteJointDef.enableMotor = true;
-        revoluteJointDef.motorSpeed = -150f;
-        revoluteJointDef.maxMotorTorque = -150f;
+        revoluteJointDef.motorSpeed = -250f;
+        revoluteJointDef.maxMotorTorque = -250f;
         revoluteJointDef.enableLimit=true;
         revoluteJointDef.lowerAngle=-60*(float)(Math.PI)/180f;
         revoluteJointDef.upperAngle=60*(float)(Math.PI)/180f;
@@ -137,28 +109,29 @@ public class PendulumObstacle extends GameEntity {
 
 
        final  Body stdBody = getBody(0);
+       final Body endBody = getBody(2);
         pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(this,getBody(0),true,false){
             @Override
             public void onUpdate(float pSecondsElapsed)
             {
                 super.onUpdate(pSecondsElapsed);
-
+                endBody.setAngularVelocity(10f);
                 if(((RevoluteJoint)(stdBody.getJointList().get(0).joint)).getJointAngle()>=55*(float)(Math.PI)/180f){
-                    ((RevoluteJoint)(stdBody.getJointList().get(0).joint)).setMaxMotorTorque(150f);
+                    ((RevoluteJoint)(stdBody.getJointList().get(0).joint)).setMaxMotorTorque(250f);
 
                 }
                 if(((RevoluteJoint)(stdBody.getJointList().get(0).joint)).getJointAngle()<= -55*(float)(Math.PI)/180f){
-                    ((RevoluteJoint)(stdBody.getJointList().get(0).joint)).setMaxMotorTorque(-150f);
+                    ((RevoluteJoint)(stdBody.getJointList().get(0).joint)).setMaxMotorTorque(-250f);
 
                 }
             }
         });
-
-        pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(mSawSprite,getBody(2)));
-        pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(mAxisSprite,getBody(1)));
         pGameScene.attachChild(this);
         pGameScene.attachChild(mAxisSprite);
         pGameScene.attachChild(mSawSprite);
+        pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(mSawSprite,getBody(2)));
+        pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(mAxisSprite,getBody(1)));
+
 
     }
     @Override
