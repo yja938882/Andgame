@@ -56,6 +56,10 @@ public class ResourceManager {
     gfxTextureAtlas = new ArrayList<>();
   }
 
+  /* 그래픽 소스를 로딩한다
+   * @param pGfxPath 로드할 그래픽소스 경로
+   * @param pConfigArray 로드할 그래픽 데이터 설정 배열
+   */
   private void loadGFX(String pGfxPath, ArrayList<JSONObject> pConfigArray){
     int size = pConfigArray.size();
     String id="";
@@ -63,6 +67,10 @@ public class ResourceManager {
     try{
       for(int i=0;i<size;i++){
         id = pConfigArray.get(i).getString("id");
+        if(gfxTextureRegionHashMap.containsKey(id)){
+          continue;
+        }
+
         BitmapTextureAtlas bitmapTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(),
                 pConfigArray.get(i).getInt("src_width"),pConfigArray.get(i).getInt("src_height"));
         ITiledTextureRegion textureRegion = BitmapTextureAtlasTextureRegionFactory
@@ -230,7 +238,7 @@ public class ResourceManager {
    */
   void unloadSplashScene(){
     Log.d(TAG,"unloadSplashScene");
-    initGFX();
+    //initGFX();
     unLoadGFX();
   }
 
@@ -248,15 +256,21 @@ public class ResourceManager {
    */
   void loadShopScene(){
     DataManager.getInstance().loadShopData(); // 상점 데이터 로딩
+    DataManager.getInstance().loadInventoryData(); //인벤토리 데이터 로딩
     initGFX(); //GFX 초기화
     loadGFX("ui/",configShopUIData()); // 상점 UI 로딩
     loadGFX("object/players/",DataManager.getInstance().shopItemList); //상점에서 판매하는 아이템 GFX 로딩
+    loadGFX("object/players/",DataManager.getInstance().inventoryList); //플레이어가 가진 아이템 GFX 로딩
+  }
+  void unloadShopScene(){
+    unLoadGFX();
   }
 
   private ArrayList<JSONObject> configShopUIData(){
     ArrayList<JSONObject> arrayList = new ArrayList<>();
     try{
       arrayList.add(newConfigJSON("shop_container","item_container.png",384,384,1,1));
+      arrayList.add(newConfigJSON("close_btn","cancel.png",64,64,1,1));
        }catch (Exception e){
       e.printStackTrace();
       System.exit(-1);

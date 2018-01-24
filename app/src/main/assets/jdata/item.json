@@ -11,7 +11,8 @@
         "scale":1,"row":1,"col":1,
         "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
         "durability":3,
-        "shop_width":32, "shop_height":32
+        "shop_width":32, "shop_height":16,
+        "price":1000
       }
     },
     {
@@ -24,7 +25,8 @@
         "scale":1,"row":1,"col":1,
         "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
         "durability":3,
-        "shop_width":32, "shop_height":32
+        "shop_width":32, "shop_height":16,
+        "price":500
       }
     },
     {
@@ -36,7 +38,8 @@
         "src":"dagger.png" , "src_width": 128, "src_height":64,
         "scale":1,"row":1,"col":1,
         "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
-        "shop_width":32, "shop_height":32
+        "shop_width":32, "shop_height":16,
+        "price":300
       }
     },
     {
@@ -44,11 +47,12 @@
       "sell":"yes",
       "data":
       {
-        "type":"bullet",
+        "type":"throwing",
         "src":"double_edged_ax.png" , "src_width": 128, "src_height":128,
         "scale":1,"row":1,"col":1,
         "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
-        "shop_width":32, "shop_height":32
+        "shop_width":32, "shop_height":32,
+        "price":300
       }
     },
     {
@@ -60,7 +64,7 @@
         "src":"fork.png" , "src_width": 128, "src_height":64,
         "scale":1,"row":1,"col":1,
         "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
-        "shop_width":32, "shop_height":32
+        "shop_width":32, "shop_height":16
       }
     },
     {
@@ -73,7 +77,8 @@
         "scale":1,"row":1,"col":1,
         "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
         "durability":3,
-        "shop_width":32, "shop_height":32
+        "shop_width":32, "shop_height":16,
+        "price":100
       }
     },
     {
@@ -86,7 +91,8 @@
         "scale":1,"row":1,"col":1,
         "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
         "durability":3,
-        "shop_width":32, "shop_height":32
+        "shop_width":128, "shop_height":32,
+        "price":200
       }
     },
     {
@@ -99,7 +105,8 @@
         "scale":1,"row":1,"col":1,
         "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
         "durability":3,
-        "shop_width":32, "shop_height":32
+        "shop_width":96, "shop_height":32,
+        "price":400
       }
     },
     {
@@ -116,7 +123,8 @@
         "shoot_gravity"         : 0,
         "shoot_vx"              : 8,
         "shoot_vy" : 0,
-        "shop_width":32, "shop_height":32
+        "shop_width":32, "shop_height":16,
+        "price" :200
       }
     },
     {
@@ -133,7 +141,8 @@
         "shoot_gravity"         : 0,
         "shoot_vx"              : 8,
         "shoot_vy" : 0,
-        "shop_width":32, "shop_height":32
+        "shop_width":96, "shop_height":36,
+        "price":700
       }
     },
     {
@@ -146,7 +155,8 @@
         "scale":1,"row":1,"col":1,
         "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
         "durability":3,
-        "shop_width":32, "shop_height":32
+        "shop_width":32, "shop_height":32,
+        "price":800
       }
     },
     {
@@ -159,7 +169,7 @@
         "scale":1,"row":1,"col":1,
         "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
         "durability":3,
-        "shop_width":32, "shop_height":32
+        "shop_width":96, "shop_height":24
       }
     },
     {
@@ -176,7 +186,8 @@
         "shoot_gravity"         : 0,
         "shoot_vx"              : 8,
         "shoot_vy" : 0,
-        "shop_width":32, "shop_height":32
+        "shop_width":96, "shop_height":24,
+        "price":600
       }
     },
     {
@@ -189,7 +200,8 @@
         "scale":1,"row":1,"col":1,
         "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
         "durability":3,
-        "shop_width":32, "shop_height":32
+        "shop_width":96, "shop_height":24,
+        "price":10
       }
     },
     {
@@ -202,7 +214,8 @@
         "scale":1,"row":1,"col":1,
         "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
         "durability":3,
-        "shop_width":32, "shop_height":32
+        "shop_width":96, "shop_height":36,
+        "price":50
       }
     },
     {
@@ -215,7 +228,7 @@
         "scale":1,"row":1,"col":1,
         "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
         "durability":3,
-        "shop_width":32, "shop_height":32
+        "shop_width":32, "shop_height":16
       }
     }
   ]

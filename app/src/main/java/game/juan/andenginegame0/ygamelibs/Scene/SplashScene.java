@@ -70,7 +70,20 @@ public class SplashScene extends BaseScene {
     public void createScene() {
         //스플래시 화면 레이어 0, 1 설정
         autoParallaxBackgroundBack = new AutoParallaxBackground(0,0,0,5);
-        splashLayer0 = new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("layer0")/*ResourceManager.getInstance().splashLayer0Region*/,ResourceManager.getInstance().vbom);
+        splashLayer0 = new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("layer0"),ResourceManager.getInstance().vbom){
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+
+                if(loadingFinished && !disposScene) {
+                    Log.d(TAG,"loading finished :"+loadingFinished +" disposeScene :"+disposScene);
+                    movingParticleSystem.setParticlesSpawnEnabled(false);
+                    disposScene= true;
+                    SceneManager.getInstance().createMainScene();
+                    SceneManager.getInstance().disposeSplashScene();
+                }
+                return false;
+            }
+        };
         splashLayer1 = new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("layer1")/*ResourceManager.getInstance().splashLayer1Region*/,ResourceManager.getInstance().vbom);
         ParallaxBackground.ParallaxEntity layer0 = new ParallaxBackground.ParallaxEntity(-2f,splashLayer0);
         ParallaxBackground.ParallaxEntity layer1 = new ParallaxBackground.ParallaxEntity(-4f,splashLayer1);
@@ -102,7 +115,7 @@ public class SplashScene extends BaseScene {
         movingParticleSystem.setParticlesSpawnEnabled(true);
 
         //스플래시 화면 레이어 2, 2-1 ,3설정
-        splashLayer3 = new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("layer3")/*ResourceManager.getInstance().splashLayer3Region*/,ResourceManager.getInstance().vbom);
+        splashLayer3 = new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("layer3"),ResourceManager.getInstance().vbom);
         splashLayer2_1 = new Sprite(CAMERA_WIDTH,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("layer2")/*ResourceManager.getInstance().splashLayer2Region*/,ResourceManager.getInstance().vbom);
         splashLayer2 = new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("layer2")/*ResourceManager.getInstance().splashLayer2Region*/,ResourceManager.getInstance().vbom){
             @Override
@@ -147,20 +160,7 @@ public class SplashScene extends BaseScene {
 
             }
         });
-
-        this.setOnSceneTouchListener(new IOnSceneTouchListener() {
-            @Override
-            public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
-                if(loadingFinished && !disposScene) {
-                    Log.d(TAG,"loading finished :"+loadingFinished +" disposeScene :"+disposScene);
-                    movingParticleSystem.setParticlesSpawnEnabled(false);
-                    disposScene= true;
-                    SceneManager.getInstance().createMainScene();
-                    SceneManager.getInstance().disposeSplashScene();
-                }
-                return false;
-            }
-        });
+        this.registerTouchArea(splashLayer0);
 
     }
 
@@ -177,6 +177,7 @@ public class SplashScene extends BaseScene {
     @Override
     public void disposeScene() {
        // splashSprite.detachSelf();
+        unregisterTouchArea(splashLayer0);
         splashLayer0.detachSelf();
         splashLayer0.dispose();
 
@@ -190,6 +191,10 @@ public class SplashScene extends BaseScene {
         splashLayer2_1.detachSelf();
         splashLayer2_1.dispose();
 
+
+        splashLayer3.detachSelf();
+        splashLayer3.dispose();
+
         cheepSprite.detachSelf();
         cheepSprite.dispose();
 
@@ -198,6 +203,7 @@ public class SplashScene extends BaseScene {
 
         moonSprite.detachSelf();
         moonSprite.dispose();
+
 
         touchToStartText.detachSelf();
         touchToStartText.dispose();

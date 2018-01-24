@@ -59,8 +59,9 @@ public class DBManager extends SQLiteOpenHelper{
 
     private static final String INVENTORY_TABLE ="INVENTORY_TABLE"; //인벤토리 테이블
     interface InventoryTable{
-        String KEY_ID ="key_name";
-        String ITEM_QUANTITY ="item_quantity";
+        String KEY = "key";
+        String ID ="item_id";
+        String DURABILITY = "durability";
     }
 
     Context c;
@@ -151,9 +152,11 @@ public class DBManager extends SQLiteOpenHelper{
         StringBuilder SQL_create_INVENTORY_TABLE = new StringBuilder("CREATE TABLE ");
         SQL_create_INVENTORY_TABLE.append(INVENTORY_TABLE);
         SQL_create_INVENTORY_TABLE.append("(");
-        SQL_create_INVENTORY_TABLE.append(InventoryTable.KEY_ID);
-        SQL_create_INVENTORY_TABLE.append(" TEXT PRIMARY KEY,");
-        SQL_create_INVENTORY_TABLE.append(InventoryTable.ITEM_QUANTITY);
+        SQL_create_INVENTORY_TABLE.append(InventoryTable.KEY);
+        SQL_create_INVENTORY_TABLE.append(" INTEGER PRIMARY KEY AUTOINCREMENT,");
+        SQL_create_INVENTORY_TABLE.append(InventoryTable.ID);
+        SQL_create_INVENTORY_TABLE.append(" TEXT,");
+        SQL_create_INVENTORY_TABLE.append(InventoryTable.DURABILITY);
         SQL_create_INVENTORY_TABLE.append(" INTEGER)");
         db.execSQL(SQL_create_INVENTORY_TABLE.toString());
         insertItemToInventoryTable(db,"spear",1);
@@ -363,6 +366,7 @@ public class DBManager extends SQLiteOpenHelper{
         cursor.close();
         return object;
     }
+
     ArrayList<JSONObject> getAllSellingItem(SQLiteDatabase db){
         ArrayList<JSONObject> array = new ArrayList<>();
 
@@ -392,24 +396,40 @@ public class DBManager extends SQLiteOpenHelper{
     /* Item data
     * @param db
     * @param pItemKey 추가할 아이템 이름
-    * @param number 처음 구매 갯수
+    * @param number 구매 갯수
+    * @param max 내구도 최대치
+    * @param cur 내구도 현재치
+    * 해당아이템을 이미 소유중이라면 update, 소유하지 않았을 경우 insert
     */
-    private void insertItemToInventoryTable(SQLiteDatabase db, String pItemKey, int number){
+    public void insertItemToInventoryTable(SQLiteDatabase db, String pItemKey,int durability){
+
         StringBuilder SQL_insertItem = new StringBuilder("insert into ");
         SQL_insertItem.append(INVENTORY_TABLE);
         SQL_insertItem.append("(");
-        SQL_insertItem.append(InventoryTable.KEY_ID);
+        SQL_insertItem.append(InventoryTable.ID);
         SQL_insertItem.append(",");
-        SQL_insertItem.append(InventoryTable.ITEM_QUANTITY);
+        SQL_insertItem.append(InventoryTable.DURABILITY);
         SQL_insertItem.append(") ");
-        SQL_insertItem.append("values (");
-        SQL_insertItem.append("'");
+        SQL_insertItem.append("values ('");
         SQL_insertItem.append(pItemKey);
         SQL_insertItem.append("',");
-        SQL_insertItem.append(number);
+        SQL_insertItem.append(durability);
         SQL_insertItem.append(");");
+
         db.execSQL(SQL_insertItem.toString());
     }
+
+    public void deleteItemInInventoryTable(SQLiteDatabase db, int pKey){
+        StringBuilder SQL_insertItem = new StringBuilder("delete from ");
+        SQL_insertItem.append(INVENTORY_TABLE);
+        SQL_insertItem.append(" where ");
+        SQL_insertItem.append(InventoryTable.KEY);
+        SQL_insertItem.append(" = ");
+        SQL_insertItem.append(pKey);
+        SQL_insertItem.append(";");
+        db.execSQL(SQL_insertItem.toString());
+    }
+
 
     /* 인벤토리 테이블 내의 모든 데이터 반환
      * @param db
@@ -425,10 +445,12 @@ public class DBManager extends SQLiteOpenHelper{
         while(!cursor.isAfterLast()){
             try {
                 JSONObject object= new JSONObject();
-                String itemName = cursor.getString(0);
-                int itemQuantity = cursor.getInt(1);
-                object.put("item_name",itemName);
-                object.put("quantity",itemQuantity);
+                int key = cursor.getInt(0);
+                String id = cursor.getString(1);
+                int durability = cursor.getInt(2);
+                object.put("key",key);
+                object.put("id",id);
+                object.put("durability",durability);
                 arrayList.add(object);
                 cursor.moveToNext();
             }catch (Exception e){

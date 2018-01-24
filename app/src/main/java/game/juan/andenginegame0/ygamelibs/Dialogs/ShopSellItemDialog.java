@@ -1,33 +1,27 @@
 package game.juan.andenginegame0.ygamelibs.Dialogs;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-
 import org.andengine.entity.primitive.Rectangle;
-import org.andengine.entity.scene.Scene;
-import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.color.Color;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
+import game.juan.andenginegame0.ygamelibs.Dynamics.GameItem.PlayerItem;
 import game.juan.andenginegame0.ygamelibs.Dynamics.ShopItem.ShopItem;
 import game.juan.andenginegame0.ygamelibs.Scene.BaseScene;
-import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.Scene.SceneManager;
+import game.juan.andenginegame0.ygamelibs.Scene.ShopScene;
 
 import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_HEIGHT;
 import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_WIDTH;
 
 /**
- * Created by juan on 2018. 1. 20..
- * 아이템 구입을 위한 다이얼로그 신
+ * Created by juan on 2018. 1. 25..
  */
 
-public class ShopBuyItemDialog extends BaseScene{
-
+public class ShopSellItemDialog extends BaseScene {
     private static final float SCENE_WIDTH = 400;
     private static final float SCENE_HEIGHT = 300;
     private static final float SCENE_X = (CAMERA_WIDTH - SCENE_WIDTH)/2f;
@@ -45,17 +39,18 @@ public class ShopBuyItemDialog extends BaseScene{
     Sprite closeBtn;
     boolean disposeScene = false;
     Rectangle container;
-    ShopItem item;
+    PlayerItem item;
     Text itemName;
     String itemId;
 
-    public ShopBuyItemDialog(ShopItem item){
+
+    public ShopSellItemDialog(PlayerItem item){
         super();
         this.setupItem(item);
 
     }
-    public void setupItem(ShopItem item){
-        this.item =new ShopItem(SCENE_X,SCENE_Y,item.getTextureRegion(),ResourceManager.getInstance().vbom);
+    public void setupItem(PlayerItem item){
+        this.item =new PlayerItem(SCENE_X,SCENE_Y,item.getTextureRegion(), ResourceManager.getInstance().vbom);
         float width = item.getWidth();
         float height = item.getHeight();
         float ratio = height/width;
@@ -67,9 +62,33 @@ public class ShopBuyItemDialog extends BaseScene{
         this.item.setY(ITEM_Y);
 
         this.attachChild(this.item);
-        itemId = item.getName();
+       // itemId = item.getName();
         this.itemName = new Text(SCENE_X,SCENE_Y+SCENE_HEIGHT,ResourceManager.getInstance().mainFont,item.getName(),ResourceManager.getInstance().vbom);
         this.attachChild(itemName);
+
+        final int key = item.getKey();
+        Rectangle SELL = new Rectangle(SCENE_X+40f,SCENE_Y+150f,50f,50f,ResourceManager.getInstance().vbom){
+            boolean processing = false;
+            @Override
+            public synchronized boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                if(pSceneTouchEvent.isActionDown()){
+                    if(processing)
+                        return false;
+                    processing = true;
+                    // DataManager.getInstance().sellItem();
+                    DataManager.getInstance().sellItem(key);
+                    processing = false;
+
+                    disposeScene = true;
+                    SceneManager.getInstance().disposeDialogScene();
+                    ((ShopScene)SceneManager.getInstance().getCurrentScene()).reloadInventorySlots();
+                }
+                return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+            }
+        };
+        SELL.setColor(Color.RED);
+        this.registerTouchArea(SELL);
+        this.attachChild(SELL);
     }
 
     @Override
@@ -83,33 +102,14 @@ public class ShopBuyItemDialog extends BaseScene{
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 disposeScene = true;
                 SceneManager.getInstance().disposeDialogScene();
-                     return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+                return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
             }
         };
         this.registerTouchArea(closeBtn);
         this.attachChild(closeBtn);
 
-        Rectangle BUY = new Rectangle(SCENE_X+40f,SCENE_Y+150f,50f,50f,ResourceManager.getInstance().vbom){
-            boolean processing = false;
-            @Override
-            public synchronized boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                if(pSceneTouchEvent.isActionDown()){
-                    if(processing)
-                        return false;
-                    processing = true;
-                    DataManager.getInstance().buyItem(itemId,1);
-                    processing = false;
 
-                    disposeScene = true;
-                    SceneManager.getInstance().disposeDialogScene();
 
-                }
-                return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
-            }
-        };
-        BUY.setColor(Color.RED);
-        this.registerTouchArea(BUY);
-        this.attachChild(BUY);
     }
 
     @Override
@@ -136,4 +136,5 @@ public class ShopBuyItemDialog extends BaseScene{
         this.detachSelf();
         this.dispose();
     }
+
 }

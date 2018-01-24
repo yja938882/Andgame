@@ -34,6 +34,7 @@ public class SceneManager {
     private BaseScene loadingScene;
 
     private BaseScene currentScene;
+    private BaseScene currentDialog;
     private Engine engine = ResourceManager.getInstance().engine;
     private static final SceneManager INSTANCE = new SceneManager();
     private SceneType currentSceneType = SceneType.SPLASH;
@@ -62,6 +63,22 @@ public class SceneManager {
                 setScene(invenScene);
                 break;
         }
+    }
+    public void setDialogScene(BaseScene scene){
+        currentScene.setChildScene(scene,false,true,true);
+
+        currentDialog = scene;
+    }
+    public void disposeDialogScene(){
+        //currentScene.detachChild(currentDialog);
+        //currentDialog.disposeScene();
+        //currentScene.clearChildScene();
+        currentScene.clearChildScene();
+        if(currentDialog==null)
+            return;
+        currentDialog.disposeScene();
+
+        this.currentDialog = null;
     }
     public static SceneManager getInstance()
     {
@@ -151,5 +168,11 @@ public class SceneManager {
         Log.d(TAG,"createShopScene");
         shopScene = new ShopScene();
         setScene(shopScene);
+    }
+    public void disposeShopScene(){
+        Log.d(TAG,"disposeShopScene");
+        shopScene.disposeScene();
+        shopScene = null;
+
     }
 }

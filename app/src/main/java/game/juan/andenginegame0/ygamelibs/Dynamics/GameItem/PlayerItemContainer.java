@@ -1,4 +1,4 @@
-package game.juan.andenginegame0.ygamelibs.Dynamics.ShopItem;
+package game.juan.andenginegame0.ygamelibs.Dynamics.GameItem;
 
 import android.util.Log;
 
@@ -10,27 +10,30 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import java.util.ArrayList;
 
 import game.juan.andenginegame0.ygamelibs.Dialogs.ShopBuyItemDialog;
+import game.juan.andenginegame0.ygamelibs.Dialogs.ShopSellItemDialog;
+import game.juan.andenginegame0.ygamelibs.Dynamics.ShopItem.ShopItem;
 import game.juan.andenginegame0.ygamelibs.Scene.SceneManager;
 
 /**
- * Created by juan on 2018. 1. 21..
+ * Created by juan on 2018. 1. 25..
  */
 
-public class ShopItemContainer extends Sprite {
+public class PlayerItemContainer extends Sprite {
     private final static float ROOT2 = 1.41421f;
     private final static int COL = 4;
     private final static float SIZE = 96f;
     private final static float ITEM_SIZE = 64f;
-    ShopBuyItemDialog buyDialog;
+   /// ShopBuyItemDialog buyDialog;
+    ShopSellItemDialog sellDialog;
 
-    ArrayList<ShopItem> shopItems;
-    public ShopItemContainer(float pX, float pY, ITextureRegion pTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
+    ArrayList<PlayerItem> playerItems;
+    public PlayerItemContainer(float pX, float pY, ITextureRegion pTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTextureRegion, pVertexBufferObjectManager);
-        shopItems = new ArrayList<>();
+        playerItems = new ArrayList<>();
     }
 
-    public void addItem(ShopItem item, float width, float height,boolean near){
-        shopItems.add(item);
+    public void addItem(PlayerItem item, float width, float height,boolean near){
+        playerItems.add(item);
 
 
         item.setWidth(width);
@@ -39,7 +42,7 @@ public class ShopItemContainer extends Sprite {
         item.setRotationCenter(width/2f,height/2f);
         item.setRotation(-45f);
 
-        int index = shopItems.size()-1;
+        int index = playerItems.size()-1;
         float m = 0f;
         if(near){
             m = width*0.13f;
@@ -47,11 +50,16 @@ public class ShopItemContainer extends Sprite {
         item.setX(((index) %COL)*SIZE+(SIZE-width)/2f -m);
         item.setY(((index)/COL)*SIZE+(SIZE-height)/2f +m);
         attachChild(item);
-
-        item.getPrice().setX(((index) %COL)*SIZE+16f);
-        item.getPrice().setY(((index) /COL)*SIZE+16f+64f);
-        this.attachChild(item.getPrice());
     }
+
+    public void removeAllItem() {
+        for(int i=0;i<playerItems.size();i++){
+            playerItems.get(i).detachSelf();
+           playerItems.get(i).dispose();
+        }
+        playerItems.clear();
+    }
+
 
     @Override
     public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
@@ -59,25 +67,14 @@ public class ShopItemContainer extends Sprite {
             int x = (int)(pTouchAreaLocalX / SIZE);
             int y = (int)(pTouchAreaLocalY / SIZE);
             int index = COL*y+x;
-            if(index>=shopItems.size() || index<0)
+            if(index>=playerItems.size() || index<0)
                 return false;
-            shopItems.get(index).pick();
-            buyDialog = new ShopBuyItemDialog(shopItems.get(index));
-            Log.d("TAGGG","SHOP!!!");
-            buyDialog.setBackgroundEnabled(false);
-
-            SceneManager.getInstance().setDialogScene(buyDialog);
+            //playerItems.get(index).pick();
+            sellDialog = new ShopSellItemDialog(playerItems.get(index));
+            sellDialog.setBackgroundEnabled(false);
+            SceneManager.getInstance().setDialogScene(sellDialog);
 
         }
         return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
     }
-
-    public void removeAllItem() {
-        for(int i=0;i<shopItems.size();i++){
-            shopItems.get(i).detachSelf();
-            shopItems.get(i).dispose();
-        }
-        shopItems.clear();
-    }
-
 }

@@ -297,6 +297,7 @@ public class DataManager implements ConstantsSet{
     }
 
 
+
     /*===Shop Scene ========================*/
     public ArrayList<JSONObject> shopItemList;
 
@@ -309,17 +310,62 @@ public class DataManager implements ConstantsSet{
 
     }
 
+    public ArrayList<JSONObject> inventoryList;
+    public void loadInventoryData(){
+        SQLiteDatabase db = dbManager.getReadableDatabase();
+        ArrayList<JSONObject> tempInventoryList = dbManager.getAllItemInInventoryTable(db);
+        inventoryList = new ArrayList<>();
+        try{
+            for(int i=0;i<tempInventoryList.size();i++){
+                JSONObject object = tempInventoryList.get(i);
+                String id = object.getString("id");
+
+                JSONObject configObject = dbManager.getItemJSON(db,id);
+                configObject.put("key",object.getString("key"));
+                configObject.put("durability",object.getInt("durability"));
+                configObject.put("id",id);
+                this.inventoryList.add(configObject);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    /* 아이템을 구입한다
+     * @param id 구입하는 아이템 아이디
+     * @param quantity 구입하는 수량
+     */
+    public void buyItem(String id,  int durability){
+        SQLiteDatabase db = dbManager.getWritableDatabase();
+        dbManager.insertItemToInventoryTable(db,id,durability);
+    }
+
+    /* 아이템을 판매한다
+     *
+     */
+    public void sellItem(int pKey){
+        try{
+            for(int i=0;i<inventoryList.size();i++){
+                if(pKey == inventoryList.get(i).getInt("key")){
+                    inventoryList.remove(i);
+                    break;
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        SQLiteDatabase db = dbManager.getWritableDatabase();
+        dbManager.deleteItemInInventoryTable(db,pKey);
+    }
+
+
 
 
     public JSONObject getItemData(String pKeyName){
         SQLiteDatabase db = dbManager.getReadableDatabase();
         return dbManager.getItemJSON(db,pKeyName);
     }
-    public ArrayList<JSONObject> getInventoryList(){
-        SQLiteDatabase db = dbManager.getReadableDatabase();
-        return dbManager.getAllItemInInventoryTable(db);
-    }
-
 
 
     /* Asset 으로 부터 JSON 파일을 읽어드린다

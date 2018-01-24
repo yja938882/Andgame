@@ -1,11 +1,15 @@
 package game.juan.andenginegame0.ygamelibs.Scene;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.color.Color;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 
@@ -78,6 +82,23 @@ public class MainScene extends BaseScene {
         this.attachChild(lv);
         this.attachChild(money);
         this.attachChild(player_count);
+
+        SQLiteDatabase db = DataManager.getInstance().dbManager.getReadableDatabase();
+        ArrayList<JSONObject> arrayList = DataManager.getInstance().dbManager.getAllItemInInventoryTable(db);
+        String itemname="";
+        try{
+            for(int i=0;i<arrayList.size();i++){
+                itemname+=arrayList.get(i).getInt("key");
+                itemname+=" - :";
+                itemname+=arrayList.get(i).getString("id");
+                itemname+=arrayList.get(i).getInt("durability");
+                itemname+="\n";
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        Text text = new Text(20,70,ResourceManager.getInstance().mainFont,itemname,ResourceManager.getInstance().vbom);
+        this.attachChild(text);
     }
 
     @Override
