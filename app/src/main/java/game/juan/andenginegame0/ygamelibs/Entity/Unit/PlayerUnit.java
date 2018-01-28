@@ -460,7 +460,7 @@ public class PlayerUnit extends Unit {
     private final static float SLOT_SIZE = 80;
     private final static float SLOT_MARGIN = 4;
 
-    private WeaponSlot items[]; //플레이어가 소유한 아이템들
+    public WeaponSlot items[]; //플레이어가 소유한 아이템들
     private int curItemIndex = -1; //현재 사용중인 아이템 인덱스
 
     public void createItemSlot(){

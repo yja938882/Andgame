@@ -277,7 +277,26 @@ public class ResourceManager {
     }
     return arrayList;
   }
+  /*===준비 화면 =================================*/
+  void loadPrePareScene(){
+    DataManager.getInstance().loadInventoryData(); //인벤토리 데이터 로딩
+    initGFX(); //GFX 초기화
+    loadGFX("ui/",configPrepareUIData());
+    loadGFX("object/players/",DataManager.getInstance().inventoryList); //플레이어가 가진 아이템 GFX 로딩
+  }
+  private ArrayList<JSONObject> configPrepareUIData(){
+    ArrayList<JSONObject> arrayList = new ArrayList<>();
+    try{
+      arrayList.add(newConfigJSON("shop_container","item_container.png",384,384,1,1));
+      arrayList.add(newConfigJSON("close_btn","cancel.png",64,64,1,1));
+      arrayList.add(newConfigJSON("start_btn","start_btn.png",440,128,1,1));
 
+    }catch (Exception e){
+      e.printStackTrace();
+      System.exit(-1);
+    }
+    return arrayList;
+  }
 
   /*===게임 화면===================================*/
 
@@ -290,6 +309,7 @@ public class ResourceManager {
     initGFX(); // GFX 초기화
     loadGFX("ui/",configGameUIData()); // 게임 UI GFX 로딩
     loadGFX("player/",configPlayerGFXData()); // 플레이어 GFX 로딩
+    loadGFX("object/players/",DataManager.getInstance().bagItemList);
     loadGFX("map/bg/",DataManager.getInstance().bgGFXJsonList); // 배경 GFX 로딩
     loadGFX("map/"+pTheme+"/",DataManager.getInstance().staticGFXJsonList); //맵 타일 GFX 로딩
     loadGFX("ai/",DataManager.getInstance().aiGFXJsonList); //ai GFX 로딩
@@ -323,11 +343,25 @@ public class ResourceManager {
       arrayList.add(newConfigJSON("skill2","skill2.png",72,60,1,1));
       arrayList.add(newConfigJSON("heart","heart.png",55,34,2,1));
       arrayList.add(newConfigJSON("setting_icon","icon_setting.png",96,48,1,1));
-      arrayList.add(newConfigJSON("bottom_inven","bottom_inven.png",192,64,1,1));
+      arrayList.add(newConfigJSON("bottom_inven","bag_item.png",80,80,1,1));
       arrayList.add(newConfigJSON("coin","coin.png",28,27,1,1));
 
     }catch (Exception e){
       Log.d(TAG," configGameUIGFXData error :"+e.getMessage());
+    }
+    return arrayList;
+  }
+  private ArrayList<JSONObject> configPlayerBagItemData(){
+    Log.d(TAG,"configPlayerBagItemData");
+    ArrayList<JSONObject> arrayList = new ArrayList<>();
+    try{
+
+      //int itemkeys[] = SceneManager.getInstance().getBagData();
+
+
+
+    }catch (Exception e){
+      e.printStackTrace();
     }
     return arrayList;
   }

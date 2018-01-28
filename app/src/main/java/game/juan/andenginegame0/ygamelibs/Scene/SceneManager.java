@@ -24,7 +24,8 @@ public class SceneManager {
         MAIN,
         SHOP,
         INVEN,
-        LOADING
+        LOADING,
+        PREPARE
     }
     private BaseScene splashScene;
     private BaseScene mainScene;
@@ -32,6 +33,7 @@ public class SceneManager {
     private BaseScene shopScene;
     private BaseScene invenScene;
     private BaseScene loadingScene;
+    private BaseScene prepareScene;
 
     private BaseScene currentScene;
     private BaseScene currentDialog;
@@ -62,6 +64,12 @@ public class SceneManager {
             case INVEN:
                 setScene(invenScene);
                 break;
+            case MAIN:
+                setScene(mainScene);
+                break;
+            case PREPARE:
+                setScene(prepareScene);
+                break;
         }
     }
     public void setDialogScene(BaseScene scene){
@@ -70,9 +78,6 @@ public class SceneManager {
         currentDialog = scene;
     }
     public void disposeDialogScene(){
-        //currentScene.detachChild(currentDialog);
-        //currentDialog.disposeScene();
-        //currentScene.clearChildScene();
         currentScene.clearChildScene();
         if(currentDialog==null)
             return;
@@ -116,28 +121,24 @@ public class SceneManager {
     }
 
     /*===Main Scene========*/
-
-    public void loadMainScene(){
+    void loadMainScene(){
         Log.d(TAG,"loadMainScene");
         ResourceManager.getInstance().loadMainSceneGraphics();
         DataManager.getInstance().loadPlayerGameData();
     }
-    public void createMainScene(){
+    void createMainScene(){
         Log.d(TAG,"createMainScene");
         mainScene = new MainScene();
-       // currentScene = mainScene;
-      //  mainScene.createScene();
         setScene(mainScene);
     }
-    public void disposeMainScene(){
+    void disposeMainScene(){
         Log.d(TAG,"disposeMainScene");
         ResourceManager.getInstance().unloadMainSceneGraphics();
         mainScene.disposeScene();
         mainScene = null;
     }
     /*===Loading Scene========*/
-
-    public void createLoadingScene(SceneType pSceneType){
+    void createLoadingScene(SceneType pSceneType){
         Log.d(TAG,"createLoadingScene");
         loadingScene = new LoadingScene(pSceneType);
         setScene(loadingScene);
@@ -147,32 +148,65 @@ public class SceneManager {
         loadingScene = null;
     }
 
+    /*===Prepare Scene =====*/
+    void loadPrepareScene(){
+        Log.d(TAG,"loadingPrepareScene");
+        ResourceManager.getInstance().loadPrePareScene();
+    }
+    void createPrepareScene(){
+        Log.d(TAG,"createPrepareScene");
+        prepareScene = new PrepareScene();
+        setScene(prepareScene);
+    }
+    void disposePrepareScene(){
+        Log.d(TAG,"disposePrepareScene");
+        prepareScene.disposeScene();
+        prepareScene = null;
+    }
+
     /*===Game Scene==========*/
-    public void loadGameScene() {
+    void loadGameScene() {
         Log.d(TAG,"loadingGameScene");
         ResourceManager.getInstance().loadGameScene(MainScene.theme,MainScene.stage);
     }
-    public void createGameScene(){
+    void createGameScene(){
         Log.d(TAG,"createGameScene");
         gameScene = new GameScene();
         setScene(gameScene);
     }
+    void disposeGameScene(){
+        Log.d(TAG,"disposeGameScene");
+        gameScene.disposeScene();
+        gameScene = null;
+    }
 
     /*===Shop Scene============*/
-    public void loadShopScene(){
+    void loadShopScene(){
         Log.d(TAG,"loadingShopScene");
         ResourceManager.getInstance().loadShopScene();
     }
 
-    public void createShopScene(){
+    void createShopScene(){
         Log.d(TAG,"createShopScene");
         shopScene = new ShopScene();
         setScene(shopScene);
     }
-    public void disposeShopScene(){
+    void disposeShopScene(){
         Log.d(TAG,"disposeShopScene");
         shopScene.disposeScene();
         shopScene = null;
 
+    }
+
+    public static int BAG_DATA = 0;
+    private int[] bagData;
+    public void setGameSceneBagData(int[] bagData){
+        this.bagData = new int[4];
+        for(int i=0;i<bagData.length;i++){
+            this.bagData[i] = bagData[i];
+        }
+    }
+    public int[] getBagData(){
+        return this.bagData;
     }
 }

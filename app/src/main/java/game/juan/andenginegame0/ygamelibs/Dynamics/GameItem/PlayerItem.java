@@ -30,4 +30,6 @@ public class PlayerItem extends Sprite{
     public String getName(){
         return name;
     }
+    public String getId(){return this.id;}
+    public int getDurability(){return durability;}
 }

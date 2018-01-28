@@ -99,6 +99,24 @@ public class MainScene extends BaseScene {
         }
         Text text = new Text(20,70,ResourceManager.getInstance().mainFont,itemname,ResourceManager.getInstance().vbom);
         this.attachChild(text);
+
+
+        Rectangle r2 = new Rectangle(480,300,50,50,ResourceManager.getInstance().vbom){
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                if(pSceneTouchEvent.isActionDown()){
+                    theme=0;
+                    stage = 1;
+                    SceneManager.getInstance().createLoadingScene(SceneManager.SceneType.PREPARE);
+                    SceneManager.getInstance().disposeMainScene();
+
+                }
+                return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+            }
+        };
+        r2.setColor(Color.GREEN);
+        this.registerTouchArea(r2);
+        this.attachChild(r2);
     }
 
     @Override
@@ -113,7 +131,6 @@ public class MainScene extends BaseScene {
 
     @Override
     public void disposeScene() {
-
         this.detachSelf();
         this.dispose();
     }

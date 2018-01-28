@@ -102,24 +102,47 @@ public class EntityManager implements ConstantsSet.Classify {
         playerUnit.createPlayer(pGameScene,pd);
         playerUnit.setActive(true);
         playerUnit.createItemSlot();
-
+        for(int i=0;i<DataManager.getInstance().bagItemList.size();i++){
+            try{
+                NearWeapon weapon = new NearWeapon(100,500,ResourceManager.getInstance().gfxTextureRegionHashMap.get(DataManager.getInstance().bagItemList.get(i).getString("id")),ResourceManager.getInstance().vbom);
+                weapon.setConfigData(DataManager.getInstance().bagItemList.get(i));
+                //Log.d("TTTTT",DataManager.getInstance().playerBulletConfigs[0].toString());
+                weapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));
+                weapon.setVisible(true);
+                weapon.transformPhysically(100f/32f,580f/32f);
+                playerUnit.items[i].put(weapon);
+                //pGameScene.attachChild(weapon);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
         pGameScene.attachChild(playerUnit);
 
-        //     ThrowingWeapon weapon = new ThrowingWeap on(100,400,ResourceManager.getInstance().playerBulletRegion,ResourceManager.getInstance().vbom);
-/*        NearWeapon weapon = new NearWeapon(100,500,ResourceManager.getInstance().itemInGameHashMap.get("rake"),ResourceManager.getInstance().vbom);
-       // weapon.setConfigData(DataManager.getInstance().playerBulletConfigs[0]);
-        //Log.d("TTTTT",DataManager.getInstance().playerBulletConfigs[0].toString());
-        weapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));
-        weapon.setVisible(true);
-        weapon.transformPhysically(100f/32f,580f/32f);
-        pGameScene.attachChild(weapon);
 
+
+        try{
+            NearWeapon weapon = new NearWeapon(100,500,ResourceManager.getInstance().gfxTextureRegionHashMap.get(DataManager.getInstance().bagItemList.get(0).getString("id")),ResourceManager.getInstance().vbom);
+             weapon.setConfigData(DataManager.getInstance().bagItemList.get(0));
+            //Log.d("TTTTT",DataManager.getInstance().playerBulletConfigs[0].toString());
+            weapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));
+            weapon.setVisible(true);
+            weapon.transformPhysically(100f/32f,580f/32f);
+            pGameScene.attachChild(weapon);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        //     ThrowingWeapon weapon = new ThrowingWeap on(100,400,ResourceManager.getInstance().playerBulletRegion,ResourceManager.getInstance().vbom);
+
+
+        /*
         ThrowingWeapon tweapon = new ThrowingWeapon(100,500,ResourceManager.getInstance().itemInGameHashMap.get("nipper"),ResourceManager.getInstance().vbom);
       //  tweapon.setConfigData(DataManager.getInstance().playerBulletConfigs[1]);
         tweapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));
         tweapon.setVisible(true);
         tweapon.transformPhysically(180f/32f,580f/32f);
         pGameScene.attachChild(tweapon);*/
+
+
 
 
     }

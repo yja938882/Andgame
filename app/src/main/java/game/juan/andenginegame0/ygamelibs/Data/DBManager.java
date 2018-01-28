@@ -430,6 +430,32 @@ public class DBManager extends SQLiteOpenHelper{
         db.execSQL(SQL_insertItem.toString());
     }
 
+    public JSONObject getItemInInventoryTable(SQLiteDatabase db, int key){
+
+        JSONObject object=null;
+        StringBuilder SQL_selectItem = new StringBuilder("select * from ");
+        SQL_selectItem.append(INVENTORY_TABLE);
+        SQL_selectItem.append(" where ");
+        SQL_selectItem.append(InventoryTable.KEY);
+        SQL_selectItem.append(" =");
+        SQL_selectItem.append(key);
+        SQL_selectItem.append(";");
+        Cursor cursor = db.rawQuery(SQL_selectItem.toString(),null);
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            try {
+                object = getItemJSON(db,cursor.getString(1));
+                object.put("key",cursor.getInt(0));
+                object.put("id",cursor.getString(1));
+                object.put("remain_durability",cursor.getInt(2));
+                cursor.moveToNext();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        cursor.close();
+        return object;
+    }
 
     /* 인벤토리 테이블 내의 모든 데이터 반환
      * @param db

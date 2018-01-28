@@ -310,8 +310,11 @@ public class DataManager implements ConstantsSet{
 
     }
 
-    public ArrayList<JSONObject> inventoryList;
+    public ArrayList<JSONObject> inventoryList = null;
     public void loadInventoryData(){
+        if (inventoryList!=null){
+            inventoryList.clear();
+        }
         SQLiteDatabase db = dbManager.getReadableDatabase();
         ArrayList<JSONObject> tempInventoryList = dbManager.getAllItemInInventoryTable(db);
         inventoryList = new ArrayList<>();
@@ -339,6 +342,7 @@ public class DataManager implements ConstantsSet{
     public void buyItem(String id,  int durability){
         SQLiteDatabase db = dbManager.getWritableDatabase();
         dbManager.insertItemToInventoryTable(db,id,durability);
+        loadInventoryData();
     }
 
     /* 아이템을 판매한다
@@ -357,6 +361,15 @@ public class DataManager implements ConstantsSet{
         }
         SQLiteDatabase db = dbManager.getWritableDatabase();
         dbManager.deleteItemInInventoryTable(db,pKey);
+    }
+    public ArrayList<JSONObject> bagItemList=null;
+    public void addPreparedItems(int pKey){
+        if(bagItemList==null){
+            bagItemList = new ArrayList<>();
+        }
+        SQLiteDatabase db = dbManager.getReadableDatabase();
+        bagItemList.add(dbManager.getItemInInventoryTable(db,pKey));
+        Log.d(TAG,"add preapred item list "+pKey+"list :"+bagItemList.size());
     }
 
 

@@ -17,6 +17,7 @@ import game.juan.andenginegame0.ygamelibs.Scene.BaseScene;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.Scene.SceneManager;
+import game.juan.andenginegame0.ygamelibs.Scene.ShopScene;
 
 import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_HEIGHT;
 import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_WIDTH;
@@ -96,13 +97,15 @@ public class ShopBuyItemDialog extends BaseScene{
                 if(pSceneTouchEvent.isActionDown()){
                     if(processing)
                         return false;
+
                     processing = true;
                     DataManager.getInstance().buyItem(itemId,1);
                     processing = false;
 
                     disposeScene = true;
                     SceneManager.getInstance().disposeDialogScene();
-
+                 //  DataManager.getInstance().buyItem(item.);
+                    ((ShopScene)SceneManager.getInstance().getCurrentScene()).reloadInventorySlots();
                 }
                 return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
             }

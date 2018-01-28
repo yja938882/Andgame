@@ -41,9 +41,6 @@ public class ShopScene extends BaseScene{
 
     @Override
     public void createScene() {
-
-
-
         sellItemContainer = new ShopItemContainer(SHOP_ITEM_CONTAINER_X,SHOP_ITEM_CONTAINER_Y,
                 ResourceManager.getInstance().gfxTextureRegionHashMap.get("shop_container"),ResourceManager.getInstance().vbom);
 
@@ -126,7 +123,6 @@ public class ShopScene extends BaseScene{
         this.detachSelf();
         this.dispose();
     }
-
 
     public void reloadInventorySlots(){
         playerItemContainer.removeAllItem();
