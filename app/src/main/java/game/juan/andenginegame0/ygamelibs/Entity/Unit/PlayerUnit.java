@@ -51,7 +51,7 @@ import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_WIDTH;
 public class PlayerUnit extends Unit {
     /*===Constants============================*/
     private static final String TAG = "[cheep] PlayerUnit";
-
+    private static final float MAX_SPEED = 8.0f;
     private static final float RIGHT_HAND_UPPER_LIMIT = 5f * (float) (Math.PI) / 180f; //오른 쪽 팔 최대각
     private static final float RIGHT_HAND_LOWER_LIMIT = -90f * (float) (Math.PI) / 180f; //오른 쪽 팔 최소각
     private static final float LEFT_HAND_UPPER_LIMIT = 90f * (float) (Math.PI) / 180f;// 왼쪽 팔 최대각
@@ -203,7 +203,8 @@ public class PlayerUnit extends Unit {
         this.setFlippedHorizontal(false);
         getBody(FOOT).setAngularVelocity(30f);
         if (isInTheAir) {
-            getBody(FOOT).applyForce(new Vector2(6, 0), getBody(FOOT).getWorldCenter());
+            if(this.getBody(0).getLinearVelocity().x<=MAX_SPEED)
+                getBody(FOOT).applyForce(new Vector2(20, 0), getBody(FOOT).getWorldCenter());
             if (!isAnimationRunning())
                 animate(jumpFrameDuration, jumpFrameIndex, true);
         } else {
@@ -228,7 +229,8 @@ public class PlayerUnit extends Unit {
         this.setFlippedHorizontal(true);
         getBody(FOOT).setAngularVelocity(-30f);
         if (isInTheAir) {
-            getBody(FOOT).applyForce(new Vector2(-6, 0), getBody(FOOT).getWorldCenter());
+            if(this.getBody(0).getLinearVelocity().x>= -MAX_SPEED)
+                getBody(FOOT).applyForce(new Vector2(-20, 0), getBody(FOOT).getWorldCenter());
             if (!isAnimationRunning()) {
                 animate(jumpFrameDuration, jumpFrameIndex, true);
             }
@@ -252,15 +254,15 @@ public class PlayerUnit extends Unit {
     protected void onActiveJump() {
         if (isJumpLock)
             return;
-        if (!isInTheAir) {
+      //  if (!isInTheAir) {
             isJumpLock = true;
             applyLinearImpulse(BODY, JUMP_FORCE);
             animate(jumpFrameDuration, jumpFrameIndex, true);
-        } else {
+        //} else {
             if (!isAnimationRunning()) {
                 animate(jumpFrameDuration, jumpFrameIndex, true);
             }
-        }
+        //}
     }
 
     @Override

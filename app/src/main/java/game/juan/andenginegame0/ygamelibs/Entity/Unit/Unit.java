@@ -121,8 +121,11 @@ public abstract class Unit extends GameEntity{
 
         if(!alive)
             setActive(false);
-        applyForce(BODY,GRAVITY);
-        applyForce(FOOT,GRAVITY);
+        //applyForce(BODY,GRAVITY);
+        //applyForce(FOOT,GRAVITY);
+        applyForce(BODY,new Vector2(0,16));
+
+        Log.d("unit","speed :"+this.getBody(0).getLinearVelocity().x);
     }
 
 

@@ -168,12 +168,12 @@
       "src":"",
       "data":
       {
-        "body" :"vertices",  "body_vx":[-64,-64,64,64],"body_vy":[-16,16,16,-16],
-        "src"                   :"moving_ground0.png",
-        "src_width"             : 128,
-        "src_height"            : 32,
+        "body"  : "vertices",   "body_vx":[-96,-96,96,96],"body_vy":[-32,32,32,-32],
+        "src"                   :"temp_ground0.png",
+        "src_width"             : 192,
+        "src_height"            : 64,
         "scale"                 : 1,
-        "col"                   : 6,
+        "col"                   : 1,
         "row"                   : 1,
         "add_id" :[]
       }

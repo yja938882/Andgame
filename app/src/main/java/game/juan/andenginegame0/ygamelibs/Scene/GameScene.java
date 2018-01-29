@@ -38,8 +38,8 @@ public class GameScene extends BaseScene {
                EntityManager.getInstance().manage();
                 camera.setCenter(EntityManager.getInstance().getPlayerUnit().getX(),
                         EntityManager.getInstance().getPlayerUnit().getY());
-                camera.setBounds(camera.getCenterX()-camera.getWidth()/2,
-                        0,10000,960);
+                camera.setBounds(-camera.getWidth()/2,
+                        0,10000,1500);
              }
             @Override
             public void reset() {
@@ -72,12 +72,6 @@ public class GameScene extends BaseScene {
         UIManager.getInstance().createOnGame(this);
         EntityManager.getInstance().createOnGame(this);
         StaticManager.getInstance().createOnGame(this);
-
-
-
-
-
-
 
         //For debugging
         DebugRenderer dr = new DebugRenderer(world.getWorld(),vbom);

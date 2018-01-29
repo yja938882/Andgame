@@ -52,7 +52,8 @@ public class MovingGround extends GameEntity {
         createVerticesBody(pGameScene, 0, pDataBlock, bodyShape, BodyDef.BodyType.KinematicBody);
         originX = pDataBlock.getPosX();
         transform(originX,pDataBlock.getPosY()+this.getHeight()/2f);
-        diffX = 128;
+        float data[] = ((ObstacleData)pDataBlock).getData();
+        diffX = data[0];
         speedFactor = 3;
     }
 
