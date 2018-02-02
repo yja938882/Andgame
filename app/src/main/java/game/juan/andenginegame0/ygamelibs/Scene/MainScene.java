@@ -13,8 +13,6 @@ import java.util.ArrayList;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 
-import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_WIDTH;
-
 /**
  * Created by juan on 2017. 12. 19..
  * 메인 화면

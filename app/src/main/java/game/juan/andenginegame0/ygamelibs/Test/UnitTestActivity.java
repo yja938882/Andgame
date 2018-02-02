@@ -24,6 +24,9 @@ import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.Scene.SceneManager;
 import game.juan.andenginegame0.ygamelibs.Scene.SplashScene;
 
+import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_HEIGHT;
+import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_WIDTH;
+
 public class UnitTestActivity extends BaseGameActivity {
 
 
@@ -55,7 +58,7 @@ public class UnitTestActivity extends BaseGameActivity {
 
     @Override
     public EngineOptions onCreateEngineOptions() {
-            mCamera = new BoundCamera(0,0,GameScene.CAMERA_WIDTH,GameScene.CAMERA_HEIGHT);
+            mCamera = new BoundCamera(0,0,CAMERA_WIDTH,CAMERA_HEIGHT);
             EngineOptions engineOptions = new EngineOptions(true
                     , ScreenOrientation.LANDSCAPE_FIXED,
                     new RatioResolutionPolicy(2560,1440),mCamera);

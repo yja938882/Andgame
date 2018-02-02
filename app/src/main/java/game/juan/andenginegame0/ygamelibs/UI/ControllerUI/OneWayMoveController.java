@@ -28,8 +28,11 @@ public class OneWayMoveController extends Controller{
     @Override
     public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y) {
         if (pSceneTouchEvent.isActionDown()||pSceneTouchEvent.isActionMove()) {
+            if(mAction == Unit.ACTIVE_JUMP){
+                EntityManager.getInstance().playerUnit.jump();
+            }else {
                 EntityManager.getInstance().playerUnit.setAction(mAction);
-
+            }
                 this.setAlpha(1.0f);
         }else{
            EntityManager.getInstance().playerUnit.setAction(Unit.ACTIVE_STOP);

@@ -18,6 +18,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -138,18 +139,30 @@ public class StaticManager implements ConstantsSet{
             }
 
         }
+        Arrays.sort(x);
+
         int rightIndex =0;
         int leftIndex =0;
         int max = -1;
         for(int i=0;i<count;i++) {
             rightIndex = i;
-            while (x[rightIndex] - x[leftIndex] > GameScene.CAMERA_WIDTH * 2.2f) {
+            while (x[rightIndex] - x[leftIndex] >CAMERA_WIDTH*2f){// CAMERA_WIDTH *2.2f) {
                 leftIndex++;
             }
-            if (rightIndex - leftIndex + 1 >= max)
-                max = rightIndex - leftIndex + 1;
-        }
+            int tempLeftIndex = leftIndex;
+           /* while((int)x[leftIndex]==(int)x[tempLeftIndex]){
+                tempLeftIndex--;
+                Log.d("SAME","tile :"+tile+" -SAME!!!"+tempLeftIndex);
+                if(tempLeftIndex<0) {
+                    tempLeftIndex = 0;
+                    break;
+                }
+            }*/
 
+            if (rightIndex - tempLeftIndex + 1 >= max)
+                max = rightIndex - tempLeftIndex + 1;
+        }
+        Log.d("SAME","***tile MAX :"+tile+" max :"+max);
         return max;
     }
     public float[] calculateTilePosX(ArrayList<StaticData> dataArrayList, int tile){

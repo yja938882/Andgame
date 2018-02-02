@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
 import org.json.JSONArray;
 
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
@@ -126,13 +127,10 @@ public class StaticData extends DataBlock{
         int inner_i=0;
         for(int i=0;i<types.length;i++){
             if(types[i] == tile){
-                for( int s = tsy[i];s<tey[i];s++){
-
-                    for(int k=tsx[i] ; k<tex[i];k++){
-                        posY[inner_i++] = (s*64f + getPosY());
+                for( int s = tsx[i];s<tex[i];s++){
+                    for(int k=tsy[i] ; k<tey[i];k++){
+                        posY[inner_i++] = (k*64f + getPosY());
                     }
-
-                    Log.d("cheep"," pos y : "+posY[inner_i-1]);
                 }
             }
         }

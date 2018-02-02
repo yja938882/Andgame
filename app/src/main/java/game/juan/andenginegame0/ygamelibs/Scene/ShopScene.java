@@ -21,9 +21,6 @@ import game.juan.andenginegame0.ygamelibs.Dynamics.GameItem.PlayerItemContainer;
 import game.juan.andenginegame0.ygamelibs.Dynamics.ShopItem.ShopItem;
 import game.juan.andenginegame0.ygamelibs.Dynamics.ShopItem.ShopItemContainer;
 
-import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_HEIGHT;
-import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_WIDTH;
-
 /**
  * Created by juan on 2018. 1. 14..
  */

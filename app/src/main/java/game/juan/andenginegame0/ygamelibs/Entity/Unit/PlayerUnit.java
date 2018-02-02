@@ -41,7 +41,7 @@ import game.juan.andenginegame0.ygamelibs.UI.UIManager;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_HEIGHT;
-import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_WIDTH;
+import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_WIDTH;
 
 /**
  * Created by juan on 2017. 11. 25..
@@ -254,15 +254,18 @@ public class PlayerUnit extends Unit {
     protected void onActiveJump() {
         if (isJumpLock)
             return;
-      //  if (!isInTheAir) {
+        if (!isInTheAir) {
             isJumpLock = true;
             applyLinearImpulse(BODY, JUMP_FORCE);
             animate(jumpFrameDuration, jumpFrameIndex, true);
-        //} else {
+        } else {
             if (!isAnimationRunning()) {
                 animate(jumpFrameDuration, jumpFrameIndex, true);
             }
-        //}
+        }
+    }
+    public void jump(){
+        onActiveJump();
     }
 
     @Override

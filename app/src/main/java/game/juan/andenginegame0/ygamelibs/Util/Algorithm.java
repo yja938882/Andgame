@@ -13,6 +13,8 @@ import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.ObstacleData;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.AI.AiData;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
+import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_WIDTH;
+
 /**
  * Created by juan on 2018. 1. 9..
  *
@@ -51,7 +53,7 @@ public class Algorithm {
         int max = -1;
         for(int i=0;i<pDataList.size();i++){
             rightIndex =i;
-            while(pDataList.get(rightIndex).getPosX() - pDataList.get(leftIndex).getPosX() > GameScene.CAMERA_WIDTH*1.2f){
+            while(pDataList.get(rightIndex).getPosX() - pDataList.get(leftIndex).getPosX() > CAMERA_WIDTH*1.2f){
                 leftIndex++;
             }
             if(rightIndex - leftIndex+1 >=max)
@@ -68,7 +70,7 @@ public class Algorithm {
         int max = -1;
         for(int i=0;i<pDataList.size();i++){
             rightIndex =i;
-            while(pDataList.get(rightIndex).getPosX() - pDataList.get(leftIndex).getPosX() > GameScene.CAMERA_WIDTH*1.2f){
+            while(pDataList.get(rightIndex).getPosX() - pDataList.get(leftIndex).getPosX() > CAMERA_WIDTH*1.2f){
                 leftIndex++;
             }
             if(rightIndex - leftIndex+1 >=max)
@@ -86,7 +88,7 @@ public class Algorithm {
         int max = -1;
         for(int i=0;i<pDataList.size();i++){
             rightIndex =i;
-            while(pDataList.get(rightIndex).getPosX() - pDataList.get(leftIndex).getPosX() > GameScene.CAMERA_WIDTH*1.2f){
+            while(pDataList.get(rightIndex).getPosX() - pDataList.get(leftIndex).getPosX() >CAMERA_WIDTH*1.2f){
                 leftIndex++;
             }
             if(rightIndex - leftIndex+1 >=max)

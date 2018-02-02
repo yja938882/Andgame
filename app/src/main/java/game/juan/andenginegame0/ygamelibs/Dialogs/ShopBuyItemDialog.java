@@ -19,8 +19,8 @@ import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.Scene.SceneManager;
 import game.juan.andenginegame0.ygamelibs.Scene.ShopScene;
 
-import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_HEIGHT;
-import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_WIDTH;
+import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_HEIGHT;
+import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_WIDTH;
 
 /**
  * Created by juan on 2018. 1. 20..

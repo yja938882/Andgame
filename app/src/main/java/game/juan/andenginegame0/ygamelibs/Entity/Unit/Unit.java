@@ -121,9 +121,9 @@ public abstract class Unit extends GameEntity{
 
         if(!alive)
             setActive(false);
-        //applyForce(BODY,GRAVITY);
-        //applyForce(FOOT,GRAVITY);
-        applyForce(BODY,new Vector2(0,16));
+        applyForce(BODY,GRAVITY);
+        applyForce(FOOT,GRAVITY);
+      //  applyForce(BODY,new Vector2(0,16));
 
         Log.d("unit","speed :"+this.getBody(0).getLinearVelocity().x);
     }
@@ -184,7 +184,7 @@ public abstract class Unit extends GameEntity{
             case ACTIVE_STOP:       onActiveStop();     break;
             case ACTIVE_MOVE_RIGHT: onActiveMoveRight();break;
             case ACTIVE_MOVE_LEFT:  onActiveMoveLeft(); break;
-            case ACTIVE_JUMP:       onActiveJump();     break;
+           // case ACTIVE_JUMP:       onActiveJump();     break;
             case ACTIVE_PICK:       onActivePick();     break;
             case ACTIVE_ATTACK:     onActiveAttack();   break;
         }

@@ -93,6 +93,8 @@ public class DataManager implements ConstantsSet{
 
         try{
             JSONObject mapObject = loadJSONFromAsset(activity,"stage/stage"+pTheme+"_"+pStage+".json");
+            //JSONObject mapObject = loadJSONFromAsset(activity,"stage/stage"+0+"_"+0+".json");
+
             JSONArray stageArray = mapObject.getJSONArray("map");
             JSONArray bgArray = mapObject.getJSONArray("bg");
             for(int i=0;i<bgArray.length();i++){

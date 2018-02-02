@@ -7,7 +7,7 @@ import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.text.Text;
 import org.andengine.util.color.Color;
 
-import static game.juan.andenginegame0.ygamelibs.Scene.GameScene.CAMERA_WIDTH;
+import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 
 /**
  * Created by juan on 2017. 12. 19..
@@ -32,7 +32,7 @@ public class LoadingScene extends BaseScene {
     public void createScene() {
         Log.d(TAG,"createScene");
         setBackground(new Background(Color.BLACK));
-        loadingText =new Text(CAMERA_WIDTH/2,200,resourcesManager.mainFont,"Loading ...",vbom);
+        loadingText =new Text(ConstantsSet.CAMERA_WIDTH/2,200,resourcesManager.mainFont,"Loading ...",vbom);
         loadingText.setX(loadingText.getX()-loadingText.getWidth()/2);
         attachChild(loadingText);
 

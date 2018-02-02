@@ -22,8 +22,8 @@ import game.juan.andenginegame0.ygamelibs.World.HorizontalWorld;
 
 public class GameScene extends BaseScene {
     private static final String TAG="[cheep] GameScene";
-    public static final int CAMERA_WIDTH = 1024;
-    public static final int CAMERA_HEIGHT = 600;
+  //  public static final int CAMERA_WIDTH = 1024;
+   // public static final int CAMERA_HEIGHT = 600;
 
     HorizontalWorld world;
 
@@ -74,11 +74,11 @@ public class GameScene extends BaseScene {
         StaticManager.getInstance().createOnGame(this);
 
         //For debugging
-        DebugRenderer dr = new DebugRenderer(world.getWorld(),vbom);
-        dr.setColor(Color.BLUE);
-        dr.setDrawBodies(true);
-        dr.setDrawJoints(true);
-        this.attachChild(dr);
+        //DebugRenderer dr = new DebugRenderer(world.getWorld(),vbom);
+       // dr.setColor(Color.BLUE);
+        //dr.setDrawBodies(true);
+        //dr.setDrawJoints(true);
+        //this.attachChild(dr);
     }
 
     @Override
