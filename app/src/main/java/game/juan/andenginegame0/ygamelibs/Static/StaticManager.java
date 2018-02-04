@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
@@ -43,11 +45,10 @@ public class StaticManager implements ConstantsSet{
 
     private Sprite background1;
     private Sprite background2;
-    private Sprite display1;
-    private Sprite display2;
-    private Sprite display3;
 
     private AutoParallaxBackground autoParallaxBackground = new AutoParallaxBackground(0,0,0,5);
+
+    private HashMap<String, ArrayList<DisplayData>> displayDataListHashMap;
 
     private Tile tiles[];
 
@@ -74,6 +75,37 @@ public class StaticManager implements ConstantsSet{
 
             Log.d(TAG,""+bd +" "+bd2);
         }
+
+        displayDataListHashMap = new HashMap<>();
+        ArrayList<DisplayData> displayDataList = DataManager.getInstance().displayDataList;
+        for(int i=0;i<displayDataList.size();i++){
+            DisplayData displayData = displayDataList.get(i);
+            if(!displayDataListHashMap.containsKey(displayData.getId())){
+                displayDataListHashMap.put(displayData.getId(),new ArrayList<DisplayData>());
+            }
+            displayDataListHashMap.get(displayData.getId()).add(displayData);
+        }
+
+        int size = DataManager.getInstance().displayJsonList.size();
+        Iterator displayDataIterator = displayDataListHashMap.keySet().iterator();
+        while(displayDataIterator.hasNext()){
+            String key = (String)displayDataIterator.next();
+            ArrayList<DisplayData > list = displayDataListHashMap.get(key);
+            Display display = new Display(ResourceManager.getInstance().gfxTextureRegionHashMap.get(key).getTexture(),displayDataList.size(),ResourceManager.getInstance().vbom);
+            display.setZIndex(-1);
+            for(int i=0;i<list.size();i++){
+
+                display.draw(ResourceManager.getInstance().gfxTextureRegionHashMap.get(key),
+                        list.get(i).getX(),list.get(i).getY(),list.get(i).getWidth(),list.get(i).getHeight(),1,1,1,1);
+
+            }
+            display.submit();
+            pGameScene.attachChild(display);
+
+        }
+
+
+        pGameScene.sortChildren();
         pGameScene.registerUpdateHandler(new IUpdateHandler() {
             int d=0;
             @Override
@@ -150,14 +182,7 @@ public class StaticManager implements ConstantsSet{
                 leftIndex++;
             }
             int tempLeftIndex = leftIndex;
-           /* while((int)x[leftIndex]==(int)x[tempLeftIndex]){
-                tempLeftIndex--;
-                Log.d("SAME","tile :"+tile+" -SAME!!!"+tempLeftIndex);
-                if(tempLeftIndex<0) {
-                    tempLeftIndex = 0;
-                    break;
-                }
-            }*/
+
 
             if (rightIndex - tempLeftIndex + 1 >= max)
                 max = rightIndex - tempLeftIndex + 1;

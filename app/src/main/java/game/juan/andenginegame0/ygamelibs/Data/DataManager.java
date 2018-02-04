@@ -21,6 +21,7 @@ import java.util.Set;
 import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.ObstacleData;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.AI.AiData;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerData;
+import game.juan.andenginegame0.ygamelibs.Static.DisplayData;
 import game.juan.andenginegame0.ygamelibs.Static.StaticData;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
@@ -53,16 +54,20 @@ public class DataManager implements ConstantsSet{
     public JSONObject playerConfig; // 플레이어 설정정보
     public ArrayList<JSONObject> playerGFXJsonList; // 플레이어와 관련된 GFX 설정 데이터
     public ArrayList<JSONObject> bgGFXJsonList;     // 백그라운드와 관련된 GFX 설정 데이터
+    public ArrayList<JSONObject> displayJsonList;   // 디스 플레이와 관련된 GFX 설정 데이터
+
     public ArrayList<JSONObject> staticGFXJsonList; // 맵과 관련된 GFX 설정 데이터
     public ArrayList<JSONObject> aiGFXJsonList;     // Ai 와 관련된 GFX 설정 데이터
     public ArrayList<JSONObject> obstacleGFXJsonList;//Obstacle 과 관련된 GFX 설정 데이터
 
     public HashMap<String, JSONObject> configHashSet; //설정 정보 Hash Map
 
+
     public ArrayList<ObstacleData> obstacleDataList; // 장애물 리스트
     public ArrayList<StaticData> staticMapDataList; // 맵정보 리스트
     public ArrayList<AiData> aiDataList;    //Ai 리스트
-
+    public ArrayList<DisplayData> displayDataList; // 디스플레이 리스트
+    //public HashMap<String , ArrayList<DisplayData>()> displayDataListHashSet;
 
     /* 스테이지를 구성하는데 필요한 데이터 로딩
     * @param pTheme
@@ -71,17 +76,22 @@ public class DataManager implements ConstantsSet{
     public void loadStageData(int pTheme, int pStage){
 
         bgGFXJsonList = new ArrayList<>();
+        displayJsonList = new ArrayList<>();
+
         playerGFXJsonList = new ArrayList<>();
         staticGFXJsonList = new ArrayList<>();
         aiGFXJsonList = new ArrayList<>();
         obstacleGFXJsonList = new ArrayList<>();
 
+
         staticMapDataList = new ArrayList<>();
         obstacleDataList = new ArrayList<>();
         aiDataList = new ArrayList<>();
+        displayDataList = new ArrayList<>();
 
         configHashSet = new HashMap<>();
         HashSet<String> tileSet = new HashSet<>(); // 맵 타일 이미지
+
         HashSet<String> aiIdSet = new HashSet<>(); // AI에 관련한 id set
         HashSet<String> additional_aiIdSet = new HashSet<>(); // AI에 관련한 추가 id
 
@@ -93,10 +103,17 @@ public class DataManager implements ConstantsSet{
 
         try{
             JSONObject mapObject = loadJSONFromAsset(activity,"stage/stage"+pTheme+"_"+pStage+".json");
-            //JSONObject mapObject = loadJSONFromAsset(activity,"stage/stage"+0+"_"+0+".json");
+            JSONObject scatterObject = mapObject.getJSONObject("display_scatter");
+            displayJsonList.add(scatterObject);
+            JSONArray displayArray = mapObject.getJSONArray("display");
+            for(int i=0;i<displayArray.length();i++){
+                displayJsonList.add(displayArray.getJSONObject(i));
+            }
 
             JSONArray stageArray = mapObject.getJSONArray("map");
             JSONArray bgArray = mapObject.getJSONArray("bg");
+
+
             for(int i=0;i<bgArray.length();i++){
                 JSONObject object = new JSONObject();
                 object.put("id","bg"+i);
@@ -125,6 +142,9 @@ public class DataManager implements ConstantsSet{
                     case "ai":
                         composeAiData(object);
                         aiIdSet.add(object.getString("id"));
+                        break;
+                    case "display":
+                        composeDisplayData(object);
                         break;
                 }
             }
@@ -203,7 +223,17 @@ public class DataManager implements ConstantsSet{
         }catch (Exception e){
             e.printStackTrace();
         }
-
+    }
+    private  void composeDisplayData(JSONObject object){
+        try{
+            DisplayData displayData = new DisplayData(object.getString("id"),
+                    object.getInt("x"),object.getInt("y"),
+                    object.getInt("src_width"),object.getInt("src_height")
+            );
+            this.displayDataList.add(displayData);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     private void composeObstacleData(JSONObject object){
         try {
@@ -283,6 +313,21 @@ public class DataManager implements ConstantsSet{
                     break;
             }
             final AiData aiData = new AiData(vClass, vType, object.getInt("x"), object.getInt("y"),object.getString("id"));
+
+            JSONArray cmdListArray = object.getJSONArray("cmd_list");
+            final int cmd_list[] = new int[cmdListArray.length()];
+            for(int i=0;i<cmdListArray.length();i++){
+                cmd_list[i] = cmdListArray.getInt(i);
+            }
+
+            JSONArray cmdDuArray = object.getJSONArray("cmd_du");
+            final float cmd_du[] = new float[cmdDuArray.length()];
+            for(int i=0;i<cmdDuArray.length();i++){
+                cmd_du[i] = (float)cmdDuArray.getDouble(i);
+            }
+            aiData.setCmd(cmd_list,cmd_du);
+
+
             aiDataList.add(aiData);
                 }catch(Exception e){
                 e.printStackTrace();

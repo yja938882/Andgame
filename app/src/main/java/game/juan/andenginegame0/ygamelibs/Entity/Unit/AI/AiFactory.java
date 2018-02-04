@@ -30,12 +30,25 @@ public class AiFactory implements ConstantsSet.EntityType{
         }*/
         return null;
     }
+    public static GameEntity createAi(GameScene pGameScene, AiData pAiData){
+        String id = pAiData.getId();
+        switch (pAiData.getType()){
+            case FLY_AI:
+                break;
+            case MOVING_AI:
+                return createMoving_Ai(pGameScene,ResourceManager.getInstance().gfxTextureRegionHashMap.get(id),pAiData);
+            case SHOOTING_AI:
+                break;
+
+        }
+        return null;
+    }
 
     private static AiUnit createMoving_Ai(GameScene pGameScene , ITiledTextureRegion iTiledTextureRegion, DataBlock pDataBlock){
-        final AiUnit aiUnit = new AiUnit(pDataBlock.getPosX(),pDataBlock.getPosY(),
+        final MovingAi aiUnit = new MovingAi(pDataBlock.getPosX(),pDataBlock.getPosY(),
                 iTiledTextureRegion, ResourceManager.getInstance().vbom);
        aiUnit.setScale(0.7f);
-        //aiUnit.setConfigData(DataManager.getInstance().aiConfigs[0]);
+        aiUnit.setConfigData(DataManager.getInstance().configHashSet.get(pDataBlock.getId()));
         aiUnit.createAi(pGameScene,pDataBlock);
         aiUnit.setActive(true);
         pGameScene.attachChild(aiUnit);

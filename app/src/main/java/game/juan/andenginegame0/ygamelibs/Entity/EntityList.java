@@ -57,7 +57,6 @@ public abstract class EntityList {
         GameEntity ge = mEntityList[mEntityIndex];
         if(reviveRule(mGameScene,ge)){
             ge.revive(mPosX[mPosIndex], mPosY[mPosIndex]);
-           // ge.setActive(activeRule(mGameScene,ge));
         }else {
            // ge.setActive(activeRule(mGameScene, ge));
         }

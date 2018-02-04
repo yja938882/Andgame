@@ -14,6 +14,7 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -148,84 +149,55 @@ public class EntityManager implements ConstantsSet.Classify {
     }
 
     private void createAiUnit(GameScene pGameScene, ArrayList<AiData> pAiData){
-        /*Log.d(TAG,"createAiUnit");
-        ArrayList<AiData> movingAiDataList = new ArrayList<>();
-        ArrayList<AiData> shootingAiDataList = new ArrayList<>();
+        HashMap<String, ArrayList<AiData>> hashMap = new HashMap<>();
+        ArrayList<String> idList = new ArrayList<>();
 
-        for( int i=0;i<pAiData.size();i++){
-            switch (pAiData.get(i).getType()){
-                case MOVING_AI:
-                    movingAiDataList.add(pAiData.get(i));
-                    break;
-                case SHOOTING_AI:
-                    shootingAiDataList.add(pAiData.get(i));
-                    break;
-
-                case FLY_AI:
-                    break;
+        int size = pAiData.size();
+        for(int i=0;i<size;i++){
+            String id = pAiData.get(i).getId();
+            if(!hashMap.containsKey(id)){
+                hashMap.put(id,new ArrayList<AiData>());
+                idList.add(id);
             }
+            hashMap.get(id).add(pAiData.get(i));
         }
-        int entityListSize = Algorithm.calculateMaxAiInCam(movingAiDataList);
-        final EntityList aiList = new EntityList(pGameScene , entityListSize,movingAiDataList.size() - entityListSize) {
-            @Override
-            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
-                if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
-                    return true;
-                }
-                return false;
-            }
 
-            @Override
-            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
-                float camx = pGameScene.getCamera().getCenterX();
-                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2)
+        int id_size = idList.size();
+        final EntityList entityList[] = new EntityList[id_size];
+        for(int i=0;i<id_size;i++){
+            ArrayList<AiData> aiDataList = hashMap.get(idList.get(i));
+            int entityListSize = Algorithm.calculateMaxAiInCam(aiDataList);
+            entityList[i] = new EntityList(pGameScene,entityListSize,aiDataList.size()- entityListSize) {
+                @Override
+                public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
                     return false;
-                else
-                    return true;
-            }
-        };
-        for(int i=0;i<movingAiDataList.size();i++){
-            if(!aiList.isEntityListFull()) {
-          //      aiList.add(AiFactory.createAi(pGameScene,
-            //            ResourceManager.getInstance().aiRegions[0],movingAiDataList.get(i)));
-            }else{
-                aiList.add(movingAiDataList.get(i).getPosX(),movingAiDataList.get(i).getPosY());
-            }
-        }
-
-        entityListSize = Algorithm.calculateMaxAiInCam(shootingAiDataList);
-        Log.d(TAG,"cal e :"+entityListSize);
-        final EntityList shootingAiList= new EntityList(pGameScene , entityListSize,shootingAiDataList.size() - entityListSize) {
-            @Override
-            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
-                if(pGameEntity.getX() < pGameScene.getCamera().getCenterX()-ConstantsSet.CAMERA_WIDTH/2){
-                    return true;
                 }
-                return false;
-            }
 
-            @Override
-            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
-                float camx = pGameScene.getCamera().getCenterX();
-                if(pGameEntity.getScaleCenterX() <= camx - ConstantsSet.CAMERA_WIDTH/2)
+                @Override
+                public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
                     return false;
-                else
-                    return true;
-            }
-        };
-        for(int i=0;i<shootingAiDataList.size();i++){
-            if(!shootingAiList.isEntityListFull()) {
-                //shootingAiList.add(AiFactory.createAi(pGameScene,
-                  //      ResourceManager.getInstance().aiRegions[AI_SHOOTING_1_CONFIG],shootingAiDataList.get(i)));
-            }else{
-                shootingAiList.add(shootingAiDataList.get(i).getPosX(),shootingAiDataList.get(i).getPosY());
+                }
+            };
+
+        }
+        for(int i=0;i<id_size;i++){
+            ArrayList<AiData> aiDataList = hashMap.get(idList.get(i));
+            for(int j=0;j<aiDataList.size();j++){
+                if(!entityList[i].isEntityListFull()){
+                    entityList[i].add(AiFactory.createAi(pGameScene,aiDataList.get(j)));
+                }else{
+                    entityList[i].add(aiDataList.get(j).getPosX(),aiDataList.get(j).getPosY());
+                }
             }
         }
-
-        mAiList = new ManagedEntityList(2);
-        mAiList.setList(0,aiList);
-        mAiList.setList(1,shootingAiList);
-        mAiList.ready();*/
+        if(id_size <=0){
+            return;
+        }
+        mAiList = new ManagedEntityList(id_size);
+        for(int i=0;i<id_size;i++){
+            mAiList.setList(i,entityList[i]);
+        }
+        mAiList.ready();
     }
 
     private void createObstacle(GameScene pGameScene, ArrayList<ObstacleData> pObstacleData){

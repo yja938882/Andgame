@@ -16,6 +16,43 @@ public class ShootingAi extends  AiUnit {
     public ShootingAi(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
+
+    @Override
+    protected void onPassiveDie() {
+
+    }
+
+    @Override
+    protected void onActiveStop() {
+
+    }
+
+    @Override
+    protected void onActiveMoveRight() {
+
+    }
+
+    @Override
+    protected void onActiveMoveLeft() {
+
+    }
+
+    @Override
+    protected void onActiveJump() {
+
+    }
+
+    @Override
+    protected void onActivePick() {
+
+    }
+
+    @Override
+    protected void onActiveAttack() {
+
+    }
+
+
     public void setWeapon(Weapon weapon){
         this.mWeapon = weapon;
     }

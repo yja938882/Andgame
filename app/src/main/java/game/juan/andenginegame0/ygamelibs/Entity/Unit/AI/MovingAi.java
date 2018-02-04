@@ -6,11 +6,11 @@ import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 /**
- * Created by juan on 2017. 12. 5..
+ * Created by juan on 2018. 2. 3..
  */
 
-public class GroundAi extends AiUnit{
-    public GroundAi(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
+public class MovingAi extends AiUnit {
+    public MovingAi(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
 
@@ -21,10 +21,6 @@ public class GroundAi extends AiUnit{
 
     @Override
     protected void onActiveStop() {
-
-    }
-
-    void attack() {
 
     }
 
@@ -39,7 +35,6 @@ public class GroundAi extends AiUnit{
             if (!isAnimationRunning())
                 animate(movingFrameDuration, movingFrameIndex, true);
         }
-
     }
 
     @Override

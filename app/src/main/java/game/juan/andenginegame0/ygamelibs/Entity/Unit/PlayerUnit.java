@@ -385,7 +385,7 @@ public class PlayerUnit extends Unit {
         attackedParticleEmitter = new RectangleParticleEmitter(0,0,CAMERA_WIDTH*1.5f,CAMERA_HEIGHT*1.5f);
         this.attackedParticleSystem = new BatchedSpriteParticleSystem(attackedParticleEmitter,
                 10, 50, 50,
-                ResourceManager.getInstance().gfxTextureRegionHashMap.get("player_attack_particle"), ResourceManager.getInstance().vbom);
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("display_scatter"), ResourceManager.getInstance().vbom);
         attackedParticleSystem.addParticleInitializer(new RotationParticleInitializer<UncoloredSprite>(-90f,90f));
         attackedParticleSystem.addParticleInitializer(new VelocityParticleInitializer<UncoloredSprite>(-10, 10, 0, 10));
         attackedParticleSystem.addParticleInitializer(new AccelerationParticleInitializer<UncoloredSprite>(-10, 10, -5, 5));

@@ -79,19 +79,12 @@ public class Tile extends DynamicSpriteBatch {
     protected boolean onUpdateSpriteBatch() {
         //범위 안에 스프라이트가 없을경우 대체... 범위는 ?
         // 안전 범위
-        float LEFT_END = camera.getCenterX() - CAMERA_WIDTH/2;
-        float RIGHT_END = camera.getCenterX() + CAMERA_WIDTH/2;
-        if(!left.hasParent()){
-            SceneManager.getInstance().getCurrentScene().attachChild(left);
-        }
-        left.setPosition(LEFT_END,0);
-        if(!right.hasParent()){
-            SceneManager.getInstance().getCurrentScene().attachChild(right);
-        }
+        float LEFT_END = camera.getCenterX() - CAMERA_WIDTH/1.5f;
+        float RIGHT_END = camera.getCenterX() + CAMERA_WIDTH/1.5f;
+
         right.setPosition(RIGHT_END,0);
         while((pos[frontPosIndex].x>=LEFT_END) && (frontPosIndex>0)){
           //  Log.d("DEBUG_TEST","pos f :"+frontPosIndex+", pos e :"+endPosIndex+" posl :"+pos.length+"max t :"+maxTileSize+" et :"+endTileIndex);
-            Log.d("LEFT END","fp :"+frontPosIndex);
 
             frontPosIndex--;
             frontTileIndex--;

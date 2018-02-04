@@ -63,6 +63,7 @@ public class BulletObstacle extends GameEntity{
         }else{
             createCircleBody(pGameScene,0,pDataBlock,bodyShape, BodyDef.BodyType.DynamicBody);
         }
+        this.getBody(0).setFixedRotation(true);
     }
 
     /*===Setup============================*/

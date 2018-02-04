@@ -11,4 +11,41 @@ public class WaftAi extends AiUnit{
     public WaftAi(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
+
+    @Override
+    protected void onPassiveDie() {
+
+    }
+
+    @Override
+    protected void onActiveStop() {
+
+    }
+
+    @Override
+    protected void onActiveMoveRight() {
+
+    }
+
+    @Override
+    protected void onActiveMoveLeft() {
+
+    }
+
+    @Override
+    protected void onActiveJump() {
+
+    }
+
+    @Override
+    protected void onActivePick() {
+
+    }
+
+    @Override
+    protected void onActiveAttack() {
+
+    }
+
+
 }

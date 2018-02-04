@@ -184,7 +184,6 @@ public abstract class Unit extends GameEntity{
             case ACTIVE_STOP:       onActiveStop();     break;
             case ACTIVE_MOVE_RIGHT: onActiveMoveRight();break;
             case ACTIVE_MOVE_LEFT:  onActiveMoveLeft(); break;
-           // case ACTIVE_JUMP:       onActiveJump();     break;
             case ACTIVE_PICK:       onActivePick();     break;
             case ACTIVE_ATTACK:     onActiveAttack();   break;
         }

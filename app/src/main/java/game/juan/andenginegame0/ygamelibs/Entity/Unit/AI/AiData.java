@@ -10,6 +10,8 @@ import game.juan.andenginegame0.ygamelibs.Entity.Unit.UnitData;
  */
 
 public class AiData extends UnitData {
+    private int[] cmd_list;
+    private float[] cmd_du;
     public AiData(int pClass, int pType, int pX, int pY) {
         super(pClass, pType, pX, pY);
     }
@@ -35,5 +37,15 @@ public class AiData extends UnitData {
                 contactWithGround(false);
                 break;
         }
+    }
+    public void setCmd(int pCmdList[], float pCmdDu[]){
+        this.cmd_list = pCmdList;
+        this.cmd_du = pCmdDu;
+    }
+    public int[] getCmdList(){
+        return this.cmd_list;
+    }
+    public float[] getCmdDu(){
+        return this.cmd_du;
     }
 }

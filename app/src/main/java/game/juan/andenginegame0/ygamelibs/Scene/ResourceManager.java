@@ -306,14 +306,19 @@ public class ResourceManager {
    */
   void loadGameScene(int pTheme,int pStage){
     DataManager.getInstance().loadStageData(pTheme,pStage);// 스테이지 데이터 로딩
+    DataManager.getInstance().loadStageData(pTheme,pStage);// 스테이지 데이터 로딩exit
+
+
+
     initGFX(); // GFX 초기화
-    loadGFX("ui/",configGameUIData()); // 게임 UI GFX 로딩
-    loadGFX("player/",configPlayerGFXData()); // 플레이어 GFX 로딩
-    loadGFX("object/players/",DataManager.getInstance().bagItemList);
-    loadGFX("map/bg/",DataManager.getInstance().bgGFXJsonList); // 배경 GFX 로딩
+    loadGFX("ui/",configGameUIData());                                      // 게임 UI GFX 로딩
+    loadGFX("player/",configPlayerGFXData());                               // 플레이어 GFX 로딩
+    loadGFX("object/players/",DataManager.getInstance().bagItemList);       //플레이어 아이템 GFX 로딩
+    loadGFX("map/bg/",DataManager.getInstance().bgGFXJsonList);             // 배경 GFX 로딩
+    loadGFX("map/display/",DataManager.getInstance().displayJsonList);       // 디스플레이 GFX 로딩
     loadGFX("map/"+pTheme+"/",DataManager.getInstance().staticGFXJsonList); //맵 타일 GFX 로딩
-    loadGFX("ai/",DataManager.getInstance().aiGFXJsonList); //ai GFX 로딩
-    loadGFX("obstacle/",DataManager.getInstance().obstacleGFXJsonList); //Obstacle GFX 로딩
+    loadGFX("ai/",DataManager.getInstance().aiGFXJsonList);                 //ai GFX 로딩
+    loadGFX("obstacle/",DataManager.getInstance().obstacleGFXJsonList);     //Obstacle GFX 로딩
   }
 
   private ArrayList<JSONObject> configPlayerGFXData(){

@@ -22,7 +22,7 @@ import game.juan.andenginegame0.ygamelibs.Util.Algorithm;
  * Created by juan on 2017. 11. 25..
  */
 
-public class AiUnit extends Unit {
+public abstract class AiUnit extends Unit {
     private static final String TAG ="AiUnit";
     /*===Constants======================*/
     public static final int CMD_IDLE = 0;
@@ -95,60 +95,9 @@ public class AiUnit extends Unit {
 
 
 
-    @Override
-    protected void onPassiveDie() {
 
-    }
 
-    @Override
-    protected void onActiveStop() {
-        stopAnimation(0);
-    }
 
-    @Override
-    protected void onActiveMoveRight() {
-        this.setFlippedHorizontal(false);
-        getBody(FOOT).setAngularVelocity(30f);
-        if (isInTheAir) {
-            getBody(FOOT).applyForce(new Vector2(4, 0), getBody(FOOT).getWorldCenter());
-            if (!isAnimationRunning())
-                animate(jumpFrameDuration, jumpFrameIndex, true);
-        } else {
-            if (!isAnimationRunning())
-                animate(movingFrameDuration, movingFrameIndex, true);
-        }
-    }
-
-    @Override
-    protected void onActiveMoveLeft() {
-        this.setFlippedHorizontal(true);
-        getBody(FOOT).setAngularVelocity(-30f);
-        if (isInTheAir) {
-            getBody(FOOT).applyForce(new Vector2(-4, 0), getBody(FOOT).getWorldCenter());
-            if (!isAnimationRunning()) {
-                animate(jumpFrameDuration, jumpFrameIndex, true);
-            }
-        } else {
-            if (!isAnimationRunning()) {
-                animate(movingFrameDuration, movingFrameIndex, true);
-            }
-        }
-    }
-
-    @Override
-    protected void onActiveJump() {
-
-    }
-
-    @Override
-    protected void onActivePick() {
-
-    }
-
-    @Override
-    protected void onActiveAttack() {
-
-    }
 
 
     protected void beAttacked() {
@@ -169,13 +118,10 @@ public class AiUnit extends Unit {
         AiData aiData = new AiData(pDataBlock.getClassifyData(),pDataBlock.getType(),(int)(pDataBlock.getPosX()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),(int)(pDataBlock.getPosY()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT));
         setupBody(2);
         createUnit(pGameScene,aiData,new AiData(DataBlock.PLAYER_FOOT_CLASS,pDataBlock.getType(),(int)(pDataBlock.getPosX()),(int)pDataBlock.getPosY()));
-
+        this.mCmdDuList = ( (AiData)pDataBlock).getCmdDu();
+        this.mCmdList = ((AiData)pDataBlock).getCmdList();
     }
 
-    public void setCmdList(int[] plist, float[] pduList){
-        this.mCmdList = plist;
-        this.mCmdDuList = pduList;
-    }
 
     @Override
     protected void onManagedUpdate(float pSecondsElapsed) {
@@ -215,7 +161,7 @@ public class AiUnit extends Unit {
 
         switch (mCmdList[mCmd]) {
             case CMD_ATTACK:
-            //    setAction(ConstantsSet.UnitAction.ACTION_ATTACK);
+                //setAction(ConstantsSet.UnitAction.ACTION_ATTACK);
                 break;
                 case CMD_IDLE:
               //      setAction(ConstantsSet.UnitAction.ACTION_STOP);
@@ -224,9 +170,11 @@ public class AiUnit extends Unit {
                 //    setAction(ConstantsSet.UnitAction.ACTION_JUMP);
                     break;
                 case CMD_MOVE_LEFT:
+                    onManageActiveAction(ACTIVE_MOVE_LEFT);
                   //  setAction(ConstantsSet.UnitAction.ACTION_MOVE_LEFT);
                     break;
                 case CMD_MOVE_RIGHT:
+                    onManageActiveAction(ACTIVE_MOVE_RIGHT);
                    // setAction(ConstantsSet.UnitAction.ACTION_MOVE_RIGHT);
                     break;
             }
@@ -236,15 +184,8 @@ public class AiUnit extends Unit {
     public void setConfigData(JSONObject p){
         super.setConfigData(p);
         try {
-            JSONArray cmdArr = p.getJSONArray("cmdList");
-            JSONArray cmdDu = p.getJSONArray("cmdDu");
-            mCmdList = new int[cmdArr.length()];
-            mCmdDuList = new float[cmdArr.length()];
-            for(int i=0;i<cmdArr.length();i++){
-                mCmdList[i] = cmdArr.getInt(i);
-                mCmdDuList[i] = (float)cmdDu.getDouble(i);
-            }
-            hp = p.getInt("hp");
+
+           // hp = p.getInt("hp");
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -280,6 +221,9 @@ public class AiUnit extends Unit {
              this.setVisible(false);
         }
     }
+
+
+
 
    // private boolean isCollisionWithPlayer(){
      //   return Algorithm.CheckCircleCollision()
