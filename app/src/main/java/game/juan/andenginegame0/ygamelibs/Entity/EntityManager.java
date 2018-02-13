@@ -12,6 +12,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +24,7 @@ import java.util.HashSet;
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
+import game.juan.andenginegame0.ygamelibs.Entity.Objects.ObjectData;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.PlayerBulletData;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.NearWeapon;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.PlayerWeaponData;
@@ -71,6 +73,7 @@ public class EntityManager implements ConstantsSet.Classify {
 
         createPlayerUnit(pGameScene);
         createObstacle(pGameScene, DataManager.getInstance().obstacleDataList);
+        createWeapon(pGameScene,DataManager.getInstance().weaponDataList);
     }
 
 
@@ -118,6 +121,7 @@ public class EntityManager implements ConstantsSet.Classify {
             }
         }
         pGameScene.attachChild(playerUnit);
+        pGameScene.attachChild(playerUnit.getR());
 
 
 
@@ -147,6 +151,39 @@ public class EntityManager implements ConstantsSet.Classify {
 
 
     }
+    private void createWeapon(GameScene pGameScene, ArrayList<ObjectData> objectData){
+        for(int i=0;i<objectData.size();i++){
+
+            try {
+                JSONObject object = DataManager.getInstance().configHashSet.get(objectData.get(i).getId());
+                switch (object.getString("type")) {
+                    case "throwing":
+                        ThrowingWeapon throwingWeapon = new ThrowingWeapon(objectData.get(i).getPosX(), objectData.get(i).getPosY()
+                                , ResourceManager.getInstance().gfxTextureRegionHashMap.get(objectData.get(i).getId()), ResourceManager.getInstance().vbom);
+                        throwingWeapon.setConfigData(DataManager.getInstance().configHashSet.get(objectData.get(i).getId()));
+                        throwingWeapon.create(pGameScene, new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET, 0, 0));
+                        throwingWeapon.setVisible(true);
+                        throwingWeapon.transformPhysically(objectData.get(i).getPosX() / 32f, objectData.get(i).getPosY() / 32f);
+                        pGameScene.attachChild(throwingWeapon);
+
+                        break;
+                    case "near":
+                        NearWeapon weapon = new NearWeapon(objectData.get(i).getPosX(), objectData.get(i).getPosY()
+                                , ResourceManager.getInstance().gfxTextureRegionHashMap.get(objectData.get(i).getId()), ResourceManager.getInstance().vbom);
+                        weapon.setConfigData(DataManager.getInstance().configHashSet.get(objectData.get(i).getId()));
+                        weapon.create(pGameScene, new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET, 0, 0));
+                        weapon.setVisible(true);
+                        weapon.transformPhysically(objectData.get(i).getPosX() / 32f, objectData.get(i).getPosY() / 32f);
+                        pGameScene.attachChild(weapon);
+                        break;
+                }
+
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
 
     private void createAiUnit(GameScene pGameScene, ArrayList<AiData> pAiData){
         HashMap<String, ArrayList<AiData>> hashMap = new HashMap<>();
@@ -166,10 +203,14 @@ public class EntityManager implements ConstantsSet.Classify {
         final EntityList entityList[] = new EntityList[id_size];
         for(int i=0;i<id_size;i++){
             ArrayList<AiData> aiDataList = hashMap.get(idList.get(i));
-            int entityListSize = Algorithm.calculateMaxAiInCam(aiDataList);
+           // int entityListSize = Algorithm.calculateMaxAiInCam(aiDataList);
+            int entityListSize = 2;
             entityList[i] = new EntityList(pGameScene,entityListSize,aiDataList.size()- entityListSize) {
                 @Override
                 public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
+                   // if(pGameEntity.getBody(0).getPosition().x<playerUnit.getBody(0).getPosition().x){
+                     //   return true;
+                    //}
                     return false;
                 }
 
@@ -247,7 +288,7 @@ public class EntityManager implements ConstantsSet.Classify {
                 }
             }
        }
-        Log.d("TEST!!!","id size :"+id_size);
+
         if(id_size<=0)
             return;
          mObstacleList = new ManagedEntityList(id_size);

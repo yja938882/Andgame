@@ -74,11 +74,11 @@ public class GameScene extends BaseScene {
         StaticManager.getInstance().createOnGame(this);
 
         //For debugging
-        //DebugRenderer dr = new DebugRenderer(world.getWorld(),vbom);
+       // DebugRenderer dr = new DebugRenderer(world.getWorld(),vbom);
        // dr.setColor(Color.BLUE);
-        //dr.setDrawBodies(true);
-        //dr.setDrawJoints(true);
-        //this.attachChild(dr);
+       // dr.setDrawBodies(true);
+       // dr.setDrawJoints(true);
+       // this.attachChild(dr);
     }
 
     @Override
@@ -95,4 +95,5 @@ public class GameScene extends BaseScene {
     public void disposeScene() {
 
     }
+
 }

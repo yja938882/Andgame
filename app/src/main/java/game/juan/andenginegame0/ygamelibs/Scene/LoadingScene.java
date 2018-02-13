@@ -47,6 +47,7 @@ public class LoadingScene extends BaseScene {
                         break;
                     case MAIN:
                         Log.d(TAG,"loading main scene...");
+                        SceneManager.getInstance().loadMainScene();
                         break;
                     case INVEN:
                         Log.d(TAG,"loading inventory scene...");

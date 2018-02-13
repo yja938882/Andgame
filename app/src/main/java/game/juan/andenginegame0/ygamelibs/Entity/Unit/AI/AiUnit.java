@@ -14,6 +14,8 @@ import org.json.JSONObject;
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
+import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerData;
+import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.Unit;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Util.Algorithm;
@@ -82,7 +84,6 @@ public abstract class AiUnit extends Unit {
     @Override
     protected void onPassiveAttacked() {
         mActionLocks[0].lock();
-        Log.d("HITEST","attacked!!!!");
         animate(beAttackedFrameDuration,beAttackedFrameIndex,false);
         mActive = Unit.ACTIVE_STOP;
         mPassive = Unit.PASSIVE_NONE;
@@ -126,11 +127,21 @@ public abstract class AiUnit extends Unit {
     @Override
     protected void onManagedUpdate(float pSecondsElapsed) {
         updateCmd(pSecondsElapsed);
+        PlayerUnit playerUnit = EntityManager.getInstance().playerUnit;
+
+
         if(Algorithm.CheckCircleCollision(
-                EntityManager.getInstance().playerUnit.getHandBody(),new Vector2(110,0),5f,
-                this.getBody(0),new Vector2(0,0),32f)&&EntityManager.getInstance().playerUnit.isAttacking()){
+                playerUnit.getAttackingPos(),10f,this.getBody(0),32f)&&
+                playerUnit.isAttacking()){
+
             ((AiData)this.getBody(0).getUserData()).setNeedToBeAttacked(true);
-            EntityManager.getInstance().playerUnit.emitAttackParticle(this.getBody(0).getWorldCenter().mul(32f));
+            playerUnit.emitAttackParticle(this.getBody(0).getWorldCenter().mul(32f));
+        }
+
+
+        if(Algorithm.CheckCircleCollision(
+                playerUnit.getBody(0),32f,this.getBody(0),32f)){
+            ((PlayerData)playerUnit.getBody(0).getUserData()).setNeedToBeAttacked(true);
         }
         super.onManagedUpdate(pSecondsElapsed);
 
@@ -167,7 +178,8 @@ public abstract class AiUnit extends Unit {
               //      setAction(ConstantsSet.UnitAction.ACTION_STOP);
                     break;
                 case CMD_JUMP:
-                //    setAction(ConstantsSet.UnitAction.ACTION_JUMP);
+                //    setAction(ConstantsSet.UnitAction.ACTION_JUMP)
+                    onManageActiveAction(ACTIVE_JUMP);
                     break;
                 case CMD_MOVE_LEFT:
                     onManageActiveAction(ACTIVE_MOVE_LEFT);

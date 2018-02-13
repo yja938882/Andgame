@@ -123,9 +123,6 @@ public abstract class Unit extends GameEntity{
             setActive(false);
         applyForce(BODY,GRAVITY);
         applyForce(FOOT,GRAVITY);
-      //  applyForce(BODY,new Vector2(0,16));
-
-        Log.d("unit","speed :"+this.getBody(0).getLinearVelocity().x);
     }
 
 
@@ -186,6 +183,7 @@ public abstract class Unit extends GameEntity{
             case ACTIVE_MOVE_LEFT:  onActiveMoveLeft(); break;
             case ACTIVE_PICK:       onActivePick();     break;
             case ACTIVE_ATTACK:     onActiveAttack();   break;
+            case ACTIVE_JUMP: onActiveJump(); break;
         }
     }
     protected abstract void onActiveStop();
@@ -194,124 +192,6 @@ public abstract class Unit extends GameEntity{
     protected abstract void onActiveJump();
     protected abstract void onActivePick();
     protected abstract void onActiveAttack();
-
-/*
-    protected void update(){
-
-       // Log.d("cheep","ac0  "+mAction);
-        if(jumpLock)
-            jumpCounter++;
-        if(jumpCounter>=10){
-            jumpCounter=0;
-            jumpLock = false;
-        }
-        boolean isInTheAir;
-        UnitData bodyData =(UnitData) getDataBlock(BODY);
-        UnitData footData = (UnitData)getDataBlock(FOOT);
-
-      //  Log.d("cheep","ac1   "+mAction);
-        if(footData.isNeedToBeStopJumpAnim()) {
-            footData.setNeedToBeStopJumpAnim(false);
-            stopAnimation(0);
-         }
-        if( (bodyData).isNeedToBeAttacked() || (footData).isNeedToBeAttacked()){
-            Log.d("HITEST","be attacked!!! invinsible :"+invincible);
-            if(!invincible){
-                mAction = ConstantsSet.UnitAction.ACTION_HITTED;
-            }else{
-                mAction = ConstantsSet.UnitAction.ACTION_STOP;
-            }
-
-            (bodyData).setNeedToBeAttacked(false);
-            (footData).setNeedToBeAttacked(false);
-        }
-
-        if(!alive){
-            mAction = ConstantsSet.UnitAction.ACTION_DIE;
-        }
-
-        if(isLocked()) {
-          //  Log.d("HITEST","locked");
-             return;
-        }
-//Log.d("THIEST","action "+mAction);
-    switch (mAction){
-            case ConstantsSet.UnitAction.ACTION_DIE:
-                LockAction(DIE_LOCK_INDEX);
-                animate(dieFrameDuration,dieFrameIndex,false);
-                break;
-            case ConstantsSet.UnitAction.ACTION_MOVE_RIGHT: //오른쪽으로 이동
-                this.setFlippedHorizontal(false);
-                getBody(FOOT).setAngularVelocity(30f);
-                if(footData.isInTheAir()){
-                    getBody(FOOT).applyForce(new Vector2(4,0),getBody(FOOT).getWorldCenter());
-                      if(!isAnimationRunning()) {
-                        animate(jumpFrameDuration, jumpFrameIndex, true);
-                    }
-
-                } else{
-                    if(!isAnimationRunning()) {
-                        animate(movingFrameDuration, movingFrameIndex, true);
-                    }
-                    onMoving();
-                }
-                onMoveRight();
-                break;
-            case ConstantsSet.UnitAction.ACTION_MOVE_LEFT: //왼쪽으로 이동
-                this.setFlippedHorizontal(true);
-                getBody(FOOT).setAngularVelocity(-30f);
-                if(footData.isInTheAir()){
-                    getBody(FOOT).applyForce(new Vector2(-4,0),getBody(FOOT).getWorldCenter());
-                      if(!isAnimationRunning()) {
-                        animate(jumpFrameDuration, jumpFrameIndex, true);
-                    }
-
-                }else{
-                   if(!isAnimationRunning()) {
-                        animate(movingFrameDuration, movingFrameIndex, true);
-                   }
-                    onMoving();
-                }
-                onMoveLeft();
-                break;
-            case ConstantsSet.UnitAction.ACTION_JUMP:
-                if(jumpLock)
-                    return;
-                if(!footData.isInTheAir()){
-                    jumpLock = true;
-                    applyLinearImpulse(BODY,JUMP_FORCE);
-                    animate(jumpFrameDuration, jumpFrameIndex, true);
-                }else{
-                    if(!isAnimationRunning()) {
-                         animate(jumpFrameDuration, jumpFrameIndex, true);
-                    }
-                }
-                break;
-            case ConstantsSet.UnitAction.ACTION_STOP:
-                if(!footData.isInTheAir()){
-                    getBody(FOOT).setAngularVelocity(0);
-                    stopAnimation(0);
-                    onStop();
-                }
-                break;
-            case ConstantsSet.UnitAction.ACTION_ATTACK:
-                LockAction(ATTACK_LOCK_INDEX);
-                animate(attackFrameDuration,attackFrameIndex,false);
-                setAction(ConstantsSet.UnitAction.ACTION_STOP);
-                attack();
-                break;
-            case ConstantsSet.UnitAction.ACTION_HITTED:
-                beAttacked();
-                LockAction(BEATTACKED_LOCK_INDEX);
-                animate(beAttackedFrameDuration, beAttackedFrameIndex, false);
-                setAction(ConstantsSet.UnitAction.ACTION_STOP);
-                break;
-            case ConstantsSet.UnitAction.ACTION_SKILL1:
-                break;
-            case ConstantsSet.UnitAction.ACTION_SKILL2:
-                break;
-        }
-    }*/
 
     protected void setAlive(boolean a){this.alive = a;}
     protected boolean isAlive(){return this.alive;}

@@ -67,6 +67,7 @@ public class ResourceManager {
     try{
       for(int i=0;i<size;i++){
         id = pConfigArray.get(i).getString("id");
+        Log.d("QQQQQ","id "+id);
         if(gfxTextureRegionHashMap.containsKey(id)){
           continue;
         }
@@ -89,7 +90,7 @@ public class ResourceManager {
 
 
   private void unLoadGFX(){
-
+    /*
     for(int i=0;i<gfxTextureAtlas.size();i++){
       gfxTextureAtlas.get(i).unload();
       gfxTextureRegions.set(i,null);
@@ -97,7 +98,7 @@ public class ResourceManager {
     gfxTextureAtlas.clear();
     gfxTextureRegions.clear();
     gfxTextureAtlas = null;
-    gfxTextureRegions = null;
+    gfxTextureRegions = null;*/
   }
 
 
@@ -245,11 +246,37 @@ public class ResourceManager {
   /*===메인 화면===========================*/
   /* 메인 화면 리소스 로딩
    */
-  void loadMainScene(){}
+  void loadMainScene(){
+    //DataManager.getInstance()
+    //loadGFX("ui/",);
+    Log.d("TADDDD","load main scene");
+    initGFX();
+    loadMainFont();
+    loadGFX("ui/",configMainUIData());
+  }
 
   /* 메인화면 리소스 언로딩
    */
   void unloadMainScene(){}
+
+  private ArrayList<JSONObject> configMainUIData(){
+    ArrayList<JSONObject> arrayList = new ArrayList<>();
+    try{
+      arrayList.add(newConfigJSON("theme_container","theme_container.png",712,328,1,1));
+      arrayList.add(newConfigJSON("level_container","level_container.png",136,41,1,1));
+      arrayList.add(newConfigJSON("coin_container","coin_container.png",133,39,1,1));
+      arrayList.add(newConfigJSON("setting_container","setting_container.png",104,81,1,1));
+      arrayList.add(newConfigJSON("shop_container","shop_container.png",83,106,1,1));
+      arrayList.add(newConfigJSON("status_container","status_container.png",84,106,1,1));
+      arrayList.add(newConfigJSON("next_theme", "next_theme.png",29,73,1,1));
+      arrayList.add(newConfigJSON("prev_theme","prev_theme.png",29,73,1,1));
+
+    }catch (Exception e){
+      e.printStackTrace();
+      System.exit(-1);
+    }
+    return arrayList;
+  }
 
   /*===상점 화면 =================================*/
   /** 상점 화면 그래픽, 인벤토리 데이터 로딩
@@ -306,9 +333,7 @@ public class ResourceManager {
    */
   void loadGameScene(int pTheme,int pStage){
     DataManager.getInstance().loadStageData(pTheme,pStage);// 스테이지 데이터 로딩
-    DataManager.getInstance().loadStageData(pTheme,pStage);// 스테이지 데이터 로딩exit
-
-
+  //  DataManager.getInstance().loadStageData(pTheme,pStage);// 스테이지 데이터 로딩exit
 
     initGFX(); // GFX 초기화
     loadGFX("ui/",configGameUIData());                                      // 게임 UI GFX 로딩
@@ -319,6 +344,9 @@ public class ResourceManager {
     loadGFX("map/"+pTheme+"/",DataManager.getInstance().staticGFXJsonList); //맵 타일 GFX 로딩
     loadGFX("ai/",DataManager.getInstance().aiGFXJsonList);                 //ai GFX 로딩
     loadGFX("obstacle/",DataManager.getInstance().obstacleGFXJsonList);     //Obstacle GFX 로딩
+    Log.d("QQQQQ","LOADGFX");
+    loadGFX("object/players/",DataManager.getInstance().itemGFXJsonList);
+    loadGFX("object/players/",DataManager.getInstance().weaponGFXJsonList);
   }
 
   private ArrayList<JSONObject> configPlayerGFXData(){

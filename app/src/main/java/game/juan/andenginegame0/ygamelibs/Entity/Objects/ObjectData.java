@@ -1,6 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Entity.Objects;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
+import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.ObstacleData;
 
 /**
  * Created by juan on 2017. 12. 15..
@@ -10,7 +11,9 @@ public class ObjectData extends DataBlock {
     public ObjectData(int pClass, int pType, int pX, int pY) {
         super(pClass, pType, pX, pY);
     }
-
+    public ObjectData(int pClass, int pType, int pX, int pY,String pId){
+        super(pClass,pType,pX,pY,pId);
+    }
     private boolean isHit = false;
     private boolean isContactWithGround = false;
 

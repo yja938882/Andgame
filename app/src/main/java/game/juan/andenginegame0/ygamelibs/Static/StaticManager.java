@@ -27,6 +27,8 @@ import java.util.Iterator;
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
+import game.juan.andenginegame0.ygamelibs.Dynamics.EatableItem.CoinItem;
+import game.juan.andenginegame0.ygamelibs.Dynamics.EatableItem.ItemData;
 import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
 
 import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.RollingObstacle;
@@ -137,6 +139,14 @@ public class StaticManager implements ConstantsSet{
                     calculateTilePosX(DataManager.getInstance().staticMapDataList,i),
                     calculateTilePosY(DataManager.getInstance().staticMapDataList,i));
             pGameScene.attachChild(tiles[i]);
+        }
+
+        ArrayList<ItemData> itemDataList = DataManager.getInstance().itemDataList;
+        for(int i=0;i<itemDataList.size();i++){
+            CoinItem item = new CoinItem(itemDataList.get(i).getPosX(),itemDataList.get(i).getPosY(),
+                    ResourceManager.getInstance().gfxTextureRegionHashMap.get(itemDataList.get(i).getId()),
+                    ResourceManager.getInstance().vbom);
+            pGameScene.attachChild(item);
         }
     }
 

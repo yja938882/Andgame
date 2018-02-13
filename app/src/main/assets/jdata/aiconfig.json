@@ -5,7 +5,7 @@
       "id":"rat",
       "data":
       {
-        "body":"vertices",     "body_vx":[-32,-32,-16,16,32,32,16,-16],"body_vy":[-16,16,32,32,16,-16,-32,-32],
+        "body":"vertices",     "body_vx":[-32,-32,-16,16,32,32,16,-16],"body_vy":[-8,8,16,16,8,-8,-16,-16],
         "foot":"circle",      "foot_vx":[0,8],"foot_vy":[0,8],
         "hp":3,
         "speed":10,     "jump":20,
@@ -188,6 +188,87 @@
         "col"                   : 1,
         "row"                   : 1,
         "add_id" :[]
+      }
+    }
+    ,
+    {
+      "id": "jumping_monster",
+      "data": {
+        "body": "vertices",
+        "body_vx": [-16,
+          -16,
+          -8,
+          8,
+          16,
+          16,
+          8,
+          -8
+        ],
+        "body_vy": [
+          -8,
+          8,
+          16,
+          16,
+          8,
+          -8,
+          -16,
+          -16
+        ],
+        "foot": "circle",
+        "foot_vx": [
+          0,
+          8
+        ],
+        "foot_vy": [
+          0,
+          8
+        ],
+        "hp": 3,
+        "speed": 10,
+        "jump": 20,
+        "lock": 3,
+        "movingFrameIndex": [
+          0
+        ],
+        "movingFrameDuration": [
+          25
+        ],
+        "movingLock": "none",
+        "attackFrameIndex": [
+          0
+        ],
+        "attackFrameDuration": [
+          25
+        ],
+        "attackLock": "soft",
+        "dieFrameIndex": [
+          0
+        ],
+        "dieFrameDuration": [
+          25
+        ],
+        "dieLock": "strong",
+        "beAttackedFrameIndex": [
+          0
+        ],
+        "beAttackedFrameDuration": [
+          50
+        ],
+        "beAttackedLock": "strong",
+        "jumpFrameIndex": [
+          1
+        ],
+        "jumpFrameDuration": [
+          50
+        ],
+        "jumpLock": "none",
+        "src": "jumping_monster.png",
+        "src_width": 256,
+        "src_height": 128,
+        "row": 1,
+        "col": 2,
+        "scale": 0.5,
+        "add_id": []
       }
     }
   ]

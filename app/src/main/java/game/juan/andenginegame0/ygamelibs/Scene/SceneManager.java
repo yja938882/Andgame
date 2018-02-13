@@ -74,8 +74,9 @@ public class SceneManager {
     }
     public void setDialogScene(BaseScene scene){
         currentScene.setChildScene(scene,false,true,true);
-
         currentDialog = scene;
+        //currentDialog.setPosition(0,0);
+        currentDialog.createScene();
     }
     public void disposeDialogScene(){
         currentScene.clearChildScene();
@@ -123,7 +124,8 @@ public class SceneManager {
     /*===Main Scene========*/
     void loadMainScene(){
         Log.d(TAG,"loadMainScene");
-        ResourceManager.getInstance().loadMainSceneGraphics();
+        //ResourceManager.getInstance().loadMainSceneGraphics();
+        ResourceManager.getInstance().loadMainScene();
         DataManager.getInstance().loadPlayerGameData();
     }
     void createMainScene(){

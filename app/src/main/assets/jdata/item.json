@@ -2,6 +2,17 @@
   "items":
   [
     {
+      "id": "eatable_coin",
+      "sell": "no",
+      "data":
+      {
+        "type":"dynamic",
+        "src" :"coins.png","src_width" : 128, "src_height" :16,
+        "scale":1, "row":1, "col":8
+      }
+    }
+    ,
+    {
       "id":"boomerang",
       "sell":"yes",
       "data":
@@ -9,9 +20,13 @@
         "type":"throwing",
         "src":"boomerang.png" , "src_width": 128, "src_height":64,
         "scale":1,"row":1,"col":1,
-        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+        "body"  : "circle",    "body_vx":[10,10,32,32],"body_vy":[16,32,32,16],
         "durability":3,
         "shop_width":32, "shop_height":16,
+        "angle_velocity"        : 20,
+        "shoot_gravity"         : 0,
+        "shoot_vx"              : 15,
+        "shoot_vy" : 0,
         "price":1000
       }
     },

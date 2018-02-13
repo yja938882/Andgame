@@ -53,7 +53,7 @@ public abstract class DataBlock implements ConstantsSet.Classify {
     public static final int ATK_OBS_CLASS = ENTITY|OBSTACLE|ATTACK_OBSTACLE;
     public static final int INPASS_OBS_CLASS=ENTITY|OBSTACLE|INPASSABLE_OBSTACLE;
     public static final int PASS_OBS_CLASS=ENTITY|OBSTACLE|PASSABLE_OBSTACLE;
-
+    public static final int ITEM_CLASS = DYNAMIC|ITEM;
     /*===Fields====================*/
     private int mClassifyData = 0x00000000;
     private float posX;

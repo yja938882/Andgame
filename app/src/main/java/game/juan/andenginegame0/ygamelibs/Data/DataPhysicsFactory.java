@@ -33,7 +33,7 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
             case ENTITY|UNIT|PLAYER|BODY:
                 category = PLAYER_BODY_CATG_BITS;
                 mask = PLAYER_BODY_MASK_BITS;
-                friction = FRICTION_ZERO;
+                friction = 0f;
                 break;
             case ENTITY|UNIT|PLAYER|FOOT:
                 category = PLAYER_FOOT_CATG_BITS;
@@ -43,7 +43,6 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
             case ENTITY|UNIT|AI|BODY:
                 category = AI_BODY_CATG_BITS;
                 mask = AI_BODY_MASK_BITS;
-                elasticity = 0.5f;
                  break;
             case ENTITY|UNIT|AI|FOOT:
                 category = AI_FOOT_CATG_BITS;

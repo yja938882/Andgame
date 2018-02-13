@@ -25,10 +25,15 @@ public class Algorithm {
     public static boolean CheckCircleCollision(Body bodyA, Vector2 anchorA,float rA,
                                         Body bodyB,Vector2 anchorB ,float rB){
         Vector2 cA = bodyA.getWorldCenter().
-                mul(32f).add(anchorA.x*(float)Math.cos(bodyA.getAngle()),anchorA.y*(float)Math.sin(bodyA.getAngle()));
+                mul(32f).add(anchorA.x*(float)Math.cos(bodyA.getAngle()),anchorA.x*(float)Math.sin(bodyA.getAngle()));
         Vector2 cB = bodyB.getWorldCenter().
                 mul(32f).add(anchorB.x*(float)Math.cos(bodyB.getAngle()),anchorB.y*(float)Math.sin(bodyB.getAngle()));
         return Math.sqrt(Math.pow(cA.x - cB.x,2f)+Math.pow(cA.y-cB.y,2f)) <= (rA+rB);
+    }
+
+    public static boolean CheckCircleCollision(Vector2 posA,float rA, Body bodyB, float rB){
+        Vector2 cB = bodyB.getWorldCenter().mul(32f);
+        return Math.sqrt(Math.pow(posA.x - cB.x,2f)+Math.pow(posA.y- cB.y,2f)) <= (rA + rB);
     }
 
     public static boolean CheckCircleCollision(Body bodyA, float rA,

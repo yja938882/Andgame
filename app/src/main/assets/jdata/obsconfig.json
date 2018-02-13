@@ -169,7 +169,7 @@
       "data":
       {
         "body"  : "vertices",   "body_vx":[-96,-96,96,96],"body_vy":[-32,32,32,-32],
-        "src"                   :"temp_ground0.png",
+        "src"                   :"steal_moving_ground.png",
         "src_width"             : 192,
         "src_height"            : 64,
         "scale"                 : 1,

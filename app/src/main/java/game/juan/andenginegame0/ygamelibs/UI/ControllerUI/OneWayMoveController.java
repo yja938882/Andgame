@@ -33,7 +33,7 @@ public class OneWayMoveController extends Controller{
             }else {
                 EntityManager.getInstance().playerUnit.setAction(mAction);
             }
-                this.setAlpha(1.0f);
+            this.setAlpha(1.0f);
         }else{
            EntityManager.getInstance().playerUnit.setAction(Unit.ACTIVE_STOP);
             this.setAlpha(0.5f);

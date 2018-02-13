@@ -58,9 +58,11 @@ public class SplashScene extends BaseScene {
 
 
     private Text touchToStartText; //"Touch To Start ..." 텍스트
-    private boolean loadingFinished = false; //로딩 상태
+
 
     private AutoParallaxBackground autoParallaxBackgroundBack;
+    ParallaxBackground.ParallaxEntity layer0;
+    ParallaxBackground.ParallaxEntity layer1;
 
     private BatchedSpriteParticleSystem movingParticleSystem;
     private PointParticleEmitter movingParticleEmitter;
@@ -73,20 +75,18 @@ public class SplashScene extends BaseScene {
         splashLayer0 = new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("layer0"),ResourceManager.getInstance().vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-
-                if(loadingFinished && !disposScene) {
-                    Log.d(TAG,"loading finished :"+loadingFinished +" disposeScene :"+disposScene);
-                    movingParticleSystem.setParticlesSpawnEnabled(false);
-                    disposScene= true;
+                if(pSceneTouchEvent.isActionDown()){
+                    SceneManager.getInstance().loadMainScene();
                     SceneManager.getInstance().createMainScene();
                     SceneManager.getInstance().disposeSplashScene();
+
                 }
                 return false;
             }
         };
         splashLayer1 = new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("layer1")/*ResourceManager.getInstance().splashLayer1Region*/,ResourceManager.getInstance().vbom);
-        ParallaxBackground.ParallaxEntity layer0 = new ParallaxBackground.ParallaxEntity(-2f,splashLayer0);
-        ParallaxBackground.ParallaxEntity layer1 = new ParallaxBackground.ParallaxEntity(-4f,splashLayer1);
+        layer0 = new ParallaxBackground.ParallaxEntity(-2f,splashLayer0);
+        layer1 = new ParallaxBackground.ParallaxEntity(-4f,splashLayer1);
         autoParallaxBackgroundBack.attachParallaxEntity(layer0);
         autoParallaxBackgroundBack.attachParallaxEntity(layer1);
         setBackground(autoParallaxBackgroundBack);
@@ -146,20 +146,6 @@ public class SplashScene extends BaseScene {
                 ,130,ResourceManager.getInstance().gfxTextureRegionHashMap.get("title")/*ResourceManager.getInstance().titleRegion*/,ResourceManager.getInstance().vbom);
         this.attachChild(titleSprite);
 
-
-        this.registerUpdateHandler(new IUpdateHandler() {
-            @Override
-            public void onUpdate(float pSecondsElapsed) {
-                SceneManager.getInstance().loadMainScene(); //MainScene 로딩
-                unregisterUpdateHandler(this);
-                loadingFinished(); //MainScene 로딩 완료
-            }
-
-            @Override
-            public void reset() {
-
-            }
-        });
         this.registerTouchArea(splashLayer0);
 
     }
@@ -176,7 +162,10 @@ public class SplashScene extends BaseScene {
 
     @Override
     public void disposeScene() {
-       // splashSprite.detachSelf();
+        autoParallaxBackgroundBack.detachParallaxEntity(layer0);
+        autoParallaxBackgroundBack.detachParallaxEntity(layer1);
+        autoParallaxBackgroundBack.clearBackgroundModifiers();
+
         unregisterTouchArea(splashLayer0);
         splashLayer0.detachSelf();
         splashLayer0.dispose();
@@ -184,7 +173,6 @@ public class SplashScene extends BaseScene {
         splashLayer1.detachSelf();
         splashLayer1.dispose();
 
-        //this.unregisterTouchArea(this.);
         splashLayer2.detachSelf();
         splashLayer2.dispose();
 
@@ -204,16 +192,15 @@ public class SplashScene extends BaseScene {
         moonSprite.detachSelf();
         moonSprite.dispose();
 
-
-        touchToStartText.detachSelf();
-        touchToStartText.dispose();
+        movingParticleSystem.detachSelf();
+        movingParticleSystem.dispose();
 
         this.detachSelf();
         this.dispose();
     }
 
     private void loadingFinished(){
-        loadingFinished = true;
+
         touchToStartText =new Text(CAMERA_WIDTH/2,/*530*/500,resourcesManager.mainFont,"Touch to Start...",vbom);
         touchToStartText.setAlpha(2f);
         touchToStartText.setX(touchToStartText.getX()-touchToStartText.getWidth()/2);

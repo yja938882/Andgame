@@ -84,8 +84,6 @@ public class Tile extends DynamicSpriteBatch {
 
         right.setPosition(RIGHT_END,0);
         while((pos[frontPosIndex].x>=LEFT_END) && (frontPosIndex>0)){
-          //  Log.d("DEBUG_TEST","pos f :"+frontPosIndex+", pos e :"+endPosIndex+" posl :"+pos.length+"max t :"+maxTileSize+" et :"+endTileIndex);
-
             frontPosIndex--;
             frontTileIndex--;
             if(frontTileIndex<0){
@@ -98,12 +96,8 @@ public class Tile extends DynamicSpriteBatch {
             if(endTileIndex<0){
                 endTileIndex = maxTileSize-1;
             }
-
-
-
         }
         while((pos[endPosIndex].x<=RIGHT_END) && (endPosIndex <pos.length-1)){
-            Log.d("RIGHT END","ep :"+endPosIndex);
             endPosIndex++;
             endTileIndex++;
             if(endTileIndex>=maxTileSize){

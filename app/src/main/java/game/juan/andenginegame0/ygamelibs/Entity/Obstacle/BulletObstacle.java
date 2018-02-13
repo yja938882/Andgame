@@ -3,6 +3,7 @@ package game.juan.andenginegame0.ygamelibs.Entity.Obstacle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.json.JSONArray;
@@ -11,6 +12,7 @@ import org.json.JSONObject;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Entity.GameEntity;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
+import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 
 /**
  * Created by juan on 2017. 11. 25..
@@ -51,6 +53,8 @@ public class BulletObstacle extends GameEntity{
     private Vector2 bodyShape[];
     private int bodySType;
 
+
+
     /*===Constructor======================*/
     public BulletObstacle(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
@@ -64,6 +68,7 @@ public class BulletObstacle extends GameEntity{
             createCircleBody(pGameScene,0,pDataBlock,bodyShape, BodyDef.BodyType.DynamicBody);
         }
         this.getBody(0).setFixedRotation(true);
+        //additionSprite = new Sprite()
     }
 
     /*===Setup============================*/
@@ -157,7 +162,6 @@ public class BulletObstacle extends GameEntity{
             for(long du : hitFrameDuration){
                 lockLimit+=((float)du)/1000f;
             }
-           // setActionLock(0,lockLimit);
 
             setTimeLimit((float)pConfigData.getDouble("idle_time"),(float)pConfigData.getDouble("working_time"));
 
@@ -185,6 +189,8 @@ public class BulletObstacle extends GameEntity{
                     new Vector2((float)aforce.getDouble(0), (float)aforce.getDouble(1)));
             float scale = (float)pConfigData.getDouble("scale");
             this.setScale(scale);
+
+
         }catch (Exception e){
             e.printStackTrace();
         }

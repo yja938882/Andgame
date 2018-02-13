@@ -38,8 +38,9 @@ public class AiFactory implements ConstantsSet.EntityType{
             case MOVING_AI:
                 return createMoving_Ai(pGameScene,ResourceManager.getInstance().gfxTextureRegionHashMap.get(id),pAiData);
             case SHOOTING_AI:
-                break;
-
+                return null;
+            case JUMPING_AI:
+                return createJumping_Ai(pGameScene,ResourceManager.getInstance().gfxTextureRegionHashMap.get(id),pAiData);
         }
         return null;
     }
@@ -73,6 +74,18 @@ public class AiFactory implements ConstantsSet.EntityType{
 
 
       //  aiUnit.createAi(pGameScene,pDataBlock);
+        aiUnit.setActive(true);
+        pGameScene.attachChild(aiUnit);
+
+        return aiUnit;
+    }
+    private static AiUnit createJumping_Ai(GameScene pGameScene,  ITiledTextureRegion iTiledTextureRegion, DataBlock pDataBlock){
+
+        final JumpAi aiUnit = new JumpAi(pDataBlock.getPosX(),pDataBlock.getPosY(),
+                iTiledTextureRegion, ResourceManager.getInstance().vbom);
+        aiUnit.setScale(0.7f);
+        aiUnit.setConfigData(DataManager.getInstance().configHashSet.get(pDataBlock.getId()));
+        aiUnit.createAi(pGameScene,pDataBlock);
         aiUnit.setActive(true);
         pGameScene.attachChild(aiUnit);
 

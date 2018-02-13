@@ -25,18 +25,21 @@ import org.andengine.entity.particle.modifier.AlphaParticleModifier;
 import org.andengine.entity.particle.modifier.ExpireParticleInitializer;
 import org.andengine.entity.particle.modifier.RotationParticleModifier;
 import org.andengine.entity.particle.modifier.ScaleParticleModifier;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.UncoloredSprite;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.util.color.Color;
 import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Weapon;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
+import game.juan.andenginegame0.ygamelibs.Scene.SceneManager;
 import game.juan.andenginegame0.ygamelibs.UI.UIManager;
 
 import static android.content.Context.VIBRATOR_SERVICE;
@@ -60,6 +63,7 @@ public class PlayerUnit extends Unit {
     private static final int ATTACK_LOCK = 0;
     private static final int ATTACKED_LOCK = 1;
 
+    Rectangle r;
 
     /*===Fields===============================*/
 
@@ -90,18 +94,22 @@ public class PlayerUnit extends Unit {
     private boolean invinsible = false;
 
     private Vibrator vibrator;
-
+    private float TEST = 100f;
     /*===Constructor===========================*/
 
     public PlayerUnit(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
         vibrator = (Vibrator) (ResourceManager.getInstance().gameActivity.getSystemService(VIBRATOR_SERVICE));
         jumpDelay = 0.5f;
+        r = new Rectangle(0,0,20,20,ResourceManager.getInstance().vbom);
+
+    }
+    public Rectangle getR(){
+        return this.r;
     }
 
     /*===상태 관리============*/
     protected void onManageState(float pSecondsElapsed) {
-       // attackedParticleSystem.setPosition(getX()-CAMERA_WIDTH/2,getY()-CAMERA_HEIGHT/2);
         attackedParticleEmitter.setCenter(getX()+100,getY()-300);
         if(invincible){
             invincibleTimeLimit-=pSecondsElapsed;
@@ -113,6 +121,10 @@ public class PlayerUnit extends Unit {
 
         }
         super.onManageState(pSecondsElapsed);
+
+        this.r.setPosition(
+                getHandBody().getPosition().x*32f + TEST*(float)Math.cos(getHandBody().getAngle()),
+                getHandBody().getPosition().y*32f+TEST*(float)Math.sin(getHandBody().getAngle()));
 
     }
 
@@ -185,15 +197,14 @@ public class PlayerUnit extends Unit {
     /*===자의적 행동============*/
     @Override
     protected void onActiveStop() {
-        if (!isInTheAir) {
+        if (!isInTheAir&&!isJumpLock) {
+            Log.d(TAG,"ONActive Stop");
             getBody(FOOT).setAngularVelocity(0);
             if(idleFrameIndex[0]<=getCurrentTileIndex() && idleFrameIndex[idleFrameIndex.length-1]>=getCurrentTileIndex()){
 
             }else{
                 animate(idleFrameDuration,idleFrameIndex,true);
             }
-
-
             emitMovingParticle(false);
         }
     }
@@ -222,6 +233,7 @@ public class PlayerUnit extends Unit {
             shoulderJoint.setMotorSpeed(-10f);
             shoulderJoint.setLimits(RIGHT_HAND_LOWER_LIMIT, RIGHT_HAND_UPPER_LIMIT);
         }
+        TEST = 100f;
     }
 
     @Override
@@ -248,18 +260,23 @@ public class PlayerUnit extends Unit {
             shoulderJoint.setMotorSpeed(10f);
             shoulderJoint.setLimits(LEFT_HAND_LOWER_LIMIT, LEFT_HAND_UPPER_LIMIT);
         }
+        TEST = ( -100f);
     }
 
     @Override
     protected void onActiveJump() {
+        Log.d(TAG,"onActiveJump");
         if (isJumpLock)
             return;
         if (!isInTheAir) {
+            Log.d(TAG,"onActiveJump - isOnGround");
             isJumpLock = true;
             applyLinearImpulse(BODY, JUMP_FORCE);
             animate(jumpFrameDuration, jumpFrameIndex, true);
         } else {
+            Log.d(TAG,"onActiveJump - intheAir");
             if (!isAnimationRunning()) {
+                Log.d(TAG,"onActiveJump- animrunning");
                 animate(jumpFrameDuration, jumpFrameIndex, true);
             }
         }
@@ -406,7 +423,7 @@ public class PlayerUnit extends Unit {
         attackParticleSystem.addParticleInitializer(new AccelerationParticleInitializer<UncoloredSprite>(-20, 20, -20, 20));
         attackParticleSystem.addParticleInitializer(new ExpireParticleInitializer<UncoloredSprite>(0.3f));
         attackParticleSystem.addParticleInitializer(new ScaleParticleInitializer<UncoloredSprite>(0.5f, 1f));
-        attackParticleSystem.addParticleModifier(new ScaleParticleModifier<UncoloredSprite>(0f, 1f, 0.4f, 1.5f));
+       // attackParticleSystem.addParticleModifier(new ScaleParticleModifier<UncoloredSprite>(0f, 1f, 0.4f, 1.5f));
         attackParticleSystem.addParticleModifier(new AlphaParticleModifier<UncoloredSprite>(0, 0.5f, 1, 0f));
         pGameScene.attachChild(attackParticleSystem);
         attackParticleSystem.setParticlesSpawnEnabled(false);
@@ -537,7 +554,6 @@ public class PlayerUnit extends Unit {
     * @param int pSlotIndex 장착할 무기가 있는 slot 인덱스
     */
     public void equipWeapon(int pSlotIndex) {
-        Log.d("WTEST","equitWeapon");
         if(this.curItemIndex==pSlotIndex){
             return;
         }
@@ -581,8 +597,9 @@ public class PlayerUnit extends Unit {
     public void throwWeapon(){
         items[curItemIndex].pop();
         takeOffWeapon();
-
     }
-
+    public Vector2 getAttackingPos(){
+        return new Vector2(r.getX(),r.getY());
+    }
 
 }

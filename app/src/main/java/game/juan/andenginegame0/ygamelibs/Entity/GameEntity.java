@@ -33,8 +33,8 @@ public abstract class GameEntity extends AnimatedSprite{
     /*===Fields===============================*/
     private Body[] mBodies; // 물리 몸체 배열
     private boolean mActive = false;
-
     protected ActionLock[] mActionLocks; //액션 의 시작 , 끝 을 나타내는 Lock
+
 
     /*===Constructor===========================*/
     public GameEntity(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
@@ -50,6 +50,7 @@ public abstract class GameEntity extends AnimatedSprite{
         mBodies = new Body[pBodySize];
     }
 
+
     /* protected void createVerticesBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType)
     *  다각형 형태의 몸체 생성
     *  @param pGmeScene 의 길이 만큼 몸체 배열 생성
@@ -59,6 +60,9 @@ public abstract class GameEntity extends AnimatedSprite{
     *  @param pBodyType 몸체의 종류
     */
     protected void createVerticesBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType){
+
+
+
         final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
         mBodies[pBodyIndex] = PhysicsFactory.createTrianglulatedBody(pGameScene.getWorld(),
                 this,createBodyShape(pVertices),pBodyType,fixtureDef);
@@ -66,6 +70,7 @@ public abstract class GameEntity extends AnimatedSprite{
         if(pBodyIndex==0){
             pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(this, mBodies[0]));
         }
+     //   mBodies[pBodyIndex].setTransform(pDataBlock.getPosX()/32f,pDataBlock.getPosY()/32f,0f);
     }
 
     /* protected void createCircleBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType)
@@ -79,12 +84,18 @@ public abstract class GameEntity extends AnimatedSprite{
     protected void createCircleBody(GameScene pGameScene, int pBodyIndex , DataBlock pDataBlock, Vector2[] pVertices, BodyDef.BodyType pBodyType){
         final FixtureDef fixtureDef = DataPhysicsFactory.createFixtureDef(pDataBlock.getClassifyData());
         mBodies[pBodyIndex] = PhysicsFactory.createCircleBody(pGameScene.getWorld(),
-                pVertices[0].x,pVertices[0].y,pVertices[1].x,pBodyType,fixtureDef);
+                pVertices[0].x
+                ,pVertices[0].y
+                ,pVertices[1].x,pBodyType,fixtureDef);
         mBodies[pBodyIndex].setUserData(pDataBlock);
+
        // mBodies[pBodyIndex].se
         if(pBodyIndex==0){
             pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(this, mBodies[0]));
         }
+  //      mBodies[pBodyIndex].setTransform(pDataBlock.getPosX()/32f,pDataBlock.getPosY()/32f,0f);
+
+
     }
 
     /*==Overriding============================*/
@@ -107,11 +118,16 @@ public abstract class GameEntity extends AnimatedSprite{
         return this.mBodies[pIndex];
     }
     protected void transform(float pX, float pY){
-        mBodies[0].setTransform(pX/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,pY/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,0.0f);
+        for(int i=0;i<mBodies.length;i++){
+            mBodies[i].setTransform(pX/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,pY/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,0.0f);
+        }
     }
     protected void transformPhysically(float pX, float pY){
-        mBodies[0].setTransform(pX,pY,0.0f);
-    }
+        for(int i=0;i<mBodies.length;i++){
+            mBodies[i].setTransform(pX,pY,0.0f);
+        }
+
+     }
     protected DataBlock getDataBlock(int index){
         return (DataBlock)(mBodies[index].getUserData());
     }
@@ -138,6 +154,7 @@ public abstract class GameEntity extends AnimatedSprite{
 
         this.mActionLocks = new ActionLock[pSize];
     }
+
     /* protected void setupActionLock(final int index, int[] pFrameIndex, long[] pFrameDuration,final ActionLock actionLock)
     * @param index ActionLock 배열 내에 생성할 위치
     * @param pFrameDuration 해당 액션락 프레임 시간
@@ -151,16 +168,6 @@ public abstract class GameEntity extends AnimatedSprite{
         mActionLocks[index] = actionLock;
         mActionLocks[index].setMaxCount(lockLimit);
     }
-
-/*
-    protected boolean isLocked(){
-        for(ActionLock al:mActionLocks){
-            if(al.isLocked()) {
-                return true;
-            }
-        }
-        return false;
-    }*/
 
     /*===Abstract Method=======================*/
     public abstract void revive(float pPx, float pPy);

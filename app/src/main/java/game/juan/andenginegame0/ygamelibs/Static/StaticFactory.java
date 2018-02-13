@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Static;
 
+import android.util.Log;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -30,6 +32,8 @@ public class StaticFactory {
 
     public static Body createGroundBody(GameScene pGameScene , PhysicsWorld pWorld, StaticData pStaticData){
         final FixtureDef FIX = DataPhysicsFactory.createFixtureDef(pStaticData.getClassifyData());
+        Log.d("G FRIC ",""+FIX.friction);
+
         List<Vector2> UniqueBodyVertices = new ArrayList<Vector2>();
         UniqueBodyVertices.addAll((List<Vector2>) ListUtils.toList(pStaticData.getVertices()));
         List<Vector2> UniqueBodyVerticesTriangulated = new EarClippingTriangulator().computeTriangles(UniqueBodyVertices);

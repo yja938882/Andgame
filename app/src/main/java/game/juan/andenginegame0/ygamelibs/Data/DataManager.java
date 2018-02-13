@@ -18,6 +18,9 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import game.juan.andenginegame0.ygamelibs.Dynamics.EatableItem.EatableItem;
+import game.juan.andenginegame0.ygamelibs.Dynamics.EatableItem.ItemData;
+import game.juan.andenginegame0.ygamelibs.Entity.Objects.ObjectData;
 import game.juan.andenginegame0.ygamelibs.Entity.Obstacle.ObstacleData;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.AI.AiData;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerData;
@@ -59,6 +62,8 @@ public class DataManager implements ConstantsSet{
     public ArrayList<JSONObject> staticGFXJsonList; // 맵과 관련된 GFX 설정 데이터
     public ArrayList<JSONObject> aiGFXJsonList;     // Ai 와 관련된 GFX 설정 데이터
     public ArrayList<JSONObject> obstacleGFXJsonList;//Obstacle 과 관련된 GFX 설정 데이터
+    public ArrayList<JSONObject> itemGFXJsonList; // 아이템과 관련된 GFX 설정 데이터
+    public ArrayList<JSONObject> weaponGFXJsonList; //무기와 관련된 GFX  설정 데이터
 
     public HashMap<String, JSONObject> configHashSet; //설정 정보 Hash Map
 
@@ -67,7 +72,8 @@ public class DataManager implements ConstantsSet{
     public ArrayList<StaticData> staticMapDataList; // 맵정보 리스트
     public ArrayList<AiData> aiDataList;    //Ai 리스트
     public ArrayList<DisplayData> displayDataList; // 디스플레이 리스트
-    //public HashMap<String , ArrayList<DisplayData>()> displayDataListHashSet;
+    public ArrayList<ItemData> itemDataList; // 아이템 리스트
+    public ArrayList<ObjectData> weaponDataList; //무기 데이터 리스트
 
     /* 스테이지를 구성하는데 필요한 데이터 로딩
     * @param pTheme
@@ -82,12 +88,15 @@ public class DataManager implements ConstantsSet{
         staticGFXJsonList = new ArrayList<>();
         aiGFXJsonList = new ArrayList<>();
         obstacleGFXJsonList = new ArrayList<>();
-
+        itemGFXJsonList = new ArrayList<>();
+        weaponGFXJsonList = new ArrayList<>();
 
         staticMapDataList = new ArrayList<>();
         obstacleDataList = new ArrayList<>();
         aiDataList = new ArrayList<>();
         displayDataList = new ArrayList<>();
+        itemDataList = new ArrayList<>();
+        weaponDataList = new ArrayList<>();
 
         configHashSet = new HashMap<>();
         HashSet<String> tileSet = new HashSet<>(); // 맵 타일 이미지
@@ -97,6 +106,9 @@ public class DataManager implements ConstantsSet{
 
         HashSet<String> obsIdSet = new HashSet<>(); // OBS 에 관련한 id set
         HashSet<String> additional_obsIdSet = new HashSet<>(); // Obs 에 관련한 추가 id
+
+        HashSet<String> itemIDSet = new HashSet<>(); // 아이템에 관한 id set
+        HashSet<String> weaponIDSet = new HashSet<>(); // 무시에 관한 id Set
 
         SQLiteDatabase db = dbManager.getReadableDatabase();
         playerConfig= dbManager.getPlayerConfigJSON(db); // 플레이어 설정 정보 로드
@@ -145,6 +157,14 @@ public class DataManager implements ConstantsSet{
                         break;
                     case "display":
                         composeDisplayData(object);
+                        break;
+                    case "item":
+                        composeItemData(object);
+                        itemIDSet.add(object.getString("id"));
+                        break;
+                    case "weapon":
+                        composeWeaponData(object);
+                        weaponIDSet.add(object.getString("id"));
                         break;
                 }
             }
@@ -198,15 +218,35 @@ public class DataManager implements ConstantsSet{
             Iterator addObsid_iterator = additional_obsIdSet.iterator();
             while(addObsid_iterator.hasNext()){
                 String id = (String)addObsid_iterator.next();
+                Log.d("DDDDD","id :"+id);
                 JSONObject obsObject = dbManager.getObsJSON(db,id);
                 obsObject.put("id",id);
                 obstacleGFXJsonList.add(obsObject);
                 configHashSet.put(id,obsObject);
             }
+
+            Iterator item_iterator = itemIDSet.iterator();
+            while(item_iterator.hasNext()){
+                String id = (String)item_iterator.next();
+                JSONObject obsObject = dbManager.getItemJSON(db,id);
+                obsObject.put("id",id);
+                itemGFXJsonList.add(obsObject);
+                configHashSet.put(id,obsObject);
+            }
+            Iterator weapon_iterator = weaponIDSet.iterator();
+            while(weapon_iterator.hasNext()){
+                String id = (String)weapon_iterator.next();
+                JSONObject weaponObject = dbManager.getItemJSON(db,id);
+                weaponObject.put("id",id);
+                weaponGFXJsonList.add(weaponObject);
+                configHashSet.put(id,weaponObject);
+            }
+
             Iterator s = configHashSet.keySet().iterator();
             while(s.hasNext()){
                 Log.d("HASH",(String)s.next());
             }
+
 
         }catch (Exception e){
             e.printStackTrace();
@@ -272,7 +312,7 @@ public class DataManager implements ConstantsSet{
                     vType = EntityType.OBS_TEMP_GROUND;
                     break;
                 case "obs_moving_wall":
-                    vClass = DataBlock.PLAYER_FOOT_CLASS;
+                    vClass = DataBlock.ATK_OBS_CLASS;
                     vType = EntityType.OBS_MOVING_WALL;
                     break;
             }
@@ -300,16 +340,17 @@ public class DataManager implements ConstantsSet{
             for (int j = 0; j < data.length; j++) {
                 data[j] = (float) dataJSONArray.getDouble(j);
             }
-            int vClass = 0;
+            int vClass = DataBlock.AI_BODY_CLASS;
             int vType = 0;
             switch (object.getString("type")) {
                 case "ai_moving":
-                    vClass = DataBlock.AI_BODY_CLASS;
                     vType = EntityType.MOVING_AI;
                     break;
                 case "ai_shooting":
-                    vClass = DataBlock.AI_BODY_CLASS;
                     vType = EntityType.SHOOTING_AI;
+                    break;
+                case "ai_jumping":
+                    vType = EntityType.JUMPING_AI;
                     break;
             }
             final AiData aiData = new AiData(vClass, vType, object.getInt("x"), object.getInt("y"),object.getString("id"));
@@ -327,10 +368,25 @@ public class DataManager implements ConstantsSet{
             }
             aiData.setCmd(cmd_list,cmd_du);
 
-
             aiDataList.add(aiData);
-                }catch(Exception e){
-                e.printStackTrace();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    private void composeItemData(JSONObject object){
+        try{
+            final ItemData itemData = new ItemData(DataBlock.ITEM_CLASS,0,object.getInt("x"),object.getInt("y"),object.getString("id"));
+            itemDataList.add(itemData);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    private void composeWeaponData(JSONObject object){
+        try{
+            final ObjectData objectData = new ObjectData(DataBlock.ITEM_CLASS,0,object.getInt("x"),object.getInt("y"),object.getString("id"));
+            weaponDataList.add(objectData);
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

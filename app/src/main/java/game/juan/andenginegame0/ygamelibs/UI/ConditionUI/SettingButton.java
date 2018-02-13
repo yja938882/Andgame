@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
+import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
@@ -15,7 +16,10 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import game.juan.andenginegame0.ygamelibs.Dialogs.GamePauseDialog;
 import game.juan.andenginegame0.ygamelibs.Dialogs.GameSettingDialog;
+import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
+import game.juan.andenginegame0.ygamelibs.Scene.SceneManager;
 
 /**
  * Created by juan on 2017. 9. 26..
@@ -31,16 +35,26 @@ public class SettingButton extends Sprite {
     public void setup(Scene scene, BaseGameActivity activity){
         this.scene = scene;
         this.activity = activity;
+
     }
+
+    GamePauseDialog gamePauseDialog;
 
     @Override
     public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y)
     {
         if (pSceneTouchEvent.isActionDown()) {
             if(!isPaused) {
-                scene.setIgnoreUpdate(true);
+                //scene.setIgnoreUpdate(true);
                 isPaused = true;
-                activity.runOnUiThread(new Runnable() {
+                gamePauseDialog = new GamePauseDialog();
+                gamePauseDialog.setBackgroundEnabled(false);
+                SceneManager.getInstance().setDialogScene(gamePauseDialog);
+                HUD hud = new HUD();
+                hud.setChildScene(gamePauseDialog);
+                ((GameScene)(SceneManager.getInstance().getCurrentScene())).getCamera().setHUD(hud);
+                //SceneManager.getInstance().getCurrentScene().get
+              /*  activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         final GameSettingDialog settingDialog = new GameSettingDialog(activity);
@@ -69,7 +83,7 @@ public class SettingButton extends Sprite {
 
                         settingDialog.show();
                     }
-                });
+                });*/
             }
         }
         return true;
