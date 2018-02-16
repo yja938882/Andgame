@@ -39,9 +39,7 @@ public class ThrowingWeapon extends Weapon {
     @Override
     public void use(Vector2 pSrc, int pWay) {
 
-        //EntityManager.getInstance().playerUnit.resetEquipWeapon();
         EntityManager.getInstance().playerUnit.throwWeapon();
-       // EntityManager.getInstance().playerUnit.deleteItem();
         this.unpick();
         Body body = this.getBody(0);
 

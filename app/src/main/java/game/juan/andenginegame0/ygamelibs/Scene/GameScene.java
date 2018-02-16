@@ -12,6 +12,7 @@ import org.andengine.util.color.Color;
 
 import debugdraw.DebugRenderer;
 import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
+import game.juan.andenginegame0.ygamelibs.SoundManager;
 import game.juan.andenginegame0.ygamelibs.Static.StaticManager;
 import game.juan.andenginegame0.ygamelibs.UI.UIManager;
 import game.juan.andenginegame0.ygamelibs.World.HorizontalWorld;
@@ -69,10 +70,16 @@ public class GameScene extends BaseScene {
         this.camera = ResourceManager.getInstance().camera;
         this.camera.setBoundsEnabled(true);
         this.registerUpdateHandler(world.getWorld());
+
+        SoundManager.getInstance().prepareManager(engine,gameActivity,camera,vbom);
+        SoundManager.getInstance().load();
+
         UIManager.getInstance().createOnGame(this);
         EntityManager.getInstance().createOnGame(this);
         StaticManager.getInstance().createOnGame(this);
 
+
+        this.sortChildren();
         //For debugging
        // DebugRenderer dr = new DebugRenderer(world.getWorld(),vbom);
        // dr.setColor(Color.BLUE);

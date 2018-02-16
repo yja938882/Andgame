@@ -43,7 +43,7 @@ public interface ConstantsSet {
     interface Physics{
         /*=== Density & Friction =================*/
         float DENSITY_UNIT = 1.0f;
-        float FRICTION_UNIT=1.0f;
+        float FRICTION_UNIT=3.0f;
         float FRICTION_ZERO=0.0f;
         float DENSITY_ITEM = 0.5f;
         /*===Category Bits========================*/

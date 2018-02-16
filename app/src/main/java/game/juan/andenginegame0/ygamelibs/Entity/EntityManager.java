@@ -96,7 +96,9 @@ public class EntityManager implements ConstantsSet.Classify {
 
     private void createPlayerUnit(GameScene pGameScene){
         Log.d(TAG,"createPlayerUnit");
-        playerUnit = new PlayerUnit(50,400, ResourceManager.getInstance().gfxTextureRegionHashMap.get("player"),
+        playerUnit = new PlayerUnit(DataManager.getInstance().playerStartX,
+                DataManager.getInstance().playerStartY,
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("player"),
                 ResourceManager.getInstance().vbom);
         PlayerData pd = new PlayerData(DataBlock.PLAYER_BODY_CLASS, ConstantsSet.EntityType.PLAYER,(int)(50f/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),((int)(50/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT)));
         playerUnit.setConfigData(DataManager.getInstance().playerConfig);
@@ -106,20 +108,18 @@ public class EntityManager implements ConstantsSet.Classify {
         playerUnit.createPlayer(pGameScene,pd);
         playerUnit.setActive(true);
         playerUnit.createItemSlot();
-        for(int i=0;i<DataManager.getInstance().bagItemList.size();i++){
+/*        for(int i=0;i<DataManager.getInstance().bagItemList.size();i++){
             try{
                 NearWeapon weapon = new NearWeapon(100,500,ResourceManager.getInstance().gfxTextureRegionHashMap.get(DataManager.getInstance().bagItemList.get(i).getString("id")),ResourceManager.getInstance().vbom);
                 weapon.setConfigData(DataManager.getInstance().bagItemList.get(i));
-                //Log.d("TTTTT",DataManager.getInstance().playerBulletConfigs[0].toString());
                 weapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));
                 weapon.setVisible(true);
                 weapon.transformPhysically(100f/32f,580f/32f);
                 playerUnit.items[i].put(weapon);
-                //pGameScene.attachChild(weapon);
             }catch (Exception e){
                 e.printStackTrace();
             }
-        }
+        }*/
         pGameScene.attachChild(playerUnit);
         pGameScene.attachChild(playerUnit.getR());
 
@@ -128,7 +128,6 @@ public class EntityManager implements ConstantsSet.Classify {
         try{
             NearWeapon weapon = new NearWeapon(100,500,ResourceManager.getInstance().gfxTextureRegionHashMap.get(DataManager.getInstance().bagItemList.get(0).getString("id")),ResourceManager.getInstance().vbom);
              weapon.setConfigData(DataManager.getInstance().bagItemList.get(0));
-            //Log.d("TTTTT",DataManager.getInstance().playerBulletConfigs[0].toString());
             weapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));
             weapon.setVisible(true);
             weapon.transformPhysically(100f/32f,580f/32f);
@@ -136,19 +135,6 @@ public class EntityManager implements ConstantsSet.Classify {
         }catch (Exception e){
             e.printStackTrace();
         }
-        //     ThrowingWeapon weapon = new ThrowingWeap on(100,400,ResourceManager.getInstance().playerBulletRegion,ResourceManager.getInstance().vbom);
-
-
-        /*
-        ThrowingWeapon tweapon = new ThrowingWeapon(100,500,ResourceManager.getInstance().itemInGameHashMap.get("nipper"),ResourceManager.getInstance().vbom);
-      //  tweapon.setConfigData(DataManager.getInstance().playerBulletConfigs[1]);
-        tweapon.create(pGameScene,new PlayerWeaponData(DataBlock.PLAYER_BLT_CLASS, ConstantsSet.Classify.BULLET,0,0));
-        tweapon.setVisible(true);
-        tweapon.transformPhysically(180f/32f,580f/32f);
-        pGameScene.attachChild(tweapon);*/
-
-
-
 
     }
     private void createWeapon(GameScene pGameScene, ArrayList<ObjectData> objectData){
@@ -203,20 +189,19 @@ public class EntityManager implements ConstantsSet.Classify {
         final EntityList entityList[] = new EntityList[id_size];
         for(int i=0;i<id_size;i++){
             ArrayList<AiData> aiDataList = hashMap.get(idList.get(i));
-           // int entityListSize = Algorithm.calculateMaxAiInCam(aiDataList);
-            int entityListSize = 2;
+            int entityListSize = Algorithm.calculateMaxAiInCam(aiDataList);
             entityList[i] = new EntityList(pGameScene,entityListSize,aiDataList.size()- entityListSize) {
                 @Override
                 public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
                    // if(pGameEntity.getBody(0).getPosition().x<playerUnit.getBody(0).getPosition().x){
                      //   return true;
-                    //}
+                   // }
                     return false;
                 }
 
                 @Override
                 public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
-                    return false;
+                    return true;
                 }
             };
 
@@ -299,39 +284,6 @@ public class EntityManager implements ConstantsSet.Classify {
         }
         mObstacleList.ready();
 
-    }
-    private EntityList createAiList(GameScene pGameScene, int pEntityListSize,int pPosSize ){
-        if(pEntityListSize<=0)
-            return null;
-        return new EntityList(pGameScene,pEntityListSize,pPosSize) {
-            @Override
-            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
-                return false;
-            }
-
-            @Override
-            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
-                return false;
-            }
-        };
-    }
-    private EntityList createObsList(GameScene pGameScene, int pEntityListSize,int pPosSize){
-        if(pEntityListSize<=0) {
-            Log.d("TTTTTTTT","NULL!!!!");
-            return null;
-        }
-        Log.d("TTTTTTTT","NO NULL!!!!");
-        return new EntityList(pGameScene,pEntityListSize,pPosSize) {
-            @Override
-            public boolean reviveRule(GameScene pGameScene, GameEntity pGameEntity) {
-                return false;
-            }
-
-            @Override
-            public boolean activeRule(GameScene pGameScene, GameEntity pGameEntity) {
-                return false;
-            }
-        };
     }
 
     public static EntityManager getInstance(){

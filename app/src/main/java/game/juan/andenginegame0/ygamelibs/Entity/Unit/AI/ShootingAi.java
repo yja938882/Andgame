@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
+import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Bullet;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Weapon;
 
 /**
@@ -12,7 +13,8 @@ import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Weapon;
  */
 
 public class ShootingAi extends  AiUnit {
-    private Weapon mWeapon;
+    Bullet bullet;
+    Vector2 POWER = new Vector2();
     public ShootingAi(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
@@ -29,12 +31,29 @@ public class ShootingAi extends  AiUnit {
 
     @Override
     protected void onActiveMoveRight() {
-
+        this.setFlippedHorizontal(false);
+        getBody(FOOT).setAngularVelocity(30f);
+        if (isInTheAir) {
+            if (!isAnimationRunning())
+                animate(jumpFrameDuration, jumpFrameIndex, true);
+        } else {
+            if (!isAnimationRunning())
+                animate(movingFrameDuration, movingFrameIndex, true);
+        }
     }
 
     @Override
     protected void onActiveMoveLeft() {
-
+        this.setFlippedHorizontal(true);
+        if (isInTheAir) {
+            if (!isAnimationRunning()) {
+                animate(jumpFrameDuration, jumpFrameIndex, true);
+            }
+        } else {
+            if (!isAnimationRunning()) {
+                animate(movingFrameDuration, movingFrameIndex, true);
+            }
+        }
     }
 
     @Override
@@ -49,12 +68,21 @@ public class ShootingAi extends  AiUnit {
 
     @Override
     protected void onActiveAttack() {
+        //  takeOffWeapon();
+        animate(attackFrameDuration,attackFrameIndex,false);
+        this.getBody(0).setAngularVelocity(0);
+        if(this.isFlippedHorizontal()){
+            POWER.set(-7,0);
+        }else{
+            POWER.set(7,0);
+        }
+        this.bullet.shot(this.getBody(0).getWorldCenter(),POWER);
+
 
     }
 
-
-    public void setWeapon(Weapon weapon){
-        this.mWeapon = weapon;
+    public void setBullet(Bullet bullet){
+        this.bullet = bullet;
     }
 /*
     @Override

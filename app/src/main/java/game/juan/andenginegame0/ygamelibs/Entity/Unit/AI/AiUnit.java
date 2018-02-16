@@ -18,6 +18,7 @@ import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerData;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.Unit;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
+import game.juan.andenginegame0.ygamelibs.UI.AiHealthBar;
 import game.juan.andenginegame0.ygamelibs.Util.Algorithm;
 
 /**
@@ -42,9 +43,11 @@ public abstract class AiUnit extends Unit {
 
     private int hp;
 
+    AiHealthBar hpBar;
 
     public AiUnit(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
+        hpBar = new AiHealthBar(pX,pY,50,10,pVertexBufferObjectManager);
     }
 
 
@@ -63,7 +66,6 @@ public abstract class AiUnit extends Unit {
             if(al.isLocked()){
                 return;
             }
-
         }
         super.onManageActiveAction(active);
     }
@@ -88,6 +90,7 @@ public abstract class AiUnit extends Unit {
         mActive = Unit.ACTIVE_STOP;
         mPassive = Unit.PASSIVE_NONE;
         hp--;
+        hpBar.decreaseHp(1);
         if(hp<=0){
             Log.d("AI_LIVE","die");
             setAlive(false);
@@ -121,6 +124,11 @@ public abstract class AiUnit extends Unit {
         createUnit(pGameScene,aiData,new AiData(DataBlock.PLAYER_FOOT_CLASS,pDataBlock.getType(),(int)(pDataBlock.getPosX()),(int)pDataBlock.getPosY()));
         this.mCmdDuList = ( (AiData)pDataBlock).getCmdDu();
         this.mCmdList = ((AiData)pDataBlock).getCmdList();
+        pGameScene.attachChild(this.hpBar);
+        pGameScene.attachChild(this.hpBar.getHpBar());
+        this.hpBar.setZIndex(10);
+        this.hpBar.getHpBar().setZIndex(10);
+
     }
 
 
@@ -128,7 +136,6 @@ public abstract class AiUnit extends Unit {
     protected void onManagedUpdate(float pSecondsElapsed) {
         updateCmd(pSecondsElapsed);
         PlayerUnit playerUnit = EntityManager.getInstance().playerUnit;
-
 
         if(Algorithm.CheckCircleCollision(
                 playerUnit.getAttackingPos(),10f,this.getBody(0),32f)&&
@@ -154,6 +161,7 @@ public abstract class AiUnit extends Unit {
                 Log.d("HITEST","unset invinsible");
             }
         }
+        this.hpBar.setPosition(this.getX(),this.getY()+this.getHeight());
     }
 
     public void updateCmd(float pSecondsElapsed){
@@ -172,7 +180,7 @@ public abstract class AiUnit extends Unit {
 
         switch (mCmdList[mCmd]) {
             case CMD_ATTACK:
-                //setAction(ConstantsSet.UnitAction.ACTION_ATTACK);
+                onManageActiveAction(ACTIVE_ATTACK);
                 break;
                 case CMD_IDLE:
               //      setAction(ConstantsSet.UnitAction.ACTION_STOP);
@@ -189,6 +197,7 @@ public abstract class AiUnit extends Unit {
                     onManageActiveAction(ACTIVE_MOVE_RIGHT);
                    // setAction(ConstantsSet.UnitAction.ACTION_MOVE_RIGHT);
                     break;
+
             }
 
     }
@@ -196,8 +205,8 @@ public abstract class AiUnit extends Unit {
     public void setConfigData(JSONObject p){
         super.setConfigData(p);
         try {
-
-           // hp = p.getInt("hp");
+            hp = p.getInt("hp");
+            this.hpBar.init(hp);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -214,20 +223,11 @@ public abstract class AiUnit extends Unit {
     public void onBeAttackedEnd() {
         this.mPassive = PASSIVE_NONE;
         this.mActive = Unit.ACTIVE_STOP;
-        Log.d("HITEST","be end");
-    }
-
-
-    public void beAttackedFinished() {
-        Log.d("TEMP!!_DEBUG","be attacked finished "+hp);
-     //   setAction(ConstantsSet.UnitAction.ACTION_STOP);
-
     }
 
 
     public void dieFinished() {
         if(!isAlive()){
-            //transformPhysically(getBody(0).getPosition().x,getBody(0).getPosition().y-1);
              setActive(false);
              stopAnimation();
              this.setVisible(false);
@@ -235,10 +235,5 @@ public abstract class AiUnit extends Unit {
     }
 
 
-
-
-   // private boolean isCollisionWithPlayer(){
-     //   return Algorithm.CheckCircleCollision()
-    //}
 
 }

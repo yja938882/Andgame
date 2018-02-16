@@ -3,11 +3,14 @@ package game.juan.andenginegame0.ygamelibs.Entity.Unit.AI;
 import com.badlogic.gdx.math.Vector2;
 
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 import game.juan.andenginegame0.ygamelibs.Entity.GameEntity;
+import game.juan.andenginegame0.ygamelibs.Entity.Objects.AiBulletData;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.PlayerBulletData;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Bullet;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Weapon;
@@ -38,7 +41,7 @@ public class AiFactory implements ConstantsSet.EntityType{
             case MOVING_AI:
                 return createMoving_Ai(pGameScene,ResourceManager.getInstance().gfxTextureRegionHashMap.get(id),pAiData);
             case SHOOTING_AI:
-                return null;
+                return createShooting_Ai(pGameScene,ResourceManager.getInstance().gfxTextureRegionHashMap.get(id),pAiData);
             case JUMPING_AI:
                 return createJumping_Ai(pGameScene,ResourceManager.getInstance().gfxTextureRegionHashMap.get(id),pAiData);
         }
@@ -59,21 +62,24 @@ public class AiFactory implements ConstantsSet.EntityType{
     private static AiUnit createShooting_Ai(GameScene pGameScene,  ITiledTextureRegion iTiledTextureRegion, DataBlock pDataBlock){
         final ShootingAi aiUnit = new ShootingAi(pDataBlock.getPosX(),pDataBlock.getPosY(),
                 iTiledTextureRegion, ResourceManager.getInstance().vbom);
-        // aiUnit.setScale(0.5f);
-      //  aiUnit.setConfigData(DataManager.getInstance().aiConfigs[AI_SHOOTING_1_CONFIG]);
-      //  Weapon  weapon = new Weapon(1);
-       // Bullet bullet = new Bullet(0,0,ResourceManager.getInstance().ai_0_BulletRegion,
-         //       ResourceManager.getInstance().vbom);
-        //bullet.setConfigData(DataManager.getInstance().playerBulletConfigs[0]);
-        //bullet.createBullet(pGameScene,new PlayerBulletData(DataBlock.AI_BLT_CLASS,ConstantsSet.EntityType.BULLET,0,0));
-        //pGameScene.attachChild(bullet);
+        aiUnit.setScale(0.7f);
+        JSONObject configJSON = DataManager.getInstance().configHashSet.get(pDataBlock.getId());
+        aiUnit.setConfigData(configJSON);
+        aiUnit.createAi(pGameScene,pDataBlock);
+        try{
+            JSONArray addJSONS = configJSON.getJSONArray("add_id");
+            String bulletId = addJSONS.getString(0);
+            Bullet bullet = new Bullet(pDataBlock.getPosX(), pDataBlock.getPosY(),ResourceManager.getInstance().gfxTextureRegionHashMap.get(bulletId)
+            ,ResourceManager.getInstance().vbom);
+            bullet.setConfigData(DataManager.getInstance().configHashSet.get(bulletId));
+            bullet.createBullet(
+                    pGameScene,new AiBulletData(DataBlock.AI_BLT_CLASS,BULLET,(int)pDataBlock.getPosX()/32, (int)pDataBlock.getPosY()/32));
+            aiUnit.setBullet(bullet);
+            pGameScene.attachChild(bullet);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
-        //weapon.setBullet(bullet);
-
-        //aiUnit.setWeapon(weapon);
-
-
-      //  aiUnit.createAi(pGameScene,pDataBlock);
         aiUnit.setActive(true);
         pGameScene.attachChild(aiUnit);
 

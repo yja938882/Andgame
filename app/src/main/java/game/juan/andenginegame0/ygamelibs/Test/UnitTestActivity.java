@@ -66,6 +66,7 @@ public class UnitTestActivity extends BaseGameActivity {
             engineOptions.getTouchOptions().setNeedsMultiTouch(true);
             engineOptions.setWakeLockOptions(WakeLockOptions.SCREEN_ON);
             engineOptions.getAudioOptions().setNeedsSound(true);
+            engineOptions.getAudioOptions().setNeedsMusic(true);
         return engineOptions;
     }
 

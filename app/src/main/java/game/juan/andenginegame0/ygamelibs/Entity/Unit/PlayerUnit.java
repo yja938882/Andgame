@@ -36,10 +36,12 @@ import org.andengine.util.color.Color;
 import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
+import game.juan.andenginegame0.ygamelibs.Dialogs.GameDieDialog;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.Weapon.Weapon;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Scene.SceneManager;
+import game.juan.andenginegame0.ygamelibs.SoundManager;
 import game.juan.andenginegame0.ygamelibs.UI.UIManager;
 
 import static android.content.Context.VIBRATOR_SERVICE;
@@ -125,8 +127,16 @@ public class PlayerUnit extends Unit {
         this.r.setPosition(
                 getHandBody().getPosition().x*32f + TEST*(float)Math.cos(getHandBody().getAngle()),
                 getHandBody().getPosition().y*32f+TEST*(float)Math.sin(getHandBody().getAngle()));
+        if(this.getBody(0).getPosition().y *32f>1000f && !gameend){
 
+            GameDieDialog gameDieDialog = new GameDieDialog();
+            gameDieDialog.setBackgroundEnabled(false);
+            SceneManager.getInstance().getCurrentScene().setIgnoreUpdate(true);
+            SceneManager.getInstance().setDialogScene(gameDieDialog);
+            gameend = true;
+        }
     }
+    boolean gameend = false;
 
     @Override
     protected void onManageActiveAction(int active) {
@@ -150,8 +160,6 @@ public class PlayerUnit extends Unit {
 
     @Override
     protected void onManagePassiveAction(int active) {
-
-
         for(ActionLock al:this.mActionLocks){
             if(al.isLocked()){
                 return;
@@ -211,6 +219,7 @@ public class PlayerUnit extends Unit {
 
     @Override
     protected void onActiveMoveRight() {
+        SoundManager.getInstance().playPlayerWalkSound();
         this.setFlippedHorizontal(false);
         getBody(FOOT).setAngularVelocity(30f);
         if (isInTheAir) {
@@ -238,6 +247,7 @@ public class PlayerUnit extends Unit {
 
     @Override
     protected void onActiveMoveLeft() {
+        SoundManager.getInstance().playPlayerWalkSound();
         this.setFlippedHorizontal(true);
         getBody(FOOT).setAngularVelocity(-30f);
         if (isInTheAir) {
@@ -423,7 +433,6 @@ public class PlayerUnit extends Unit {
         attackParticleSystem.addParticleInitializer(new AccelerationParticleInitializer<UncoloredSprite>(-20, 20, -20, 20));
         attackParticleSystem.addParticleInitializer(new ExpireParticleInitializer<UncoloredSprite>(0.3f));
         attackParticleSystem.addParticleInitializer(new ScaleParticleInitializer<UncoloredSprite>(0.5f, 1f));
-       // attackParticleSystem.addParticleModifier(new ScaleParticleModifier<UncoloredSprite>(0f, 1f, 0.4f, 1.5f));
         attackParticleSystem.addParticleModifier(new AlphaParticleModifier<UncoloredSprite>(0, 0.5f, 1, 0f));
         pGameScene.attachChild(attackParticleSystem);
         attackParticleSystem.setParticlesSpawnEnabled(false);

@@ -88,7 +88,7 @@ public class StaticManager implements ConstantsSet{
             displayDataListHashMap.get(displayData.getId()).add(displayData);
         }
 
-        int size = DataManager.getInstance().displayJsonList.size();
+        int size =3;// DataManager.getInstance().displayJsonList.size();
         Iterator displayDataIterator = displayDataListHashMap.keySet().iterator();
         while(displayDataIterator.hasNext()){
             String key = (String)displayDataIterator.next();

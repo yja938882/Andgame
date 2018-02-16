@@ -25,13 +25,16 @@ import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_WIDTH;
  */
 
 public class MainScene extends BaseScene {
-    TextContainer levelContainer;
-    TextContainer moneyContainer;
-    TextContainer shopButton;
-    TextContainer statusButton;
-    TextContainer settingButton;
+    private TextContainer levelContainer;
+    private TextContainer moneyContainer;
+    private TextContainer shopButton;
+    private TextContainer statusButton;
+    private TextContainer settingButton;
 
-
+    private Sprite themeContainer;
+    private Sprite prev;
+    private Sprite next;
+    private Sprite themeTitle;
 
     public static int theme = 0;
     public static int stage = -1;
@@ -41,94 +44,9 @@ public class MainScene extends BaseScene {
         Log.d(TAG,"createScene");//79,73,71
         Background background = new Background(0.31f,0.28f,0.28f);
         this.setBackground(background);
-        Rectangle r = new Rectangle(300,300,50,50,ResourceManager.getInstance().vbom){
-            @Override
-            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                if(pSceneTouchEvent.isActionDown()){
-                    theme=0;
-                    stage = 0;
-                    SceneManager.getInstance().createLoadingScene(SceneManager.SceneType.GAME);
-                    SceneManager.getInstance().disposeMainScene();
-                }
-                return true;
-            }
-        };
-        r.setColor(Color.WHITE);
-        this.attachChild(r);
-        this.registerTouchArea(r);
-
-        Rectangle r0 = new Rectangle(230,300,50,50,ResourceManager.getInstance().vbom){
-            @Override
-            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                if(pSceneTouchEvent.isActionDown()){
-                    theme=0;
-                    stage = 1;
-                    SceneManager.getInstance().createLoadingScene(SceneManager.SceneType.GAME);
-                    SceneManager.getInstance().disposeMainScene();
-                }
-                return true;
-            }
-        };
-        r0.setColor(Color.BLUE);
-        this.attachChild(r0);
-        this.registerTouchArea(r0);
 
 
-
-
-        Rectangle r1 = new Rectangle(400,300,50,50,ResourceManager.getInstance().vbom){
-            @Override
-            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                if(pSceneTouchEvent.isActionDown()){
-
-                }
-                return true;
-            }
-        };
-        r1.setColor(Color.RED);
-        this.attachChild(r1);
-        this.registerTouchArea(r1);
-
-//        Text lv =new Text(20,20,resourcesManager.mainFont,"Lv : "+ DataManager.getInstance().player_level,vbom);
-  //      Text money = new Text(lv.getWidth()+40,20,resourcesManager.mainFont,"Money : "+DataManager.getInstance().money,vbom);
-    //    Text player_count = new Text(money.getX()+money.getWidth()+20,20,resourcesManager.mainFont,"Count : "+DataManager.getInstance().play_count,vbom);
-      //  this.attachChild(lv);
-       // this.attachChild(money);
-       // this.attachChild(player_count);
-
-        SQLiteDatabase db = DataManager.getInstance().dbManager.getReadableDatabase();
-        ArrayList<JSONObject> arrayList = DataManager.getInstance().dbManager.getAllItemInInventoryTable(db);
-        String itemname="";
-        try{
-            for(int i=0;i<arrayList.size();i++){
-                itemname+=arrayList.get(i).getInt("key");
-                itemname+=" - :";
-                itemname+=arrayList.get(i).getString("id");
-                itemname+=arrayList.get(i).getInt("durability");
-                itemname+="\n";
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-       // Text text = new Text(20,70,ResourceManager.getInstance().mainFont,itemname,ResourceManager.getInstance().vbom);
-        //this.attachChild(text);
-
-
-        Rectangle r2 = new Rectangle(480,300,50,50,ResourceManager.getInstance().vbom){
-            @Override
-            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                if(pSceneTouchEvent.isActionDown()){
-
-
-                }
-                return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
-            }
-        };
-        r2.setColor(Color.GREEN);
-        this.registerTouchArea(r2);
-        this.attachChild(r2);
-
-        Sprite test = new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("theme_container"),ResourceManager.getInstance().vbom){
+        themeContainer = new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("theme_container"),ResourceManager.getInstance().vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if(pSceneTouchEvent.isActionDown()){
@@ -140,16 +58,20 @@ public class MainScene extends BaseScene {
                 return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
             }
         };
-        test.setPosition( (CAMERA_WIDTH - test.getWidth())/2f, (CAMERA_HEIGHT - test.getHeight())/2f );
-        this.registerTouchArea(test);
-        this.attachChild(test);
+        themeContainer.setPosition( (CAMERA_WIDTH - themeContainer.getWidth())/2f, (CAMERA_HEIGHT - themeContainer.getHeight())/2f );
+        this.registerTouchArea(themeContainer);
+        this.attachChild(themeContainer);
 
-        Sprite prev = new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("prev_theme"),ResourceManager.getInstance().vbom);
-        prev.setPosition(test.getX() - prev.getWidth()-10,test.getY() + (test.getHeight() - prev.getHeight())/2);
+        themeTitle = new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("theme_title"),ResourceManager.getInstance().vbom);
+        themeTitle.setPosition(themeContainer.getX()+(themeContainer.getWidth()-themeTitle.getWidth())/2,themeContainer.getY()-themeTitle.getHeight()/2);
+        this.attachChild(themeTitle);
+
+        prev = new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("prev_theme"),ResourceManager.getInstance().vbom);
+        prev.setPosition(themeContainer.getX() - prev.getWidth()-10,themeContainer.getY() + (themeContainer.getHeight() - prev.getHeight())/2);
         this.attachChild(prev);
 
-        Sprite next = new Sprite( 0,0, ResourceManager.getInstance().gfxTextureRegionHashMap.get("next_theme"),ResourceManager.getInstance().vbom);
-        next.setPosition(test.getX() + test.getWidth()+10, test.getY()+(test.getHeight() - prev.getHeight())/2);
+        next = new Sprite( 0,0, ResourceManager.getInstance().gfxTextureRegionHashMap.get("next_theme"),ResourceManager.getInstance().vbom);
+        next.setPosition(themeContainer.getX() + themeContainer.getWidth()+10, themeContainer.getY()+(themeContainer.getHeight() - prev.getHeight())/2);
         this.attachChild(next);
 
         levelContainer = new TextContainer(10,10, ResourceManager.getInstance().gfxTextureRegionHashMap.get("level_container"),ResourceManager.getInstance().vbom);
@@ -176,10 +98,7 @@ public class MainScene extends BaseScene {
                 if(pSceneTouchEvent.isActionDown()){
                     SceneManager.getInstance().createLoadingScene(SceneManager.SceneType.SHOP);
                     SceneManager.getInstance().disposeMainScene();
-
-
                 }
-
                 return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
             }
         };
@@ -214,6 +133,26 @@ public class MainScene extends BaseScene {
 
     @Override
     public void disposeScene() {
+        this.levelContainer.getText().detachSelf();
+        this.levelContainer.detachSelf();
+
+        this.moneyContainer.getText().detachSelf();
+        this.moneyContainer.detachSelf();
+
+        this.shopButton.getText().detachSelf();
+        this.shopButton.detachSelf();
+
+        this.statusButton.getText().detachSelf();
+        this.statusButton.detachSelf();
+
+        this.settingButton.getText().detachSelf();
+        this.settingButton.detachSelf();
+
+        this.themeContainer.detachSelf();
+        this.prev.detachSelf();
+        this.next.detachSelf();
+
+
         this.detachSelf();
         this.dispose();
     }

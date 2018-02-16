@@ -87,13 +87,15 @@ public class UIManager implements ConstantsSet {
                 ,100,100,
                 ResourceManager.getInstance().gfxTextureRegionHashMap.get("left_btn"),
                 ResourceManager.getInstance().vbom);
+        mControllers[UI_LEFT].setScale(1.5f);
 
-        mControllers[UI_RIGHT] = new OneWayMoveController(40+
+        mControllers[UI_RIGHT] = new OneWayMoveController(70+
                 ResourceManager.getInstance().gfxTextureRegionHashMap.get("right_btn").getWidth(),
                 CAMERA_HEIGHT-(ResourceManager.getInstance().gfxTextureRegionHashMap.get("right_btn").getHeight()+ResourceManager.getInstance().gfxTextureRegionHashMap.get("right_btn").getWidth())
                 ,100,100,
                 ResourceManager.getInstance().gfxTextureRegionHashMap.get("left_btn"),
                 ResourceManager.getInstance().vbom);
+            mControllers[UI_RIGHT].setScale(1.5f);
 
         mControllers[UI_UP]= new OneWayMoveController(433*2,
                 170*2,

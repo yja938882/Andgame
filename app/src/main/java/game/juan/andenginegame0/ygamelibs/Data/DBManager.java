@@ -448,6 +448,7 @@ public class DBManager extends SQLiteOpenHelper{
                 object.put("key",cursor.getInt(0));
                 object.put("id",cursor.getString(1));
                 object.put("remain_durability",cursor.getInt(2));
+               // object.put("src","object/players"+object.getString("src"));
                 cursor.moveToNext();
             }catch (Exception e){
                 e.printStackTrace();

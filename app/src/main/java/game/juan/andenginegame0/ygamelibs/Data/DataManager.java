@@ -55,15 +55,9 @@ public class DataManager implements ConstantsSet{
 
     /*===GameScene=============*/
     public JSONObject playerConfig; // 플레이어 설정정보
-    public ArrayList<JSONObject> playerGFXJsonList; // 플레이어와 관련된 GFX 설정 데이터
-    public ArrayList<JSONObject> bgGFXJsonList;     // 백그라운드와 관련된 GFX 설정 데이터
-    public ArrayList<JSONObject> displayJsonList;   // 디스 플레이와 관련된 GFX 설정 데이터
+    public float playerStartX, playerStartY; //플레이어 시작위치
 
-    public ArrayList<JSONObject> staticGFXJsonList; // 맵과 관련된 GFX 설정 데이터
-    public ArrayList<JSONObject> aiGFXJsonList;     // Ai 와 관련된 GFX 설정 데이터
-    public ArrayList<JSONObject> obstacleGFXJsonList;//Obstacle 과 관련된 GFX 설정 데이터
-    public ArrayList<JSONObject> itemGFXJsonList; // 아이템과 관련된 GFX 설정 데이터
-    public ArrayList<JSONObject> weaponGFXJsonList; //무기와 관련된 GFX  설정 데이터
+    public ArrayList<JSONObject> GFXJsonList; //GFX 설정 데이터
 
     public HashMap<String, JSONObject> configHashSet; //설정 정보 Hash Map
 
@@ -81,15 +75,7 @@ public class DataManager implements ConstantsSet{
     */
     public void loadStageData(int pTheme, int pStage){
 
-        bgGFXJsonList = new ArrayList<>();
-        displayJsonList = new ArrayList<>();
-
-        playerGFXJsonList = new ArrayList<>();
-        staticGFXJsonList = new ArrayList<>();
-        aiGFXJsonList = new ArrayList<>();
-        obstacleGFXJsonList = new ArrayList<>();
-        itemGFXJsonList = new ArrayList<>();
-        weaponGFXJsonList = new ArrayList<>();
+        GFXJsonList = new ArrayList<>();
 
         staticMapDataList = new ArrayList<>();
         obstacleDataList = new ArrayList<>();
@@ -115,11 +101,20 @@ public class DataManager implements ConstantsSet{
 
         try{
             JSONObject mapObject = loadJSONFromAsset(activity,"stage/stage"+pTheme+"_"+pStage+".json");
+
+            JSONArray playerStartPosition = mapObject.getJSONArray("starting_position");
+            playerStartX = 32f*(float)playerStartPosition.getDouble(0);
+            playerStartY = 32f*(float)playerStartPosition.getDouble(1);
+
             JSONObject scatterObject = mapObject.getJSONObject("display_scatter");
-            displayJsonList.add(scatterObject);
+            scatterObject.put("src","map/display/"+scatterObject.getString("src"));
+            GFXJsonList.add(scatterObject);
+
             JSONArray displayArray = mapObject.getJSONArray("display");
             for(int i=0;i<displayArray.length();i++){
-                displayJsonList.add(displayArray.getJSONObject(i));
+                JSONObject displayObject = displayArray.getJSONObject(i);
+                displayObject.put("src","map/display/"+displayObject.getString("src"));
+                GFXJsonList.add(displayObject);
             }
 
             JSONArray stageArray = mapObject.getJSONArray("map");
@@ -129,12 +124,12 @@ public class DataManager implements ConstantsSet{
             for(int i=0;i<bgArray.length();i++){
                 JSONObject object = new JSONObject();
                 object.put("id","bg"+i);
-                object.put("src",bgArray.getString(i)+".png");
+                object.put("src","map/bg/"+bgArray.getString(i)+".png");
                 object.put("src_width",1024);
                 object.put("src_height",960);
                 object.put("row",1);
                 object.put("col",1);
-                bgGFXJsonList.add(object);
+                GFXJsonList.add(object);
             }
             int size = stageArray.length();
             for(int i=0;i<size;i++){
@@ -173,10 +168,11 @@ public class DataManager implements ConstantsSet{
             while(tileSetIterator.hasNext()){
                 String id = (String)tileSetIterator.next();
                 JSONObject tileObject = new JSONObject();
-                tileObject.put("id",id).put("src",id+".png")
+                tileObject.put("id",id).put("src","map/"+pTheme+"/"+id+".png")
                           .put("src_width",64).put("src_height",64)
                           .put("col",1).put("row",1);
-                staticGFXJsonList.add(tileObject);
+                GFXJsonList.add(tileObject);
+                //staticGFXJsonList.add(tileObject);
             }
 
             Iterator aiIdSetIterator = aiIdSet.iterator();
@@ -184,7 +180,9 @@ public class DataManager implements ConstantsSet{
                 String id = (String)aiIdSetIterator.next();
                 JSONObject aiObject = dbManager.getAiJSON(db,id);
                 aiObject.put("id",id);
-                aiGFXJsonList.add(aiObject);
+                aiObject.put("src","ai/"+aiObject.getString("src"));
+                GFXJsonList.add(aiObject);
+               // aiGFXJsonList.add(aiObject);
                 JSONArray additional_ids = aiObject.getJSONArray("add_id");
                 for(int i=0;i<additional_ids.length();i++){
                     additional_aiIdSet.add(additional_ids.getString(i));
@@ -197,7 +195,8 @@ public class DataManager implements ConstantsSet{
                 String id = (String)addAIid_iterator.next();
                 JSONObject aiObject = dbManager.getAiJSON(db,id);
                 aiObject.put("id",id);
-                aiGFXJsonList.add(aiObject);
+                aiObject.put("src","ai/"+aiObject.getString("src"));
+                GFXJsonList.add(aiObject);
                 configHashSet.put(id,aiObject);
             }
 
@@ -207,7 +206,9 @@ public class DataManager implements ConstantsSet{
                 String id = (String)obsIdSetIterator.next();
                 JSONObject obsObject = dbManager.getObsJSON(db,id);
                 obsObject.put("id",id);
-                obstacleGFXJsonList.add(obsObject);
+                obsObject.put("src","obstacle/"+obsObject.getString("src"));
+                GFXJsonList.add(obsObject);
+                //obstacleGFXJsonList.add(obsObject);
                 JSONArray additional_ids = obsObject.getJSONArray("add_id");
                 for(int i=0;i<additional_ids.length();i++){
                     additional_obsIdSet.add(additional_ids.getString(i));
@@ -218,10 +219,10 @@ public class DataManager implements ConstantsSet{
             Iterator addObsid_iterator = additional_obsIdSet.iterator();
             while(addObsid_iterator.hasNext()){
                 String id = (String)addObsid_iterator.next();
-                Log.d("DDDDD","id :"+id);
                 JSONObject obsObject = dbManager.getObsJSON(db,id);
                 obsObject.put("id",id);
-                obstacleGFXJsonList.add(obsObject);
+                obsObject.put("src","obstacle/"+obsObject.getString("src"));
+                GFXJsonList.add(obsObject);
                 configHashSet.put(id,obsObject);
             }
 
@@ -230,7 +231,8 @@ public class DataManager implements ConstantsSet{
                 String id = (String)item_iterator.next();
                 JSONObject obsObject = dbManager.getItemJSON(db,id);
                 obsObject.put("id",id);
-                itemGFXJsonList.add(obsObject);
+                obsObject.put("src","object/players/"+obsObject.getString("src"));
+                GFXJsonList.add(obsObject);
                 configHashSet.put(id,obsObject);
             }
             Iterator weapon_iterator = weaponIDSet.iterator();
@@ -238,7 +240,8 @@ public class DataManager implements ConstantsSet{
                 String id = (String)weapon_iterator.next();
                 JSONObject weaponObject = dbManager.getItemJSON(db,id);
                 weaponObject.put("id",id);
-                weaponGFXJsonList.add(weaponObject);
+                weaponObject.put("src","object/players/"+weaponObject.getString("src"));
+                GFXJsonList.add(weaponObject);
                 configHashSet.put(id,weaponObject);
             }
 
@@ -430,6 +433,7 @@ public class DataManager implements ConstantsSet{
                 configObject.put("key",object.getString("key"));
                 configObject.put("durability",object.getInt("durability"));
                 configObject.put("id",id);
+                configObject.put("src","object/players/"+configObject.getString("src"));
                 this.inventoryList.add(configObject);
             }
         }catch (Exception e){
@@ -465,12 +469,14 @@ public class DataManager implements ConstantsSet{
         SQLiteDatabase db = dbManager.getWritableDatabase();
         dbManager.deleteItemInInventoryTable(db,pKey);
     }
+
     public ArrayList<JSONObject> bagItemList=null;
     public void addPreparedItems(int pKey){
         if(bagItemList==null){
             bagItemList = new ArrayList<>();
         }
         SQLiteDatabase db = dbManager.getReadableDatabase();
+        //ArrayList<JSONObject> arrayList = dbManager.getAllItemInInventoryTable(db,pKey);
         bagItemList.add(dbManager.getItemInInventoryTable(db,pKey));
         Log.d(TAG,"add preapred item list "+pKey+"list :"+bagItemList.size());
     }
@@ -482,8 +488,6 @@ public class DataManager implements ConstantsSet{
         SQLiteDatabase db = dbManager.getReadableDatabase();
         return dbManager.getItemJSON(db,pKeyName);
     }
-
-
     /* Asset 으로 부터 JSON 파일을 읽어드린다
      * @param context
      * @param filename 에 해당하는 파일을 읽어드린다

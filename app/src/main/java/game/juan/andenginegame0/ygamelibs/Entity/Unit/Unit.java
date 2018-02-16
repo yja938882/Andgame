@@ -198,6 +198,7 @@ public abstract class Unit extends GameEntity{
 
     @Override
     public void revive(float pPx, float pPy) {
+        this.transform(pPx,pPy);
 
     }
     public Vector2 getPhysicsBodyPos(){
@@ -240,13 +241,10 @@ public abstract class Unit extends GameEntity{
         switch (bodySType){
             case VERTICAL_SHAPE:
                 createVerticesBody(pGameScene,BODY,pBodyData,bodyShape, BodyDef.BodyType.DynamicBody);
-                //createOctagonBody(pGameScene,BODY,pBodyData,bodyShape, BodyDef.BodyType.DynamicBody);
                 break;
             case CIRCLE_SHAPE:
                 createCircleBody(pGameScene,BODY,pBodyData,bodyShape, BodyDef.BodyType.DynamicBody);
-                //createRectBody(pGameScene,BODY,pBodyData,bodyShape[0],bodyShape[1],bodyShape[2],bodyShape[3], BodyDef.BodyType.DynamicBody);
                 break;
-
         }
 
         switch (footSType){
@@ -277,6 +275,8 @@ public abstract class Unit extends GameEntity{
         setAnimationConfigData(pConfigData);
         setPhysicsConfigData(pConfigData);
     }
+
+
     private void setPhysicsConfigData(JSONObject pConfigData){
         try {
             String bodyType = pConfigData.getString("body");

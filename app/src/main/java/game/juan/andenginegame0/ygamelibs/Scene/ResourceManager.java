@@ -55,19 +55,17 @@ public class ResourceManager {
     gfxTextureRegions = new ArrayList<>();
     gfxTextureAtlas = new ArrayList<>();
   }
-
   /* 그래픽 소스를 로딩한다
-   * @param pGfxPath 로드할 그래픽소스 경로
-   * @param pConfigArray 로드할 그래픽 데이터 설정 배열
-   */
-  private void loadGFX(String pGfxPath, ArrayList<JSONObject> pConfigArray){
+ * @param pGfxPath 로드할 그래픽소스 경로
+ * @param pConfigArray 로드할 그래픽 데이터 설정 배열
+ */
+  private void loadGFX( ArrayList<JSONObject> pConfigArray){
     int size = pConfigArray.size();
     String id="";
-    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/"+pGfxPath);
+    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
     try{
       for(int i=0;i<size;i++){
         id = pConfigArray.get(i).getString("id");
-        Log.d("QQQQQ","id "+id);
         if(gfxTextureRegionHashMap.containsKey(id)){
           continue;
         }
@@ -83,7 +81,7 @@ public class ResourceManager {
         gfxTextureRegionHashMap.put(pConfigArray.get(i).getString("id"),gfxTextureRegions.get(gfxTextureRegions.size()-1));
       }
     }catch (Exception e){
-      Log.d(TAG," loadGFX ["+pGfxPath+id+"] : "+e.getMessage());
+      Log.d(TAG,e.getMessage());
       System.exit(-1);
     }
   }
@@ -214,20 +212,20 @@ public class ResourceManager {
   void loadSplashScene(){
     Log.d(TAG,"loadSplashScene");
       initGFX();
-      loadGFX("splash/",configSplashGFXData());
+      loadGFX(configSplashGFXData());
   }
   private ArrayList<JSONObject> configSplashGFXData(){
     Log.d(TAG,"configSplashGFXData");
     ArrayList<JSONObject> arrayList = new ArrayList<>();
     try{
-      arrayList.add(newConfigJSON("layer0","splash_layer0.png",1024,600,1,1));
-      arrayList.add(newConfigJSON("layer1","splash_layer1.png",1024,600,1,1));
-      arrayList.add(newConfigJSON("layer2","splash_layer2.png",1024,600,1,1));
-      arrayList.add(newConfigJSON("layer3","splash_layer3.png",1024,600,1,1));
-      arrayList.add(newConfigJSON("moon","moon.png",1024,600,1,1));
-      arrayList.add(newConfigJSON("cheep","cheep.png",768,128,6,1));
-      arrayList.add(newConfigJSON("particle","particle.png",16,16,1,1));
-      arrayList.add(newConfigJSON("title","title.png",326,122,1,1));
+      arrayList.add(newConfigJSON("layer0","splash/"+"splash_layer0.png",1024,600,1,1));
+      arrayList.add(newConfigJSON("layer1","splash/"+"splash_layer1.png",1024,600,1,1));
+      arrayList.add(newConfigJSON("layer2","splash/"+"splash_layer2.png",1024,600,1,1));
+      arrayList.add(newConfigJSON("layer3","splash/"+"splash_layer3.png",1024,600,1,1));
+      arrayList.add(newConfigJSON("moon","splash/"+"moon.png",1024,600,1,1));
+      arrayList.add(newConfigJSON("cheep","splash/"+"cheep.png",768,128,6,1));
+      arrayList.add(newConfigJSON("particle","splash/"+"particle.png",16,16,1,1));
+      arrayList.add(newConfigJSON("title","splash/"+"title.png",326,122,1,1));
 
     }catch (Exception e){
       Log.d(TAG," configSplashGFXData error :"+e.getMessage());
@@ -252,7 +250,7 @@ public class ResourceManager {
     Log.d("TADDDD","load main scene");
     initGFX();
     loadMainFont();
-    loadGFX("ui/",configMainUIData());
+    loadGFX(configMainUIData());
   }
 
   /* 메인화면 리소스 언로딩
@@ -262,15 +260,15 @@ public class ResourceManager {
   private ArrayList<JSONObject> configMainUIData(){
     ArrayList<JSONObject> arrayList = new ArrayList<>();
     try{
-      arrayList.add(newConfigJSON("theme_container","theme_container.png",712,328,1,1));
-      arrayList.add(newConfigJSON("level_container","level_container.png",136,41,1,1));
-      arrayList.add(newConfigJSON("coin_container","coin_container.png",133,39,1,1));
-      arrayList.add(newConfigJSON("setting_container","setting_container.png",104,81,1,1));
-      arrayList.add(newConfigJSON("shop_container","shop_container.png",83,106,1,1));
-      arrayList.add(newConfigJSON("status_container","status_container.png",84,106,1,1));
-      arrayList.add(newConfigJSON("next_theme", "next_theme.png",29,73,1,1));
-      arrayList.add(newConfigJSON("prev_theme","prev_theme.png",29,73,1,1));
-
+      arrayList.add(newConfigJSON("theme_container","ui/theme_container.png",712,328,1,1));
+      arrayList.add(newConfigJSON("level_container","ui/level_container.png",136,41,1,1));
+      arrayList.add(newConfigJSON("coin_container","ui/coin_container.png",133,39,1,1));
+      arrayList.add(newConfigJSON("setting_container","ui/setting_container.png",104,81,1,1));
+      arrayList.add(newConfigJSON("shop_container","ui/shop_container.png",83,106,1,1));
+      arrayList.add(newConfigJSON("status_container","ui/status_container.png",84,106,1,1));
+      arrayList.add(newConfigJSON("next_theme", "ui/next_theme.png",29,73,1,1));
+      arrayList.add(newConfigJSON("prev_theme","ui/prev_theme.png",29,73,1,1));
+      arrayList.add(newConfigJSON("theme_title","ui/theme_title.png",233,63,1,1));
     }catch (Exception e){
       e.printStackTrace();
       System.exit(-1);
@@ -285,9 +283,9 @@ public class ResourceManager {
     DataManager.getInstance().loadShopData(); // 상점 데이터 로딩
     DataManager.getInstance().loadInventoryData(); //인벤토리 데이터 로딩
     initGFX(); //GFX 초기화
-    loadGFX("ui/",configShopUIData()); // 상점 UI 로딩
-    loadGFX("object/players/",DataManager.getInstance().shopItemList); //상점에서 판매하는 아이템 GFX 로딩
-    loadGFX("object/players/",DataManager.getInstance().inventoryList); //플레이어가 가진 아이템 GFX 로딩
+    loadGFX(configShopUIData()); // 상점 UI 로딩
+    loadGFX(DataManager.getInstance().shopItemList); //상점에서 판매하는 아이템 GFX 로딩
+    loadGFX(DataManager.getInstance().inventoryList); //플레이어가 가진 아이템 GFX 로딩
   }
   void unloadShopScene(){
     unLoadGFX();
@@ -296,8 +294,8 @@ public class ResourceManager {
   private ArrayList<JSONObject> configShopUIData(){
     ArrayList<JSONObject> arrayList = new ArrayList<>();
     try{
-      arrayList.add(newConfigJSON("shop_container","item_container.png",384,384,1,1));
-      arrayList.add(newConfigJSON("close_btn","cancel.png",64,64,1,1));
+      arrayList.add(newConfigJSON("shop_container","ui/item_container.png",384,384,1,1));
+      arrayList.add(newConfigJSON("close_btn","ui/cancel.png",64,64,1,1));
        }catch (Exception e){
       e.printStackTrace();
       System.exit(-1);
@@ -308,15 +306,15 @@ public class ResourceManager {
   void loadPrePareScene(){
     DataManager.getInstance().loadInventoryData(); //인벤토리 데이터 로딩
     initGFX(); //GFX 초기화
-    loadGFX("ui/",configPrepareUIData());
-    loadGFX("object/players/",DataManager.getInstance().inventoryList); //플레이어가 가진 아이템 GFX 로딩
+    loadGFX(configPrepareUIData());
+    loadGFX(DataManager.getInstance().inventoryList); //플레이어가 가진 아이템 GFX 로딩
   }
   private ArrayList<JSONObject> configPrepareUIData(){
     ArrayList<JSONObject> arrayList = new ArrayList<>();
     try{
-      arrayList.add(newConfigJSON("shop_container","item_container.png",384,384,1,1));
-      arrayList.add(newConfigJSON("close_btn","cancel.png",64,64,1,1));
-      arrayList.add(newConfigJSON("start_btn","start_btn.png",440,128,1,1));
+      arrayList.add(newConfigJSON("shop_container","ui/item_container.png",384,384,1,1));
+      arrayList.add(newConfigJSON("close_btn","ui/cancel.png",64,64,1,1));
+      arrayList.add(newConfigJSON("start_btn","ui/start_btn.png",440,128,1,1));
 
     }catch (Exception e){
       e.printStackTrace();
@@ -336,27 +334,19 @@ public class ResourceManager {
   //  DataManager.getInstance().loadStageData(pTheme,pStage);// 스테이지 데이터 로딩exit
 
     initGFX(); // GFX 초기화
-    loadGFX("ui/",configGameUIData());                                      // 게임 UI GFX 로딩
-    loadGFX("player/",configPlayerGFXData());                               // 플레이어 GFX 로딩
-    loadGFX("object/players/",DataManager.getInstance().bagItemList);       //플레이어 아이템 GFX 로딩
-    loadGFX("map/bg/",DataManager.getInstance().bgGFXJsonList);             // 배경 GFX 로딩
-    loadGFX("map/display/",DataManager.getInstance().displayJsonList);       // 디스플레이 GFX 로딩
-    loadGFX("map/"+pTheme+"/",DataManager.getInstance().staticGFXJsonList); //맵 타일 GFX 로딩
-    loadGFX("ai/",DataManager.getInstance().aiGFXJsonList);                 //ai GFX 로딩
-    loadGFX("obstacle/",DataManager.getInstance().obstacleGFXJsonList);     //Obstacle GFX 로딩
-    Log.d("QQQQQ","LOADGFX");
-    loadGFX("object/players/",DataManager.getInstance().itemGFXJsonList);
-    loadGFX("object/players/",DataManager.getInstance().weaponGFXJsonList);
+    loadGFX(configGameUIData());                                      // 게임 UI GFX 로딩
+    loadGFX(configPlayerGFXData());                               // 플레이어 GFX 로딩
+    loadGFX(DataManager.getInstance().GFXJsonList);
   }
 
   private ArrayList<JSONObject> configPlayerGFXData(){
     Log.d(TAG,"configPlayerGFXData");
     ArrayList<JSONObject> arrayList = new ArrayList<>();
     try{
-      arrayList.add(newConfigJSON("player","player_s.png",1024,1024,8,8));
-      arrayList.add(newConfigJSON("player_moving_particle","moving_particle.png",16,16,1,1));
-      arrayList.add(newConfigJSON("player_hand","hand.png",48,48,1,1));
-      arrayList.add(newConfigJSON("player_attack_particle","attack_particle.png",32,32,1,1));
+      arrayList.add(newConfigJSON("player","player/player_s.png",1024,1024,8,8));
+      arrayList.add(newConfigJSON("player_moving_particle","player/moving_particle.png",16,16,1,1));
+      arrayList.add(newConfigJSON("player_hand","player/hand.png",48,48,1,1));
+      arrayList.add(newConfigJSON("player_attack_particle","player/attack_particle.png",32,32,1,1));
     }catch (Exception e){
       Log.d(TAG," configPlayerGFXData error :"+e.getMessage());
     }
@@ -367,17 +357,17 @@ public class ResourceManager {
     Log.d(TAG,"configGameUIData");
     ArrayList<JSONObject> arrayList = new ArrayList<>();
     try{
-      arrayList.add(newConfigJSON("bag_item","bag_item.png",80,80,1,1));
-      arrayList.add(newConfigJSON("left_btn","left.png",68,67,1,1));
-      arrayList.add(newConfigJSON("right_btn","right.png",68,67,1,1));
-      arrayList.add(newConfigJSON("attack_btn","attack_btn.png",112,123,1,1));
-      arrayList.add(newConfigJSON("up_btn","up.png",72,60,1,1));
-      arrayList.add(newConfigJSON("skill1","skill1.png",112,123,1,1));
-      arrayList.add(newConfigJSON("skill2","skill2.png",72,60,1,1));
-      arrayList.add(newConfigJSON("heart","heart.png",55,34,2,1));
-      arrayList.add(newConfigJSON("setting_icon","icon_setting.png",96,48,1,1));
-      arrayList.add(newConfigJSON("bottom_inven","bag_item.png",80,80,1,1));
-      arrayList.add(newConfigJSON("coin","coin.png",28,27,1,1));
+      arrayList.add(newConfigJSON("bag_item","ui/bag_item.png",80,80,1,1));
+      arrayList.add(newConfigJSON("left_btn","ui/left.png",68,67,1,1));
+      arrayList.add(newConfigJSON("right_btn","ui/right.png",68,67,1,1));
+      arrayList.add(newConfigJSON("attack_btn","ui/attack_btn.png",112,123,1,1));
+      arrayList.add(newConfigJSON("up_btn","ui/up.png",72,60,1,1));
+      arrayList.add(newConfigJSON("skill1","ui/skill1.png",112,123,1,1));
+      arrayList.add(newConfigJSON("skill2","ui/skill2.png",72,60,1,1));
+      arrayList.add(newConfigJSON("heart","ui/heart.png",55,34,2,1));
+      arrayList.add(newConfigJSON("setting_icon","ui/icon_setting.png",96,48,1,1));
+      arrayList.add(newConfigJSON("bottom_inven","ui/bag_item.png",80,80,1,1));
+      arrayList.add(newConfigJSON("coin","ui/coin.png",28,27,1,1));
 
     }catch (Exception e){
       Log.d(TAG," configGameUIGFXData error :"+e.getMessage());

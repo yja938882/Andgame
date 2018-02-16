@@ -8,6 +8,7 @@ import game.juan.andenginegame0.ygamelibs.Dynamics.AnimatedSpriteItem;
 import game.juan.andenginegame0.ygamelibs.Entity.EntityManager;
 import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
 import game.juan.andenginegame0.ygamelibs.Scene.SceneManager;
+import game.juan.andenginegame0.ygamelibs.SoundManager;
 
 import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_HEIGHT;
 import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_WIDTH;
@@ -35,6 +36,7 @@ public class CoinItem extends EatableItem{
         this.setEatable(false);
         this.animate(50,true);
         setDest();
+        SoundManager.getInstance().playEatCoinSound();
     }
     private void setDest(){
         this.destX = this.getX() - CAMERA_WIDTH/2;
