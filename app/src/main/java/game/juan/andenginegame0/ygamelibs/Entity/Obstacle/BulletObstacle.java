@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataBlock;
+import game.juan.andenginegame0.ygamelibs.Entity.ActionLock;
 import game.juan.andenginegame0.ygamelibs.Entity.GameEntity;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
@@ -53,11 +54,13 @@ public class BulletObstacle extends GameEntity{
     private Vector2 bodyShape[];
     private int bodySType;
 
+    private ActionLock mActionLock;
 
 
     /*===Constructor======================*/
     public BulletObstacle(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
+        mActionLock = new ActionLock();
     }
 
     public void createObstacle(GameScene pGameScene, DataBlock pDataBlock){
@@ -147,7 +150,7 @@ public class BulletObstacle extends GameEntity{
     private void setAnimationConfigData(JSONObject pConfigData){
         try{
 
-            createActionLock();
+            //createActionLock();
             JSONArray fi = pConfigData.getJSONArray("animFrameIndex");
             JSONArray fd = pConfigData.getJSONArray("animFrameDuration");
 
@@ -203,7 +206,7 @@ public class BulletObstacle extends GameEntity{
         this.IDLE_TIME_LIMIT = pIDLE_TIME;
         this.WORKING_TIME_LIMIT = pWORKING_TIME;
     }
-
+/*
     public void createActionLock(){
         this.mActionLocks = new ActionLock[LOCK_SIZE];
 
@@ -215,7 +218,7 @@ public class BulletObstacle extends GameEntity{
         };
 
     }
-
+*/
 
     public void hitFinished(){
 

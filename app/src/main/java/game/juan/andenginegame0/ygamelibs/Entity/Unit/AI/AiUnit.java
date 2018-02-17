@@ -36,10 +36,10 @@ public abstract class AiUnit extends Unit {
     public static final int CMD_ATTACK = 4;
 
     /*===Fields=========================*/
-    private float mCmdElapsed = 0f;
-    private int mCmd =0;
-    private int[] mCmdList;
-    private float[] mCmdDuList;
+    protected float mCmdElapsed = 0f;
+    protected int mCmd =0;
+    protected int[] mCmdList;
+    protected float[] mCmdDuList;
 
     private int hp;
 
@@ -53,30 +53,16 @@ public abstract class AiUnit extends Unit {
 
     /*===상태 관리============*/
     protected void onManageState(float pSecondsElapsed) {
-        for(ActionLock al:this.mActionLocks){
-            al.onManagedUpdate(pSecondsElapsed);
-        }
         super.onManageState(pSecondsElapsed);
-
     }
 
     @Override
     protected void onManageActiveAction(int active) {
-        for(ActionLock al:this.mActionLocks){
-            if(al.isLocked()){
-                return;
-            }
-        }
         super.onManageActiveAction(active);
     }
 
     @Override
     protected void onManagePassiveAction(int active) {
-        for(ActionLock al:this.mActionLocks){
-            if(al.isLocked()){
-                return;
-            }
-        }
         super.onManagePassiveAction(active);
     }
 
@@ -85,7 +71,14 @@ public abstract class AiUnit extends Unit {
 
     @Override
     protected void onPassiveAttacked() {
-        mActionLocks[0].lock();
+        if(isInvincible()){
+            this.mPassive = PASSIVE_NONE;
+            return;
+        }else{
+            setInvincibleCounter(1f);
+        }
+      // this.getBody(0).setLinearVelocity(this.getBody(0).getLinearVelocity().x,);
+        this.getBody(1).setAngularVelocity(0);
         animate(beAttackedFrameDuration,beAttackedFrameIndex,false);
         mActive = Unit.ACTIVE_STOP;
         mPassive = Unit.PASSIVE_NONE;
@@ -98,22 +91,6 @@ public abstract class AiUnit extends Unit {
     }
 
 
-
-
-
-
-
-
-    protected void beAttacked() {
-        Log.d("HITEST","be attacked! hp:"+hp);
-        if(invincible)
-            return;
-        setInvincible();
-        hp--;
-        if(hp<=0){
-            setAlive(false);
-        }
-    }
 
     public void createAi(GameScene pGameScene, DataBlock pDataBlock){
         //this.setScale(0.5f);
@@ -134,7 +111,7 @@ public abstract class AiUnit extends Unit {
 
     @Override
     protected void onManagedUpdate(float pSecondsElapsed) {
-        updateCmd(pSecondsElapsed);
+    //    updateCmd(pSecondsElapsed);
         PlayerUnit playerUnit = EntityManager.getInstance().playerUnit;
 
         if(Algorithm.CheckCircleCollision(
@@ -152,55 +129,10 @@ public abstract class AiUnit extends Unit {
         }
         super.onManagedUpdate(pSecondsElapsed);
 
-
-        if(invincible){
-
-            invincibleTimer+=pSecondsElapsed;
-            if(invincibleTimer>invincibleTimeLimit){
-                unsetInvincible();
-                Log.d("HITEST","unset invinsible");
-            }
-        }
         this.hpBar.setPosition(this.getX(),this.getY()+this.getHeight());
     }
 
-    public void updateCmd(float pSecondsElapsed){
 
-        if(!isAlive()) return;
-
-
-
-        mCmdElapsed += pSecondsElapsed;
-        if(mCmdElapsed>=mCmdDuList[mCmd]){
-            mCmd++;
-            mCmdElapsed = 0.0f;
-            if(mCmd>=mCmdList.length)
-                mCmd=0;
-        }
-
-        switch (mCmdList[mCmd]) {
-            case CMD_ATTACK:
-                onManageActiveAction(ACTIVE_ATTACK);
-                break;
-                case CMD_IDLE:
-              //      setAction(ConstantsSet.UnitAction.ACTION_STOP);
-                    break;
-                case CMD_JUMP:
-                //    setAction(ConstantsSet.UnitAction.ACTION_JUMP)
-                    onManageActiveAction(ACTIVE_JUMP);
-                    break;
-                case CMD_MOVE_LEFT:
-                    onManageActiveAction(ACTIVE_MOVE_LEFT);
-                  //  setAction(ConstantsSet.UnitAction.ACTION_MOVE_LEFT);
-                    break;
-                case CMD_MOVE_RIGHT:
-                    onManageActiveAction(ACTIVE_MOVE_RIGHT);
-                   // setAction(ConstantsSet.UnitAction.ACTION_MOVE_RIGHT);
-                    break;
-
-            }
-
-    }
     @Override
     public void setConfigData(JSONObject p){
         super.setConfigData(p);
@@ -210,29 +142,9 @@ public abstract class AiUnit extends Unit {
         }catch (Exception e){
             e.printStackTrace();
         }
-        this.mActionLocks = new ActionLock[1];
-        setupActionLock(0, beAttackedFrameDuration, new ActionLock() {
-            @Override
-            public void lockFree() {
-                onBeAttackedEnd();
-            }
-        });
     }
 
 
-    public void onBeAttackedEnd() {
-        this.mPassive = PASSIVE_NONE;
-        this.mActive = Unit.ACTIVE_STOP;
-    }
-
-
-    public void dieFinished() {
-        if(!isAlive()){
-             setActive(false);
-             stopAnimation();
-             this.setVisible(false);
-        }
-    }
 
 
 

@@ -67,4 +67,55 @@ public class MovingAi extends AiUnit {
 
     }
 
+    @Override
+    protected void onActiveAttackFinished() {
+
+    }
+
+    @Override
+    protected void onPassiveAttackedFinished() {
+
+    }
+
+    @Override
+    protected void onPassiveDieFinished() {
+
+    }
+
+    @Override
+    protected void onManagedUpdate(float pSecondsElapsed) {
+        super.onManagedUpdate(pSecondsElapsed);
+        updateCmd(pSecondsElapsed);
+
+    }
+    public void updateCmd(float pSecondsElapsed){
+
+        if(!isAlive()) return;
+
+        mCmdElapsed += pSecondsElapsed;
+        if(mCmdElapsed>=mCmdDuList[mCmd]){
+            mCmd++;
+            mCmdElapsed = 0.0f;
+            if(mCmd>=mCmdList.length)
+                mCmd=0;
+        }
+
+        switch (mCmdList[mCmd]) {
+            case CMD_ATTACK:
+                onManageActiveAction(ACTIVE_ATTACK);
+                break;
+            case CMD_IDLE:
+                break;
+            case CMD_JUMP:
+                onManageActiveAction(ACTIVE_JUMP);
+                break;
+            case CMD_MOVE_LEFT:
+                onManageActiveAction(ACTIVE_MOVE_LEFT);
+                break;
+            case CMD_MOVE_RIGHT:
+                onManageActiveAction(ACTIVE_MOVE_RIGHT);
+                break;
+
+        }
+    }
 }

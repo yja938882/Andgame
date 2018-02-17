@@ -47,5 +47,20 @@ public class WaftAi extends AiUnit{
 
     }
 
+    @Override
+    protected void onActiveAttackFinished() {
+
+    }
+
+    @Override
+    protected void onPassiveAttackedFinished() {
+
+    }
+
+    @Override
+    protected void onPassiveDieFinished() {
+
+    }
+
 
 }

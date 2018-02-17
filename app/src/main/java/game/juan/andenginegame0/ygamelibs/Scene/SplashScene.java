@@ -79,7 +79,6 @@ public class SplashScene extends BaseScene {
                     SceneManager.getInstance().loadMainScene();
                     SceneManager.getInstance().createMainScene();
                     SceneManager.getInstance().disposeSplashScene();
-
                 }
                 return false;
             }

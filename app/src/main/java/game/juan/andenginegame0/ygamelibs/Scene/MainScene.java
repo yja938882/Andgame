@@ -14,6 +14,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
+import game.juan.andenginegame0.ygamelibs.Dialogs.GamePauseDialog;
+import game.juan.andenginegame0.ygamelibs.Dialogs.GameSettingDialog;
 import game.juan.andenginegame0.ygamelibs.UI.TextContainer;
 
 import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_HEIGHT;
@@ -35,6 +37,8 @@ public class MainScene extends BaseScene {
     private Sprite prev;
     private Sprite next;
     private Sprite themeTitle;
+
+    private GameSettingDialog gameSettingDialog;
 
     public static int theme = 0;
     public static int stage = -1;
@@ -84,11 +88,23 @@ public class MainScene extends BaseScene {
         this.attachChild(moneyContainer);
         this.attachChild(moneyContainer.getText());
 
-        settingButton = new TextContainer(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("setting_container"),ResourceManager.getInstance().vbom);
+        settingButton = new TextContainer(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("setting_container"),ResourceManager.getInstance().vbom){
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                if(pSceneTouchEvent.isActionDown()){
+                    gameSettingDialog = new GameSettingDialog();
+                    gameSettingDialog.setBackgroundEnabled(false);
+                    SceneManager.getInstance().setDialogScene(gameSettingDialog);
+
+                }
+                return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+            }
+        };
         settingButton.setText(10,50,"setting");
         settingButton.setPosition(CAMERA_WIDTH - settingButton.getWidth(),50);
         settingButton.setTextColor(0.31f,0.28f,0.28f);
         settingButton.setTextScale(0.8f);
+        this.registerTouchArea(settingButton);
         this.attachChild(settingButton);
         this.attachChild(settingButton.getText());
 

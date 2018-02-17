@@ -33,7 +33,6 @@ public abstract class GameEntity extends AnimatedSprite{
     /*===Fields===============================*/
     private Body[] mBodies; // 물리 몸체 배열
     private boolean mActive = false;
-    protected ActionLock[] mActionLocks; //액션 의 시작 , 끝 을 나타내는 Lock
 
 
     /*===Constructor===========================*/
@@ -103,6 +102,7 @@ public abstract class GameEntity extends AnimatedSprite{
         this.setVisible(pActive);
         setIgnoreUpdate(!pActive);
     }
+
     boolean  isActive(){
         return this.mActive;
     }
@@ -140,27 +140,7 @@ public abstract class GameEntity extends AnimatedSprite{
         this.mBodies[pIndex].applyLinearImpulse(pImpulse,mBodies[pIndex].getWorldCenter());
     }
 
-    /*protected void initActionLock(final int pSize)
-    * @pram pSzie 길이의 ActionLock 생성
-    */
-    protected void initActionLock(final int pSize){
 
-        this.mActionLocks = new ActionLock[pSize];
-    }
-
-    /* protected void setupActionLock(final int index, int[] pFrameIndex, long[] pFrameDuration,final ActionLock actionLock)
-    * @param index ActionLock 배열 내에 생성할 위치
-    * @param pFrameDuration 해당 액션락 프레임 시간
-    * @param actionLock 액션 락에 대한 정의
-    */
-    protected void setupActionLock(final int index,long[] pFrameDuration,ActionLock actionLock){
-        float lockLimit = 0f;
-        for(long du : pFrameDuration){
-            lockLimit+=((float)du/1000f);
-        }
-        mActionLocks[index] = actionLock;
-        mActionLocks[index].setMaxCount(lockLimit);
-    }
 
     /*===Abstract Method=======================*/
     public abstract void revive(float pPx, float pPy);
@@ -179,41 +159,6 @@ public abstract class GameEntity extends AnimatedSprite{
         return UniqueBodyVerticesTriangulated;
     }
 
-    /*===Inner Class========================*/
-    public abstract class ActionLock{
-        boolean mActionLock;
-        float mElapsedCount;
-        float mMaxCount;
-        public ActionLock(final float pMaxElapsedCount){
-            mElapsedCount=0;
-            mActionLock = false;
-            this.mElapsedCount = pMaxElapsedCount;
-        }
-        public ActionLock(){
-            mElapsedCount=0;
-            mActionLock=false;
-        }
-        void setMaxCount(float pMaxCount){
-            this.mMaxCount = pMaxCount;
-        }
-        public void onManagedUpdate(float pSecondsElapsed){
-            if(mActionLock){
-                mElapsedCount+=pSecondsElapsed;
-                if(mElapsedCount>=mMaxCount){
-                    mActionLock = false;
-                    mElapsedCount =0;
-                    lockFree();
-                }
-            }
-        }
-        public void lock(){
-            this.mActionLock = true;
-        }
-        public boolean isLocked(){
-            return mActionLock;
-        }
-        public abstract void lockFree();
-    }
 
     public boolean isContactWith(GameEntity pGameEntity, int pOtherBodyIndex){
         return false;

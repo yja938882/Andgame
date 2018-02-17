@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
+import org.andengine.entity.Entity;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
@@ -25,6 +26,7 @@ import game.juan.andenginegame0.ygamelibs.Entity.GameEntity;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.AiBulletData;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.ObjectData;
 import game.juan.andenginegame0.ygamelibs.Entity.Objects.PlayerBulletData;
+import game.juan.andenginegame0.ygamelibs.Entity.Unit.PlayerUnit;
 import game.juan.andenginegame0.ygamelibs.Scene.GameScene;
 
 import static game.juan.andenginegame0.ygamelibs.Data.DataBlock.AI_BLT_CLASS;
@@ -93,6 +95,22 @@ public class Bullet extends GameEntity{
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onManagedUpdate(float pSecondsElapsed) {
+        PlayerUnit playerUnit = EntityManager.getInstance().playerUnit;
+
+
+
+        if(this.getBody(0).getPosition().x < playerUnit.getBody(0).getPosition().x){
+
+        }else{
+
+        }
+
+        super.onManagedUpdate(pSecondsElapsed);
+
     }
 
 }

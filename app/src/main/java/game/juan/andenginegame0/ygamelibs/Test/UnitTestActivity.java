@@ -38,7 +38,7 @@ public class UnitTestActivity extends BaseGameActivity {
     private View 	decorView;
     private int	uiOption;
 
-    private  int dbVersion =133;
+    private  int dbVersion =135;
     String dbName ="config.db";
 
     protected void onCreate(Bundle savedInstanceState) {

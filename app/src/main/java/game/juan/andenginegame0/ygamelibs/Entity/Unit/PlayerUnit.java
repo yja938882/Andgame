@@ -93,8 +93,6 @@ public class PlayerUnit extends Unit {
     private PhysicsConnector physicsConnector;// 손과 스프라이트를 connect
     float handDownSpeed = 10f;
 
-    private boolean invinsible = false;
-
     private Vibrator vibrator;
     private float TEST = 100f;
     /*===Constructor===========================*/
@@ -113,15 +111,7 @@ public class PlayerUnit extends Unit {
     /*===상태 관리============*/
     protected void onManageState(float pSecondsElapsed) {
         attackedParticleEmitter.setCenter(getX()+100,getY()-300);
-        if(invincible){
-            invincibleTimeLimit-=pSecondsElapsed;
-            if(invincibleTimeLimit<=0)
-                invincible = false;
-        }
-        for(ActionLock al:this.mActionLocks){
-            al.onManagedUpdate(pSecondsElapsed);
 
-        }
         super.onManageState(pSecondsElapsed);
 
         this.r.setPosition(
@@ -140,12 +130,7 @@ public class PlayerUnit extends Unit {
 
     @Override
     protected void onManageActiveAction(int active) {
-        for(ActionLock al:this.mActionLocks){
-            if(al.isLocked()){
-                return;
-            }
 
-        }
         super.onManageActiveAction(active);
 
         if (!attackingState) {
@@ -160,38 +145,27 @@ public class PlayerUnit extends Unit {
 
     @Override
     protected void onManagePassiveAction(int active) {
-        for(ActionLock al:this.mActionLocks){
-            if(al.isLocked()){
-                return;
-            }
-        }
         super.onManagePassiveAction(active);
     }
 
     /*===수동적 행동===========*/
     @Override
     protected void onPassiveAttacked() {
-        if(invincible){
+        if(isInvincible()){
             this.mPassive = PASSIVE_NONE;
-
             return;
+        }else{
+            setInvincibleCounter(2f);
         }
-        else{
-            invincible = true;
-            invincibleTimeLimit= 3f;
-        }
+
         if (Build.VERSION.SDK_INT >= 26) {
             this.vibrator.vibrate(VibrationEffect.createOneShot(200,20));
         } else {
             this.vibrator.vibrate(200);
         }
 
-        mActionLocks[ATTACKED_LOCK].lock();
 
         animate(beAttackedFrameDuration,beAttackedFrameIndex,false);
-    }
-    public void onBeAttackedEnd(){
-        this.mPassive = PASSIVE_NONE;
     }
 
     @Override
@@ -206,7 +180,6 @@ public class PlayerUnit extends Unit {
     @Override
     protected void onActiveStop() {
         if (!isInTheAir&&!isJumpLock) {
-            Log.d(TAG,"ONActive Stop");
             getBody(FOOT).setAngularVelocity(0);
             if(idleFrameIndex[0]<=getCurrentTileIndex() && idleFrameIndex[idleFrameIndex.length-1]>=getCurrentTileIndex()){
 
@@ -304,7 +277,7 @@ public class PlayerUnit extends Unit {
 
     @Override
     protected void onActiveAttack() {
-        mActionLocks[ATTACK_LOCK].lock();
+     //   mActionLocks[ATTACK_LOCK].lock();
       //  takeOffWeapon();
         animate(attackFrameDuration,attackFrameIndex,false);
         //setAction(ConstantsSet.UnitAction.ACTION_STOP);
@@ -321,12 +294,23 @@ public class PlayerUnit extends Unit {
         //장착한 무기 사용
         equippedWeapon.use(this.getBody(0).getWorldCenter(), isFlippedHorizontal() ? Unit.ACTIVE_MOVE_LEFT : Unit.ACTIVE_MOVE_RIGHT);
     }
-    public void onAttackEnd(){
 
+    @Override
+    protected void onActiveAttackFinished() {
         this.mActive = Unit.ACTIVE_STOP;
         shoulderJoint.setMotorSpeed(handDownSpeed * -2f);
         attackingState = false;
         attackParticleSystem.setParticlesSpawnEnabled(false);
+    }
+
+    @Override
+    protected void onPassiveAttackedFinished() {
+
+    }
+
+    @Override
+    protected void onPassiveDieFinished() {
+
     }
 
 
@@ -382,12 +366,7 @@ public class PlayerUnit extends Unit {
 
 
     protected void beAttacked() {
-        setInvincible();
-        if (Build.VERSION.SDK_INT >= 26) {
-            this.vibrator.vibrate(VibrationEffect.createOneShot(200, 20));
-        } else {
-            this.vibrator.vibrate(200);
-        }
+
     }
 
 
@@ -459,19 +438,20 @@ public class PlayerUnit extends Unit {
     public void setConfigData(JSONObject pConfigData) {
         super.setConfigData(pConfigData);
 
-        this.mActionLocks = new ActionLock[2];
-        setupActionLock(ATTACK_LOCK, attackFrameDuration, new ActionLock() {
-            @Override
-            public void lockFree() {
-                onAttackEnd();
-            }
-        });
-        setupActionLock(ATTACKED_LOCK, beAttackedFrameDuration, new ActionLock() {
-            @Override
-            public void lockFree() {
-                onBeAttackedEnd();
-            }
-        });
+        //  this.mActionLocks = new ActionLock[2];
+        // setupActionLock(ATTACK_LOCK, attackFrameDuration, new ActionLock() {
+        //   @Override
+        // public void lockFree() {
+        //   onAttackEnd();
+        //}
+        //});
+        //setupActionLock(ATTACKED_LOCK, beAttackedFrameDuration, new ActionLock() {
+        //  @Override
+        //public void lockFree() {
+        //  onBeAttackedEnd();
+        //}
+        //});
+        //}
     }
 
     public void onBeAttackedStart(){

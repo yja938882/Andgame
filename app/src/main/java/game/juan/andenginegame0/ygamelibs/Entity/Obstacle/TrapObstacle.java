@@ -137,7 +137,7 @@ public class TrapObstacle extends GameEntity{
                 return;
             }
             isTemp = true;
-            createActionLock();
+          //  createActionLock();
             JSONArray fi = pConfigData.getJSONArray("animFrameIndex");
             JSONArray fd = pConfigData.getJSONArray("animFrameDuration");
 
@@ -177,7 +177,7 @@ public class TrapObstacle extends GameEntity{
             e.printStackTrace();
         }
     }
-
+/*
     public void createActionLock(){
         this.mActionLocks = new ActionLock[LOCK_SIZE];
 
@@ -188,8 +188,7 @@ public class TrapObstacle extends GameEntity{
             }
         };
 
-    }
-
+    }*/
 
     public void hitFinished(){
 

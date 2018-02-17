@@ -72,4 +72,19 @@ public class GroundAi extends AiUnit{
 
     }
 
+    @Override
+    protected void onActiveAttackFinished() {
+
+    }
+
+    @Override
+    protected void onPassiveAttackedFinished() {
+
+    }
+
+    @Override
+    protected void onPassiveDieFinished() {
+
+    }
+
 }

@@ -74,4 +74,19 @@ public class JumpAi extends AiUnit {
     protected void onActiveAttack() {
 
     }
+
+    @Override
+    protected void onActiveAttackFinished() {
+
+    }
+
+    @Override
+    protected void onPassiveAttackedFinished() {
+
+    }
+
+    @Override
+    protected void onPassiveDieFinished() {
+
+    }
 }

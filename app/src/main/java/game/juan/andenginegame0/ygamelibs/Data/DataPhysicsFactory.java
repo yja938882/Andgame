@@ -47,6 +47,7 @@ public class DataPhysicsFactory implements ConstantsSet.Classify , ConstantsSet.
             case ENTITY|UNIT|AI|FOOT:
                 category = AI_FOOT_CATG_BITS;
                 mask = AI_FOOT_MASK_BITS;
+                friction=1f;
                 break;
             case ENTITY|OBJECT|AI|BULLET:
                 category = AI_BULLET_CATG_BITS;
