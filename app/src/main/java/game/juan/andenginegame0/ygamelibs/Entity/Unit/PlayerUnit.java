@@ -305,7 +305,9 @@ public class PlayerUnit extends Unit {
 
     @Override
     protected void onPassiveAttackedFinished() {
-
+        this.getBody(0).setLinearVelocity(0,0);
+        this.getBody(1).setAngularVelocity(0f);
+        this.getBody(1).setLinearVelocity(0,0);
     }
 
     @Override

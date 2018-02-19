@@ -179,7 +179,7 @@
       "data":
       {
         "anim"  : "no",
-        "body"  : "vertices",   "body_vx":[-16,-16,16,16],"body_vy":[-16,16,16,-16],
+        "body"  : "vertices",   "body_vx":[-16,-16,16,16],"body_vy":[-4,4,4,-4],
         "animFrameIndex":[0,1,2,3,4], "animFrameDuration":[25,25,25,25,25],
         "animLock":"strong",
 

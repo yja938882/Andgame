@@ -79,9 +79,9 @@ public class ShootingAi extends  AiUnit {
         animate(attackFrameDuration,attackFrameIndex,false);
         this.getBody(0).setAngularVelocity(0);
         if(this.isFlippedHorizontal()){
-            POWER.set(-7,0);
+            POWER.set(-3,0);
         }else{
-            POWER.set(7,0);
+            POWER.set(3,0);
         }
         this.bullet.shot(this.getBody(0).getWorldCenter(),POWER);
     }
@@ -93,7 +93,9 @@ public class ShootingAi extends  AiUnit {
 
     @Override
     protected void onPassiveAttackedFinished() {
-
+        this.getBody(0).setLinearVelocity(0,0);
+        this.getBody(1).setAngularVelocity(0f);
+        this.getBody(1).setLinearVelocity(0,0);
     }
 
     @Override

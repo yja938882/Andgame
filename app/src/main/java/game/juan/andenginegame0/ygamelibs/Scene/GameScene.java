@@ -81,11 +81,11 @@ public class GameScene extends BaseScene {
 
         this.sortChildren();
         //For debugging
-       // DebugRenderer dr = new DebugRenderer(world.getWorld(),vbom);
-       // dr.setColor(Color.BLUE);
-       // dr.setDrawBodies(true);
-       // dr.setDrawJoints(true);
-       // this.attachChild(dr);
+        DebugRenderer dr = new DebugRenderer(world.getWorld(),vbom);
+        dr.setColor(Color.BLUE);
+        dr.setDrawBodies(true);
+        dr.setDrawJoints(true);
+        this.attachChild(dr);
     }
 
     @Override

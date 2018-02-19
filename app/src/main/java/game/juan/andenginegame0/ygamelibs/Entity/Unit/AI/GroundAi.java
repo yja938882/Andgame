@@ -24,9 +24,7 @@ public class GroundAi extends AiUnit{
 
     }
 
-    void attack() {
 
-    }
 
     @Override
     protected void onActiveMoveRight() {

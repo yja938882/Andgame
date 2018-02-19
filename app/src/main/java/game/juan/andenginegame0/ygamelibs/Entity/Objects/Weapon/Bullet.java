@@ -58,7 +58,15 @@ public class Bullet extends GameEntity{
     }
 
     public void shot(Vector2 from, Vector2 to){
+        //float angle = (float)Math.atan((to.y-from.y)/(to.x - from.x));
+        //this.setRotation((float)Math.toDegrees((double)angle));
+        if(to.x-from.x>0){
+            this.setFlippedHorizontal(false);
+        }else{
+            this.setFlippedHorizontal(true);
+        }
         this.getBody(0).setTransform(from.x,from.y,0);
+        this.getBody(0).setAngularVelocity(0);
         this.setLinearVelocity(0,0,0);
         this.getBody(0).setLinearVelocity(0,0);
         this.setVisible(true);

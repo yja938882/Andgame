@@ -23,6 +23,7 @@ import game.juan.andenginegame0.ygamelibs.Util.Algorithm;
 
 /**
  * Created by juan on 2017. 11. 25..
+ *
  */
 
 public abstract class AiUnit extends Unit {
@@ -78,7 +79,7 @@ public abstract class AiUnit extends Unit {
             setInvincibleCounter(1f);
         }
       // this.getBody(0).setLinearVelocity(this.getBody(0).getLinearVelocity().x,);
-        this.getBody(1).setAngularVelocity(0);
+      //  this.getBody(1).setAngularVelocity(0);
         animate(beAttackedFrameDuration,beAttackedFrameIndex,false);
         mActive = Unit.ACTIVE_STOP;
         mPassive = Unit.PASSIVE_NONE;
@@ -98,7 +99,8 @@ public abstract class AiUnit extends Unit {
       //  PlayerData ud = new PlayerData(pDataBlock.getClassifyData(),pDataBlock.getType(),(int)(pDataBlock.getPosX()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),(int)(pDataBlock.getPosY()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT));
         AiData aiData = new AiData(pDataBlock.getClassifyData(),pDataBlock.getType(),(int)(pDataBlock.getPosX()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),(int)(pDataBlock.getPosY()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT));
         setupBody(2);
-        createUnit(pGameScene,aiData,new AiData(DataBlock.PLAYER_FOOT_CLASS,pDataBlock.getType(),(int)(pDataBlock.getPosX()),(int)pDataBlock.getPosY()));
+        //createUnit(pGameScene,aiData);
+         createUnit(pGameScene,aiData,new AiData(DataBlock.PLAYER_FOOT_CLASS,pDataBlock.getType(),(int)(pDataBlock.getPosX()),(int)pDataBlock.getPosY()));
         this.mCmdDuList = ( (AiData)pDataBlock).getCmdDu();
         this.mCmdList = ((AiData)pDataBlock).getCmdList();
         pGameScene.attachChild(this.hpBar);

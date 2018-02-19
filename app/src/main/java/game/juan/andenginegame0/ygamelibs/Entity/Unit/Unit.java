@@ -72,8 +72,8 @@ public abstract class Unit extends GameEntity{
 
     private Vector2[] bodyShape;
     private Vector2[] footShape;
-    private int bodySType;
-    private int footSType;
+    private int bodySType = NONE_SHAPE;
+    private int footSType = NONE_SHAPE;
 
     protected int mActive = ACTIVE_STOP; //유닛이 입력에 의해 실행할 액션
     protected int mPassive = PASSIVE_NONE; //유닛이 상태에 의해 실행할 액션
@@ -272,9 +272,7 @@ public abstract class Unit extends GameEntity{
         }
         return (maxY -minY)/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
     }
-
-    public void createUnit(GameScene pGameScene ,UnitData pBodyData){
-        setupBody(1);
+    public void createUnit(GameScene pGameScene , UnitData pBodyData){
         switch (bodySType){
             case VERTICAL_SHAPE:
                 createVerticesBody(pGameScene,BODY,pBodyData,bodyShape, BodyDef.BodyType.DynamicBody);
@@ -282,9 +280,10 @@ public abstract class Unit extends GameEntity{
             case CIRCLE_SHAPE:
                 createCircleBody(pGameScene,BODY,pBodyData,bodyShape, BodyDef.BodyType.DynamicBody);
                 break;
-
+            case NONE_SHAPE:
+                break;
         }
-        transform(pBodyData.getPosX(),pBodyData.getPosY());
+        getBody(0).setFixedRotation(true);
     }
     public void createUnit(GameScene pGameScene , UnitData pBodyData, UnitData pFootData){
         switch (bodySType){
@@ -293,6 +292,8 @@ public abstract class Unit extends GameEntity{
                 break;
             case CIRCLE_SHAPE:
                 createCircleBody(pGameScene,BODY,pBodyData,bodyShape, BodyDef.BodyType.DynamicBody);
+                break;
+            case NONE_SHAPE:
                 break;
         }
 
@@ -303,18 +304,22 @@ public abstract class Unit extends GameEntity{
             case CIRCLE_SHAPE:
                 createCircleBody(pGameScene,FOOT,pFootData,footShape, BodyDef.BodyType.DynamicBody);
                 break;
+            case NONE_SHAPE:
+                break;
         }
         float bodyHeight = getHeightOfShape(bodySType,bodyShape);
-
+       // getBody(FOOT).setAngularDamping(200f);
         getBody(BODY).setFixedRotation(true);
 
-        RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
-        revoluteJointDef.initialize(getBody(BODY),getBody(FOOT),getBody(BODY).getWorldCenter());
-        revoluteJointDef.enableMotor=true;
-        revoluteJointDef.motorSpeed = 10f;
-        revoluteJointDef.localAnchorA.set(0,bodyHeight/2);
-        revoluteJointDef.localAnchorB.set(0,0);
-        pGameScene.getWorld().createJoint(revoluteJointDef);
+
+            RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
+            revoluteJointDef.initialize(getBody(BODY), getBody(FOOT), getBody(BODY).getWorldCenter());
+            revoluteJointDef.enableMotor = true;
+            revoluteJointDef.motorSpeed = 10f;
+            revoluteJointDef.localAnchorA.set(0, bodyHeight / 2);
+            revoluteJointDef.localAnchorB.set(0, 0);
+            pGameScene.getWorld().createJoint(revoluteJointDef);
+
 
 
         transform(pBodyData.getPosX(),pBodyData.getPosY());
@@ -347,10 +352,12 @@ public abstract class Unit extends GameEntity{
             switch (bodyType){
                 case "vertices" : bodySType = VERTICAL_SHAPE; break;
                 case "circle": bodySType = CIRCLE_SHAPE; break;
+                case "none": bodySType = NONE_SHAPE; break;
             }
             switch (footType){
                 case "vertices" : footSType = VERTICAL_SHAPE; break;
                 case "circle"   : footSType = CIRCLE_SHAPE; break;
+                case "none" : footSType = NONE_SHAPE;
             }
         }catch (Exception e){
             e.printStackTrace();
