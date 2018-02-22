@@ -236,6 +236,35 @@ public class DBManager extends SQLiteOpenHelper{
         }
     }
 
+    public JSONObject getPlayerStatData(SQLiteDatabase db){
+        JSONObject statObject=null;
+        try{
+            StringBuilder SQL_select_PlayerStatData = new StringBuilder("select ");
+            SQL_select_PlayerStatData.append(PlayerTable.STAT);
+            SQL_select_PlayerStatData.append(" from ");
+            SQL_select_PlayerStatData.append(PLAYER_TABLE);
+            SQL_select_PlayerStatData.append(" where ");
+            SQL_select_PlayerStatData.append(PlayerTable.KEY_NAME);
+            SQL_select_PlayerStatData.append(" = '");
+            SQL_select_PlayerStatData.append(PlayerTable.PLAYER_PRIMARY_KEY);
+            SQL_select_PlayerStatData.append("';");
+            Cursor cursor = db.rawQuery(SQL_select_PlayerStatData.toString(),null);
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()){
+                try {
+                    statObject = new JSONObject(cursor.getString(0));
+                    cursor.moveToNext();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+            cursor.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return statObject;
+    }
+
     /* private void loadItemData(SQLiteDatabase db)
     * @param db 에 아이템 데이터를 로드 시킨다
     */
@@ -283,6 +312,57 @@ public class DBManager extends SQLiteOpenHelper{
 
         return gamedata;
     }
+    int getPlayerLevel(SQLiteDatabase db){
+        StringBuilder SQL_selectPlayerLevel = new StringBuilder("select ");
+        SQL_selectPlayerLevel.append(PlayerTable.LEVEL);
+        SQL_selectPlayerLevel.append(" from ");
+        SQL_selectPlayerLevel.append(PLAYER_TABLE);
+        SQL_selectPlayerLevel.append(" where ");
+        SQL_selectPlayerLevel.append(PlayerTable.KEY_NAME);
+        SQL_selectPlayerLevel.append(" ='");
+        SQL_selectPlayerLevel.append(PlayerTable.PLAYER_PRIMARY_KEY);
+        SQL_selectPlayerLevel.append("';");
+
+        Cursor cursor = db.rawQuery(SQL_selectPlayerLevel.toString(),null);
+        cursor.moveToFirst();
+        int level = -1;
+        while(!cursor.isAfterLast()){
+            try{
+                level = cursor.getInt(0);
+                cursor.moveToNext();
+            }catch (Exception e){
+                Log.d(TAG, "error getPlayerLevel "+e.getMessage());
+            }
+        }
+        cursor.close();
+        return level;
+    }
+    int getPlayerMoney(SQLiteDatabase db){
+        StringBuilder SQL_selectPlayerMoney = new StringBuilder("select ");
+        SQL_selectPlayerMoney.append(PlayerTable.MONEY);
+        SQL_selectPlayerMoney.append(" from ");
+        SQL_selectPlayerMoney.append(PLAYER_TABLE);
+        SQL_selectPlayerMoney.append(" where ");
+        SQL_selectPlayerMoney.append(PlayerTable.KEY_NAME);
+        SQL_selectPlayerMoney.append(" ='");
+        SQL_selectPlayerMoney.append(PlayerTable.PLAYER_PRIMARY_KEY);
+        SQL_selectPlayerMoney.append("';");
+
+        Cursor cursor = db.rawQuery(SQL_selectPlayerMoney.toString(),null);
+        cursor.moveToFirst();
+        int money = -1;
+        while(!cursor.isAfterLast()){
+            try{
+                money = cursor.getInt(0);
+                cursor.moveToNext();
+            }catch (Exception e){
+                Log.d(TAG, "error getPlayerLevel "+e.getMessage());
+            }
+        }
+        cursor.close();
+        return money;
+    }
+
     public JSONObject getPlayerConfigJSON(SQLiteDatabase db){
         JSONObject object=null;
         String sql = "select * from "+PLAYER_TABLE+" where "+PlayerTable.KEY_NAME+" ='"+PlayerTable.PLAYER_PRIMARY_KEY+"';";
@@ -383,6 +463,7 @@ public class DBManager extends SQLiteOpenHelper{
             try {
                 JSONObject object= new JSONObject(cursor.getString(2));
                 object.put("id",cursor.getString(0));
+                object.put("src","object/players/"+object.getString("src"));
                 array.add(object);
                 cursor.moveToNext();
             }catch (Exception e){

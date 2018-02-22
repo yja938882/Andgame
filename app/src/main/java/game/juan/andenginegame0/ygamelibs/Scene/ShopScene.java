@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DBManager;
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 import game.juan.andenginegame0.ygamelibs.Dialogs.ShopBuyItemDialog;
@@ -20,6 +21,7 @@ import game.juan.andenginegame0.ygamelibs.Dynamics.GameItem.PlayerItem;
 import game.juan.andenginegame0.ygamelibs.Dynamics.GameItem.PlayerItemContainer;
 import game.juan.andenginegame0.ygamelibs.Dynamics.ShopItem.ShopItem;
 import game.juan.andenginegame0.ygamelibs.Dynamics.ShopItem.ShopItemContainer;
+import game.juan.andenginegame0.ygamelibs.UI.ContainerUI.TextContainer;
 
 /**
  * Created by juan on 2018. 1. 14..
@@ -28,13 +30,15 @@ import game.juan.andenginegame0.ygamelibs.Dynamics.ShopItem.ShopItemContainer;
 public class ShopScene extends BaseScene{
     /*===Constants===================*/
     private final float SHOP_ITEM_CONTAINER_X =40f;
-    private final float SHOP_ITEM_CONTAINER_Y =40f;
+    private final float SHOP_ITEM_CONTAINER_Y =60f;
 
     private final float PLAYER_ITEM_CONTAINER_X = 480f;
-    private final float PLAYER_ITEM_CONTAINER_Y = 40f;
+    private final float PLAYER_ITEM_CONTAINER_Y = 60f;
     ShopItemContainer sellItemContainer;
     PlayerItemContainer playerItemContainer;
 
+    private TextContainer levelContainer;
+    private TextContainer moneyContainer;
 
     @Override
     public void createScene() {
@@ -86,7 +90,7 @@ public class ShopScene extends BaseScene{
         this.registerTouchArea(playerItemContainer);
         this.attachChild(playerItemContainer);
 
-        Rectangle CLOSE = new Rectangle(100,300,50,50,ResourceManager.getInstance().vbom){
+        Rectangle CLOSE = new Rectangle(ConstantsSet.CAMERA_WIDTH- 70,20,50,50,ResourceManager.getInstance().vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if(pSceneTouchEvent.isActionDown()){
@@ -100,6 +104,15 @@ public class ShopScene extends BaseScene{
         };
         this.registerTouchArea(CLOSE);
         this.attachChild(CLOSE);
+
+        levelContainer = new TextContainer(10,10,ResourceManager.getInstance().gfxTextureRegionHashMap.get("level_container"),ResourceManager.getInstance().vbom);
+        levelContainer.setText(50,12,""+DataManager.getInstance().getPlayerLevel());
+        levelContainer.attachTo(this);
+
+        moneyContainer = new TextContainer(140,10,ResourceManager.getInstance().gfxTextureRegionHashMap.get("coin_container"),ResourceManager.getInstance().vbom);
+        moneyContainer.setText(50,12,""+DataManager.getInstance().getPlayerMoney());
+        moneyContainer.attachTo(this);
+
     }
 
     @Override
@@ -116,6 +129,12 @@ public class ShopScene extends BaseScene{
     public void disposeScene() {
         playerItemContainer.removeAllItem();
         sellItemContainer.removeAllItem();
+
+        levelContainer.detachSelf();
+        levelContainer.dispose();
+
+        moneyContainer.detachSelf();
+        moneyContainer.dispose();
 
         this.detachSelf();
         this.dispose();

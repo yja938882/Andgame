@@ -22,8 +22,6 @@ import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_WIDTH;
 public class GamePauseDialog extends BaseScene {
     private static final float SCENE_WIDTH = 400;
     private static final float SCENE_HEIGHT = 300;
-   // private static final float SCENE_X = (CAMERA_WIDTH - SCENE_WIDTH)/2f;
-   // private static final float SCENE_Y = (CAMERA_HEIGHT - SCENE_HEIGHT)/2f;
     private float SCENE_X;
     private float SCENE_Y;
 

@@ -73,7 +73,7 @@ public class PlayerUnit extends Unit {
     private PointParticleEmitter movingParticleEmitter; //움직임 효과 파티클 생성기
 
     private BatchedSpriteParticleSystem attackedParticleSystem; // 피해 효과 파티클 시스템
-    private RectangleParticleEmitter attackedParticleEmitter; // 피해 효과 파티클 생성기
+    private PointParticleEmitter attackedParticleEmitter; // 피해 효과 파티클 생성기
 
     private BatchedSpriteParticleSystem attackParticleSystem; // 공격 효과 파티클 시스템
     private PointParticleEmitter attackParticleEmitter; // 공격 효과 파티클 생성기
@@ -110,7 +110,7 @@ public class PlayerUnit extends Unit {
 
     /*===상태 관리============*/
     protected void onManageState(float pSecondsElapsed) {
-        attackedParticleEmitter.setCenter(getX()+100,getY()-300);
+        //attackedParticleEmitter.setCenter(getX()+100,getY()-300);
 
         super.onManageState(pSecondsElapsed);
 
@@ -157,6 +157,8 @@ public class PlayerUnit extends Unit {
         }else{
             setInvincibleCounter(2f);
         }
+        this.attackedParticleEmitter.setCenter(this.getBody(0).getPosition().x*32f,this.getBody(0).getPosition().y*32f);
+        attackedParticleSystem.setParticlesSpawnEnabled(true);
 
         if (Build.VERSION.SDK_INT >= 26) {
             this.vibrator.vibrate(VibrationEffect.createOneShot(200,20));
@@ -305,6 +307,7 @@ public class PlayerUnit extends Unit {
 
     @Override
     protected void onPassiveAttackedFinished() {
+        this.attackedParticleSystem.setParticlesSpawnEnabled(false);
         this.getBody(0).setLinearVelocity(0,0);
         this.getBody(1).setAngularVelocity(0f);
         this.getBody(1).setLinearVelocity(0,0);
@@ -367,10 +370,6 @@ public class PlayerUnit extends Unit {
     }
 
 
-    protected void beAttacked() {
-
-    }
-
 
     public void setMovingParticleSystem(GameScene pGameScene) {
         movingParticleEmitter = new PointParticleEmitter(0, 0);
@@ -388,7 +387,7 @@ public class PlayerUnit extends Unit {
 
         pGameScene.attachChild(movingParticleSystem);
         movingParticleSystem.setParticlesSpawnEnabled(false);
-
+/*
         //attackedParticleEmitter = new PointParticleEmitter(0, 0);
         attackedParticleEmitter = new RectangleParticleEmitter(0,0,CAMERA_WIDTH*1.5f,CAMERA_HEIGHT*1.5f);
         this.attackedParticleSystem = new BatchedSpriteParticleSystem(attackedParticleEmitter,
@@ -405,7 +404,25 @@ public class PlayerUnit extends Unit {
         attackedParticleSystem.addParticleModifier(new RotationParticleModifier<UncoloredSprite>(0f,10f,0.0f,90f));
         //attackedParticleEmitter.setCenter(500, 200);
         attackedParticleSystem.setParticlesSpawnEnabled(true);
+        pGameScene.attachChild(attackedParticleSystem);*/
+
+        attackedParticleEmitter = new PointParticleEmitter(0,0);
+        this.attackedParticleSystem = new BatchedSpriteParticleSystem(attackedParticleEmitter,
+                10, 20, 50,
+                ResourceManager.getInstance().gfxTextureRegionHashMap.get("player_attacked_particle"), ResourceManager.getInstance().vbom);
+        attackedParticleSystem.addParticleInitializer(new RotationParticleInitializer<UncoloredSprite>(-90f,90f));
+        attackedParticleSystem.addParticleInitializer(new VelocityParticleInitializer<UncoloredSprite>(-100, 100, -100, 100));
+        attackedParticleSystem.addParticleInitializer(new AccelerationParticleInitializer<UncoloredSprite>(-10, 10, -10, 10));
+        attackedParticleSystem.addParticleInitializer(new ExpireParticleInitializer<UncoloredSprite>(0.5f));
+        attackedParticleSystem.addParticleInitializer(new ScaleParticleInitializer<UncoloredSprite>(0.5f, 1f));
+        attackedParticleSystem.addParticleModifier(new ScaleParticleModifier<UncoloredSprite>(0f, 1f, 0.8f, 1.5f));
+        //attackedParticleSystem.addParticleModifier(new AlphaParticleModifier<UncoloredSprite>(0, 1, 0.6f, 0.5f));
+
+        attackedParticleSystem.addParticleModifier(new RotationParticleModifier<UncoloredSprite>(0f,10f,0.0f,90f));
+        //attackedParticleEmitter.setCenter(500, 200);
+        attackedParticleSystem.setParticlesSpawnEnabled(false);
         pGameScene.attachChild(attackedParticleSystem);
+
 
         attackParticleEmitter = new PointParticleEmitter(0,0);
         this.attackParticleSystem = new BatchedSpriteParticleSystem(attackParticleEmitter,10,100,100,
@@ -440,25 +457,8 @@ public class PlayerUnit extends Unit {
     public void setConfigData(JSONObject pConfigData) {
         super.setConfigData(pConfigData);
 
-        //  this.mActionLocks = new ActionLock[2];
-        // setupActionLock(ATTACK_LOCK, attackFrameDuration, new ActionLock() {
-        //   @Override
-        // public void lockFree() {
-        //   onAttackEnd();
-        //}
-        //});
-        //setupActionLock(ATTACKED_LOCK, beAttackedFrameDuration, new ActionLock() {
-        //  @Override
-        //public void lockFree() {
-        //  onBeAttackedEnd();
-        //}
-        //});
-        //}
     }
 
-    public void onBeAttackedStart(){
-
-    }
 
     public boolean isAttacking(){
         return attackingState;

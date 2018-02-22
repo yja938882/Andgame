@@ -1,22 +1,14 @@
 package game.juan.andenginegame0.ygamelibs.Scene;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
-import org.andengine.util.color.Color;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
-import game.juan.andenginegame0.ygamelibs.Dialogs.GamePauseDialog;
 import game.juan.andenginegame0.ygamelibs.Dialogs.GameSettingDialog;
-import game.juan.andenginegame0.ygamelibs.UI.TextContainer;
+import game.juan.andenginegame0.ygamelibs.UI.ContainerUI.TextContainer;
 
 import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_HEIGHT;
 import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_WIDTH;
@@ -27,6 +19,7 @@ import static game.juan.andenginegame0.ygamelibs.Data.ConstantsSet.CAMERA_WIDTH;
  */
 
 public class MainScene extends BaseScene {
+   // private TextContainer levelContainer;
     private TextContainer levelContainer;
     private TextContainer moneyContainer;
     private TextContainer shopButton;
@@ -45,6 +38,8 @@ public class MainScene extends BaseScene {
     private static final String TAG ="[cheep] MainScene";
     @Override
     public void createScene() {
+        Log.d(TAG,DataManager.getInstance().getPlayerStat().toString());
+
         Log.d(TAG,"createScene");//79,73,71
         Background background = new Background(0.31f,0.28f,0.28f);
         this.setBackground(background);
@@ -78,15 +73,13 @@ public class MainScene extends BaseScene {
         next.setPosition(themeContainer.getX() + themeContainer.getWidth()+10, themeContainer.getY()+(themeContainer.getHeight() - prev.getHeight())/2);
         this.attachChild(next);
 
-        levelContainer = new TextContainer(10,10, ResourceManager.getInstance().gfxTextureRegionHashMap.get("level_container"),ResourceManager.getInstance().vbom);
-        levelContainer.setText(50,12,"1");
-        this.attachChild(levelContainer);
-        this.attachChild(levelContainer.getText());
+        levelContainer = new TextContainer(10,10,ResourceManager.getInstance().gfxTextureRegionHashMap.get("level_container"),ResourceManager.getInstance().vbom);
+        levelContainer.setText(50,12,""+DataManager.getInstance().getPlayerLevel());
+        levelContainer.attachTo(this);
 
         moneyContainer = new TextContainer( 140, 10, ResourceManager.getInstance().gfxTextureRegionHashMap.get("coin_container"),ResourceManager.getInstance().vbom);
-        moneyContainer.setText(50,12,"1000");
-        this.attachChild(moneyContainer);
-        this.attachChild(moneyContainer.getText());
+        moneyContainer.setText(50,12,""+DataManager.getInstance().getPlayerMoney());
+        moneyContainer.attachTo(this);
 
         settingButton = new TextContainer(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("setting_container"),ResourceManager.getInstance().vbom){
             @Override
@@ -126,11 +119,21 @@ public class MainScene extends BaseScene {
         this.attachChild(shopButton);
         this.attachChild(shopButton.getText());
 
-        statusButton = new TextContainer(150,300,ResourceManager.getInstance().gfxTextureRegionHashMap.get("status_container"),ResourceManager.getInstance().vbom);
+        statusButton = new TextContainer(150,300,ResourceManager.getInstance().gfxTextureRegionHashMap.get("status_container"),ResourceManager.getInstance().vbom){
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                if(pSceneTouchEvent.isActionDown()){
+                    SceneManager.getInstance().createLoadingScene(SceneManager.SceneType.STAT);
+                    SceneManager.getInstance().disposeMainScene();
+                }
+                return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+            }
+        };
         statusButton.setText(10,80,"status");
         statusButton.setPosition(150,CAMERA_HEIGHT - statusButton.getHeight());
         statusButton.setTextColor(0.31f,0.28f,0.28f);
         statusButton.setTextScale(0.8f);
+        this.registerTouchArea(statusButton);
         this.attachChild(statusButton);
         this.attachChild(statusButton.getText());
 
@@ -149,19 +152,14 @@ public class MainScene extends BaseScene {
 
     @Override
     public void disposeScene() {
-        this.levelContainer.getText().detachSelf();
         this.levelContainer.detachSelf();
 
-        this.moneyContainer.getText().detachSelf();
         this.moneyContainer.detachSelf();
 
-        this.shopButton.getText().detachSelf();
         this.shopButton.detachSelf();
 
-        this.statusButton.getText().detachSelf();
         this.statusButton.detachSelf();
 
-        this.settingButton.getText().detachSelf();
         this.settingButton.detachSelf();
 
         this.themeContainer.detachSelf();

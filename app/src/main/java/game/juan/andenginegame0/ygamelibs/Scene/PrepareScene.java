@@ -2,14 +2,17 @@ package game.juan.andenginegame0.ygamelibs.Scene;
 
 import com.badlogic.gdx.math.Vector2;
 
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.util.color.Color;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import game.juan.andenginegame0.ygamelibs.Data.ConstantsSet;
 import game.juan.andenginegame0.ygamelibs.Data.DataManager;
 import game.juan.andenginegame0.ygamelibs.Dynamics.GameItem.PlayerItem;
 
@@ -23,6 +26,7 @@ public class PrepareScene extends BaseScene {
     private PickItemContainer pickItemContainer;
     private BagContainer bagContainer;
     private Sprite startBtn;
+    private Rectangle back;
 
     @Override
     public void createScene() {
@@ -68,6 +72,23 @@ public class PrepareScene extends BaseScene {
 
         bagContainer = new BagContainer(500,100,ResourceManager.getInstance().gfxTextureRegionHashMap.get("shop_container"),ResourceManager.getInstance().vbom);
         this.attachChild(bagContainer);
+
+        back = new Rectangle(ConstantsSet.CAMERA_WIDTH-200,ConstantsSet.CAMERA_HEIGHT-70,
+                50,50,ResourceManager.getInstance().vbom){
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                if(pSceneTouchEvent.isActionDown()){
+
+                    SceneManager.getInstance().loadMainScene();
+                    SceneManager.getInstance().createMainScene();
+                    SceneManager.getInstance().disposePrepareScene();
+                }
+                return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+            }
+        };
+        back.setColor(Color.WHITE);
+        this.registerTouchArea(back);
+        this.attachChild(back);
     }
 
     @Override
@@ -82,7 +103,15 @@ public class PrepareScene extends BaseScene {
 
     @Override
     public void disposeScene() {
+        this.pickItemContainer.removeAllItem();
+        bagContainer.detachSelf();
+        bagContainer.dispose();
 
+        startBtn.detachSelf();
+        startBtn.dispose();
+
+        this.detachSelf();
+        this.dispose();
     }
 
 

@@ -1,10 +1,10 @@
 {
 
   "id":"player",
-  "level":1,
+  "level":7,
   "exp":0,
   "play_count":5,
-  "money":1000,
+  "money":500,
   "stat" :
   {
     "jump":1,

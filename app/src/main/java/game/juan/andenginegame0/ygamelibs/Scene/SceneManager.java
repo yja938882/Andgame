@@ -23,6 +23,7 @@ public class SceneManager {
         GAME,
         MAIN,
         SHOP,
+        STAT,
         INVEN,
         LOADING,
         PREPARE
@@ -34,6 +35,7 @@ public class SceneManager {
     private BaseScene invenScene;
     private BaseScene loadingScene;
     private BaseScene prepareScene;
+    private BaseScene statScene;
 
     private BaseScene currentScene;
     private BaseScene currentDialog;
@@ -69,6 +71,9 @@ public class SceneManager {
                 break;
             case PREPARE:
                 setScene(prepareScene);
+                break;
+            case STAT:
+               // setScene();
                 break;
         }
     }
@@ -198,6 +203,17 @@ public class SceneManager {
         shopScene.disposeScene();
         shopScene = null;
 
+    }
+
+    /*===Stat Scene ============*/
+    void loadStatScene(){
+        Log.d(TAG,"loadStatScene");
+
+    }
+    void createStatScene(){
+        Log.d(TAG,"createStatScene");
+        statScene = new StatusScene();
+        setScene(statScene);
     }
 
     public static int BAG_DATA = 0;

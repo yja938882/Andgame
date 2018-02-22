@@ -146,7 +146,29 @@ public abstract class AiUnit extends Unit {
         }
     }
 
+    public void updateCmd(int currentCmd){
 
+        if(!isAlive()) return;
+
+
+        switch (currentCmd) {
+            case CMD_ATTACK:
+                onManageActiveAction(ACTIVE_ATTACK);
+                break;
+            case CMD_IDLE:
+                break;
+            case CMD_JUMP:
+                onManageActiveAction(ACTIVE_JUMP);
+                break;
+            case CMD_MOVE_LEFT:
+                onManageActiveAction(ACTIVE_MOVE_LEFT);
+                break;
+            case CMD_MOVE_RIGHT:
+                onManageActiveAction(ACTIVE_MOVE_RIGHT);
+                break;
+
+        }
+    }
 
 
 

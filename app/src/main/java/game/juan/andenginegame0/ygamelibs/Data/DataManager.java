@@ -415,6 +415,10 @@ public class DataManager implements ConstantsSet{
         shopItemList=dbManager.getAllSellingItem(db); //상점에서 판매하는 아이템 정보 로딩
 
     }
+    public JSONObject getPlayerStat(){
+        SQLiteDatabase db = dbManager.getReadableDatabase();
+        return dbManager.getPlayerStatData(db);
+    }
 
     public ArrayList<JSONObject> inventoryList = null;
     public void loadInventoryData(){
@@ -439,7 +443,14 @@ public class DataManager implements ConstantsSet{
         }catch (Exception e){
             e.printStackTrace();
         }
-
+    }
+    public int getPlayerLevel(){
+        SQLiteDatabase db = dbManager.getReadableDatabase();
+        return dbManager.getPlayerLevel(db);
+    }
+    public int getPlayerMoney(){
+        SQLiteDatabase db = dbManager.getReadableDatabase();
+        return dbManager.getPlayerMoney(db);
     }
 
     /* 아이템을 구입한다

@@ -117,7 +117,7 @@
         "movingFrameDuration" :[25 ,50 ,50],
         "movingLock"          : "none",
         "attackFrameIndex"    :[12  ,13 ,14 ,15 ,16],
-        "attackFrameDuration" :[200  ,200,200,200,200],
+        "attackFrameDuration" :[600  ,300,300,300,300],
         "attackLock"          : "soft",
         "dieFrameIndex"       :[20],
         "dieFrameDuration"    :[50],
@@ -136,10 +136,47 @@
         "col"                   : 6,
         "scale"                 :0.5,
         "add_id" :["arrow"],
-
-        "range" : 5
+        "range" : 5,
+        "shot_x": 1, "shot_y":0
       }
     },
+    {
+    "id":"bomb_rat",
+    "src":"",
+    "data":
+    {
+      "body":"vertices",     "body_vx":[-16,-16,-8,8,16,16,8,-8],"body_vy":[-16,16,32,32,16,-16,-32,-32],
+      "foot":"circle",      "foot_vx":[0,8],"foot_vy":[0,8],
+      "hp":3,
+      "speed":10,     "jump":20,
+      "lock"                :3,
+      "movingFrameIndex"    :[6,7,8],
+      "movingFrameDuration" :[25 ,50 ,50],
+      "movingLock"          : "none",
+      "attackFrameIndex"    :[8  ,9 ,10 ,11],
+      "attackFrameDuration" :[1500  ,200,200,200],
+      "attackLock"          : "soft",
+      "dieFrameIndex"       :[20],
+      "dieFrameDuration"    :[50],
+      "dieLock"             : "strong",
+      "beAttackedFrameIndex"   :[18],
+      "beAttackedFrameDuration":[100],
+      "beAttackedLock"        :"strong",
+      "jumpFrameIndex"         :[24,25,26],
+      "jumpFrameDuration"      :[50,50,50],
+      "jumpLock"              :"none",
+
+      "src"                   :"bomb_rat.png",
+      "src_width"             : 1024,
+      "src_height"            : 1024,
+      "row"                   : 8,
+      "col"                   : 8,
+      "scale"                 :0.5,
+      "add_id" :["bomb"],
+      "range" : 5,
+      "shot_x": 4,"shot_y": -4
+    }
+  },
     {
       "id":"flying_rat",
       "data":
@@ -189,10 +226,30 @@
         "scale"                 : 1,
         "col"                   : 1,
         "row"                   : 1,
+        "gravity"               : 0,
         "add_id" :[]
       }
     }
     ,
+    {
+      "id":"bomb",
+      "data":
+      {
+        "anim"  : "yes",
+        "body"  : "vertices",   "body_vx":[-16,-16,16,16],"body_vy":[-16,16,16,-16],
+        "animFrameIndex":[0,1,2,3,4,5], "animFrameDuration":[25,25,25,25,25,25],
+        "animLock":"strong",
+
+        "src"                   :"bomb.png",
+        "src_width"             : 768,
+        "src_height"            : 128,
+        "scale"                 : 0.5,
+        "col"                   : 6,
+        "row"                   : 1,
+        "gravity"               : 5,
+        "add_id" :[]
+      }
+    },
     {
       "id": "jumping_monster",
       "data": {

@@ -296,7 +296,10 @@ public class ResourceManager {
     try{
       arrayList.add(newConfigJSON("shop_container","ui/item_container.png",384,384,1,1));
       arrayList.add(newConfigJSON("close_btn","ui/cancel.png",64,64,1,1));
-       }catch (Exception e){
+      arrayList.add(newConfigJSON("level_container","ui/level_container.png",136,41,1,1));
+      arrayList.add(newConfigJSON("coin_container","ui/coin_container.png",133,39,1,1));
+
+    }catch (Exception e){
       e.printStackTrace();
       System.exit(-1);
     }
@@ -347,6 +350,7 @@ public class ResourceManager {
       arrayList.add(newConfigJSON("player_moving_particle","player/moving_particle.png",16,16,1,1));
       arrayList.add(newConfigJSON("player_hand","player/hand.png",48,48,1,1));
       arrayList.add(newConfigJSON("player_attack_particle","player/attack_particle.png",32,32,1,1));
+      arrayList.add(newConfigJSON("player_attacked_particle","player/attacked_particle.png",16,16,1,1));
     }catch (Exception e){
       Log.d(TAG," configPlayerGFXData error :"+e.getMessage());
     }
@@ -378,11 +382,7 @@ public class ResourceManager {
     Log.d(TAG,"configPlayerBagItemData");
     ArrayList<JSONObject> arrayList = new ArrayList<>();
     try{
-
-      //int itemkeys[] = SceneManager.getInstance().getBagData();
-
-
-
+      
     }catch (Exception e){
       e.printStackTrace();
     }

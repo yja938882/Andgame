@@ -89,4 +89,20 @@ public class JumpAi extends AiUnit {
     protected void onPassiveDieFinished() {
 
     }
+
+    @Override
+    protected void onManagedUpdate(float pSecondsElapsed) {
+        super.onManagedUpdate(pSecondsElapsed);
+        int currentCmd;
+        mCmdElapsed += pSecondsElapsed;
+        if(mCmdElapsed>=mCmdDuList[mCmd]){
+            mCmd++;
+            mCmdElapsed = 0.0f;
+            if(mCmd>=mCmdList.length)
+                mCmd=0;
+        }
+        currentCmd = mCmdList[mCmd];
+        updateCmd(currentCmd);
+
+    }
 }

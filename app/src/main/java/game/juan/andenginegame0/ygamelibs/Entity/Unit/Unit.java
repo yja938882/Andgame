@@ -154,7 +154,6 @@ public abstract class Unit extends GameEntity{
 
         if(invincible)
             this.mPassive = Unit.PASSIVE_NONE;
-        Log.d("INVINCE ",""+invincible+" "+invincibleTimeLimit);
         if(FootData.isNeedToBeStopJumpAnim()){//공중에서의 애니메이션을 멈춰야 하는지
             stopAnimation(0);
             FootData.setNeedToBeStopJumpAnim(false);
@@ -231,8 +230,6 @@ public abstract class Unit extends GameEntity{
                 onActiveAttackFinished();
                 break;
             case PASSIVE_ATTACKED:
-
-                Log.d("PASSIVE", "ATTACKED LOCK FREEND!!");
                 onPassiveAttackedFinished();
                 break;
             case PASSIVE_DIE:

@@ -20,6 +20,8 @@ public class ShootingAi extends  AiUnit {
     Vector2 POWER = new Vector2();
     float range;
     int currentCmd;
+    float shotX;
+    float shotY;
     public ShootingAi(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
@@ -79,9 +81,9 @@ public class ShootingAi extends  AiUnit {
         animate(attackFrameDuration,attackFrameIndex,false);
         this.getBody(0).setAngularVelocity(0);
         if(this.isFlippedHorizontal()){
-            POWER.set(-3,0);
+            POWER.set(-shotX,shotY);
         }else{
-            POWER.set(3,0);
+            POWER.set(shotX,shotY);
         }
         this.bullet.shot(this.getBody(0).getWorldCenter(),POWER);
     }
@@ -112,6 +114,8 @@ public class ShootingAi extends  AiUnit {
     super.setConfigData(p);
         try{
             range = p.getInt("range")*32f;
+            shotX = (float)p.getDouble("shot_x");
+            shotY = (float)p.getDouble("shot_y");
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -141,32 +145,7 @@ public class ShootingAi extends  AiUnit {
             currentCmd = mCmdList[mCmd];
 
         }
-        updateCmd(pSecondsElapsed);
-
-
-
+        updateCmd(currentCmd);
     }
-    public void updateCmd(float pSecondsElapsed){
 
-        if(!isAlive()) return;
-
-
-        switch (currentCmd) {
-            case CMD_ATTACK:
-                onManageActiveAction(ACTIVE_ATTACK);
-                break;
-            case CMD_IDLE:
-                break;
-            case CMD_JUMP:
-                onManageActiveAction(ACTIVE_JUMP);
-                break;
-            case CMD_MOVE_LEFT:
-                onManageActiveAction(ACTIVE_MOVE_LEFT);
-                break;
-            case CMD_MOVE_RIGHT:
-                onManageActiveAction(ACTIVE_MOVE_RIGHT);
-                break;
-
-        }
-    }
 }

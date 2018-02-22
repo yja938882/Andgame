@@ -62,6 +62,11 @@ public class LoadingScene extends BaseScene {
                         SceneManager.getInstance().loadPrepareScene();
                         SceneManager.getInstance().createPrepareScene();
                         break;
+                    case STAT:
+                        Log.d(TAG,"loading stat scene...");
+                        SceneManager.getInstance().loadStatScene();
+                        SceneManager.getInstance().createStatScene();
+                        break;
                 }
 
                 unregisterUpdateHandler(this);

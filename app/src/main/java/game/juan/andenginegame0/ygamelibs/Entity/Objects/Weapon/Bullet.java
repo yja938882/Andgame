@@ -42,8 +42,11 @@ public class Bullet extends GameEntity{
     private Vector2[] bodyShape;
     private int bodySType;
 
-
+    boolean anim = false;
+    private long animFrameDuration[];
+    private int animFrameIndex[];
     private float POWER;
+    private Vector2 GRAVITY = new Vector2(0,0);
 
     public Bullet(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
@@ -58,9 +61,8 @@ public class Bullet extends GameEntity{
     }
 
     public void shot(Vector2 from, Vector2 to){
-        //float angle = (float)Math.atan((to.y-from.y)/(to.x - from.x));
-        //this.setRotation((float)Math.toDegrees((double)angle));
-        if(to.x-from.x>0){
+        stopAnimation(0);
+        if(to.x>0){
             this.setFlippedHorizontal(false);
         }else{
             this.setFlippedHorizontal(true);
@@ -80,9 +82,36 @@ public class Bullet extends GameEntity{
 
 
     public void setConfigData(JSONObject pConfigData){
+        setGFXConfigData(pConfigData);
         setPhysicsConfigData(pConfigData);
     }
+    private void setGFXConfigData(JSONObject pConfigData){
+        try{
+            float scale = (float)pConfigData.getDouble("scale");
+            this.setScale(scale);
+            switch (pConfigData.getString("anim")){
+                case "yes":
+                    anim = true;
+                    JSONArray animDuration = pConfigData.getJSONArray("animFrameDuration");
+                    this.animFrameDuration = new long[animDuration.length()];
+                    for(int i=0;i<animDuration.length();i++){
+                        animFrameDuration[i] = (long)animDuration.getInt(i);
+                    }
+                    JSONArray animIndex = pConfigData.getJSONArray("animFrameIndex");
+                    this.animFrameIndex = new int[animIndex.length()];
+                    for(int i=0;i<animIndex.length();i++){
+                        animFrameIndex[i] = animIndex.getInt(i);
+                    }
+                    break;
+                case "no":
+                    anim = false;
+                    break;
+            }
 
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     private void setPhysicsConfigData(JSONObject pConfigData){
         try {
@@ -100,6 +129,9 @@ public class Bullet extends GameEntity{
                 case "circle": bodySType = CIRCLE_SHAPE; break;
             }
 
+            float gravity = (float)pConfigData.getDouble("gravity");
+            this.GRAVITY.set(0,gravity);
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -107,18 +139,17 @@ public class Bullet extends GameEntity{
 
     @Override
     protected void onManagedUpdate(float pSecondsElapsed) {
-        PlayerUnit playerUnit = EntityManager.getInstance().playerUnit;
-
-
-
-        if(this.getBody(0).getPosition().x < playerUnit.getBody(0).getPosition().x){
-
-        }else{
-
-        }
-
         super.onManagedUpdate(pSecondsElapsed);
-
+        this.getBody(0).applyForce(GRAVITY,this.getBody(0).getWorldCenter());
+        AiBulletData data = (AiBulletData)this.getBody(0).getUserData();
+        if(data.isHit()){
+            if(this.anim)
+                this.animate(this.animFrameDuration,animFrameIndex, false);
+            data.setIsHit(false);
+        }
+    }
+    public void setGravity(float force){
+        this.GRAVITY.set(0,force);
     }
 
 }

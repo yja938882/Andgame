@@ -42,11 +42,11 @@ public class ShopItem extends Sprite {
 
     void select(){
         this.selected = true;
-        this.setAlpha(0.4f);
+       // this.setAlpha(0.4f);
     }
     void deselect(){
         this.selected = false;
-        this.setAlpha(1f);
+       // this.setAlpha(1f);
     }
     void pick(){
         if(selected){
