@@ -15,9 +15,12 @@ import game.juan.andenginegame0.ygamelibs.Scene.ResourceManager;
  */
 
 public class ShopItem extends Sprite {
-    //private int price;
     private String name;
     private boolean selected = false;
+    private float shopWidth;
+    private float shopHeight;
+    private boolean near = false;
+
 
     Text price;
     public ShopItem(float pX, float pY, ITextureRegion pTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
@@ -27,12 +30,20 @@ public class ShopItem extends Sprite {
         this.price = new Text(0,0, ResourceManager.getInstance().mainFont,""+price,ResourceManager.getInstance().vbom);
          this.name = name;
     }
+    public void setUpShopSize(float width, float height){
+        this.shopWidth = width;
+        this.shopHeight = height;
+        this.setSize(width,height);
+    }
+
     public Text getPrice(){
         return price;
     }
     public String getName(){
         return name;
     }
+    public float getShopWidth(){return shopWidth;}
+    public float getShopHeight(){return shopHeight;}
 
     @Override
     public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
@@ -42,11 +53,9 @@ public class ShopItem extends Sprite {
 
     void select(){
         this.selected = true;
-       // this.setAlpha(0.4f);
     }
     void deselect(){
         this.selected = false;
-       // this.setAlpha(1f);
     }
     void pick(){
         if(selected){

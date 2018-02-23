@@ -58,7 +58,8 @@ public class ShopScene extends BaseScene{
                 boolean near = false;
                 if(jsonObject.getString("type").contentEquals("near"))
                     near = true;
-                sellItemContainer.addItem(item,(float)jsonObject.getDouble("shop_width"),(float)jsonObject.getDouble("shop_height"),near );
+                item.setUpShopSize((float)jsonObject.getDouble("shop_width"),(float)jsonObject.getDouble("shop_height"));
+                sellItemContainer.addItem(item,near);
             }
         }catch (Exception e){
             e.printStackTrace();

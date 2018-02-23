@@ -29,10 +29,11 @@ public class ShopItemContainer extends Sprite {
         shopItems = new ArrayList<>();
     }
 
-    public void addItem(ShopItem item, float width, float height,boolean near){
+    public void addItem(ShopItem item,boolean near){
         shopItems.add(item);
 
-
+        float width = item.getShopWidth();
+        float height = item.getShopHeight();
         item.setWidth(width);
         item.setHeight(height);
 
@@ -63,14 +64,13 @@ public class ShopItemContainer extends Sprite {
                 return false;
             shopItems.get(index).pick();
             buyDialog = new ShopBuyItemDialog(shopItems.get(index));
-            Log.d("TAGGG","SHOP!!!");
             buyDialog.setBackgroundEnabled(false);
-
             SceneManager.getInstance().setDialogScene(buyDialog);
-
+            buyDialog.setupItem(shopItems.get(index));
         }
         return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
     }
+
 
     public void removeAllItem() {
         for(int i=0;i<shopItems.size();i++){

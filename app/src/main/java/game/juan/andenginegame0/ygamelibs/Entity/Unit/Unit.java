@@ -47,7 +47,7 @@ public abstract class Unit extends GameEntity{
     public static final int NONE_SHAPE = 2;
 
     /*===Fields===============================*/
-    public Vector2 JUMP_FORCE = new Vector2(0,-20);
+    public Vector2 JUMP_FORCE = new Vector2(0,-30);
     private Vector2 GRAVITY = new Vector2(0,0);
 
     protected long attackFrameDuration[]; //공격 프레임 시간

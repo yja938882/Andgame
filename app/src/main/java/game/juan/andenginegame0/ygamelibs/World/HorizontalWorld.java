@@ -46,7 +46,7 @@ public class HorizontalWorld {
     /*===Constants=====================*/
     private static final String TAG ="[cheep] HorizontalWorld";
 
-    public Vector2 gravity = new Vector2(0,20);
+    public Vector2 gravity = new Vector2(0,30);
     private PhysicsWorld physicsWorld;
 
     public PhysicsWorld getWorld(){
@@ -55,7 +55,7 @@ public class HorizontalWorld {
 
     public void createWorld(Vector2 gravity, boolean bol){
         physicsWorld = new PhysicsWorld(gravity,bol);
-        
+       // physicsWorld.setGravity(this.gravity);
         physicsWorld.setContactListener(createContactLister());
         physicsWorld.setContinuousPhysics(true);
     }

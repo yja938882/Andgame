@@ -41,14 +41,16 @@ public class ShopBuyItemDialog extends BaseScene{
     private static final float ITEM_X = SCENE_X+20f;
     private static final float ITEM_Y = SCENE_Y+50f;
 
+    private static final float ITEM_NAME_X = 20;
+    private static final float ITEM_NAME_Y = 100;
+
     int price;
 
-    Sprite closeBtn;
-    boolean disposeScene = false;
-    Rectangle container;
-    ShopItem item;
-    Text itemName;
-    String itemId;
+    private Sprite closeBtn;
+    private Rectangle container;
+    private ShopItem item;
+    private Text itemName;
+    private String itemId;
 
     public ShopBuyItemDialog(ShopItem item){
         super();
@@ -57,6 +59,19 @@ public class ShopBuyItemDialog extends BaseScene{
     }
     public void setupItem(ShopItem item){
         this.item =new ShopItem(SCENE_X,SCENE_Y,item.getTextureRegion(),ResourceManager.getInstance().vbom);
+        float width = item.getShopWidth();
+        float height = item.getShopHeight();
+        this.item.setWidth(width);
+        this.item.setHeight(height);
+
+        this.item.setRotationCenter(width/2f,height/2f);
+        this.item.setRotation(-45f);
+        this.item.setX(ITEM_X );
+        this.item.setY(ITEM_Y);
+        this.itemName = new Text(ITEM_NAME_X,ITEM_NAME_Y,ResourceManager.getInstance().mainFont,item.getName(),ResourceManager.getInstance().vbom);
+        this.attachChild(this.item);
+        this.attachChild(itemName);
+        /*
         float width = item.getWidth();
         float height = item.getHeight();
         float ratio = height/width;
@@ -70,19 +85,17 @@ public class ShopBuyItemDialog extends BaseScene{
         this.attachChild(this.item);
         itemId = item.getName();
         this.itemName = new Text(SCENE_X,SCENE_Y+SCENE_HEIGHT,ResourceManager.getInstance().mainFont,item.getName(),ResourceManager.getInstance().vbom);
-        this.attachChild(itemName);
+        this.attachChild(itemName);*/
     }
 
     @Override
     public void createScene() {
-        disposeScene = false;
         container = new Rectangle(SCENE_X,SCENE_Y,SCENE_WIDTH,SCENE_HEIGHT, ResourceManager.getInstance().vbom);
         container.setColor(Color.BLACK);
         this.attachChild(container);
         closeBtn = new Sprite(CLOSE_BTN_X,CLOSE_BTN_Y,ResourceManager.getInstance().gfxTextureRegionHashMap.get("close_btn"),ResourceManager.getInstance().vbom){
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                disposeScene = true;
                 SceneManager.getInstance().disposeDialogScene();
                      return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
             }
@@ -102,9 +115,7 @@ public class ShopBuyItemDialog extends BaseScene{
                     DataManager.getInstance().buyItem(itemId,1);
                     processing = false;
 
-                    disposeScene = true;
                     SceneManager.getInstance().disposeDialogScene();
-                 //  DataManager.getInstance().buyItem(item.);
                     ((ShopScene)SceneManager.getInstance().getCurrentScene()).reloadInventorySlots();
                 }
                 return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);

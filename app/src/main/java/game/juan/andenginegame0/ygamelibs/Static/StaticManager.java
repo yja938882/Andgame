@@ -70,9 +70,7 @@ public class StaticManager implements ConstantsSet{
         ArrayList<StaticData> mlist = DataManager.getInstance().staticMapDataList;
         for(int i=0;i<mlist.size();i++){
             Body b = StaticFactory.createGroundBody(pGameScene,pGameScene.getWorld(),mlist.get(i));
-            Log.d(TAG,"mask :"+b.getFixtureList().get(0).getFilterData().maskBits+" cat :"+b.getFixtureList().get(0).getFilterData().categoryBits);
-          //  Log.d(TAG,""+ (((b.getFixtureList().get(0).getFilterData().maskBits))&& RollingObstacle.cat))));
-                boolean bd= (b.getFixtureList().get(0).getFilterData().maskBits& RollingObstacle.cat)!=0;
+                 boolean bd= (b.getFixtureList().get(0).getFilterData().maskBits& RollingObstacle.cat)!=0;
             boolean bd2= (b.getFixtureList().get(0).getFilterData().categoryBits& RollingObstacle.mask)!=0;
 
             Log.d(TAG,""+bd +" "+bd2);

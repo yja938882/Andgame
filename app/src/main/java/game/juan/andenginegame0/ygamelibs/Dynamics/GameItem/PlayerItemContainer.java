@@ -70,10 +70,10 @@ public class PlayerItemContainer extends Sprite {
             int index = COL*y+x;
             if(index>=playerItems.size() || index<0)
                 return false;
-            //playerItems.get(index).pick();
             sellDialog = new ShopSellItemDialog(playerItems.get(index));
             sellDialog.setBackgroundEnabled(false);
             SceneManager.getInstance().setDialogScene(sellDialog);
+            //sellDialog.setupItem();
 
         }
         return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);

@@ -64,7 +64,7 @@ public abstract class GameEntity extends AnimatedSprite{
                 this,createBodyShape(pVertices),pBodyType,fixtureDef);
         mBodies[pBodyIndex].setUserData(pDataBlock);
         if(pBodyIndex==0){
-            pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(this, mBodies[0]));
+            pGameScene.getWorld().registerPhysicsConnector(new PhysicsConnector(this, mBodies[0]){});
         }
     }
 
