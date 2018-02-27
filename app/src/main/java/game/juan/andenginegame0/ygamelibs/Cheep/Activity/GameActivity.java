@@ -36,7 +36,7 @@ public class GameActivity extends BaseGameActivity {
     private View decorView;
     private int	uiOption;
 
-    private  int dbVersion =151;
+    private  int dbVersion =159;
     String dbName ="config.db";
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +98,6 @@ public class GameActivity extends BaseGameActivity {
 
     @Override
     public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws Exception {
-        Log.d("TAG","onCreateScene");
         SceneManager.getInstance().createSplashScene(pOnCreateSceneCallback);
     }
 

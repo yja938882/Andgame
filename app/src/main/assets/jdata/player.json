@@ -13,31 +13,28 @@
   },
   "data":
   {
-    "body":"circle",     "body_vx":[0,16,-8,8,16,16,8,-8],"body_vy":[0,16,16,16,8,-8,-16,-16],
+    "body":"circle",     "body_vx":[0,24],"body_vy":[0,16],
     "foot":"circle",      "foot_vx":[0,8],"foot_vy":[0,8],
     "hp":3,
     "speed":10,     "jump":20,
-    "lock"                :3,
+
     "movingFrameIndex"    :[0  ,1  ,2  ,3  ,4  ,5  ,0],
     "movingFrameDuration" :[25 ,50 ,50 ,50 ,50 ,50 ,25],
-    "movingLock"          : "none",
     "attackFrameIndex"    :[12   ,15 ],
     "attackFrameDuration" :[140  ,140 ],
-    "attackLock"          : "soft",
     "dieFrameIndex"       :[50],
     "dieFrameDuration"    :[0],
-    "dieLock"             : "strong",
     "beAttackedFrameIndex"   :[32,33,34,35,36,37,38,32],
     "beAttackedFrameDuration":[50,50,50,50,50,50,50,50],
-    "beAttackedLock"        :"strong",
     "jumpFrameIndex"         :[24,25,26],
     "jumpFrameDuration"      :[50,50,50],
-    "jumpLock"              :"none",
 
-    "src"                   :"player_s.png",
+    "id"  :"player",
+    "src"                   :"player/player_s.png",
     "src_width"             : 1024,
     "src_height"            : 1024,
     "scale"                 :0.5,
+    "row"  :8,  "col":8,
     "add_id" :[]
   }
 }

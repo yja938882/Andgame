@@ -7,6 +7,9 @@ import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.ActionLock;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.DynamicObject;
+import game.juan.andenginegame0.ygamelibs.Cheep.Physics.BodyData;
+import game.juan.andenginegame0.ygamelibs.Cheep.Physics.PhysicsShape;
+import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
 
 /**
  * Created by juan on 2018. 2. 24..
@@ -14,6 +17,16 @@ import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.DynamicObject;
  */
 
 public abstract class GameUnit extends DynamicObject{
+    public enum ActiveAction{
+        STOP, MOVE_LEFT, MOVE_RIGHT,JUMP, ATTACK
+    }
+    public enum PassiveAction{
+        NONE,ATTACKED, DIE
+    }
+
+    private ActiveAction currentActiveAction = ActiveAction.STOP;
+    private PassiveAction currentPassiveAction = PassiveAction.NONE;
+
     protected long attackFrameDuration[];
     protected int attackFrameIndex[];
     protected float attackLockMaxCount=0;
@@ -40,11 +53,53 @@ public abstract class GameUnit extends DynamicObject{
     }
 
     /**
+     * 현재 액티브 액션 설정
+     * @param action 설정할 액션
+     */
+    public void setActiveAction(ActiveAction action){
+        this.currentActiveAction = action;
+    }
+
+    /**
+     * 현재 패시브 액션 설정
+     * @param action 설정할 액션
+     */
+    public void setPassiveAction(PassiveAction action){
+        this.currentPassiveAction = action;
+    }
+
+    @Override
+    protected void onManagedUpdate(float pSecondsElapsed) {
+        super.onManagedUpdate(pSecondsElapsed);
+        if(this.currentPassiveAction==PassiveAction.NONE){
+            switch (currentActiveAction){
+                case MOVE_LEFT:
+                    break;
+                case MOVE_RIGHT:
+                    break;
+                case STOP:
+                    break;
+                case ATTACK:
+                    break;
+                case JUMP:
+                    break;
+            }
+        }else{
+            switch (this.currentPassiveAction){
+                case ATTACKED:
+                    break;
+                case DIE:
+                    break;
+            }
+        }
+    }
+
+    /**
      * 설정
      * @param pJsonObject 설정 정보를 담고 있는 데이터
      */
     @Override
-    protected void configure(JSONObject pJsonObject){
+    public void configure(JSONObject pJsonObject){
         super.configure(pJsonObject);
 
         attackFrameIndex = getAnimationIndexConfig("attackFrameIndex",pJsonObject);
@@ -62,8 +117,10 @@ public abstract class GameUnit extends DynamicObject{
         jumpFrameIndex = getAnimationIndexConfig("jumpFrameIndex",pJsonObject);
         jumpFrameDuration = getAnimationDurationConfig("jumpFrameDuration",pJsonObject);
 
+        this.configurePhysicsData(pJsonObject);
     }
 
+    public abstract void createUnit(GameScene pGameScene);
 
     protected abstract void onMoveLeft();
     protected abstract void onMoveRight();
@@ -78,6 +135,21 @@ public abstract class GameUnit extends DynamicObject{
 
     protected abstract void onDie();
     protected abstract void onDieEnd();
+
+    protected abstract void configurePhysicsData(JSONObject jsonObject);
+
+    protected void createShapeBody(GameScene pGameScene, BodyData pBodyData, int pIndex, PhysicsShape shape){
+        switch (shape.getShape()){
+            case CIRCLE:
+                this.createCircleBody(pGameScene,pIndex,pBodyData,shape.getX(),shape.getY(),shape.getRadius());
+                break;
+            case VERTICES:
+                this.createVerticesBody(pGameScene,pIndex,pBodyData,shape.getVertices());
+                break;
+            case NONE:
+                break;
+        }
+    }
 
     /**
      * 애니메이션 인덱스 배열 반환
@@ -118,4 +190,6 @@ public abstract class GameUnit extends DynamicObject{
         }
         return null;
     }
+
+
 }

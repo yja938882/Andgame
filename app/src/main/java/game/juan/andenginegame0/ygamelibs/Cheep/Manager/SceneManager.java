@@ -104,8 +104,16 @@ public class SceneManager {
         pOnCreateSceneCallback.onCreateSceneFinished(splashScene);
     }
 
+    /**
+     * GameScene 에 필요한 리소스 로딩
+     * @param pTheme 로딩 할 테마
+     * @param pStage 로딩 할 스테이지
+     */
     public void loadGameScene(int pTheme, int pStage){
+        DataManager.getInstance().setGameSceneUIGFXConfig();
+        DataManager.getInstance().loadPlayerData();
         DataManager.getInstance().loadStage(pTheme,pStage);
+        ResourceManager.getInstance().loadGFX();
     }
     public static SceneManager getInstance(){return INSTANCE;}
 }

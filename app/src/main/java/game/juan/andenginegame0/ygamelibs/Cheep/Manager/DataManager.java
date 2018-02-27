@@ -1,6 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Cheep.Manager;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -50,6 +51,24 @@ public class DataManager {
         configHashMap.put("next_theme",newConfigJSON("next_theme", "ui/next_theme.png",29,73,1,1));
         configHashMap.put("prev_theme",newConfigJSON("prev_theme","ui/prev_theme.png",29,73,1,1));
         configHashMap.put("theme_title",newConfigJSON("theme_title","ui/theme_title.png",233,63,1,1));
+    }
+
+    /**
+     * GameScene UI GFX 설정
+     */
+    void setGameSceneUIGFXConfig(){
+        configHashMap.put("left_btn",newConfigJSON("left_btn","ui/left.png",68,67,1,1));
+        configHashMap.put("right_btn",newConfigJSON("right_btn","ui/right.png",68,67,1,1));
+        configHashMap.put("attack_btn",newConfigJSON("attack_btn","ui/attack_btn.png",112,123,1,1));
+        configHashMap.put("jump_btn",newConfigJSON("jump_btn","ui/up.png",72,60,1,1));
+    }
+
+    /**
+     * 플레이어 설정 정보 로드
+     */
+    void loadPlayerData(){
+        SQLiteDatabase db = dbManager.getReadableDatabase();
+        configHashMap.put("player",dbManager.getPlayerConfigJSON(db));
     }
 
     /**

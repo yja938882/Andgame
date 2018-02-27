@@ -40,7 +40,10 @@ public class ResourceManager {
 
     public Font mainFont;
 
-    public void loadFont(){
+    /**
+     * 폰트 로딩
+     */
+    void loadFont(){
         FontFactory.setAssetBasePath("font/");
         final ITexture mainFontTexture = new BitmapTextureAtlas(gameActivity.getTextureManager(), 256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         mainFont = FontFactory.createStrokeFromAsset(gameActivity.getFontManager(), mainFontTexture, gameActivity.getAssets(), "gamefont.ttf", 22, true,
@@ -51,7 +54,7 @@ public class ResourceManager {
     /**
      * configHashMap 에 따른 그래픽 소스 로딩
      */
-    public void loadGFX(){
+    void loadGFX(){
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         Set<String> configSet = DataManager.getInstance().configHashMap.keySet();
         gfxTextureAtlas = new ArrayList<>();
@@ -71,13 +74,12 @@ public class ResourceManager {
                 gfxTextureAtlas.add(bitmapTextureAtlas);
                 gfxTextureRegions.add(textureRegion);
                 gfxTextureRegionHashMap.put(object.getString("id"),gfxTextureRegions.get(gfxTextureRegions.size()-1));
-                Log.d("TAG","load "+object.toString());
-            }catch (Exception e){
+              }catch (Exception e){
                 e.printStackTrace();
             }
         }
-        Log.d("TAG","load END");
     }
+
 
     public static void prepareManager(Engine engine, BaseGameActivity activity, BoundCamera camera, VertexBufferObjectManager vbom){
         getInstance().engine = engine;

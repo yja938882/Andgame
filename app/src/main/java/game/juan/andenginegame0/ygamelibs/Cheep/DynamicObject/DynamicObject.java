@@ -104,7 +104,7 @@ public abstract class DynamicObject extends AnimatedSprite{
      * 스케일 정보 설정
      * @param pJsonObject 스케일 정보를 담고있는 데이터
      */
-    protected void configure(JSONObject pJsonObject){
+    public void configure(JSONObject pJsonObject){
         try{
             this.setScale((float)pJsonObject.getDouble("scale"));
         }catch (Exception e){
@@ -149,5 +149,7 @@ public abstract class DynamicObject extends AnimatedSprite{
      * @param pY 생성할 y 위치
     */
     public abstract void revive(float pX, float pY);
+
+    public abstract void transformThis(float pX, float pY);
 
 }

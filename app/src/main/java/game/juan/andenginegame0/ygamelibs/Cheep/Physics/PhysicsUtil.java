@@ -82,7 +82,18 @@ public class PhysicsUtil {
                 ResourceManager.getInstance().vbom);
         Body groundBody = PhysicsFactory.createTrianglulatedBody(
                 scene.getPhysicsWorld(), UniqueBodyMesh ,UniqueBodyVerticesTriangulated,
-                BodyDef.BodyType.StaticBody, FIX);;
+                BodyDef.BodyType.StaticBody, FIX);
+        groundBody.setUserData(new BodyData(ObjectType.GROUND) {
+            @Override
+            public void beginContactWith(ObjectType objectType) {
+
+            }
+
+            @Override
+            public void endContactWith(ObjectType objectType) {
+
+            }
+        });
         return groundBody;
     }
 
@@ -110,15 +121,18 @@ public class PhysicsUtil {
      */
     private static FixtureDef createFixtureDef(ObjectType pObjectType){
         FixtureDef fixtureDef= null;
+        fixtureDef = PhysicsFactory.createFixtureDef(1,0,1);
         switch (pObjectType){
             case GROUND:
+                fixtureDef.isSensor = false;
                 break;
             case PLAYER_BODY:
+                fixtureDef.isSensor = false;
                 break;
             case PLAYER_FOOT:
+                fixtureDef.isSensor=true;
                 break;
         }
-        fixtureDef = PhysicsFactory.createFixtureDef(1,1,1);
         return fixtureDef;
     }
 

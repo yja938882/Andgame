@@ -49,31 +49,27 @@ public class DBManager extends SQLiteOpenHelper{
     private void createTable(SQLiteDatabase db){
         //Ai 설정 파일 생성
         db.execSQL("CREATE TABLE AI_TABLE ( key_name TEXT PRIMARY KEY , data TEXT)");
-        loadAiData(db);
+        initAiTable(db);
 
-        //Obs 설정 파일 생성
         db.execSQL("CREATE TABLE OBS_TABLE ( key_name TEXT PRIMARY KEY , data TEXT)");
-        loadObsData(db);
+        initObstacleTable(db);
 
-        //플레이어 테이블 생성
         db.execSQL("CREATE TABLE PLAYER_TABLE ( key_name TEXT PRIMARY KEY , level INTEGER, exp INTEGER, " +
                 "play_count INTEGER , moeny INTEGER, stat TEXT, data TEXT)");
         initPlayerTable(db);
 
-        //아이템 테이블 생성
         db.execSQL("CREATE TABLE ITEM_TABLE ( key_name TEXT PRIMARY KEY, sell TEXT, data TEXT)");
         loadItemData(db);
 
-        //인벤토리 테이블 생성
         db.execSQL("CREATE TABLE INVENTORY_TABLE ( key_name INTEGER PRIMARY KEY AUTOINCREMENT, item_id TEXT , durability INTEGER)");
     }
 
 
     /**
-     * 초기 ai 데이터를 로드
+     * ai 설정 테이블 초기화
      * @param db 데이터베이스
      */
-    private void loadAiData(SQLiteDatabase db){
+    private void initAiTable(SQLiteDatabase db){
         try{
             JSONObject configObject = Utils.loadJSONFromAsset(c,"jdata/aiconfig.json");
             JSONArray entityArray = configObject.getJSONArray("ai");
@@ -89,10 +85,10 @@ public class DBManager extends SQLiteOpenHelper{
     }
 
     /**
-     *
-     * @param db
+     * 장애물 설정 테이블 초기화
+     * @param db 데이터베이스
      */
-    private void loadObsData(SQLiteDatabase db){
+    private void initObstacleTable(SQLiteDatabase db){
         try{
             JSONObject configObject = Utils.loadJSONFromAsset(c,"jdata/obsconfig.json");
             if(configObject==null)
@@ -104,7 +100,6 @@ public class DBManager extends SQLiteOpenHelper{
                         ((JSONObject) entityArray.get(i)).getString("id"),
                         ((JSONObject) entityArray.get(i)).getJSONObject("data").toString());
             }
-
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -223,7 +218,11 @@ public class DBManager extends SQLiteOpenHelper{
         return money;
     }
 
-
+    /**
+     * Player 설정 정보(JSON) 반환
+     * @param db 데이터베이스
+     * @return JSONObject 플레이어 설정정보
+     */
     public JSONObject getPlayerConfigJSON(SQLiteDatabase db){
         JSONObject object=null;
         Cursor cursor = db.rawQuery("select data from PLAYER_TABLE where key_name ='player';",null);
@@ -241,10 +240,11 @@ public class DBManager extends SQLiteOpenHelper{
 
     }
 
-    /* Ai 데이터를 JSON 형태로 반환
-    * @param db
-    * @param pKeyName 에 대응하는 ai data 반환
-    */
+    /**
+     * *  Ai 데이터를 JSON 형태로 반환
+     * @param db 데이터베이스
+     * @param pKeyName 에 대응하는 ai data 반환
+     */
     public JSONObject getAiJSON(SQLiteDatabase db, String pKeyName){
         JSONObject object=null;
         Cursor cursor = db.rawQuery("select data from AI_TABLE where key_name ='"+pKeyName+"';",null);
