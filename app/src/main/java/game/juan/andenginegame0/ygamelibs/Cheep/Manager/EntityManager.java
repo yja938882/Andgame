@@ -25,7 +25,6 @@ public class EntityManager {
     public void createGround(GameScene pGameScene){
         ArrayList<JSONObject> groundArray = DataManager.getInstance().groundConfigData;
         for(int i=0;i<groundArray.size();i++){
-            Log.d("TAG","create ground");
             Ground g = new Ground();
             g.configure(groundArray.get(i));
             g.createBody(pGameScene);

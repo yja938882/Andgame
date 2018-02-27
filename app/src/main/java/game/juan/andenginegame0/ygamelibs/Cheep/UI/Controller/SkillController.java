@@ -6,6 +6,7 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.GameUnit;
+import game.juan.andenginegame0.ygamelibs.Cheep.Manager.EntityManager;
 
 /**
  * Created by juan on 2018. 2. 27..
@@ -23,7 +24,7 @@ public class SkillController extends Sprite{
     @Override
     public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         if(pSceneTouchEvent.isActionDown()||pSceneTouchEvent.isActionMove()){
-
+            EntityManager.getInstance().playerUnit.jump();
 
         }else{
 

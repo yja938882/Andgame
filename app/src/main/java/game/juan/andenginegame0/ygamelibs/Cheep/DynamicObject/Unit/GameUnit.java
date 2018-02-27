@@ -74,8 +74,10 @@ public abstract class GameUnit extends DynamicObject{
         if(this.currentPassiveAction==PassiveAction.NONE){
             switch (currentActiveAction){
                 case MOVE_LEFT:
+                    onMoveLeft();
                     break;
                 case MOVE_RIGHT:
+                    onMoveRight();
                     break;
                 case STOP:
                     break;

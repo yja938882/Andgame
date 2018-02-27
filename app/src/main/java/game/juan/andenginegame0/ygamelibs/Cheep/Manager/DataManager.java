@@ -3,11 +3,15 @@ package game.juan.andenginegame0.ygamelibs.Cheep.Manager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.badlogic.gdx.math.Vector2;
+
+import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.StringTokenizer;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.Utils;
 
@@ -23,6 +27,7 @@ public class DataManager {
      public HashMap<String , JSONObject> configHashMap;
 
      public ArrayList<JSONObject> groundConfigData;
+     public HashMap<String ,ArrayList> tileArrayHashMap;
 
     /**
      * Splash Scene 에 GFX 설정
@@ -81,15 +86,17 @@ public class DataManager {
         try{
             JSONArray mapArray = stageObject.getJSONArray("map");
             groundConfigData  = new ArrayList<>();
+            tileArrayHashMap = new HashMap<>();
             for(int i=0;i<mapArray.length();i++){
                 JSONObject object = mapArray.getJSONObject(i);
                 switch(object.getString("class")){
                     case "static":
-                        groundConfigData.add(object);
+                        composeStaticData(object,pTheme);
                         break;
                 }
 
             }
+            Utils.calcMaximumInBound(10f,tileArrayHashMap.get("4"));
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -106,6 +113,46 @@ public class DataManager {
     public void prepareManager(DBManager dbManager){
         getInstance().dbManager = dbManager;
         getInstance().configHashMap = new HashMap<>();
+    }
+
+    private void composeStaticData(JSONObject object, int pTheme){
+        groundConfigData.add(object);
+        try{
+            JSONArray tileArray = object.getJSONArray("t");
+            JSONArray tileX_Array = object.getJSONArray("tx");
+            JSONArray tileY_Array = object.getJSONArray("ty");
+            for(int i=0;i<tileArray.length();i++){
+                if(!configHashMap.containsKey(""+tileArray.getInt(i))){
+                    configHashMap.put(""+tileArray.getInt(i),newConfigJSON(""+tileArray.getInt(i),"map/"+pTheme+"/"+tileArray.getInt(i)+".png",64,64,1,1));
+                    tileArrayHashMap.put(""+tileArray.getInt(i),new ArrayList<Vector2>());
+                }
+                ArrayList<Vector2> array = (ArrayList<Vector2>)tileArrayHashMap.get(""+tileArray.getInt(i));
+
+                int outer_sX = object.getInt("sx");
+                int outer_sY = object.getInt("sy");
+
+                String tx_str = tileX_Array.getString(i);
+                StringTokenizer tokenizerX = new StringTokenizer(tx_str,"~");
+                int inner_sX = Integer.parseInt(tokenizerX.nextToken());
+                int inner_eX = Integer.parseInt(tokenizerX.nextToken());
+
+                String ty_str = tileY_Array.getString(i);
+                StringTokenizer tokenizerY = new StringTokenizer(ty_str,"~");
+                int inner_sY = Integer.parseInt(tokenizerY.nextToken());
+                int inner_eY = Integer.parseInt(tokenizerY.nextToken());
+
+                for(int x=inner_sX;x<inner_eX;x++){
+                    for(int y=inner_sY;y<inner_eY;y++){
+                        array.add(new Vector2( (float)(outer_sX+x)* PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,
+                                (float)(outer_sY+y)*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT));
+                    }
+                }
+
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**

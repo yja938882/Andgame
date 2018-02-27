@@ -35,7 +35,7 @@ public class PlayerUnit extends GameUnit{
     private PhysicsShape handShape;
 
     private Camera camera;
-    
+
 
     public PlayerUnit(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
@@ -67,9 +67,17 @@ public class PlayerUnit extends GameUnit{
             public void onUpdate(float pSecondsElapsed) {
                 super.onUpdate(pSecondsElapsed);
                 camera.onUpdate(0.1f);
-                if(!((UnitFootData)mBodies[FOOT].getUserData()).contactWithGround){
-                    getBody().setLinearVelocity(0,5);
-                }
+               /* if(!((UnitFootData)mBodies[FOOT].getUserData()).contactWithGround){
+                  //  getBody().setLinearVelocity(0,5);
+                    vy = 1f;
+                }else
+                    vy=0;
+                Log.d("TAG",""+vx+" "+vy);*/
+               if(up)
+                   vy=3f;
+               else
+                   vy = -3f;
+                getBody().setLinearVelocity(vx,vy);
             }
         });
         mBodies[BODY].setFixedRotation(true);
@@ -82,8 +90,25 @@ public class PlayerUnit extends GameUnit{
         pGameScene.getPhysicsWorld().createJoint(revoluteJointDef);
     }
 
+    float vx=0,vy=0;
+    public void moveLeft(){
+        vx = -5f;
+        //this.onMoveLeft();
+    }
+    public void moveRight(){
+        vx=5f;
+    }
+    boolean up = false;
+    public void jump(){
+        if(up)
+            up = false;
+        else
+            up = true;
+    }
+
     @Override
     protected void onMoveLeft() {
+
     }
 
     @Override

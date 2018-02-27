@@ -1,6 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Cheep.Scene.HUD;
 
 import org.andengine.engine.camera.hud.HUD;
+import org.andengine.entity.text.Text;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.GameUnit;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.ResourceManager;
@@ -20,11 +21,15 @@ public class GameSceneHud extends HUD {
     private MoveController rightController;
     private SkillController attackController;
     private SkillController jumpController;
+    private Text FPS;
 
     /**
      * HUD 생성
      */
     public void createHUD(){
+        FPS = new Text(0,0,ResourceManager.getInstance().mainFont,"FPS : xxxxxxxxxx",ResourceManager.getInstance().vbom);
+        this.attachChild(FPS);
+
         this.leftController = new MoveController(0,0, ResourceManager.getInstance().gfxTextureRegionHashMap.get("left_btn"),ResourceManager.getInstance().vbom);
         this.rightController = new MoveController(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("right_btn"),ResourceManager.getInstance().vbom);
         this.attackController = new SkillController(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("attack_btn"),ResourceManager.getInstance().vbom);
@@ -74,4 +79,7 @@ public class GameSceneHud extends HUD {
         this.dispose();
     }
 
+    public void setText(String text){
+        this.FPS.setText(text);
+    }
 }

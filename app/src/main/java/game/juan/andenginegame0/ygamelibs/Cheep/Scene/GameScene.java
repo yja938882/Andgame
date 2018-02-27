@@ -9,7 +9,11 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
 import org.andengine.engine.handler.IUpdateHandler;
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.util.FPSCounter;
+import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.util.color.Color;
 
@@ -29,7 +33,6 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Scene.HUD.GameSceneHud;
 public class GameScene extends BaseScene {
     private PhysicsWorld physicsWorld;
     private GameSceneHud gameSceneHud;
-
     @Override
     public void createScene() {
        // this.setBackground(new Background(Color.CYAN));
@@ -94,6 +97,16 @@ public class GameScene extends BaseScene {
             }
         });
         this.registerUpdateHandler(physicsWorld);
+
+        final FPSCounter fpsCounter = new FPSCounter();
+
+        this.engine.registerUpdateHandler(fpsCounter);
+        this.registerUpdateHandler(new TimerHandler(1 / 20.0f, true, new ITimerCallback() {
+            @Override
+            public void onTimePassed(TimerHandler pTimerHandler) {
+                gameSceneHud.setText("FPS :"+fpsCounter.getFPS());
+            }
+        }));
     }
 
     @Override

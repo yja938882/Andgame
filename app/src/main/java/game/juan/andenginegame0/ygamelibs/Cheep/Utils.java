@@ -1,10 +1,16 @@
 package game.juan.andenginegame0.ygamelibs.Cheep;
 
 import android.content.Context;
+import android.util.Log;
+
+import com.badlogic.gdx.math.Vector2;
 
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by juan on 2018. 2. 24..
@@ -37,4 +43,36 @@ public class Utils {
         return object;
     }
 
+    static class AscendingObj implements Comparator<Vector2> {
+        @Override
+        public int compare(Vector2 A, Vector2 B){
+            return (int)(A.x-B.x);
+        }
+    }
+    public static int calcMaximumInBound(float pBoundWidth, ArrayList<Vector2> pPositions){
+        AscendingObj ascendingObj = new AscendingObj();
+        Collections.sort(pPositions,ascendingObj);
+        String log="";
+        for(int i=0;i<pPositions.size();i++){
+            log+=(" ("+pPositions.get(i).x+" "+pPositions.get(i).y+")");
+        }
+        return 0;
+    }
+
+    /*
+      AscendingObj ascendingObj = new AscendingObj();
+        Collections.sort(pDataList,ascendingObj);
+        int rightIndex =0;
+        int leftIndex =0;
+        int max = -1;
+        for(int i=0;i<pDataList.size();i++){
+            rightIndex =i;
+            while(pDataList.get(rightIndex).getPosX() - pDataList.get(leftIndex).getPosX() > CAMERA_WIDTH*1.2f){
+                leftIndex++;
+            }
+            if(rightIndex - leftIndex+1 >=max)
+                max = rightIndex-leftIndex+1;
+
+        }
+     */
 }
