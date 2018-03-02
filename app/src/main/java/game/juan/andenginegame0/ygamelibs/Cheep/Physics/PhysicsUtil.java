@@ -121,7 +121,7 @@ public class PhysicsUtil {
      */
     private static FixtureDef createFixtureDef(ObjectType pObjectType){
         FixtureDef fixtureDef= null;
-        fixtureDef = PhysicsFactory.createFixtureDef(1,0,1);
+        fixtureDef = PhysicsFactory.createFixtureDef(1,0,0);
         switch (pObjectType){
             case GROUND:
                 fixtureDef.isSensor = false;
@@ -131,6 +131,11 @@ public class PhysicsUtil {
                 break;
             case PLAYER_FOOT:
                 fixtureDef.isSensor=true;
+                break;
+            case PLAYER_ARM:
+            case PLAYER_HAND:
+                fixtureDef.filter.maskBits=0;
+                fixtureDef.filter.categoryBits=0;
                 break;
         }
         return fixtureDef;

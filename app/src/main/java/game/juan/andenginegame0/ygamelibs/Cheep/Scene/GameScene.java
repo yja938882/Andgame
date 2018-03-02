@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
+import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
@@ -21,8 +22,12 @@ import debugdraw.DebugRenderer;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.EntityManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.SceneManager;
+import game.juan.andenginegame0.ygamelibs.Cheep.Manager.StaticManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.BodyData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.HUD.GameSceneHud;
+import game.juan.andenginegame0.ygamelibs.Cheep.StaticObject.MovingBackground;
+
+import static game.juan.andenginegame0.ygamelibs.Cheep.Activity.GameActivity.CAMERA_HEIGHT;
 
 
 /**
@@ -35,15 +40,16 @@ public class GameScene extends BaseScene {
     private GameSceneHud gameSceneHud;
     @Override
     public void createScene() {
-       // this.setBackground(new Background(Color.CYAN));
-
         this.physicsWorld = new PhysicsWorld(new Vector2(0,0),false);
+        ((BoundCamera)camera).setBoundsEnabled(true);
+        ((BoundCamera)camera).setBounds(0,0,10000,960);
+
+        StaticManager.getInstance().createBackground(this);
+        StaticManager.getInstance().createDisplay(this);
+
         EntityManager.getInstance().createGround(this);
+        EntityManager.getInstance().createItems(this);
         EntityManager.getInstance().createPlayer(this);
-
-
-
-
 
         this.gameSceneHud = new GameSceneHud();
         this.gameSceneHud.createHUD();
@@ -51,11 +57,13 @@ public class GameScene extends BaseScene {
         this.camera.setChaseEntity(EntityManager.getInstance().playerUnit);
         EntityManager.getInstance().playerUnit.setCamera(this.camera);
 
-        DebugRenderer debugRenderer;
-        debugRenderer = new DebugRenderer(physicsWorld, ResourceManager.getInstance().vbom);
-        debugRenderer.setDrawBodies(true);
-        debugRenderer.setColor(Color.RED);
-        this.attachChild(debugRenderer);
+        StaticManager.getInstance().createMapTiles(this);
+
+        //DebugRenderer debugRenderer;
+        //debugRenderer = new DebugRenderer(physicsWorld, ResourceManager.getInstance().vbom);
+        //debugRenderer.setDrawBodies(true);
+        //debugRenderer.setColor(Color.RED);
+       // this.attachChild(debugRenderer);
 
         physicsWorld.setContactListener(new ContactListener() {
             @Override
@@ -69,7 +77,7 @@ public class GameScene extends BaseScene {
                 BodyData bodyDataB = (BodyData)bodyB.getUserData();
 
                 bodyDataA.beginContactWith(bodyDataB.OBJECT_TYPE);
-                bodyDataB.beginContactWith(bodyDataB.OBJECT_TYPE);
+                bodyDataB.beginContactWith(bodyDataA.OBJECT_TYPE);
             }
 
             @Override
@@ -83,7 +91,7 @@ public class GameScene extends BaseScene {
                 BodyData bodyDataB = (BodyData)bodyB.getUserData();
 
                 bodyDataA.endContactWith(bodyDataB.OBJECT_TYPE);
-                bodyDataB.endContactWith(bodyDataB.OBJECT_TYPE);
+                bodyDataB.endContactWith(bodyDataA.OBJECT_TYPE);
             }
 
             @Override

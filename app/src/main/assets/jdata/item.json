@@ -8,7 +8,8 @@
       {
         "type":"dynamic",
         "src" :"coins.png","src_width" : 128, "src_height" :16,
-        "scale":1, "row":1, "col":8
+        "scale":1, "row":1, "col":8,
+        "anim": "true", "animFrameIndex":[0,1,2,3,4,5,6,7], "animFrameDuration":[50,50,50,50,50,50,50,50]
       }
     }
     ,

@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit;
 
+import android.util.Log;
+
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.BodyData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.ObjectType;
 
@@ -9,7 +11,7 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Physics.ObjectType;
  */
 
 public class UnitFootData extends BodyData {
-    public boolean contactWithGround = false;
+    private int contactCount=0;
     public UnitFootData(ObjectType objectType) {
         super(objectType);
     }
@@ -17,15 +19,18 @@ public class UnitFootData extends BodyData {
     @Override
     public void beginContactWith(ObjectType objectType) {
         if(objectType==ObjectType.GROUND){
-            this.contactWithGround = true;
+            this.contactCount++;
         }
     }
 
     @Override
     public void endContactWith(ObjectType objectType) {
         if(objectType==ObjectType.GROUND){
-            this.contactWithGround = false;
+            this.contactCount--;
         }
+    }
 
+    public boolean isContactWithGround(){
+        return contactCount>0;
     }
 }

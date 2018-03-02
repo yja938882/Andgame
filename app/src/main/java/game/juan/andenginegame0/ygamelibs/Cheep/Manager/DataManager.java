@@ -2,6 +2,7 @@ package game.juan.andenginegame0.ygamelibs.Cheep.Manager;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -13,7 +14,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
+import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Item.ItemData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Utils;
+
+import static game.juan.andenginegame0.ygamelibs.Cheep.Activity.GameActivity.CAMERA_WIDTH;
 
 /**
  * Created by juan on 2018. 2. 24..
@@ -28,6 +32,8 @@ public class DataManager {
 
      public ArrayList<JSONObject> groundConfigData;
      public HashMap<String ,ArrayList> tileArrayHashMap;
+     public HashMap<String, ArrayList> displayArrayHashMap;
+     public HashMap<String, ArrayList> itemArrayHashMap;
 
     /**
      * Splash Scene 에 GFX 설정
@@ -84,19 +90,44 @@ public class DataManager {
     void loadStage( int pTheme, int pStage){
         JSONObject stageObject = Utils.loadJSONFromAsset(ResourceManager.getInstance().gameActivity,"stage/stage"+pTheme+"_"+pStage+".json");
         try{
+
+            //Background 설정 데이터 로드
+            JSONArray bgArray = stageObject.getJSONArray("bg");
+            for(int i=0;i<bgArray.length();i++){
+                configHashMap.put("bg"+i,newConfigJSON("bg"+i,"map/bg/"+bgArray.getString(i)+".png",1024,960,1,1));
+            }
+
+            //Display 설정 데이터 로드
+            JSONArray displayArray = stageObject.getJSONArray("display");
+            for(int i=0;i<displayArray.length();i++){
+                JSONObject object = displayArray.getJSONObject(i);
+                configHashMap.put(object.getString("id"),newConfigJSON(object.getString("id"),
+                        "map/display/"+object.getString("src"),
+                        object.getInt("src_width"),object.getInt("src_height"),
+                        object.getInt("col"),object.getInt("row")));
+            }
+
+            //맵( 지형 ) 데이터 로드
             JSONArray mapArray = stageObject.getJSONArray("map");
             groundConfigData  = new ArrayList<>();
             tileArrayHashMap = new HashMap<>();
+            displayArrayHashMap = new HashMap<>();
+            itemArrayHashMap = new HashMap<>();
             for(int i=0;i<mapArray.length();i++){
                 JSONObject object = mapArray.getJSONObject(i);
                 switch(object.getString("class")){
                     case "static":
                         composeStaticData(object,pTheme);
                         break;
+                    case "display":
+                        composeDisplayData(object);
+                        break;
+                    case "item":
+                        composeItemData(object);
+                        break;
                 }
 
             }
-            Utils.calcMaximumInBound(10f,tileArrayHashMap.get("4"));
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -115,6 +146,11 @@ public class DataManager {
         getInstance().configHashMap = new HashMap<>();
     }
 
+    /**
+     * StaticData( 지형 데이터 ) 구성
+     * @param object 구성할 데이터
+     * @param pTheme 테마
+     */
     private void composeStaticData(JSONObject object, int pTheme){
         groundConfigData.add(object);
         try{
@@ -143,12 +179,61 @@ public class DataManager {
 
                 for(int x=inner_sX;x<inner_eX;x++){
                     for(int y=inner_sY;y<inner_eY;y++){
-                        array.add(new Vector2( (float)(outer_sX+x)* PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,
-                                (float)(outer_sY+y)*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT));
+                        array.add(new Vector2( (float)(outer_sX+x*2)* PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,
+                                (float)(outer_sY+y*2)*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT));
                     }
                 }
 
             }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Display 데이터 구성
+     * @param object 구성할 데이터
+     */
+    private void composeDisplayData(JSONObject object){
+        try {
+             float x = object.getInt("x");
+             float y = object.getInt("y");
+             float width = object.getInt("src_width");
+             float height = object.getInt("src_height");
+             float temp_height = (((int)height/32)+1)*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+             if(!displayArrayHashMap.containsKey(object.getString("id"))){
+                displayArrayHashMap.put(object.getString("id"),new ArrayList<Vector2>());
+             }
+             displayArrayHashMap.get(object.getString("id")).add(
+                     new Vector2(x*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,y*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT+ temp_height-height));
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Item 데이터 구성
+     * @param pJsonObject 구성할 데이터
+     */
+    private void composeItemData(JSONObject pJsonObject){
+        try{
+            float x = pJsonObject.getInt("x");
+            float y = pJsonObject.getInt("y");
+            if(!configHashMap.containsKey(pJsonObject.getString("id"))){
+                SQLiteDatabase db = dbManager.getReadableDatabase();
+                JSONObject configJSONObject = dbManager.getItemJSON(db,pJsonObject.getString("id"));
+                configJSONObject.put("id",pJsonObject.getString("id"));
+                configJSONObject.put("src","object/players/"+configJSONObject.getString("src"));
+
+                configHashMap.put(pJsonObject.getString("id"),configJSONObject);
+            }
+            if(!itemArrayHashMap.containsKey(pJsonObject.getString("id"))){
+                itemArrayHashMap.put(pJsonObject.getString("id"),new ArrayList());
+            }
+            itemArrayHashMap.get(pJsonObject.getString("id")).add(
+                    new ItemData(ItemData.ItemType.COIN,new Vector2(x*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,y*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT)));
 
         }catch (Exception e){
             e.printStackTrace();

@@ -23,11 +23,7 @@ public class MoveController extends Sprite{
     @Override
     public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         if(pSceneTouchEvent.isActionDown()||pSceneTouchEvent.isActionMove()){
-            //EntityManager.getInstance().playerUnit.setActiveAction(action);
-            if(action == GameUnit.ActiveAction.MOVE_LEFT)
-                EntityManager.getInstance().playerUnit.moveLeft();
-            else
-                EntityManager.getInstance().playerUnit.moveRight();
+            EntityManager.getInstance().playerUnit.setActiveAction(action);
         }else{
             EntityManager.getInstance().playerUnit.setActiveAction(GameUnit.ActiveAction.STOP);
         }

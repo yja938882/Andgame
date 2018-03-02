@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.BodyData;
@@ -151,5 +152,45 @@ public abstract class DynamicObject extends AnimatedSprite{
     public abstract void revive(float pX, float pY);
 
     public abstract void transformThis(float pX, float pY);
+
+    /**
+     * 애니메이션 인덱스 배열 반환
+     * @param pIndexName 애니메이션 인덱스 이름
+     * @param pJsonObject 애니메이션 정보가 담긴 JSON
+     * @return int[] 애니메이션 인덱스 배열
+     */
+    protected static int[] getAnimationIndexConfig(String pIndexName, JSONObject pJsonObject){
+        try {
+            JSONArray jsonArray = pJsonObject.getJSONArray(pIndexName);
+            final int[] frameIndex = new int[jsonArray.length()];
+            for(int i=0;i< frameIndex.length;i++){
+                frameIndex[i] = jsonArray.getInt(i);
+            }
+            return frameIndex;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     *  애니메이션 기간 배열 반환
+     * @param pDurationName 애니메이션 기간 이름
+     * @param pJsonObject 애니메이션 정보가 담긴 JSON
+     * @return long[] 애니메이션 기간 배열
+     */
+    protected static long[] getAnimationDurationConfig(String pDurationName, JSONObject pJsonObject){
+        try{
+            JSONArray jsonArray = pJsonObject.getJSONArray(pDurationName);
+            final long[] frameDuration = new long[jsonArray.length()];
+            for(int i=0;i< frameDuration.length;i++){
+                frameDuration[i] = jsonArray.getInt(i);
+            }
+            return frameDuration;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }

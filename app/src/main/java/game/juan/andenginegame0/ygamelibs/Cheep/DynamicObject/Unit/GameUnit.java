@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit;
 
+import android.util.Log;
+
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.json.JSONArray;
@@ -18,7 +20,7 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
 
 public abstract class GameUnit extends DynamicObject{
     public enum ActiveAction{
-        STOP, MOVE_LEFT, MOVE_RIGHT,JUMP, ATTACK
+        STOP, MOVE_LEFT, MOVE_RIGHT,JUMP, ATTACK, NONE
     }
     public enum PassiveAction{
         NONE,ATTACKED, DIE
@@ -44,6 +46,9 @@ public abstract class GameUnit extends DynamicObject{
 
     protected long jumpFrameDuration[];
     protected int  jumpFrameIndex[];
+
+    protected long stopFrameDuration[];
+    protected int stopFrameIndex[];
 
     private ActionLock mActionLock;
 
@@ -80,17 +85,23 @@ public abstract class GameUnit extends DynamicObject{
                     onMoveRight();
                     break;
                 case STOP:
+                    onStop();
                     break;
                 case ATTACK:
+                    onAttack();
                     break;
                 case JUMP:
+                    onJump();
                     break;
             }
+            setActiveAnimation(currentActiveAction);
         }else{
             switch (this.currentPassiveAction){
                 case ATTACKED:
+                    onAttack();
                     break;
                 case DIE:
+                    onDie();
                     break;
             }
         }
@@ -118,6 +129,9 @@ public abstract class GameUnit extends DynamicObject{
 
         jumpFrameIndex = getAnimationIndexConfig("jumpFrameIndex",pJsonObject);
         jumpFrameDuration = getAnimationDurationConfig("jumpFrameDuration",pJsonObject);
+
+        stopFrameIndex = getAnimationIndexConfig("stopFrameIndex",pJsonObject);
+        stopFrameDuration = getAnimationDurationConfig("stopFrameDuration",pJsonObject);
 
         this.configurePhysicsData(pJsonObject);
     }
@@ -153,45 +167,36 @@ public abstract class GameUnit extends DynamicObject{
         }
     }
 
-    /**
-     * 애니메이션 인덱스 배열 반환
-     * @param pIndexName 애니메이션 인덱스 이름
-     * @param pJsonObject 애니메이션 정보가 담긴 JSON
-     * @return int[] 애니메이션 인덱스 배열
-     */
-    private static int[] getAnimationIndexConfig(String pIndexName, JSONObject pJsonObject){
-        try {
-            JSONArray jsonArray = pJsonObject.getJSONArray(pIndexName);
-            final int[] frameIndex = new int[jsonArray.length()];
-            for(int i=0;i< frameIndex.length;i++){
-                frameIndex[i] = jsonArray.getInt(i);
-            }
-            return frameIndex;
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
 
-    /**
-     *  애니메이션 기간 배열 반환
-     * @param pDurationName 애니메이션 기간 이름
-     * @param pJsonObject 애니메이션 정보가 담긴 JSON
-     * @return long[] 애니메이션 기간 배열
-     */
-    private static long[] getAnimationDurationConfig(String pDurationName, JSONObject pJsonObject){
-        try{
-            JSONArray jsonArray = pJsonObject.getJSONArray(pDurationName);
-            final long[] frameDuration = new long[jsonArray.length()];
-            for(int i=0;i< frameDuration.length;i++){
-                frameDuration[i] = jsonArray.getInt(i);
-            }
-            return frameDuration;
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
 
+    private ActiveAction currentActiveAnimation = ActiveAction.NONE;
+    private PassiveAction currentPassiveAnimation = PassiveAction.NONE;
+
+    protected void setActiveAnimation(final ActiveAction activeAnimation){
+        if(currentActiveAnimation == activeAnimation)
+            return;
+        switch (activeAnimation){
+            case JUMP:
+                this.animate(jumpFrameDuration,jumpFrameIndex,true);
+                this.currentActiveAnimation = ActiveAction.JUMP;
+                break;
+            case MOVE_RIGHT:
+                this.animate(movingFrameDuration,movingFrameIndex,true);
+                this.currentActiveAnimation = ActiveAction.MOVE_RIGHT;
+                break;
+            case MOVE_LEFT:
+                this.animate(movingFrameDuration,movingFrameIndex,true);
+                this.currentActiveAnimation = ActiveAction.MOVE_LEFT;
+                break;
+            case STOP:
+                this.animate(stopFrameDuration,stopFrameIndex,true);
+                this.currentActiveAnimation = ActiveAction.STOP;
+                break;
+        }
+
+    }
+    private void setPassiveAnimation(PassiveAction passiveAction){
+
+    }
 
 }

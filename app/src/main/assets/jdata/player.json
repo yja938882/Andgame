@@ -15,6 +15,8 @@
   {
     "body":"circle",     "body_vx":[0,24],"body_vy":[0,16],
     "foot":"circle",      "foot_vx":[0,8],"foot_vy":[0,8],
+    "arm":"vertices",     "arm_vx":[-10,-10,10,10],"arm_vy":[-2,2,2,-2],
+    "hand":"vertices",    "hand_vx":[-2,-2,2,2],"hand_vy":[-2,2,2,-2],
     "hp":3,
     "speed":10,     "jump":20,
 
@@ -28,6 +30,8 @@
     "beAttackedFrameDuration":[50,50,50,50,50,50,50,50],
     "jumpFrameIndex"         :[24,25,26],
     "jumpFrameDuration"      :[50,50,50],
+    "stopFrameIndex"        :[16,17,18,19,20,21],
+    "stopFrameDuration"     :[100,100,100,100,100,100],
 
     "id"  :"player",
     "src"                   :"player/player_s.png",

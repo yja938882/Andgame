@@ -7,5 +7,7 @@ package game.juan.andenginegame0.ygamelibs.Cheep.Physics;
 public enum ObjectType {
     GROUND,
     PLAYER_BODY,
-    PLAYER_FOOT
+    PLAYER_FOOT,
+    PLAYER_ARM,
+    PLAYER_HAND
 }

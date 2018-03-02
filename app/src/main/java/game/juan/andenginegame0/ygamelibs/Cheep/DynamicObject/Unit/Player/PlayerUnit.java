@@ -3,7 +3,9 @@ package game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.Player;
 import android.util.Log;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
+import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
@@ -13,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.GameUnit;
+import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.UnitBodyData;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.UnitFootData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.BodyData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.ObjectType;
@@ -28,11 +31,22 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
 public class PlayerUnit extends GameUnit{
     private static final int BODY = 0;
     private static final int FOOT = 1;
-    private static final int HAND = 2;
+    private static final int ARM = 2;
+    private static final int HAND = 3;
+
+    private static final float RIGHT_HAND_UPPER_LIMIT = 5f * (float) (Math.PI) / 180f; //오른 쪽 팔 최대각
+    private static final float RIGHT_HAND_LOWER_LIMIT = -90f * (float) (Math.PI) / 180f; //오른 쪽 팔 최소각
+    private static final float LEFT_HAND_UPPER_LIMIT = 90f * (float) (Math.PI) / 180f;// 왼쪽 팔 최대각
+    private static final float LEFT_HAND_LOWER_LIMIT = -5f * (float) (Math.PI) / 180f;// 왼쪽 팔 최소각
+
 
     private PhysicsShape bodyShape;
     private PhysicsShape footShape;
+    private PhysicsShape armShape;
     private PhysicsShape handShape;
+
+    private RevoluteJoint shoulderJoint;
+    float handDownSpeed = 10f;
 
     private Camera camera;
 
@@ -47,82 +61,106 @@ public class PlayerUnit extends GameUnit{
 
     @Override
     public void createUnit(GameScene pGameScene) {
-        this.allocateBody(2);
-        this.createShapeBody(pGameScene,new BodyData(ObjectType.PLAYER_BODY){
-            @Override
-            public void beginContactWith(ObjectType objectType) {
-
-            }
-
-            @Override
-            public void endContactWith(ObjectType objectType) {
-
-            }
-        },BODY,bodyShape);
+        this.allocateBody(4);
+        this.createShapeBody(pGameScene,new UnitBodyData(ObjectType.PLAYER_BODY),BODY,bodyShape);
         this.createShapeBody(pGameScene,new UnitFootData(ObjectType.PLAYER_FOOT),FOOT,footShape);
+        this.createShapeBody(pGameScene,new UnitBodyData(ObjectType.PLAYER_ARM),ARM,armShape);
+        this.createShapeBody(pGameScene,new UnitBodyData(ObjectType.PLAYER_HAND),HAND,handShape);
 
+        pGameScene.getPhysicsWorld().registerPhysicsConnector(bodyPhysicsConnector());
 
-        pGameScene.getPhysicsWorld().registerPhysicsConnector(new PhysicsConnector(this,mBodies[BODY]){
-            @Override
-            public void onUpdate(float pSecondsElapsed) {
-                super.onUpdate(pSecondsElapsed);
-                camera.onUpdate(0.1f);
-               /* if(!((UnitFootData)mBodies[FOOT].getUserData()).contactWithGround){
-                  //  getBody().setLinearVelocity(0,5);
-                    vy = 1f;
-                }else
-                    vy=0;
-                Log.d("TAG",""+vx+" "+vy);*/
-               if(up)
-                   vy=3f;
-               else
-                   vy = -3f;
-                getBody().setLinearVelocity(vx,vy);
-            }
-        });
         mBodies[BODY].setFixedRotation(true);
 
+
+
         float bodyHeight = bodyShape.getHeight();
-        RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
+        final RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
         revoluteJointDef.initialize(mBodies[BODY],mBodies[FOOT], mBodies[BODY].getWorldCenter());
         revoluteJointDef.localAnchorA.set(0, bodyHeight / 2);
         revoluteJointDef.localAnchorB.set(0, 0);
         pGameScene.getPhysicsWorld().createJoint(revoluteJointDef);
+
+        final RevoluteJointDef shoulderRevoluteJointDef = new RevoluteJointDef();
+        shoulderRevoluteJointDef.initialize(mBodies[BODY],mBodies[ARM],mBodies[BODY].getWorldCenter());
+        shoulderRevoluteJointDef.localAnchorA.set(0,-4f/32f);
+        shoulderRevoluteJointDef.localAnchorB.set(-12f/32f,0f);
+        shoulderRevoluteJointDef.motorSpeed = -2;
+        shoulderRevoluteJointDef.enableMotor = true;
+        shoulderRevoluteJointDef.maxMotorTorque = 100f;
+        shoulderRevoluteJointDef.referenceAngle = 90f * (float) (Math.PI) / 180f;
+        shoulderRevoluteJointDef.lowerAngle = RIGHT_HAND_LOWER_LIMIT;
+        shoulderRevoluteJointDef.upperAngle = RIGHT_HAND_UPPER_LIMIT;
+        shoulderRevoluteJointDef.enableLimit =true;
+        shoulderJoint = (RevoluteJoint)(pGameScene.getPhysicsWorld().createJoint(shoulderRevoluteJointDef));
+
+        final WeldJointDef handWeldJointDef = new WeldJointDef();
+        handWeldJointDef.initialize(mBodies[ARM], mBodies[HAND], mBodies[ARM].getWorldCenter());
+        handWeldJointDef.localAnchorA.set(12f / 32, 0f);
+        handWeldJointDef.localAnchorB.set(0f, 0f);
+        handWeldJointDef.referenceAngle = -90f * (float) (Math.PI) / 180f;
+        pGameScene.getPhysicsWorld().createJoint(handWeldJointDef);
     }
 
     float vx=0,vy=0;
     public void moveLeft(){
-        vx = -5f;
-        //this.onMoveLeft();
+        this.onMoveLeft();
     }
     public void moveRight(){
-        vx=5f;
+         this.onMoveRight();
     }
-    boolean up = false;
+    int upc=0;
     public void jump(){
-        if(up)
-            up = false;
-        else
-            up = true;
+        onJump();
+    }
+
+
+    public void stop(){
+        onStop();
     }
 
     @Override
     protected void onMoveLeft() {
-
+        this.setFlippedHorizontal(true);
+        vx = -5f;
+        if (handDownSpeed > 0) {
+           // hand.setFlippedVertical(true);
+            //if (this.equippedSprite != null)
+              //  this.equippedSprite.setFlippedHorizontal(true);
+            handDownSpeed = -1f * handDownSpeed;
+            shoulderJoint.setMotorSpeed(10f);
+            shoulderJoint.setLimits(LEFT_HAND_LOWER_LIMIT, LEFT_HAND_UPPER_LIMIT);
+        }
     }
 
     @Override
     protected void onMoveRight() {
+        this.setFlippedHorizontal(false);
+        vx = 5f;
+        if (handDownSpeed < 0) {
+            //hand.setFlippedVertical(false);
+            handDownSpeed = -1f * handDownSpeed;
+            //if (this.equippedSprite != null)
+              //  this.equippedSprite.setFlippedHorizontal(false);
+
+            shoulderJoint.setMotorSpeed(-10f);
+            shoulderJoint.setLimits(RIGHT_HAND_LOWER_LIMIT, RIGHT_HAND_UPPER_LIMIT);
+        }
     }
 
     @Override
     protected void onStop() {
-
+        this.vx=0;
     }
 
     @Override
     protected void onJump() {
-
+        if(!((UnitFootData)mBodies[FOOT].getUserData()).isContactWithGround()) {
+            return;
+        }
+        if(upc>0) {
+            return;
+        }
+        this.upc = 28;
     }
 
     @Override
@@ -170,6 +208,17 @@ public class PlayerUnit extends GameUnit{
             this.footShape = new PhysicsShape(footType,footX.length());
             this.footShape.setVertices(footX,footY);
 
+            String armType = jsonObject.getString("arm");
+            JSONArray armX = jsonObject.getJSONArray("arm_vx");
+            JSONArray armY = jsonObject.getJSONArray("arm_vy");
+            this.armShape = new PhysicsShape(armType,armX.length());
+            this.armShape.setVertices(armX,armY);
+
+            String handType = jsonObject.getString("hand");
+            JSONArray handX = jsonObject.getJSONArray("hand_vx");
+            JSONArray handY = jsonObject.getJSONArray("hand_vy");
+            this.handShape = new PhysicsShape(handType,handX.length());
+            this.handShape.setVertices(handX,handY);
 
         }catch (Exception e){
             e.printStackTrace();
@@ -210,5 +259,32 @@ public class PlayerUnit extends GameUnit{
     public void transformThis(float pX, float pY) {
 
     }
+
+
+    private PhysicsConnector bodyPhysicsConnector(){
+        return new PhysicsConnector(this,mBodies[BODY]){
+                @Override
+                public void onUpdate(float pSecondsElapsed) {
+                    super.onUpdate(pSecondsElapsed);
+                    camera.onUpdate(0.1f);
+
+                    if(((UnitFootData)mBodies[FOOT].getUserData()).isContactWithGround()) {
+                        vy = 0;
+                    }
+                    else {
+                        setActiveAnimation(ActiveAction.JUMP);
+                        vy = 9f;
+                    }
+                    if(upc>0){
+                        vy = -9f;
+                        upc--;
+                        if(upc<4)
+                            vy=0f;
+                    }
+                    getBody().setLinearVelocity(vx,vy);
+                }
+        };
+    }
+
 
 }

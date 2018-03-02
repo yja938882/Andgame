@@ -52,11 +52,20 @@ public class Utils {
     public static int calcMaximumInBound(float pBoundWidth, ArrayList<Vector2> pPositions){
         AscendingObj ascendingObj = new AscendingObj();
         Collections.sort(pPositions,ascendingObj);
-        String log="";
-        for(int i=0;i<pPositions.size();i++){
-            log+=(" ("+pPositions.get(i).x+" "+pPositions.get(i).y+")");
+        int left_index=0;
+        int right_index=0;
+        int max =0;
+        while(right_index<pPositions.size()){
+            while( pPositions.get(right_index).x - pPositions.get(left_index).x  > pBoundWidth){
+                if(right_index - left_index+1 >max)
+                    max = (right_index - left_index +1);
+                left_index++;
+            }
+            right_index++;
         }
-        return 0;
+        if(max==0)
+            return pPositions.size();
+        return max;
     }
 
     /*

@@ -25,9 +25,6 @@ public class SkillController extends Sprite{
     public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         if(pSceneTouchEvent.isActionDown()||pSceneTouchEvent.isActionMove()){
             EntityManager.getInstance().playerUnit.jump();
-
-        }else{
-
         }
         return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
     }

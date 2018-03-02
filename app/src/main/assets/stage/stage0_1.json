@@ -37,7 +37,7 @@
     },
     {
       "class": "display", "id": "iron_pole",
-      "x":5,"y":1,"src_width": 100, "src_height": 780
+      "x":13,"y":1,"src_width": 100, "src_height": 780
     },
     {
       "class": "static",
@@ -130,7 +130,7 @@
     {
       "class": "static",
       "vx" :[0, 0,  4, 4], "vy" :[0  ,2, 2, 0],
-      "sx" : 24,  "sy" : 22,
+      "sx" : 23,  "sy" : 23,
       "t"  : [14, 13],
       "tx" : ["0~1","1~2"],
       "ty" : ["0~1","0~1"]
