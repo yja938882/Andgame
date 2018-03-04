@@ -110,4 +110,9 @@ public class MovingAi extends AiUnit {
     public void transformThis(float pX, float pY) {
 
     }
+
+    @Override
+    public float getManagedPosX() {
+        return 0;
+    }
 }

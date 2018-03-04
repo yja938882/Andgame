@@ -260,6 +260,11 @@ public class PlayerUnit extends GameUnit{
 
     }
 
+    @Override
+    public float getManagedPosX() {
+        return 0;
+    }
+
 
     private PhysicsConnector bodyPhysicsConnector(){
         return new PhysicsConnector(this,mBodies[BODY]){

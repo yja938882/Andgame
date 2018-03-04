@@ -1,4 +1,4 @@
-package game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject;
+package game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Ground;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -19,6 +19,9 @@ public class Ground {
     private Vector2[] vertices;
     private float sx,sy;
     private Body mBody;
+    private float left= (100000f);
+    private float right= -100000f;
+    boolean isActive;
 
     /**
      *  Ground 모양 설정
@@ -32,9 +35,15 @@ public class Ground {
             for(int i=0;i<vXJsonArray.length();i++){
                 vertices[i] = new Vector2(vXJsonArray.getInt(i)* PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT
                         , vYJsonArray.getInt(i)*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT);
+                if(vertices[i].x < left)
+                    left = vertices[i].x;
+                if(vertices[i].x > right)
+                    right = vertices[i].x;
             }
             this.sx = pJsonObject.getInt("sx")*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
             this.sy = pJsonObject.getInt("sy")*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+            this.left += sx;
+            this.right += sx;
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -47,5 +56,7 @@ public class Ground {
     public void createBody(GameScene scene){
         this.mBody = PhysicsUtil.createGroundBody(scene,sx,sy,this.vertices);
     }
+
+
 
 }

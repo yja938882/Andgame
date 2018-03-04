@@ -47,6 +47,7 @@ public class GameScene extends BaseScene {
         StaticManager.getInstance().createBackground(this);
         StaticManager.getInstance().createDisplay(this);
 
+        EntityManager.prepare(camera);
         EntityManager.getInstance().createGround(this);
         EntityManager.getInstance().createItems(this);
         EntityManager.getInstance().createPlayer(this);
@@ -59,11 +60,7 @@ public class GameScene extends BaseScene {
 
         StaticManager.getInstance().createMapTiles(this);
 
-        //DebugRenderer debugRenderer;
-        //debugRenderer = new DebugRenderer(physicsWorld, ResourceManager.getInstance().vbom);
-        //debugRenderer.setDrawBodies(true);
-        //debugRenderer.setColor(Color.RED);
-       // this.attachChild(debugRenderer);
+
 
         physicsWorld.setContactListener(new ContactListener() {
             @Override
@@ -113,6 +110,7 @@ public class GameScene extends BaseScene {
             @Override
             public void onTimePassed(TimerHandler pTimerHandler) {
                 gameSceneHud.setText("FPS :"+fpsCounter.getFPS());
+
             }
         }));
     }

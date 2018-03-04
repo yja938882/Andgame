@@ -52,6 +52,11 @@ public class ArmedAi extends AiUnit{
     }
 
     @Override
+    public float getManagedPosX() {
+        return 0;
+    }
+
+    @Override
     public void createUnit(GameScene pGameScene) {
 
     }

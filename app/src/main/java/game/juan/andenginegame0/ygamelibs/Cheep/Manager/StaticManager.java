@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.badlogic.gdx.math.Vector2;
 
+import org.andengine.engine.handler.IUpdateHandler;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
@@ -28,10 +30,22 @@ public class StaticManager {
      * @param pGameScene 배경을 만들 Scene
      */
     public void createBackground(GameScene pGameScene){
-        MovingBackground movingBackground = new MovingBackground();
-        movingBackground.setup(2);
+        final MovingBackground movingBackground = new MovingBackground();
+        movingBackground.setup(ResourceManager.getInstance().camera,2);
         movingBackground.setSprites(0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("bg0"));
         movingBackground.setSprites(1,ResourceManager.getInstance().gfxTextureRegionHashMap.get("bg1"));
+        pGameScene.registerUpdateHandler(new IUpdateHandler(){
+
+            @Override
+            public void onUpdate(float pSecondsElapsed) {
+                movingBackground.onManagedUpdate();
+            }
+
+            @Override
+            public void reset() {
+
+            }
+        });
         movingBackground.attachTo(pGameScene);
     }
 

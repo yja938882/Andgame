@@ -193,4 +193,6 @@ public abstract class DynamicObject extends AnimatedSprite{
         return null;
     }
 
+    public abstract float getManagedPosX();
+
 }

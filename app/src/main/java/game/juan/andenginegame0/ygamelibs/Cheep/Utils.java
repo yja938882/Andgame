@@ -68,20 +68,4 @@ public class Utils {
         return max;
     }
 
-    /*
-      AscendingObj ascendingObj = new AscendingObj();
-        Collections.sort(pDataList,ascendingObj);
-        int rightIndex =0;
-        int leftIndex =0;
-        int max = -1;
-        for(int i=0;i<pDataList.size();i++){
-            rightIndex =i;
-            while(pDataList.get(rightIndex).getPosX() - pDataList.get(leftIndex).getPosX() > CAMERA_WIDTH*1.2f){
-                leftIndex++;
-            }
-            if(rightIndex - leftIndex+1 >=max)
-                max = rightIndex-leftIndex+1;
-
-        }
-     */
 }
