@@ -7,6 +7,7 @@ import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import game.juan.andenginegame0.ygamelibs.Cheep.Data.GroundData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.PhysicsUtil;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
 
@@ -19,14 +20,13 @@ public class Ground {
     private Vector2[] vertices;
     private float sx,sy;
     private Body mBody;
-    private float left= (100000f);
-    private float right= -100000f;
-    boolean isActive;
+
 
     /**
      *  Ground 모양 설정
-     * @param pJsonObject  설정정보
+     * @param
      */
+    /*
     public void configure(JSONObject pJsonObject){
         try {
             JSONArray vXJsonArray = pJsonObject.getJSONArray("vx");
@@ -47,6 +47,11 @@ public class Ground {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }*/
+    public void configure(GroundData groundData){
+        this.vertices = groundData.getVertices();
+        this.sx = groundData.sx;
+        this.sy = groundData.sy;
     }
 
     /**
@@ -55,6 +60,11 @@ public class Ground {
      */
     public void createBody(GameScene scene){
         this.mBody = PhysicsUtil.createGroundBody(scene,sx,sy,this.vertices);
+        this.mBody.setActive(false);
+    }
+
+    public void setActive(boolean active){
+        this.mBody.setActive(active);
     }
 
 

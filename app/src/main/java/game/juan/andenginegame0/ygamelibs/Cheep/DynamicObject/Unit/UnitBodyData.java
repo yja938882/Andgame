@@ -8,6 +8,7 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Physics.ObjectType;
  */
 
 public class UnitBodyData extends BodyData {
+
     public UnitBodyData(ObjectType objectType) {
         super(objectType);
     }
@@ -21,4 +22,5 @@ public class UnitBodyData extends BodyData {
     public void endContactWith(ObjectType objectType) {
 
     }
+
 }

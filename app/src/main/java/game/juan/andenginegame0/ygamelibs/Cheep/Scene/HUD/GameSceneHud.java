@@ -40,10 +40,10 @@ public class GameSceneHud extends HUD {
         this.attackController.setPosition(CAMERA_WIDTH - attackController.getWidth(),CAMERA_HEIGHT - attackController.getHeight());
         this.jumpController.setPosition(CAMERA_WIDTH - jumpController.getWidth(),attackController.getY() - jumpController.getHeight());
 
-        this.leftController.setAction(GameUnit.ActiveAction.MOVE_LEFT);
-        this.rightController.setAction(GameUnit.ActiveAction.MOVE_RIGHT);
-        this.attackController.setAction(GameUnit.ActiveAction.ATTACK);
-        this.jumpController.setAction(GameUnit.ActiveAction.JUMP);
+        this.leftController.setAction(GameUnit.Action.MOVE_LEFT);
+        this.rightController.setAction(GameUnit.Action.MOVE_RIGHT);
+        this.attackController.setAction(GameUnit.Action.ATTACK);
+        this.jumpController.setAction(GameUnit.Action.JUMP);
 
         this.registerTouchArea(leftController);
         this.registerTouchArea(rightController);

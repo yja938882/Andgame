@@ -251,7 +251,7 @@ public class DBManager extends SQLiteOpenHelper{
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
             try {
-                object = new JSONObject(cursor.getString(1));
+                object = new JSONObject(cursor.getString(0));
                 cursor.moveToNext();
             }catch (Exception e){
                 e.printStackTrace();

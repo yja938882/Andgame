@@ -14,7 +14,7 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Manager.EntityManager;
  */
 
 public class SkillController extends Sprite{
-    private GameUnit.ActiveAction action;
+    private GameUnit.Action action;
 
 
     public SkillController(float pX, float pY, ITextureRegion pTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
@@ -29,7 +29,7 @@ public class SkillController extends Sprite{
         return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
     }
 
-    public void setAction(GameUnit.ActiveAction action){
+    public void setAction(GameUnit.Action action){
         this.action = action;
     }
 }

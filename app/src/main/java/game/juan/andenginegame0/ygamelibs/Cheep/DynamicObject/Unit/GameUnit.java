@@ -2,12 +2,12 @@ package game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit;
 
 import android.util.Log;
 
+import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.ActionLock;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.DynamicObject;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.BodyData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.PhysicsShape;
@@ -19,15 +19,13 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
  */
 
 public abstract class GameUnit extends DynamicObject{
-    public enum ActiveAction{
-        STOP, MOVE_LEFT, MOVE_RIGHT,JUMP, ATTACK, NONE
+    public enum Action{
+        STOP, MOVE_LEFT, MOVE_RIGHT,JUMP, ATTACK, ATTACKED, DIE, NONE
     }
-    public enum PassiveAction{
-        NONE,ATTACKED, DIE
-    }
+    private Action curAction = Action.STOP;
 
-    private ActiveAction currentActiveAction = ActiveAction.STOP;
-    private PassiveAction currentPassiveAction = PassiveAction.NONE;
+    private Action curAnimation = Action.STOP;
+    protected int invincibleCounter = 0;
 
     protected long attackFrameDuration[];
     protected int attackFrameIndex[];
@@ -58,53 +56,47 @@ public abstract class GameUnit extends DynamicObject{
     }
 
     /**
-     * 현재 액티브 액션 설정
+     * 현재 액션 설정
      * @param action 설정할 액션
      */
-    public void setActiveAction(ActiveAction action){
-        this.currentActiveAction = action;
+    public void setActiveAction(Action action){
+        if(action==Action.ATTACKED&&invincibleCounter>0)
+            return;
+        this.curAction= action;
     }
 
-    /**
-     * 현재 패시브 액션 설정
-     * @param action 설정할 액션
-     */
-    public void setPassiveAction(PassiveAction action){
-        this.currentPassiveAction = action;
-    }
 
     @Override
     protected void onManagedUpdate(float pSecondsElapsed) {
         super.onManagedUpdate(pSecondsElapsed);
-        if(this.currentPassiveAction==PassiveAction.NONE){
-            switch (currentActiveAction){
-                case MOVE_LEFT:
-                    onMoveLeft();
-                    break;
-                case MOVE_RIGHT:
-                    onMoveRight();
-                    break;
-                case STOP:
-                    onStop();
-                    break;
-                case ATTACK:
-                    onAttack();
-                    break;
-                case JUMP:
-                    onJump();
-                    break;
-            }
-            setActiveAnimation(currentActiveAction);
-        }else{
-            switch (this.currentPassiveAction){
-                case ATTACKED:
-                    onAttack();
-                    break;
-                case DIE:
-                    onDie();
-                    break;
-            }
+        if(invincibleCounter>0)
+            invincibleCounter--;
+
+        switch (curAction){
+            case MOVE_LEFT:
+                onMoveLeft();
+                break;
+            case MOVE_RIGHT:
+                onMoveRight();
+                break;
+            case STOP:
+                onStop();
+                break;
+            case ATTACK:
+                onAttack();
+                break;
+            case JUMP:
+                onJump();
+                break;
+            case ATTACKED:
+                invincibleCounter = 100;
+                onBeAttacked();
+                break;
+            case DIE:
+                onDie();
+                break;
         }
+        setAnimation(curAction);
     }
 
     /**
@@ -126,6 +118,10 @@ public abstract class GameUnit extends DynamicObject{
 
         beAttackedFrameIndex = getAnimationIndexConfig("beAttackedFrameIndex",pJsonObject);
         beAttackedFrameDuration = getAnimationDurationConfig("beAttackedFrameDuration",pJsonObject);
+        this.attackLockMaxCount = 0f;
+        for(int i=0;i<beAttackedFrameDuration.length;i++){
+            attackLockMaxCount += (float)((double)beAttackedFrameDuration[i]/(double)1000);
+        }
 
         jumpFrameIndex = getAnimationIndexConfig("jumpFrameIndex",pJsonObject);
         jumpFrameDuration = getAnimationDurationConfig("jumpFrameDuration",pJsonObject);
@@ -169,34 +165,57 @@ public abstract class GameUnit extends DynamicObject{
 
 
 
-    private ActiveAction currentActiveAnimation = ActiveAction.NONE;
-    private PassiveAction currentPassiveAnimation = PassiveAction.NONE;
-
-    protected void setActiveAnimation(final ActiveAction activeAnimation){
-        if(currentActiveAnimation == activeAnimation)
+    private boolean animLock = false;
+    protected void setAnimation(final Action activeAnimation){
+        if(animLock)
+            return;
+        if(curAnimation == activeAnimation) //중복 애니메이션 방지
             return;
         switch (activeAnimation){
             case JUMP:
                 this.animate(jumpFrameDuration,jumpFrameIndex,true);
-                this.currentActiveAnimation = ActiveAction.JUMP;
+                this.curAnimation = Action.JUMP;
                 break;
             case MOVE_RIGHT:
                 this.animate(movingFrameDuration,movingFrameIndex,true);
-                this.currentActiveAnimation = ActiveAction.MOVE_RIGHT;
+                this.curAnimation = Action.MOVE_RIGHT;
                 break;
             case MOVE_LEFT:
                 this.animate(movingFrameDuration,movingFrameIndex,true);
-                this.currentActiveAnimation = ActiveAction.MOVE_LEFT;
+                this.curAnimation = Action.MOVE_LEFT;
                 break;
             case STOP:
                 this.animate(stopFrameDuration,stopFrameIndex,true);
-                this.currentActiveAnimation = ActiveAction.STOP;
+                this.curAnimation = Action.STOP;
+                break;
+            case ATTACKED:
+                this.animate(beAttackedFrameDuration, beAttackedFrameIndex, false, new IAnimationListener() {
+                    @Override
+                    public void onAnimationStarted(AnimatedSprite pAnimatedSprite, int pInitialLoopCount) {
+                        animLock = true;
+                    }
+
+                    @Override
+                    public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite, int pOldFrameIndex, int pNewFrameIndex) {
+
+                    }
+
+                    @Override
+                    public void onAnimationLoopFinished(AnimatedSprite pAnimatedSprite, int pRemainingLoopCount, int pInitialLoopCount) {
+
+                    }
+
+                    @Override
+                    public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
+                        setActiveAction(Action.STOP);
+                        animLock = false;
+                    }
+                });
+                this.curAnimation = Action.ATTACKED;
+                mActionLock.lock(Action.ATTACKED,beAttackedMaxCount);
                 break;
         }
-
     }
-    private void setPassiveAnimation(PassiveAction passiveAction){
 
-    }
 
 }

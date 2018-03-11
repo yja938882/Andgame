@@ -25,6 +25,13 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Manager.ResourceManager;
  */
 
 public class PhysicsUtil {
+    public static final short GROUND_CTG_BIT = 0x00000001;
+    public static final short PLAYER_CTG_BIT = 0x00000002;
+    public static final short AI_CTG_BIT = 0x00000004;
+
+    public static short GROUND_MASK_BIT = PLAYER_CTG_BIT|AI_CTG_BIT;
+    public static short PLAYER_MASK_BIT = GROUND_CTG_BIT;
+    public static  short AI_MASK_BIT = GROUND_CTG_BIT;
 
     /**
      *  원형 Body 생성
@@ -125,18 +132,29 @@ public class PhysicsUtil {
         switch (pObjectType){
             case GROUND:
                 fixtureDef.isSensor = false;
+                fixtureDef.filter.maskBits = GROUND_MASK_BIT;
+                fixtureDef.filter.categoryBits = GROUND_CTG_BIT;
                 break;
             case PLAYER_BODY:
                 fixtureDef.isSensor = false;
+                fixtureDef.filter.maskBits = PLAYER_MASK_BIT;
+                fixtureDef.filter.categoryBits = PLAYER_CTG_BIT;
                 break;
             case PLAYER_FOOT:
                 fixtureDef.isSensor=true;
+                fixtureDef.filter.maskBits = PLAYER_MASK_BIT;
+                fixtureDef.filter.categoryBits = PLAYER_CTG_BIT;
                 break;
             case PLAYER_ARM:
             case PLAYER_HAND:
                 fixtureDef.filter.maskBits=0;
                 fixtureDef.filter.categoryBits=0;
                 break;
+            case AI_BODY:
+                fixtureDef.filter.maskBits = AI_MASK_BIT;
+                fixtureDef.filter.categoryBits = AI_CTG_BIT;
+                break;
+
         }
         return fixtureDef;
     }
@@ -154,4 +172,5 @@ public class PhysicsUtil {
                 return BodyDef.BodyType.DynamicBody;
         }
     }
+
 }

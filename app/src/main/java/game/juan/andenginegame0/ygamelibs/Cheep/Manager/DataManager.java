@@ -12,8 +12,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.StringTokenizer;
 
+import game.juan.andenginegame0.ygamelibs.Cheep.Data.StageData;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Item.ItemData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Utils;
 
@@ -27,13 +30,10 @@ import static game.juan.andenginegame0.ygamelibs.Cheep.Activity.GameActivity.CAM
 public class DataManager {
      public static final DataManager INSTANCE = new DataManager();
 
+     public StageData stageData;
      public DBManager dbManager;
      public HashMap<String , JSONObject> configHashMap;
 
-     public ArrayList<JSONObject> groundConfigData;
-     public HashMap<String ,ArrayList> tileArrayHashMap;
-     public HashMap<String, ArrayList> displayArrayHashMap;
-     public HashMap<String, ArrayList> itemArrayHashMap;
 
     /**
      * Splash Scene 에 GFX 설정
@@ -88,6 +88,7 @@ public class DataManager {
      * @param pStage 로드할 스테이지
      */
     void loadStage( int pTheme, int pStage){
+        this.stageData = new StageData();
         JSONObject stageObject = Utils.loadJSONFromAsset(ResourceManager.getInstance().gameActivity,"stage/stage"+pTheme+"_"+pStage+".json");
         try{
 
@@ -109,28 +110,47 @@ public class DataManager {
 
             //맵( 지형 ) 데이터 로드
             JSONArray mapArray = stageObject.getJSONArray("map");
-            groundConfigData  = new ArrayList<>();
-            tileArrayHashMap = new HashMap<>();
-            displayArrayHashMap = new HashMap<>();
-            itemArrayHashMap = new HashMap<>();
-            for(int i=0;i<mapArray.length();i++){
-                JSONObject object = mapArray.getJSONObject(i);
-                switch(object.getString("class")){
-                    case "static":
-                        composeStaticData(object,pTheme);
-                        break;
-                    case "display":
-                        composeDisplayData(object);
-                        break;
-                    case "item":
-                        composeItemData(object);
-                        break;
-                }
+            stageData.setupStageData(mapArray);
 
+            //타일 데이터 로드
+            Set<String> tileHashMap = stageData.tileHashMap.keySet();
+            Iterator tileIterator = tileHashMap.iterator();
+            while(tileIterator.hasNext()){
+                String key = (String)tileIterator.next();
+                if(!configHashMap.containsKey(key)){
+                    configHashMap.put(key,newConfigJSON(key,"map/"+pTheme+"/"+key+".png",64,64,1,1));
+                }
             }
+
+            Set<String> obsKeySet = stageData.obsHashMap.keySet();
+            Iterator obsIterator = obsKeySet.iterator();
+            SQLiteDatabase db = dbManager.getReadableDatabase();
+            while(obsIterator.hasNext()){
+                String key = (String)obsIterator.next();
+                if(!configHashMap.containsKey(key)){
+                    JSONObject object = dbManager.getObsJSON(db,key);//dbManager.getAiJSON(db,key);
+                    object.put("src","obstacle/"+object.getString("src")).put("id",key);
+                    configHashMap.put(key,object);
+                }
+            }
+
+            Set<String> aiKey = stageData.aiHashMap.keySet();
+            Iterator aiIterator = aiKey.iterator();
+            db = dbManager.getReadableDatabase();
+            while(aiIterator.hasNext()){
+                String key = (String)aiIterator.next();
+                if(!configHashMap.containsKey(key)){
+                    JSONObject object = dbManager.getAiJSON(db,key);
+                    object.put("src","ai/"+object.getString("src")).put("id",key);
+                    configHashMap.put(key,object);
+                }
+            }
+
         }catch (Exception e){
             e.printStackTrace();
         }
+
+
     }
 
     public void clearGFXConfig(){
@@ -144,100 +164,6 @@ public class DataManager {
     public void prepareManager(DBManager dbManager){
         getInstance().dbManager = dbManager;
         getInstance().configHashMap = new HashMap<>();
-    }
-
-    /**
-     * StaticData( 지형 데이터 ) 구성
-     * @param object 구성할 데이터
-     * @param pTheme 테마
-     */
-    private void composeStaticData(JSONObject object, int pTheme){
-        groundConfigData.add(object);
-        try{
-            JSONArray tileArray = object.getJSONArray("t");
-            JSONArray tileX_Array = object.getJSONArray("tx");
-            JSONArray tileY_Array = object.getJSONArray("ty");
-            for(int i=0;i<tileArray.length();i++){
-                if(!configHashMap.containsKey(""+tileArray.getInt(i))){
-                    configHashMap.put(""+tileArray.getInt(i),newConfigJSON(""+tileArray.getInt(i),"map/"+pTheme+"/"+tileArray.getInt(i)+".png",64,64,1,1));
-                    tileArrayHashMap.put(""+tileArray.getInt(i),new ArrayList<Vector2>());
-                }
-                ArrayList<Vector2> array = (ArrayList<Vector2>)tileArrayHashMap.get(""+tileArray.getInt(i));
-
-                int outer_sX = object.getInt("sx");
-                int outer_sY = object.getInt("sy");
-
-                String tx_str = tileX_Array.getString(i);
-                StringTokenizer tokenizerX = new StringTokenizer(tx_str,"~");
-                int inner_sX = Integer.parseInt(tokenizerX.nextToken());
-                int inner_eX = Integer.parseInt(tokenizerX.nextToken());
-
-                String ty_str = tileY_Array.getString(i);
-                StringTokenizer tokenizerY = new StringTokenizer(ty_str,"~");
-                int inner_sY = Integer.parseInt(tokenizerY.nextToken());
-                int inner_eY = Integer.parseInt(tokenizerY.nextToken());
-
-                for(int x=inner_sX;x<inner_eX;x++){
-                    for(int y=inner_sY;y<inner_eY;y++){
-                        array.add(new Vector2( (float)(outer_sX+x*2)* PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,
-                                (float)(outer_sY+y*2)*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT));
-                    }
-                }
-
-            }
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Display 데이터 구성
-     * @param object 구성할 데이터
-     */
-    private void composeDisplayData(JSONObject object){
-        try {
-             float x = object.getInt("x");
-             float y = object.getInt("y");
-             float width = object.getInt("src_width");
-             float height = object.getInt("src_height");
-             float temp_height = (((int)height/32)+1)*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
-             if(!displayArrayHashMap.containsKey(object.getString("id"))){
-                displayArrayHashMap.put(object.getString("id"),new ArrayList<Vector2>());
-             }
-             displayArrayHashMap.get(object.getString("id")).add(
-                     new Vector2(x*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,y*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT+ temp_height-height));
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Item 데이터 구성
-     * @param pJsonObject 구성할 데이터
-     */
-    private void composeItemData(JSONObject pJsonObject){
-        try{
-            float x = pJsonObject.getInt("x");
-            float y = pJsonObject.getInt("y");
-            if(!configHashMap.containsKey(pJsonObject.getString("id"))){
-                SQLiteDatabase db = dbManager.getReadableDatabase();
-                JSONObject configJSONObject = dbManager.getItemJSON(db,pJsonObject.getString("id"));
-                configJSONObject.put("id",pJsonObject.getString("id"));
-                configJSONObject.put("src","object/players/"+configJSONObject.getString("src"));
-
-                configHashMap.put(pJsonObject.getString("id"),configJSONObject);
-            }
-            if(!itemArrayHashMap.containsKey(pJsonObject.getString("id"))){
-                itemArrayHashMap.put(pJsonObject.getString("id"),new ArrayList());
-            }
-            itemArrayHashMap.get(pJsonObject.getString("id")).add(
-                    new ItemData(ItemData.ItemType.COIN,new Vector2(x*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,y*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT)));
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
     /**

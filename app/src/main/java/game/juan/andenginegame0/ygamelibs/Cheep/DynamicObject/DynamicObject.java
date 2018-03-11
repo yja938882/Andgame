@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.BodyData;
+import game.juan.andenginegame0.ygamelibs.Cheep.Physics.CollisionRect;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.PhysicsUtil;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.BaseScene;
@@ -24,7 +25,7 @@ public abstract class DynamicObject extends AnimatedSprite{
 
     private boolean mActive;
     protected Body[] mBodies;
-
+    protected CollisionRect collisionRect;
     //---------------------------------------------
     // CONSTRUCTOR
     //---------------------------------------------

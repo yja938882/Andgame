@@ -3,6 +3,7 @@ package game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.Player;
 import android.util.Log;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
@@ -18,6 +19,7 @@ import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.GameUnit;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.UnitBodyData;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.UnitFootData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.BodyData;
+import game.juan.andenginegame0.ygamelibs.Cheep.Physics.CollisionRect;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.ObjectType;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.PhysicsShape;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.BaseScene;
@@ -49,7 +51,6 @@ public class PlayerUnit extends GameUnit{
     float handDownSpeed = 10f;
 
     private Camera camera;
-
 
     public PlayerUnit(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
@@ -102,12 +103,6 @@ public class PlayerUnit extends GameUnit{
     }
 
     float vx=0,vy=0;
-    public void moveLeft(){
-        this.onMoveLeft();
-    }
-    public void moveRight(){
-         this.onMoveRight();
-    }
     int upc=0;
     public void jump(){
         onJump();
@@ -123,9 +118,6 @@ public class PlayerUnit extends GameUnit{
         this.setFlippedHorizontal(true);
         vx = -5f;
         if (handDownSpeed > 0) {
-           // hand.setFlippedVertical(true);
-            //if (this.equippedSprite != null)
-              //  this.equippedSprite.setFlippedHorizontal(true);
             handDownSpeed = -1f * handDownSpeed;
             shoulderJoint.setMotorSpeed(10f);
             shoulderJoint.setLimits(LEFT_HAND_LOWER_LIMIT, LEFT_HAND_UPPER_LIMIT);
@@ -137,11 +129,7 @@ public class PlayerUnit extends GameUnit{
         this.setFlippedHorizontal(false);
         vx = 5f;
         if (handDownSpeed < 0) {
-            //hand.setFlippedVertical(false);
             handDownSpeed = -1f * handDownSpeed;
-            //if (this.equippedSprite != null)
-              //  this.equippedSprite.setFlippedHorizontal(false);
-
             shoulderJoint.setMotorSpeed(-10f);
             shoulderJoint.setLimits(RIGHT_HAND_LOWER_LIMIT, RIGHT_HAND_UPPER_LIMIT);
         }
@@ -163,6 +151,7 @@ public class PlayerUnit extends GameUnit{
         this.upc = 28;
     }
 
+
     @Override
     protected void onAttack() {
 
@@ -175,7 +164,9 @@ public class PlayerUnit extends GameUnit{
 
     @Override
     protected void onBeAttacked() {
+        //setPassiveAction(PassiveAction.NONE);
 
+        onStop();
     }
 
     @Override
@@ -195,6 +186,7 @@ public class PlayerUnit extends GameUnit{
 
     @Override
     protected void configurePhysicsData(JSONObject jsonObject) {
+        this.collisionRect = new CollisionRect(1f,1f);
         try{
             String bodyType = jsonObject.getString("body");
             JSONArray bodyX = jsonObject.getJSONArray("body_vx");
@@ -257,14 +249,16 @@ public class PlayerUnit extends GameUnit{
 
     @Override
     public void transformThis(float pX, float pY) {
-
+        for(int i=0;i<mBodies.length;i++){
+            mBodies[i].setTransform(pX,pY,0f);
+        }
     }
 
     @Override
     public float getManagedPosX() {
         return 0;
     }
-
+    public Body getFoot(){return this.mBodies[FOOT];}
 
     private PhysicsConnector bodyPhysicsConnector(){
         return new PhysicsConnector(this,mBodies[BODY]){
@@ -275,9 +269,8 @@ public class PlayerUnit extends GameUnit{
 
                     if(((UnitFootData)mBodies[FOOT].getUserData()).isContactWithGround()) {
                         vy = 0;
-                    }
-                    else {
-                        setActiveAnimation(ActiveAction.JUMP);
+                    } else {
+                        setAnimation(Action.JUMP);
                         vy = 9f;
                     }
                     if(upc>0){
@@ -291,5 +284,26 @@ public class PlayerUnit extends GameUnit{
         };
     }
 
+    public float getBodyPhysicsY(){
+        return this.mBodies[BODY].getPosition().y;
+    }
 
+    @Override
+    protected void onManagedUpdate(float pSecondsElapsed) {
+        super.onManagedUpdate(pSecondsElapsed);
+        if(this.invincibleCounter==1){
+            this.setAlpha(1f);
+        }else if(this.invincibleCounter>1){
+            if(this.invincibleCounter%2==0){
+                this.setAlpha(0.5f);
+            }else{
+                this.setAlpha(1f);
+            }
+        }
+    }
+
+    public CollisionRect getCollisionRect(){
+        this.collisionRect.setCenter(mBodies[BODY].getWorldCenter());
+        return this.collisionRect;
+    }
 }

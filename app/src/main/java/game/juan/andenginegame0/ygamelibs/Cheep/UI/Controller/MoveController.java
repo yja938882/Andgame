@@ -14,7 +14,7 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Manager.EntityManager;
  */
 
 public class MoveController extends Sprite{
-    private GameUnit.ActiveAction action;
+    private GameUnit.Action action;
 
     public MoveController(float pX, float pY, ITextureRegion pTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTextureRegion, pVertexBufferObjectManager);
@@ -25,12 +25,12 @@ public class MoveController extends Sprite{
         if(pSceneTouchEvent.isActionDown()||pSceneTouchEvent.isActionMove()){
             EntityManager.getInstance().playerUnit.setActiveAction(action);
         }else{
-            EntityManager.getInstance().playerUnit.setActiveAction(GameUnit.ActiveAction.STOP);
+            EntityManager.getInstance().playerUnit.setActiveAction(GameUnit.Action.STOP);
         }
         return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
     }
 
-    public void setAction(GameUnit.ActiveAction action){
+    public void setAction(GameUnit.Action action){
         this.action = action;
     }
 }
