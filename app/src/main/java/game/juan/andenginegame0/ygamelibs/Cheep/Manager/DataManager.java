@@ -18,6 +18,7 @@ import java.util.StringTokenizer;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.Data.StageData;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Item.ItemData;
+
 import game.juan.andenginegame0.ygamelibs.Cheep.Utils;
 
 import static game.juan.andenginegame0.ygamelibs.Cheep.Activity.GameActivity.CAMERA_WIDTH;
@@ -142,6 +143,20 @@ public class DataManager {
                 if(!configHashMap.containsKey(key)){
                     JSONObject object = dbManager.getAiJSON(db,key);
                     object.put("src","ai/"+object.getString("src")).put("id",key);
+                    configHashMap.put(key,object);
+                }
+            }
+
+            Set<String> itemKey = stageData.itemHashMap.keySet();
+            Iterator itemIterator = itemKey.iterator();
+            db = dbManager.getReadableDatabase();
+            while(itemIterator.hasNext()){
+                String key = (String)itemIterator.next();
+                if(!configHashMap.containsKey(key)){
+                    JSONObject object = dbManager.getItemJSON(db,key);
+
+                    object.put("src","object/players/"+object.getString("src")).put("id",key);
+                    Log.d("ITEM",object.toString());
                     configHashMap.put(key,object);
                 }
             }

@@ -7,7 +7,7 @@
       {
         "body":"vertices",     "body_vx":[-32,-32,32,32],"body_vy":[-38,38,38,-38],
         "hp":3,
-        "speed":10,     "jump":20,
+        "speed":3,     "jump":20,
         "movingFrameIndex"    :[6  ,7,8 ],
         "movingFrameDuration" :[70 ,70,70],
         "attackFrameIndex"    :[12  ,13 ,14 ,15 ,12],

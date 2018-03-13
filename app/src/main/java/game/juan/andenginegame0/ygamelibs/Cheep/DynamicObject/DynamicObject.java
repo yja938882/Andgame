@@ -23,7 +23,7 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Scene.BaseScene;
 
 public abstract class DynamicObject extends AnimatedSprite{
 
-    private boolean mActive;
+    private boolean mActive=false;
     protected Body[] mBodies;
     protected CollisionRect collisionRect;
     //---------------------------------------------
@@ -65,15 +65,14 @@ public abstract class DynamicObject extends AnimatedSprite{
     @Override
     protected void onManagedUpdate(float pSecondsElapsed) {
         super.onManagedUpdate(pSecondsElapsed);
-        setActive(activeRule());
+       // setActive(activeRule());
     }
 
     /**
      * 활성화 / 비활성화
      * @param active 활성화 여부
      */
-    private void setActive(boolean active){
-        if(this.mActive == active) return;
+    public void setActive(boolean active){
         this.mActive = active;
         onActive(mActive);
     }
@@ -145,12 +144,6 @@ public abstract class DynamicObject extends AnimatedSprite{
      */
     public abstract void disposeThis();
 
-    /**
-     * 해당 위치에 재생성
-     * @param pX 생성할 x 위치
-     * @param pY 생성할 y 위치
-    */
-    public abstract void revive(float pX, float pY);
 
     public abstract void transformThis(float pX, float pY);
 
@@ -194,6 +187,6 @@ public abstract class DynamicObject extends AnimatedSprite{
         return null;
     }
 
-    public abstract float getManagedPosX();
+    public abstract void create(GameScene pGameScene);
 
 }

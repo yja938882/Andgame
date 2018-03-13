@@ -2,6 +2,8 @@ package game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.Ai;
 
 import android.util.Log;
 
+import com.badlogic.gdx.physics.box2d.Body;
+
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
@@ -30,22 +32,25 @@ public class MovingAi extends AiUnit {
     public void createUnit(GameScene pGameScene) {
         this.allocateBody(1);
         this.createShapeBody(pGameScene,new UnitFootData(ObjectType.AI_BODY),BODY,bodyShape);
+        this.mBodies[BODY].setFixedRotation(true);
         pGameScene.getPhysicsWorld().registerPhysicsConnector(bodyPhysicsConnector());
     }
 
     @Override
     protected void onMoveLeft() {
-
+        this.setFlippedHorizontal(true);
+        vx = -MOVING_SPEED;
     }
 
     @Override
     protected void onMoveRight() {
-
+        this.setFlippedHorizontal(false);
+        vx = MOVING_SPEED;
     }
 
     @Override
     protected void onStop() {
-
+        vx=0f;
     }
 
     @Override
@@ -91,7 +96,11 @@ public class MovingAi extends AiUnit {
 
     @Override
     protected void onActive(boolean active) {
-
+        this.setVisible(active);
+        for(Body body:mBodies){
+            body.setActive(active);
+        }
+        this.setIgnoreUpdate(!active);
     }
 
     @Override
@@ -101,7 +110,7 @@ public class MovingAi extends AiUnit {
 
     @Override
     public void attachTo(BaseScene scene) {
-
+        scene.attachChild(this);
     }
 
     @Override
@@ -114,19 +123,19 @@ public class MovingAi extends AiUnit {
 
     }
 
-    @Override
-    public void revive(float pX, float pY) {
-
-    }
 
     @Override
     public void transformThis(float pX, float pY) {
-
+        for(Body b:mBodies){
+            b.setTransform(pX,pY,0f);
+        }
     }
 
+
+
     @Override
-    public float getManagedPosX() {
-        return 0;
+    public void create(GameScene pGameScene) {
+        createUnit(pGameScene);
     }
 
     private PhysicsConnector bodyPhysicsConnector(){

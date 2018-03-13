@@ -32,6 +32,7 @@ public class ObstacleFactory {
             trapObstacle = new TrapObstacle(x,y,ResourceManager.getInstance().gfxTextureRegionHashMap.get(id),
                     ResourceManager.getInstance().vbom);
             trapObstacle.configure(DataManager.getInstance().configHashMap.get(id));
+
         }catch (Exception e){
             e.printStackTrace();
         }

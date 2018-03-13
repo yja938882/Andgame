@@ -4,6 +4,7 @@ import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.BaseScene;
+import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
 
 /**
  * Created by juan on 2018. 3. 2..
@@ -25,8 +26,10 @@ public class CoinItem extends GameItem {
             count--;
             this.setY(this.getY()-5);
         }
-        if(count==0)
+        if(count==0) {
             this.setAlpha(0);
+            setActive(false);
+        }
     }
 
     @Override
@@ -37,7 +40,8 @@ public class CoinItem extends GameItem {
 
     @Override
     protected void onActive(boolean active) {
-
+        this.setVisible(active);
+        this.setIgnoreUpdate(!active);
     }
 
     @Override
@@ -47,7 +51,7 @@ public class CoinItem extends GameItem {
 
     @Override
     public void attachTo(BaseScene scene) {
-
+        scene.attachChild(this);
     }
 
     @Override
@@ -60,10 +64,6 @@ public class CoinItem extends GameItem {
 
     }
 
-    @Override
-    public void revive(float pX, float pY) {
-
-    }
 
     @Override
     public void transformThis(float pX, float pY) {
@@ -71,7 +71,7 @@ public class CoinItem extends GameItem {
     }
 
     @Override
-    public float getManagedPosX() {
-        return this.getX();
+    public void create(GameScene pGameScene) {
+
     }
 }

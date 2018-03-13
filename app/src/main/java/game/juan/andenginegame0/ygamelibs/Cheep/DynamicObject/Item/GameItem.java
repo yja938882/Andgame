@@ -43,9 +43,7 @@ public abstract class GameItem extends DynamicObject {
     public void configure(JSONObject pJsonObject){
         super.configure(pJsonObject);
         try{
-            Log.d("TAD","START" + (pJsonObject.getString("anim")));
             if( (pJsonObject.getString("anim")).equals("true")){
-                Log.d("TAD","MIDDLE");
                 this.anim = true;
                 this.animationDuration = getAnimationDurationConfig("animFrameDuration",pJsonObject);
                 this.animationIndex = getAnimationIndexConfig("animFrameIndex",pJsonObject);

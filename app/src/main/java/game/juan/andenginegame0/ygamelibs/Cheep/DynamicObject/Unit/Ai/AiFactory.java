@@ -30,8 +30,8 @@ public class AiFactory {
             movingAi = new MovingAi(x,y, ResourceManager.getInstance().gfxTextureRegionHashMap.get(id)
                     ,ResourceManager.getInstance().vbom);
             movingAi.setCmdList(aiData.getCmdList());
+            movingAi.setCmdDuration(aiData.getCmdDuration());
             movingAi.configure(DataManager.getInstance().configHashMap.get(id));
-
         }catch (Exception e){
             e.printStackTrace();
         }

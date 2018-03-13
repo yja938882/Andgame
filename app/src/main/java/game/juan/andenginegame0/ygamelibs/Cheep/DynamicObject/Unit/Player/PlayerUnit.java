@@ -49,6 +49,9 @@ public class PlayerUnit extends GameUnit{
 
     private RevoluteJoint shoulderJoint;
     float handDownSpeed = 10f;
+    private float velocityX=0,velocityY=0;
+    private float MOVING_SPEED = 0f;
+
 
     private Camera camera;
 
@@ -102,7 +105,7 @@ public class PlayerUnit extends GameUnit{
         pGameScene.getPhysicsWorld().createJoint(handWeldJointDef);
     }
 
-    float vx=0,vy=0;
+
     int upc=0;
     public void jump(){
         onJump();
@@ -116,7 +119,7 @@ public class PlayerUnit extends GameUnit{
     @Override
     protected void onMoveLeft() {
         this.setFlippedHorizontal(true);
-        vx = -5f;
+        velocityX = (-MOVING_SPEED);
         if (handDownSpeed > 0) {
             handDownSpeed = -1f * handDownSpeed;
             shoulderJoint.setMotorSpeed(10f);
@@ -127,7 +130,7 @@ public class PlayerUnit extends GameUnit{
     @Override
     protected void onMoveRight() {
         this.setFlippedHorizontal(false);
-        vx = 5f;
+        velocityX =MOVING_SPEED;
         if (handDownSpeed < 0) {
             handDownSpeed = -1f * handDownSpeed;
             shoulderJoint.setMotorSpeed(-10f);
@@ -137,7 +140,7 @@ public class PlayerUnit extends GameUnit{
 
     @Override
     protected void onStop() {
-        this.vx=0;
+        this.velocityX=0f;
     }
 
     @Override
@@ -212,6 +215,7 @@ public class PlayerUnit extends GameUnit{
             this.handShape = new PhysicsShape(handType,handX.length());
             this.handShape.setVertices(handX,handY);
 
+            this.MOVING_SPEED = (float)jsonObject.getDouble("speed");
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -242,10 +246,6 @@ public class PlayerUnit extends GameUnit{
 
     }
 
-    @Override
-    public void revive(float pX, float pY) {
-
-    }
 
     @Override
     public void transformThis(float pX, float pY) {
@@ -255,9 +255,10 @@ public class PlayerUnit extends GameUnit{
     }
 
     @Override
-    public float getManagedPosX() {
-        return 0;
+    public void create(GameScene pGameScene) {
+
     }
+
     public Body getFoot(){return this.mBodies[FOOT];}
 
     private PhysicsConnector bodyPhysicsConnector(){
@@ -268,18 +269,18 @@ public class PlayerUnit extends GameUnit{
                     camera.onUpdate(0.1f);
 
                     if(((UnitFootData)mBodies[FOOT].getUserData()).isContactWithGround()) {
-                        vy = 0;
+                        velocityY = 0f;
                     } else {
                         setAnimation(Action.JUMP);
-                        vy = 9f;
+                        velocityY = 9f;
                     }
                     if(upc>0){
-                        vy = -9f;
+                        velocityY = -9f;
                         upc--;
                         if(upc<4)
-                            vy=0f;
+                            velocityY = 0f;
                     }
-                    getBody().setLinearVelocity(vx,vy);
+                    getBody().setLinearVelocity(velocityX,velocityY);
                 }
         };
     }

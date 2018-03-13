@@ -41,10 +41,6 @@ public class ArmedAi extends AiUnit{
 
     }
 
-    @Override
-    public void revive(float pX, float pY) {
-
-    }
 
     @Override
     public void transformThis(float pX, float pY) {
@@ -52,8 +48,8 @@ public class ArmedAi extends AiUnit{
     }
 
     @Override
-    public float getManagedPosX() {
-        return 0;
+    public void create(GameScene pGameScene) {
+
     }
 
     @Override

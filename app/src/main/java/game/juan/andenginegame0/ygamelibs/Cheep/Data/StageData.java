@@ -28,8 +28,9 @@ public class StageData {
     private int[] mGroundIndexLength;
     public HashMap<String , ArrayList<TileData>> tileHashMap;
     public HashMap<String , ArrayList<DisplayData>> displayHashMap;
-    public HashMap<String , DynamicsArrayList<ObstacleData>> obsHashMap;
-    public HashMap<String , DynamicsArrayList<AiData>> aiHashMap;
+    public HashMap<String , DataArrayList<Data>> obsHashMap;
+    public HashMap<String , DataArrayList<Data>> aiHashMap;
+    public HashMap<String , DataArrayList<Data>> itemHashMap;
 
     public GroundData[] getGroundData(){return groundData;}
 
@@ -50,6 +51,7 @@ public class StageData {
             displayHashMap = new HashMap<>();
             obsHashMap = new HashMap<>();
             aiHashMap = new HashMap<>();
+            itemHashMap = new HashMap<>();
             ArrayList<GroundData> groundData = new ArrayList<>();
 
             this.mGroundIndex = new int[stageJSONArray.length()];
@@ -64,7 +66,6 @@ public class StageData {
                 JSONArray sectionDataJSONArray = sectionJSON.getJSONArray("data");
                 int length = 0;
                 for(int elem=0;elem<sectionDataJSONArray.length();elem++){
-
 
                     JSONObject elemJSON  = sectionDataJSONArray.getJSONObject(elem);
                     switch (elemJSON.getString("class")){
@@ -113,21 +114,33 @@ public class StageData {
                             break;
                         case "obstacle":
                             ObstacleData oD = new ObstacleData();
+                            oD.setSection(section);
                             oD.compose(elemJSON);
                             String obskey = elemJSON.getString("id");
                             if(!obsHashMap.containsKey(obskey)){
-                                obsHashMap.put(obskey,new DynamicsArrayList<ObstacleData>(elemJSON.getString("type")));
+                                obsHashMap.put(obskey,new DataArrayList<Data>(elemJSON.getString("type")));//new DynamicsArrayList<ObstacleData>(elemJSON.getString("type")));
                             }
                             obsHashMap.get(obskey).add(oD);
                             break;
                         case "ai":
                             AiData aD = new AiData();
+                            aD.setSection(section);
                             aD.compose(elemJSON);
                             String aikey = elemJSON.getString("id");
                             if(!aiHashMap.containsKey(aikey)){
-                                aiHashMap.put(aikey,new DynamicsArrayList<AiData>(elemJSON.getString("type")));
+                                aiHashMap.put(aikey,new DataArrayList<Data>(elemJSON.getString("type")));
                             }
                             aiHashMap.get(aikey).add(aD);
+                            break;
+                        case "item":
+                            ItemData iD = new ItemData();
+                            iD.setSection(section);
+                            iD.compose(elemJSON);
+                            String itemKey = elemJSON.getString("id");
+                            if(!itemHashMap.containsKey(itemKey)){
+                                itemHashMap.put(itemKey,new DataArrayList<Data>(elemJSON.getString("id")));
+                            }
+                            itemHashMap.get(itemKey).add(iD);
                             break;
                     }
                 }

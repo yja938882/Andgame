@@ -3,14 +3,13 @@ package game.juan.andenginegame0.ygamelibs.Cheep.Data;
 import java.util.ArrayList;
 
 /**
- * Created by juan on 2018. 3. 9..
-
+ * Created by juan on 2018. 3. 13..
+ *
  */
 
-public class DynamicsArrayList<E> extends ArrayList<E> {
+public class DataArrayList<E> extends ArrayList<E> {
     private String type;
-    public DynamicsArrayList(String pType){
-        super();
+    public DataArrayList(String pType){
         this.type = pType;
     }
     public String getType(){

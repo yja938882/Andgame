@@ -47,6 +47,7 @@ import static game.juan.andenginegame0.ygamelibs.Cheep.Activity.GameActivity.CAM
  */
 
 public class GameScene extends BaseScene {
+    private int currentSection =0;
     private PhysicsWorld physicsWorld;
     private GameSceneHud gameSceneHud;
     boolean test = false;
@@ -64,10 +65,13 @@ public class GameScene extends BaseScene {
         StaticManager.getInstance().createTile(this);
         StaticManager.getInstance().createGround(this);
 
-        StaticManager.getInstance().setToSection(0);
+
         EntityManager.getInstance().createPlayer(this);
         EntityManager.getInstance().createObstacle(this);
         EntityManager.getInstance().createAi(this);
+        EntityManager.getInstance().createItems(this);
+
+        setSectionTo(currentSection);
 
         this.gameSceneHud = new GameSceneHud();
         this.gameSceneHud.createHUD();
@@ -81,7 +85,9 @@ public class GameScene extends BaseScene {
             @Override
             public void onUpdate(float pSecondsElapsed) {
                 if(!test&& EntityManager.getInstance().playerUnit.getX()>=2000){
-                    StaticManager.getInstance().setToSection(1);
+                    currentSection++;
+                    setSectionTo(currentSection);
+                    //  StaticManager.getInstance().setToSection(1);
                     float y =EntityManager.getInstance().playerUnit.getBodyPhysicsY();
                     ((UnitFootData)(EntityManager.getInstance().playerUnit.getFoot().getUserData())).endContactWith(ObjectType.GROUND);
                     EntityManager.getInstance().playerUnit.transformThis(10f/32f,y-4f);
@@ -148,10 +154,10 @@ public class GameScene extends BaseScene {
             }
         }));
 
-       // DebugRenderer debugRenderer = new DebugRenderer(physicsWorld,ResourceManager.getInstance().vbom);
-       // debugRenderer.setColor(Color.RED);
-       // debugRenderer.setDrawBodies(true);
-       // this.attachChild(debugRenderer);
+        //DebugRenderer debugRenderer = new DebugRenderer(physicsWorld,ResourceManager.getInstance().vbom);
+        // debugRenderer.setColor(Color.RED);
+        //debugRenderer.setDrawBodies(true);
+        //this.attachChild(debugRenderer);
 
 
        }
@@ -174,6 +180,11 @@ public class GameScene extends BaseScene {
 
     public PhysicsWorld getPhysicsWorld(){
         return this.physicsWorld;
+    }
+
+    private void setSectionTo(int pSection){
+        StaticManager.getInstance().setToSection(pSection); // section
+        EntityManager.getInstance().setSectionTo(pSection,this);
     }
 }
 
