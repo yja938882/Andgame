@@ -5,6 +5,7 @@ import org.andengine.entity.text.Text;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.GameUnit;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.ResourceManager;
+import game.juan.andenginegame0.ygamelibs.Cheep.UI.Controller.JumpController;
 import game.juan.andenginegame0.ygamelibs.Cheep.UI.Controller.MoveController;
 import game.juan.andenginegame0.ygamelibs.Cheep.UI.Controller.SkillController;
 
@@ -19,8 +20,9 @@ import static game.juan.andenginegame0.ygamelibs.Cheep.Activity.GameActivity.CAM
 public class GameSceneHud extends HUD {
     private MoveController leftController;
     private MoveController rightController;
+    private JumpController jumpController;
+    private SkillController pickUpController;
     private SkillController attackController;
-    private SkillController jumpController;
     private Text FPS;
 
     /**
@@ -32,28 +34,31 @@ public class GameSceneHud extends HUD {
 
         this.leftController = new MoveController(0,0, ResourceManager.getInstance().gfxTextureRegionHashMap.get("left_btn"),ResourceManager.getInstance().vbom);
         this.rightController = new MoveController(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("right_btn"),ResourceManager.getInstance().vbom);
-        this.attackController = new SkillController(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("attack_btn"),ResourceManager.getInstance().vbom);
-        this.jumpController = new SkillController(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("jump_btn"),ResourceManager.getInstance().vbom);
+        this.attackController = new SkillController(GameUnit.Action.ATTACK,0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("attack_btn"),ResourceManager.getInstance().vbom);
+        this.jumpController = new JumpController(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("jump_btn"),ResourceManager.getInstance().vbom);
+        this.pickUpController = new SkillController(GameUnit.Action.PICK,0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("skill2_btn"),ResourceManager.getInstance().vbom);
 
         this.leftController.setPosition(0,CAMERA_HEIGHT - leftController.getHeight());
         this.rightController.setPosition(leftController.getWidth(),CAMERA_HEIGHT-rightController.getHeight());
         this.attackController.setPosition(CAMERA_WIDTH - attackController.getWidth(),CAMERA_HEIGHT - attackController.getHeight());
         this.jumpController.setPosition(CAMERA_WIDTH - jumpController.getWidth(),attackController.getY() - jumpController.getHeight());
+        this.pickUpController.setPosition(CAMERA_WIDTH - pickUpController.getWidth()*2,attackController.getY() - pickUpController.getHeight());
 
         this.leftController.setAction(GameUnit.Action.MOVE_LEFT);
         this.rightController.setAction(GameUnit.Action.MOVE_RIGHT);
-        this.attackController.setAction(GameUnit.Action.ATTACK);
-        this.jumpController.setAction(GameUnit.Action.JUMP);
+
 
         this.registerTouchArea(leftController);
         this.registerTouchArea(rightController);
         this.registerTouchArea(attackController);
         this.registerTouchArea(jumpController);
+        this.registerTouchArea(pickUpController);
 
         this.attachChild(leftController);
         this.attachChild(rightController);
         this.attachChild(attackController);
         this.attachChild(jumpController);
+        this.attachChild(pickUpController);
     }
 
     /**

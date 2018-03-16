@@ -46,9 +46,6 @@ public class Display extends DynamicSpriteBatch {
         this.displayData = pDisplayData;
         this.sectionIndex = pSectionIndex;
         this.sectionLength = pSectionLength;
-        for(int i=0;i<sectionIndex.length;i++){
-            Log.d("DISP","Section :"+i+" index :"+sectionIndex[i]+" len :"+sectionLength[i]);
-        }
     }
     public void setupSection(int pSection){
         this.section = pSection;

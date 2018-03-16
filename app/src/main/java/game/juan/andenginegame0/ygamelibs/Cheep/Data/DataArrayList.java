@@ -8,11 +8,14 @@ import java.util.ArrayList;
  */
 
 public class DataArrayList<E> extends ArrayList<E> {
+    private String id;
     private String type;
-    public DataArrayList(String pType){
+    public DataArrayList(String pType, String pId){
         this.type = pType;
+        this.id = pId;
     }
     public String getType(){
         return this.type;
     }
+    public String getID(){return this.id;}
 }

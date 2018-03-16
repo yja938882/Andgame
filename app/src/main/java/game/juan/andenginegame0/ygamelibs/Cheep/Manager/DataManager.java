@@ -73,6 +73,7 @@ public class DataManager {
         configHashMap.put("right_btn",newConfigJSON("right_btn","ui/right.png",68,67,1,1));
         configHashMap.put("attack_btn",newConfigJSON("attack_btn","ui/attack_btn.png",112,123,1,1));
         configHashMap.put("jump_btn",newConfigJSON("jump_btn","ui/up.png",72,60,1,1));
+        configHashMap.put("skill2_btn",newConfigJSON("skill2_btn","ui/skill2.png",72,60,1,1));
     }
 
     /**
@@ -123,8 +124,7 @@ public class DataManager {
                 }
             }
 
-            Set<String> obsKeySet = stageData.obsHashMap.keySet();
-            Iterator obsIterator = obsKeySet.iterator();
+            Iterator obsIterator = stageData.getIdSetIterator(StageData.OBSTACLE);
             SQLiteDatabase db = dbManager.getReadableDatabase();
             while(obsIterator.hasNext()){
                 String key = (String)obsIterator.next();
@@ -134,9 +134,7 @@ public class DataManager {
                     configHashMap.put(key,object);
                 }
             }
-
-            Set<String> aiKey = stageData.aiHashMap.keySet();
-            Iterator aiIterator = aiKey.iterator();
+            Iterator aiIterator = stageData.getIdSetIterator(StageData.AI);
             db = dbManager.getReadableDatabase();
             while(aiIterator.hasNext()){
                 String key = (String)aiIterator.next();
@@ -147,19 +145,21 @@ public class DataManager {
                 }
             }
 
-            Set<String> itemKey = stageData.itemHashMap.keySet();
-            Iterator itemIterator = itemKey.iterator();
+            Iterator itemIterator = stageData.getIdSetIterator(StageData.ITEM);
             db = dbManager.getReadableDatabase();
             while(itemIterator.hasNext()){
                 String key = (String)itemIterator.next();
                 if(!configHashMap.containsKey(key)){
                     JSONObject object = dbManager.getItemJSON(db,key);
-
                     object.put("src","object/players/"+object.getString("src")).put("id",key);
-                    Log.d("ITEM",object.toString());
                     configHashMap.put(key,object);
                 }
             }
+
+            //test
+            JSONObject itemObject = dbManager.getItemJSON(db,"spear");
+            itemObject.put("src","object/players/"+itemObject.getString("src")).put("id","spear");
+            configHashMap.put("spear",itemObject);
 
         }catch (Exception e){
             e.printStackTrace();

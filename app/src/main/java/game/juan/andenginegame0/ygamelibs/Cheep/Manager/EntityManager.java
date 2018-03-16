@@ -14,12 +14,14 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Data.AiData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Data.Data;
 import game.juan.andenginegame0.ygamelibs.Cheep.Data.DataArrayList;
 import game.juan.andenginegame0.ygamelibs.Cheep.Data.ObstacleData;
+import game.juan.andenginegame0.ygamelibs.Cheep.Data.StageData;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.DynamicObject;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.DynamicObjectList;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Ground.Ground;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Item.CoinItem;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Item.ItemData;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Item.ItemFactory;
+import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Item.WeaponItem.NearWeapon;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Obstacle.ObstacleFactory;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.Ai.AiFactory;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.Ai.AiUnit;
@@ -48,14 +50,12 @@ public class EntityManager {
     }
 
     public void createObstacle(GameScene pGameScene){
-        HashMap<String, DataArrayList<Data>> hashMap = DataManager.getInstance().stageData.obsHashMap;
-        Set<String> keySet = hashMap.keySet();
-        obstacleList = new DynamicObjectList[keySet.size()];
-        Iterator iterator = keySet.iterator();
+        obstacleList = new DynamicObjectList[DataManager.getInstance().stageData.getIdSetSize(StageData.OBSTACLE)];
+        Iterator iterator = DataManager.getInstance().stageData.getIdSetIterator(StageData.OBSTACLE);
         int i=0;
         while(iterator.hasNext()){
             String key = (String)iterator.next();
-            DataArrayList<Data> dataList = hashMap.get(key);
+            DataArrayList<Data> dataList = DataManager.getInstance().stageData.dataHashMap.get(key);
             this.obstacleList[i] = new DynamicObjectList(key,dataList.getType()) {
                 @Override
                 public DynamicObject createObjects(GameScene pGameScene, Data data) {
@@ -69,15 +69,12 @@ public class EntityManager {
 
     }
     public void createAi(GameScene pGameScene){
-        HashMap<String ,DataArrayList<Data>> hashMap = DataManager.getInstance().stageData.aiHashMap;
-        Set<String> keySet = hashMap.keySet();
-        aiList = new DynamicObjectList[keySet.size()];
-        Iterator iterator = keySet.iterator();
-
-         int i=0;
+        aiList = new DynamicObjectList[DataManager.getInstance().stageData.getIdSetSize(StageData.AI)];
+        Iterator iterator = DataManager.getInstance().stageData.getIdSetIterator(StageData.AI);
+        int i=0;
         while(iterator.hasNext()){
             String key = (String)iterator.next();
-            DataArrayList<Data> dataList = hashMap.get(key);
+            DataArrayList<Data> dataList =  DataManager.getInstance().stageData.dataHashMap.get(key);
             aiList[i] = new DynamicObjectList(key,dataList.getType()) {
                 @Override
                 public DynamicObject createObjects(GameScene pGameScene, Data data) {
@@ -91,16 +88,12 @@ public class EntityManager {
      }
 
      public void createItems(GameScene pGameScene){
-        Log.d("cre","item");
-        HashMap<String , DataArrayList<Data>> hashMap = DataManager.getInstance().stageData.itemHashMap;
-        Set<String> keySet = hashMap.keySet();
-        coinList = new DynamicObjectList[keySet.size()];
-         Iterator iterator = keySet.iterator();
-
+        coinList = new DynamicObjectList[DataManager.getInstance().stageData.getIdSetSize(StageData.ITEM)];
+         Iterator iterator = DataManager.getInstance().stageData.getIdSetIterator(StageData.ITEM);
          int i=0;
          while(iterator.hasNext()){
              String key = (String)iterator.next();
-             DataArrayList<Data> dataList = hashMap.get(key);
+             DataArrayList<Data> dataList = DataManager.getInstance().stageData.dataHashMap.get(key);
              coinList[i] = new DynamicObjectList(key,dataList.getType()) {
                  @Override
                  public DynamicObject createObjects(GameScene pGameScene, Data data) {
@@ -111,6 +104,11 @@ public class EntityManager {
              this.coinList[i].setup(pGameScene,DataManager.getInstance().stageData.getSectionNum(),dataList);
              i++;
          }
+
+         NearWeapon nearWeapon = new NearWeapon(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("spear"),ResourceManager.getInstance().vbom);
+         nearWeapon.configure(DataManager.getInstance().configHashMap.get("spear"));
+         nearWeapon.create(pGameScene);
+         nearWeapon.attachTo(pGameScene);
      }
 
     public void onManagedUpdate(float pElapsedSeconds){
@@ -126,7 +124,6 @@ public class EntityManager {
     }
 
     public void setSectionTo(int pSection, GameScene pGameScene){
-        Log.d("ENtit","setSectionTo" +pSection);
         for(int i=0;i<obstacleList.length;i++)
             obstacleList[i].setSection(pSection,pGameScene);
         for(int i=0;i<aiList.length;i++)

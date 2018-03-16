@@ -12,8 +12,11 @@ public abstract class Data implements IData {
     public float x;
     public float y;
     protected int section;
-    protected int id;
 
+    public Data(int pSection,JSONObject object){
+        this.section = pSection;
+        compose(object);
+    }
     @Override
     public abstract void compose(JSONObject object);
 

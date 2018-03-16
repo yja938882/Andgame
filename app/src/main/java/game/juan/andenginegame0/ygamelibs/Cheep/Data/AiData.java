@@ -13,6 +13,12 @@ public class AiData extends Data {
 
     private int[] cmdList;
     private float[] cmdDuration;
+
+    public AiData(int pSection, JSONObject object) {
+        super(pSection, object);
+    }
+
+
     @Override
     public void compose(JSONObject object) {
         try{

@@ -9,15 +9,21 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
 import org.andengine.engine.camera.Camera;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
+import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.util.color.Color;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Item.WeaponItem.WeaponItem;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.GameUnit;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.UnitBodyData;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.UnitFootData;
+import game.juan.andenginegame0.ygamelibs.Cheep.Manager.ResourceManager;
+import game.juan.andenginegame0.ygamelibs.Cheep.Manager.SceneManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.BodyData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.CollisionRect;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.ObjectType;
@@ -31,6 +37,8 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
  */
 
 public class PlayerUnit extends GameUnit{
+    private static final float RADIAN_90 = 1.570796f;
+
     private static final int BODY = 0;
     private static final int FOOT = 1;
     private static final int ARM = 2;
@@ -52,8 +60,14 @@ public class PlayerUnit extends GameUnit{
     private float velocityX=0,velocityY=0;
     private float MOVING_SPEED = 0f;
 
+    private WeaponItem gettableWeapon = null;
+    private WeaponItem onHandWeapon = null;
+
+    private boolean isAttacking= false;
 
     private Camera camera;
+
+    private CollisionRect attackRect;
 
     public PlayerUnit(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
@@ -63,8 +77,14 @@ public class PlayerUnit extends GameUnit{
         this.camera = camera;
     }
 
+
+    Rectangle test;
     @Override
     public void createUnit(GameScene pGameScene) {
+        test = new Rectangle(0,0,10,10, ResourceManager.getInstance().vbom);
+        test.setColor(Color.RED);
+        pGameScene.attachChild(test);
+
         this.allocateBody(4);
         this.createShapeBody(pGameScene,new UnitBodyData(ObjectType.PLAYER_BODY),BODY,bodyShape);
         this.createShapeBody(pGameScene,new UnitFootData(ObjectType.PLAYER_FOOT),FOOT,footShape);
@@ -125,6 +145,8 @@ public class PlayerUnit extends GameUnit{
             shoulderJoint.setMotorSpeed(10f);
             shoulderJoint.setLimits(LEFT_HAND_LOWER_LIMIT, LEFT_HAND_UPPER_LIMIT);
         }
+        if(this.onHandWeapon!=null)
+            onHandWeapon.setFlippedHorizontal(true);
     }
 
     @Override
@@ -136,6 +158,8 @@ public class PlayerUnit extends GameUnit{
             shoulderJoint.setMotorSpeed(-10f);
             shoulderJoint.setLimits(RIGHT_HAND_LOWER_LIMIT, RIGHT_HAND_UPPER_LIMIT);
         }
+        if(this.onHandWeapon!=null)
+            onHandWeapon.setFlippedHorizontal(false);
     }
 
     @Override
@@ -157,18 +181,59 @@ public class PlayerUnit extends GameUnit{
 
     @Override
     protected void onAttack() {
+        if(onHandWeapon==null)
+            return;
+        this.isAttacking = true;
+       // this.attackRect.setCenter()
+        if(!this.isFlippedHorizontal()){//right
+            if(this.shoulderJoint.getJointAngle()>RIGHT_HAND_UPPER_LIMIT-0.2f){
+                this.onAttackEnd();
+                this.setActiveAction(Action.STOP);
+                return;
+            }
+            this.shoulderJoint.setMotorSpeed(10f);
+        }else{//left
+            if(this.shoulderJoint.getJointAngle()<LEFT_HAND_LOWER_LIMIT+0.2f){
+               this.onAttackEnd();
+               this.setActiveAction(Action.STOP);
+               return;
+            }
+            this.shoulderJoint.setMotorSpeed(-10f);
+        }
+        this.attackRect.setCenter((float)((this.mBodies[HAND].getPosition().x+
+                4*Math.cos((-this.shoulderJoint.getJointAngle())))),
+                (float)(this.mBodies[HAND].getPosition().y-4*Math.sin(-this.shoulderJoint.getJointAngle())));
+        /*
+        Log.d("TAG"," get x :"+this.onHandWeapon.getX()+" get y :"+this.onHandWeapon.getY());
+        Log.d("AN ","reg "+this.shoulderJoint.getJointAngle()+" deg :"+Math.toDegrees(RADIAN_90-this.shoulderJoint.getJointAngle()));
+      //  Math.c
+        Log.d("GEG"," get x :"+
+                (this.mBodies[HAND].getPosition().x+4*Math.cos(Math.toDegrees(RADIAN_90-this.shoulderJoint.getJointAngle())))*
+                        PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT+
+                " get y :"+(this.mBodies[HAND].getPosition().y-4*Math.sin((RADIAN_90-this.shoulderJoint.getJointAngle())))*
+               PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT);
+
+        test.setPosition( (float)((this.mBodies[HAND].getPosition().x+4*Math.cos((-this.shoulderJoint.getJointAngle())))*
+                PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT),(float)(this.mBodies[HAND].getPosition().y-4*Math.sin(-this.shoulderJoint.getJointAngle()))*
+                PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT);
+                */
+
+
 
     }
 
     @Override
     protected void onAttackEnd() {
-
+        this.isAttacking = false;
+        if(!this.isFlippedHorizontal())
+            this.shoulderJoint.setMotorSpeed(-13f);
+        else
+            this.shoulderJoint.setMotorSpeed(13f);
     }
 
     @Override
     protected void onBeAttacked() {
-        //setPassiveAction(PassiveAction.NONE);
-
+        this.isAttacking = false;
         onStop();
     }
 
@@ -189,6 +254,7 @@ public class PlayerUnit extends GameUnit{
 
     @Override
     protected void configurePhysicsData(JSONObject jsonObject) {
+        this.attackRect=new CollisionRect(0.5f,0.5f);
         this.collisionRect = new CollisionRect(1f,1f);
         try{
             String bodyType = jsonObject.getString("body");
@@ -223,7 +289,6 @@ public class PlayerUnit extends GameUnit{
 
     @Override
     protected void onActive(boolean active) {
-
     }
 
     @Override
@@ -306,5 +371,34 @@ public class PlayerUnit extends GameUnit{
     public CollisionRect getCollisionRect(){
         this.collisionRect.setCenter(mBodies[BODY].getWorldCenter());
         return this.collisionRect;
+    }
+
+    public void setGettableWeapon(WeaponItem weapon){
+        this.gettableWeapon = weapon;
+    }
+
+    @Override
+    protected void onPick(){
+        super.onPick();
+        if(this.gettableWeapon==null)
+            return;
+        gettableWeapon.setGetted();
+        onHandWeapon = gettableWeapon;
+
+        SceneManager.getInstance().getGameScene().
+                getPhysicsWorld().
+                registerPhysicsConnector(
+                        new PhysicsConnector( this.onHandWeapon,mBodies[HAND]));
+        onHandWeapon.setFlippedHorizontal(this.isFlippedHorizontal());
+    }
+
+    public boolean isAttacking(){
+        return isAttacking;
+    }
+    public boolean isNearAttacking(CollisionRect pAiRect){
+        if(!isAttacking)
+            return false;
+        return this.attackRect.isCollideWith(pAiRect);
+
     }
 }

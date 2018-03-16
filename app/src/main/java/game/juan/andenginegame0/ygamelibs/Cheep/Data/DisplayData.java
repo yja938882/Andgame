@@ -10,11 +10,9 @@ import org.json.JSONObject;
  */
 
 public class DisplayData extends Data {
-    private final static String TAG ="DisplayData";
 
-
-    public DisplayData(int pSection){
-        this.section = pSection;
+    public DisplayData(int pSection, JSONObject object) {
+        super(pSection, object);
     }
 
     @Override
@@ -28,7 +26,7 @@ public class DisplayData extends Data {
             float temp_height = (((int)(height/32f)+1))*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
             this.y += ( temp_height-height );
         }catch (Exception e){
-            Log.d(TAG,e.getMessage());
+            e.printStackTrace();
         }
     }
     public int getSection(){

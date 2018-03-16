@@ -20,7 +20,7 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
 
 public abstract class GameUnit extends DynamicObject{
     public enum Action{
-        STOP, MOVE_LEFT, MOVE_RIGHT,JUMP, ATTACK, ATTACKED, DIE, NONE
+        STOP, MOVE_LEFT, MOVE_RIGHT,JUMP, ATTACK, ATTACKED, DIE, NONE,PICK
     }
     private Action curAction = Action.STOP;
 
@@ -89,7 +89,7 @@ public abstract class GameUnit extends DynamicObject{
                 onJump();
                 break;
             case ATTACKED:
-                invincibleCounter = 100;
+                invincibleCounter = 20;
                 onBeAttacked();
                 break;
             case DIE:
@@ -148,20 +148,14 @@ public abstract class GameUnit extends DynamicObject{
     protected abstract void onDie();
     protected abstract void onDieEnd();
 
+
     protected abstract void configurePhysicsData(JSONObject jsonObject);
 
-    protected void createShapeBody(GameScene pGameScene, BodyData pBodyData, int pIndex, PhysicsShape shape){
-        switch (shape.getShape()){
-            case CIRCLE:
-                this.createCircleBody(pGameScene,pIndex,pBodyData,shape.getX(),shape.getY(),shape.getRadius());
-                break;
-            case VERTICES:
-                this.createVerticesBody(pGameScene,pIndex,pBodyData,shape.getVertices());
-                break;
-            case NONE:
-                break;
-        }
+    protected void onPick(){
+
     }
+
+
 
 
 
@@ -213,6 +207,10 @@ public abstract class GameUnit extends DynamicObject{
                 });
                 this.curAnimation = Action.ATTACKED;
                 mActionLock.lock(Action.ATTACKED,beAttackedMaxCount);
+                break;
+            case PICK:
+                this.onPick();
+                setActiveAction(Action.STOP);
                 break;
         }
     }

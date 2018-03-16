@@ -195,8 +195,8 @@
       {
         "type":"near",
         "src":"spear.png" , "src_width": 512, "src_height":128,
-        "scale":1,"row":1,"col":1,
-        "body"  : "vertices",    "body_vx":[-32,-32,32,32],"body_vy":[16,32,32,16],
+        "scale":0.5,"row":1,"col":1,
+        "body"  : "vertices",    "body_vx":[-32,-32,64,64],"body_vy":[-16,16,16,-16],
         "durability":3,
         "angle_velocity"        : 5,
         "shoot_gravity"         : 0,

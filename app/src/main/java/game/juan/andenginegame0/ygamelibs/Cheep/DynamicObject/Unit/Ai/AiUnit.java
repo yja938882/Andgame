@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.Ai;
 
+import android.util.Log;
+
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.json.JSONArray;
@@ -7,6 +9,7 @@ import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.GameUnit;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.UnitBodyData;
+import game.juan.andenginegame0.ygamelibs.Cheep.Manager.EntityManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.PhysicsShape;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.BaseScene;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
@@ -49,6 +52,12 @@ public abstract class AiUnit extends GameUnit {
     @Override
     protected void onManagedUpdate(float pSecondsElapsed) {
         super.onManagedUpdate(pSecondsElapsed);
+        if(EntityManager.getInstance().playerUnit.isNearAttacking(this.collisionRect)){
+            this.setActiveAction(Action.ATTACKED);
+            Log.d("AI","isATTACKING");
+            return;
+        }
+
         elapsedTime+=pSecondsElapsed;
         if(mCmdDuration[cmdIndex] < elapsedTime){
             elapsedTime=0f;

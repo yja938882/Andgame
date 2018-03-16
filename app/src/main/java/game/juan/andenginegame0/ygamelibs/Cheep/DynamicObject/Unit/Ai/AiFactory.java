@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Unit.Ai;
 
+import android.util.Log;
+
 import game.juan.andenginegame0.ygamelibs.Cheep.Data.AiData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Data.ObstacleData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.DataManager;
@@ -12,6 +14,7 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Manager.ResourceManager;
 
 public class AiFactory {
     public static AiUnit createAiUnit(String type, String id,AiData aiData){
+        Log.d("TAG"," "+type+" "+id);
         try{
             switch (type){
                 case "ai_moving":

@@ -9,6 +9,10 @@ import org.json.JSONObject;
 
 public class ObstacleData extends Data {
 
+    public ObstacleData(int pSection, JSONObject object) {
+        super(pSection, object);
+    }
+
     @Override
     public void compose(JSONObject object) {
         try {

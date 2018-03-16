@@ -33,10 +33,8 @@ public abstract class DynamicObjectList {
      * @param pSection 현재 관리할 섹션
      */
     public void setSection(int pSection, GameScene pGameScene){
-        Log.d("DOL"," "+pSection);
         this.curSection = pSection;
         int i=0;
-        Log.d("DOL"," "+pSection+" "+sectionLength[curSection]);
         for(;i<sectionLength[curSection];i++){
            if(dynamicObject[i]!=null) {
                if(!dynamicObject[i].hasParent())
@@ -48,12 +46,9 @@ public abstract class DynamicObjectList {
         }
 
         for(;i<dynamicObject.length;i++){
-
             if(dynamicObject[i]!=null){
-                Log.d("ASDASd","asdagsadasdasdasdg");
                 if(dynamicObject[i].isActive()) {
                     dynamicObject[i].setActive(false);
-                    Log.d("ASDASd","asdagsdg");
                 }
                if(dynamicObject[i].hasParent())
                    dynamicObject[i].detachThis();
@@ -61,26 +56,6 @@ public abstract class DynamicObjectList {
         }
     }
 
-    /**
-     * curSection 에 맞는 Object 들을 Scene 에 attach;
-     * @param pGameScene Object 를 올릴 게임 Scene
-     */
-    public void attachThis(GameScene pGameScene){
-        int i=0;
-        for(i=0;i<sectionLength[curSection];i++){
-            if(dynamicObject[i]!=null){
-                if(!dynamicObject[i].hasParent()){
-                    pGameScene.attachChild(dynamicObject[i]);
-                }
-            }
-        }
-        for(;i<dynamicObject.length;i++){
-            if(dynamicObject[i]!=null){
-                if(dynamicObject[i].hasParent())
-                    dynamicObject[i].detachThis();
-            }
-        }
-    }
 
     public void setup(GameScene pGameScene , int pTotalSection, DataArrayList<Data> pDataList){
         this.objectData = pDataList;
@@ -92,7 +67,7 @@ public abstract class DynamicObjectList {
         for(int i=0;i<objectData.size();i++) sectionLength[objectData.get(i).getSection()]++;
 
         sectionIndex[0] = 0;
-        for(int i=1;i<pTotalSection;i++) sectionIndex[i] = sectionIndex[i-1]+sectionLength[i];
+        for(int i=1;i<pTotalSection;i++) sectionIndex[i] = sectionIndex[i-1]+sectionLength[i-1];
 
         int max = 0;
         for(int i=0;i<pTotalSection;i++){
@@ -104,10 +79,6 @@ public abstract class DynamicObjectList {
             dynamicObject[i] = createObjects(pGameScene, objectData.get(i));
             if(dynamicObject[i]!=null)
                 dynamicObject[i].create(pGameScene);
-        }
-
-        for(int i=0;i<sectionIndex.length;i++){
-            Log.d("section "+i," "+sectionIndex[i]);
         }
     }
 

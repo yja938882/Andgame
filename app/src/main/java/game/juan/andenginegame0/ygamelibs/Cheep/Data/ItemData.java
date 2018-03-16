@@ -10,6 +10,11 @@ import org.json.JSONObject;
 
 public class ItemData extends Data {
 
+
+    public ItemData(int pSection, JSONObject object) {
+        super(pSection, object);
+    }
+
     @Override
     public void compose(JSONObject object) {
         try{

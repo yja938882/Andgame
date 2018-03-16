@@ -62,14 +62,15 @@ public class GameScene extends BaseScene {
         StaticManager.getInstance().createBackground(this);
         EntityManager.prepare(camera);
         StaticManager.getInstance().createDisplay(this);
-        StaticManager.getInstance().createTile(this);
+
         StaticManager.getInstance().createGround(this);
 
-
-        EntityManager.getInstance().createPlayer(this);
         EntityManager.getInstance().createObstacle(this);
         EntityManager.getInstance().createAi(this);
+
         EntityManager.getInstance().createItems(this);
+        EntityManager.getInstance().createPlayer(this);
+        StaticManager.getInstance().createTile(this);
 
         setSectionTo(currentSection);
 
@@ -144,7 +145,7 @@ public class GameScene extends BaseScene {
         this.registerUpdateHandler(physicsWorld);
 
         final FPSCounter fpsCounter = new FPSCounter();
-
+        this.sortChildren();
         this.engine.registerUpdateHandler(fpsCounter);
         this.registerUpdateHandler(new TimerHandler(1 / 20.0f, true, new ITimerCallback() {
             @Override
@@ -154,10 +155,10 @@ public class GameScene extends BaseScene {
             }
         }));
 
-        //DebugRenderer debugRenderer = new DebugRenderer(physicsWorld,ResourceManager.getInstance().vbom);
-        // debugRenderer.setColor(Color.RED);
-        //debugRenderer.setDrawBodies(true);
-        //this.attachChild(debugRenderer);
+       // DebugRenderer debugRenderer = new DebugRenderer(physicsWorld,ResourceManager.getInstance().vbom);
+       // debugRenderer.setColor(Color.RED);
+       // debugRenderer.setDrawBodies(true);
+       // this.attachChild(debugRenderer);
 
 
        }

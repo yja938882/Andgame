@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.BodyData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.CollisionRect;
+import game.juan.andenginegame0.ygamelibs.Cheep.Physics.PhysicsShape;
 import game.juan.andenginegame0.ygamelibs.Cheep.Physics.PhysicsUtil;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.BaseScene;
@@ -185,6 +186,19 @@ public abstract class DynamicObject extends AnimatedSprite{
             e.printStackTrace();
         }
         return null;
+    }
+
+    protected void createShapeBody(GameScene pGameScene, BodyData pBodyData, int pIndex, PhysicsShape shape){
+        switch (shape.getShape()){
+            case CIRCLE:
+                this.createCircleBody(pGameScene,pIndex,pBodyData,shape.getX(),shape.getY(),shape.getRadius());
+                break;
+            case VERTICES:
+                this.createVerticesBody(pGameScene,pIndex,pBodyData,shape.getVertices());
+                break;
+            case NONE:
+                break;
+        }
     }
 
     public abstract void create(GameScene pGameScene);

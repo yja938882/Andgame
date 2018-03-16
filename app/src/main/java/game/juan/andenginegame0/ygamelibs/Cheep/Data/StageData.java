@@ -10,6 +10,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Ground.Ground;
@@ -27,10 +30,14 @@ public class StageData {
     private int[] mGroundIndex;
     private int[] mGroundIndexLength;
     public HashMap<String , ArrayList<TileData>> tileHashMap;
-    public HashMap<String , ArrayList<DisplayData>> displayHashMap;
-    public HashMap<String , DataArrayList<Data>> obsHashMap;
-    public HashMap<String , DataArrayList<Data>> aiHashMap;
-    public HashMap<String , DataArrayList<Data>> itemHashMap;
+
+    private static final int ID_SET_SIZE = 4;
+    public static final int OBSTACLE=0;
+    public static final int AI = 1;
+    public static final int ITEM = 2;
+    public static final int DISPLAY = 3;
+    public HashSet[] entityIDSets;
+    public HashMap<String, DataArrayList<Data>> dataHashMap;
 
     public GroundData[] getGroundData(){return groundData;}
 
@@ -47,11 +54,11 @@ public class StageData {
 
     public void setupStageData(JSONArray stageJSONArray){
         try{
+            this.dataHashMap = new HashMap<>();
+            this.entityIDSets = new HashSet[ID_SET_SIZE];
+            for(int i=0;i<ID_SET_SIZE;i++)
+                entityIDSets[i] = new HashSet<String>();
             tileHashMap = new HashMap<>();
-            displayHashMap = new HashMap<>();
-            obsHashMap = new HashMap<>();
-            aiHashMap = new HashMap<>();
-            itemHashMap = new HashMap<>();
             ArrayList<GroundData> groundData = new ArrayList<>();
 
             this.mGroundIndex = new int[stageJSONArray.length()];
@@ -102,45 +109,16 @@ public class StageData {
                             }
                             break;
                         case "display":
-                            DisplayData dD = new DisplayData(section);
-                            dD.compose(elemJSON);
-
-                            String dpkey = elemJSON.getString("id");
-                            if (!displayHashMap.containsKey(dpkey)) {
-                                displayHashMap.put(dpkey, new ArrayList<DisplayData>());
-                            }
-                            displayHashMap.get(dpkey).add(dD);
-
+                            putToDataHashMap(DISPLAY,"display",elemJSON.getString("id"),new DisplayData(section,elemJSON));
                             break;
                         case "obstacle":
-                            ObstacleData oD = new ObstacleData();
-                            oD.setSection(section);
-                            oD.compose(elemJSON);
-                            String obskey = elemJSON.getString("id");
-                            if(!obsHashMap.containsKey(obskey)){
-                                obsHashMap.put(obskey,new DataArrayList<Data>(elemJSON.getString("type")));//new DynamicsArrayList<ObstacleData>(elemJSON.getString("type")));
-                            }
-                            obsHashMap.get(obskey).add(oD);
+                            putToDataHashMap(OBSTACLE,"obstacle",elemJSON.getString("id"),new ObstacleData(section,elemJSON));
                             break;
                         case "ai":
-                            AiData aD = new AiData();
-                            aD.setSection(section);
-                            aD.compose(elemJSON);
-                            String aikey = elemJSON.getString("id");
-                            if(!aiHashMap.containsKey(aikey)){
-                                aiHashMap.put(aikey,new DataArrayList<Data>(elemJSON.getString("type")));
-                            }
-                            aiHashMap.get(aikey).add(aD);
+                            putToDataHashMap(AI,elemJSON.getString("type"),elemJSON.getString("id"),new AiData(section,elemJSON));
                             break;
                         case "item":
-                            ItemData iD = new ItemData();
-                            iD.setSection(section);
-                            iD.compose(elemJSON);
-                            String itemKey = elemJSON.getString("id");
-                            if(!itemHashMap.containsKey(itemKey)){
-                                itemHashMap.put(itemKey,new DataArrayList<Data>(elemJSON.getString("id")));
-                            }
-                            itemHashMap.get(itemKey).add(iD);
+                            putToDataHashMap(ITEM,"item",elemJSON.getString("id"),new ItemData(section,elemJSON));
                             break;
                     }
                 }
@@ -156,8 +134,19 @@ public class StageData {
         }catch (Exception e){
             e.printStackTrace();
         }
-
-
+    }
+    private void putToDataHashMap(final int pEntityType,String pType, String pId, Data pData){
+        this.entityIDSets[pEntityType].add(pId);
+        if(!dataHashMap.containsKey(pId)){
+            dataHashMap.put(pId,new DataArrayList<Data>(pType,pId));
+        }
+        dataHashMap.get(pId).add(pData);
     }
 
+    public Iterator getIdSetIterator(final int pEntityType){
+        return this.entityIDSets[pEntityType].iterator();
+    }
+    public int getIdSetSize(final int pEntityType){
+        return this.entityIDSets[pEntityType].size();
+    }
 }

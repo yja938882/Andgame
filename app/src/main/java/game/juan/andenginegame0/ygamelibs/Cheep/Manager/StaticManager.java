@@ -11,8 +11,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import game.juan.andenginegame0.ygamelibs.Cheep.Data.Data;
+import game.juan.andenginegame0.ygamelibs.Cheep.Data.DataArrayList;
 import game.juan.andenginegame0.ygamelibs.Cheep.Data.DisplayData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Data.GroundData;
+import game.juan.andenginegame0.ygamelibs.Cheep.Data.StageData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Data.TileData;
 import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Ground.Ground;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
@@ -111,15 +114,13 @@ public class StaticManager {
     }
 
     public void createDisplay(GameScene pGameScene){
-        HashMap<String, ArrayList<DisplayData>> hashMap = DataManager.getInstance().stageData.displayHashMap;
-        Set<String> keySet = hashMap.keySet();
-        displays = new Display[keySet.size()];
-        Iterator iterator = keySet.iterator();
+        //HashMap<String, ArrayList<DisplayData>> hashMap = DataManager.getInstance().stageData.dataHashMap;
+        displays = new Display[DataManager.getInstance().stageData.getIdSetSize(StageData.DISPLAY)];
+        Iterator iterator = DataManager.getInstance().stageData.getIdSetIterator(StageData.DISPLAY);
         int i=0;
         while(iterator.hasNext()){
             String key = (String)iterator.next();
-            ArrayList<DisplayData> displayDataArrayList = hashMap.get(key);
-
+            DataArrayList<Data> displayDataArrayList = DataManager.getInstance().stageData.dataHashMap.get(key);
             int count[] = new int[DataManager.getInstance().stageData.getSectionNum()];
             for(int c=0;c<count.length;c++)
                 count[c] = 0;
@@ -140,7 +141,7 @@ public class StaticManager {
                 displayIndex[di] = displayIndex[di-1]+count[di-1];
             }
             for(int j=0;j<displayDataArrayList.size();j++){
-                displayData[j] = displayDataArrayList.get(j);
+                displayData[j] = (DisplayData)displayDataArrayList.get(j);
             }
             displays[i].setDisplayData(displayIndex,count,displayData);
             i++;

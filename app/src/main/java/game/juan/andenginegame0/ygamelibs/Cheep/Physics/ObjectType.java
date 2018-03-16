@@ -10,5 +10,6 @@ public enum ObjectType {
     PLAYER_FOOT,
     PLAYER_ARM,
     PLAYER_HAND,
-    AI_BODY
+    AI_BODY,
+    ITEM
 }

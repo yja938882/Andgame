@@ -25,13 +25,15 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Manager.ResourceManager;
  */
 
 public class PhysicsUtil {
-    public static final short GROUND_CTG_BIT = 0x00000001;
-    public static final short PLAYER_CTG_BIT = 0x00000002;
-    public static final short AI_CTG_BIT = 0x00000004;
+    public static final short GROUND_CTG_BIT= 0x00000001;
+    public static final short PLAYER_CTG_BIT= 0x00000002;
+    public static final short AI_CTG_BIT    = 0x00000004;
+    public static final short ITEM_CTG_BIT  = 0x00000008;
 
-    public static short GROUND_MASK_BIT = PLAYER_CTG_BIT|AI_CTG_BIT;
+    public static short GROUND_MASK_BIT = PLAYER_CTG_BIT|AI_CTG_BIT|ITEM_CTG_BIT;
     public static short PLAYER_MASK_BIT = GROUND_CTG_BIT;
     public static  short AI_MASK_BIT = GROUND_CTG_BIT;
+    public static short ITEM_MASK_BIT = GROUND_CTG_BIT;
 
     /**
      *  원형 Body 생성
@@ -153,6 +155,10 @@ public class PhysicsUtil {
             case AI_BODY:
                 fixtureDef.filter.maskBits = AI_MASK_BIT;
                 fixtureDef.filter.categoryBits = AI_CTG_BIT;
+                break;
+            case ITEM:
+                fixtureDef.filter.maskBits = ITEM_MASK_BIT;
+                fixtureDef.filter.categoryBits = ITEM_CTG_BIT;
                 break;
 
         }
