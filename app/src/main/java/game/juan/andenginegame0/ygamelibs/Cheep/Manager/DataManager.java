@@ -1,45 +1,65 @@
 package game.juan.andenginegame0.ygamelibs.Cheep.Manager;
 
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
-import com.badlogic.gdx.math.Vector2;
-
-import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.Data.StageData;
-import game.juan.andenginegame0.ygamelibs.Cheep.DynamicObject.Item.ItemData;
-
 import game.juan.andenginegame0.ygamelibs.Cheep.Utils;
 
-import static game.juan.andenginegame0.ygamelibs.Cheep.Activity.GameActivity.CAMERA_WIDTH;
-
 /**
- * Created by juan on 2018. 2. 24..
- *
+ * Created by juan on 2018. 3. 25..
+ * @author juan
+ * @version 1.0
  */
 
 public class DataManager {
-     public static final DataManager INSTANCE = new DataManager();
+    /*=====================================
+    * Constants
+    *======================================*/
+    public static final DataManager INSTANCE = new DataManager();
 
-     public StageData stageData;
-     public DBManager dbManager;
-     public HashMap<String , JSONObject> configHashMap;
+
+    /*=====================================
+    * Fields
+    *======================================*/
+    private DBManager dbManager;
+    public StageData stageData;
+    public HashMap<String , JSONObject> configHashMap;
 
 
+    /*=====================================
+    * Methods
+    *======================================*/
+    public void loadScene(SceneManager.SceneType pSceneType){
+        switch (pSceneType){
+            case SPLASH:
+                setSplashConfig();
+                break;
+            case MAIN:
+                setMainConfig();
+                break;
+            case SHOP:
+                break;
+            case GAME:
+                loadStage(0);
+                break;
+        }
+    }
+    public void prepareManager(DBManager dbManager){
+        getInstance().dbManager = dbManager;
+        getInstance().configHashMap = new HashMap<>();
+    }
+
+    /*=====================================
+    * Private Methods
+    *======================================*/
     /**
-     * Splash Scene 에 GFX 설정
+     * Splash 화면 구성에 필요한 설정 세팅
      */
-     void setSplashSceneGFXConfig(){
+    private void setSplashConfig(){
         configHashMap.put("layer0",newConfigJSON("layer0","splash/splash_layer0.png",1024,600,1,1));
         configHashMap.put("layer1",newConfigJSON("layer1","splash/splash_layer1.png",1024,600,1,1));
         configHashMap.put("layer2",newConfigJSON("layer2","splash/splash_layer2.png",1024,600,1,1));
@@ -48,12 +68,12 @@ public class DataManager {
         configHashMap.put("cheep",newConfigJSON("cheep","splash/cheep.png",768,128,6,1));
         configHashMap.put("particle",newConfigJSON("particle","splash/particle.png",16,16,1,1));
         configHashMap.put("title",newConfigJSON("title","splash/title.png",326,122,1,1));
-     }
+    }
 
     /**
-     * Main Scene 에 GFX 설정
+     * Main 화면 구성에 필요한 설정 세팅
      */
-    void setMainSceneGFXConfig(){
+    private void setMainConfig(){
         configHashMap.put("theme_container",newConfigJSON("theme_container","ui/theme_container.png",712,328,1,1));
         configHashMap.put("level_container",newConfigJSON("level_container","ui/level_container.png",136,41,1,1));
         configHashMap.put("money_container",newConfigJSON("money_container","ui/coin_container.png",133,39,1,1));
@@ -65,15 +85,11 @@ public class DataManager {
         configHashMap.put("theme_title",newConfigJSON("theme_title","ui/theme_title.png",233,63,1,1));
     }
 
-    /**
-     * GameScene UI GFX 설정
-     */
-    void setGameSceneUIGFXConfig(){
-        configHashMap.put("left_btn",newConfigJSON("left_btn","ui/left.png",68,67,1,1));
-        configHashMap.put("right_btn",newConfigJSON("right_btn","ui/right.png",68,67,1,1));
-        configHashMap.put("attack_btn",newConfigJSON("attack_btn","ui/attack_btn.png",112,123,1,1));
-        configHashMap.put("jump_btn",newConfigJSON("jump_btn","ui/up.png",72,60,1,1));
-        configHashMap.put("skill2_btn",newConfigJSON("skill2_btn","ui/skill2.png",72,60,1,1));
+    private void loadStage(int pStage){
+        loadPlayerData();
+        this.stageData = new StageData();
+        JSONObject stageJSON = Utils.loadJSONFromAsset(ResourceManager.getInstance().gameActivity,"stage/stage"+pStage+".json");
+        this.stageData.compose(stageJSON);
     }
 
     /**
@@ -82,104 +98,21 @@ public class DataManager {
     void loadPlayerData(){
         SQLiteDatabase db = dbManager.getReadableDatabase();
         configHashMap.put("player",dbManager.getPlayerConfigJSON(db));
+        JSONObject object = dbManager.getItemJSON(db,"spear");
+       try{
+           object.put("id","spear");
+           object.put("src","object/players/"+object.getString("src"));
+
+       }catch (Exception e){
+           e.printStackTrace();
+       }
+        configHashMap.put("spear",object);
     }
 
-    /**
-     * 스테이지 데이터 로드
-     * @param pTheme 로드할 테마
-     * @param pStage 로드할 스테이지
-     */
-    void loadStage( int pTheme, int pStage){
-        this.stageData = new StageData();
-        JSONObject stageObject = Utils.loadJSONFromAsset(ResourceManager.getInstance().gameActivity,"stage/stage"+pTheme+"_"+pStage+".json");
-        try{
-
-            //Background 설정 데이터 로드
-            JSONArray bgArray = stageObject.getJSONArray("bg");
-            for(int i=0;i<bgArray.length();i++){
-                configHashMap.put("bg"+i,newConfigJSON("bg"+i,"map/bg/"+bgArray.getString(i)+".png",1024,960,1,1));
-            }
-
-            //Display 설정 데이터 로드
-            JSONArray displayArray = stageObject.getJSONArray("display");
-            for(int i=0;i<displayArray.length();i++){
-                JSONObject object = displayArray.getJSONObject(i);
-                configHashMap.put(object.getString("id"),newConfigJSON(object.getString("id"),
-                        "map/display/"+object.getString("src"),
-                        object.getInt("src_width"),object.getInt("src_height"),
-                        object.getInt("col"),object.getInt("row")));
-            }
-
-            //맵( 지형 ) 데이터 로드
-            JSONArray mapArray = stageObject.getJSONArray("map");
-            stageData.setupStageData(mapArray);
-
-            //타일 데이터 로드
-            Set<String> tileHashMap = stageData.tileHashMap.keySet();
-            Iterator tileIterator = tileHashMap.iterator();
-            while(tileIterator.hasNext()){
-                String key = (String)tileIterator.next();
-                if(!configHashMap.containsKey(key)){
-                    configHashMap.put(key,newConfigJSON(key,"map/"+pTheme+"/"+key+".png",64,64,1,1));
-                }
-            }
-
-            Iterator obsIterator = stageData.getIdSetIterator(StageData.OBSTACLE);
-            SQLiteDatabase db = dbManager.getReadableDatabase();
-            while(obsIterator.hasNext()){
-                String key = (String)obsIterator.next();
-                if(!configHashMap.containsKey(key)){
-                    JSONObject object = dbManager.getObsJSON(db,key);//dbManager.getAiJSON(db,key);
-                    object.put("src","obstacle/"+object.getString("src")).put("id",key);
-                    configHashMap.put(key,object);
-                }
-            }
-            Iterator aiIterator = stageData.getIdSetIterator(StageData.AI);
-            db = dbManager.getReadableDatabase();
-            while(aiIterator.hasNext()){
-                String key = (String)aiIterator.next();
-                if(!configHashMap.containsKey(key)){
-                    JSONObject object = dbManager.getAiJSON(db,key);
-                    object.put("src","ai/"+object.getString("src")).put("id",key);
-                    configHashMap.put(key,object);
-                }
-            }
-
-            Iterator itemIterator = stageData.getIdSetIterator(StageData.ITEM);
-            db = dbManager.getReadableDatabase();
-            while(itemIterator.hasNext()){
-                String key = (String)itemIterator.next();
-                if(!configHashMap.containsKey(key)){
-                    JSONObject object = dbManager.getItemJSON(db,key);
-                    object.put("src","object/players/"+object.getString("src")).put("id",key);
-                    configHashMap.put(key,object);
-                }
-            }
-
-            //test
-            JSONObject itemObject = dbManager.getItemJSON(db,"spear");
-            itemObject.put("src","object/players/"+itemObject.getString("src")).put("id","spear");
-            configHashMap.put("spear",itemObject);
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-
-    }
-
-    public void clearGFXConfig(){
-        configHashMap.clear();
-     }
-
-    /**
-     * 매니저 실행전 설정
-     * @param dbManager DBManager 설정
-     */
-    public void prepareManager(DBManager dbManager){
-        getInstance().dbManager = dbManager;
-        getInstance().configHashMap = new HashMap<>();
-    }
+    /*=====================================
+    * Statics
+    *======================================*/
+    public static DataManager getInstance(){return INSTANCE;}
 
     /**
      * Gfx 설정 JSON 데이터 생성
@@ -201,6 +134,4 @@ public class DataManager {
             return null;
         }
     }
-
-    public static DataManager getInstance(){return INSTANCE;}
 }

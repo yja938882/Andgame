@@ -7,13 +7,10 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Manager.SceneManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.UI.StageContainer;
 import game.juan.andenginegame0.ygamelibs.Cheep.UI.TextContainer;
 
-import static game.juan.andenginegame0.ygamelibs.Cheep.Activity.GameActivity.CAMERA_HEIGHT;
-import static game.juan.andenginegame0.ygamelibs.Cheep.Activity.GameActivity.CAMERA_WIDTH;
-
 /**
- * Created by juan on 2018. 2. 26..
- * @version : 1.0
- * @author : yeon juan
+ * Created by juan on 2018. 3. 25..
+ * @author juan
+ * @version 1.0
  */
 
 public class MainScene extends BaseScene{
@@ -54,7 +51,8 @@ public class MainScene extends BaseScene{
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if(pSceneTouchEvent.isActionDown()){
-                    SceneManager.getInstance().loadGameScene(0,1);
+                   SceneManager.getInstance().loadScene(SceneManager.SceneType.GAME);
+
                     SceneManager.getInstance().createScene(SceneManager.SceneType.GAME);
                     SceneManager.getInstance().setScene(SceneManager.SceneType.GAME);
                     SceneManager.getInstance().disposeScene(SceneManager.SceneType.MAIN);

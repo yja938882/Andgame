@@ -1,9 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Cheep.Manager;
 
-import android.util.Log;
-
 import org.andengine.engine.Engine;
-import org.andengine.engine.camera.BoundCamera;
+import org.andengine.engine.camera.Camera;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.ITexture;
@@ -22,24 +20,32 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * Created by juan on 2018. 2. 24..
- *
+ * Created by juan on 2018. 3. 25..
  */
 
 public class ResourceManager {
+    /*=====================================
+    * Fields
+    *======================================*/
     public static final ResourceManager INSTANCE = new ResourceManager();
+    public Font mainFont;
 
+    /*=====================================
+    * Fields
+    *======================================*/
     public Engine engine;
     public BaseGameActivity gameActivity;
-    public BoundCamera camera;
+    public Camera camera;
     public VertexBufferObjectManager vbom;
 
     public HashMap<String, ITiledTextureRegion> gfxTextureRegionHashMap = null;
     private ArrayList<ITiledTextureRegion> gfxTextureRegions =null;
     private ArrayList<BitmapTextureAtlas> gfxTextureAtlas = null;
 
-    public Font mainFont;
 
+    /*=====================================
+    * Methods
+    *======================================*/
     /**
      * 폰트 로딩
      */
@@ -69,19 +75,21 @@ public class ResourceManager {
                         object.getInt("src_width"), object.getInt("src_height"));
                 ITiledTextureRegion textureRegion = BitmapTextureAtlasTextureRegionFactory.
                         createTiledFromAsset(bitmapTextureAtlas,gameActivity,object.getString("src"),
-                        0,0,object.getInt("col"),object.getInt("row"));
+                                0,0,object.getInt("col"),object.getInt("row"));
                 bitmapTextureAtlas.load();
                 gfxTextureAtlas.add(bitmapTextureAtlas);
                 gfxTextureRegions.add(textureRegion);
                 gfxTextureRegionHashMap.put(object.getString("id"),gfxTextureRegions.get(gfxTextureRegions.size()-1));
-              }catch (Exception e){
+            }catch (Exception e){
                 e.printStackTrace();
             }
         }
     }
 
-
-    public static void prepareManager(Engine engine, BaseGameActivity activity, BoundCamera camera, VertexBufferObjectManager vbom){
+    /*=====================================
+    * Statics
+    *======================================*/
+    public static void prepareManager(Engine engine, BaseGameActivity activity, Camera camera, VertexBufferObjectManager vbom){
         getInstance().engine = engine;
         getInstance().gameActivity = activity;
         getInstance().camera = camera;

@@ -23,7 +23,7 @@ public class TextContainer extends Sprite {
     public void setText(float pInnerX, float pInnerY, String pText){
         this.textX = pInnerX;
         this.textY = pInnerY;
-        text = new Text(this.getX()+pInnerX,this.getY()+pInnerY, ResourceManager.getInstance().mainFont,pText,ResourceManager.getInstance().vbom);
+        text = new Text(this.getX()+pInnerX,this.getY()+pInnerY, ResourceManager.getInstance().mainFont,pText, ResourceManager.getInstance().vbom);
     }
 
     /**

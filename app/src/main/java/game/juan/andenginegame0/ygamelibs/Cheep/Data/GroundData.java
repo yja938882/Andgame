@@ -9,31 +9,38 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Created by juan on 2018. 3. 5..
- *
+ * Created by juan on 2018. 3. 25..
+ * @author juan
+ * @version 1.0
  */
 
-public class GroundData implements IData {
-    private final static String TAG ="GroundData";
+public class GroundData implements IData{
+    /*=====================================
+    * Constants
+    *======================================*/
+    private static final String TAG ="GroundData";
 
+    /*=====================================
+    * Fields
+    *======================================*/
     private Vector2[] vertices;
-    public float sx, sy;
+    public float sx,sy;
 
-
-
+    /*=====================================
+    * Methods
+    *======================================*/
     @Override
-    public void compose(JSONObject object) {
+    public void compose(JSONObject pJSONObject) {
         try{
-            JSONArray vXJsonArray = object.getJSONArray("vx");
-            JSONArray vYJsonArray = object.getJSONArray("vy");
+            JSONArray vXJsonArray = pJSONObject.getJSONArray("vx");
+            JSONArray vYJsonArray = pJSONObject.getJSONArray("vy");
             this.vertices = new Vector2[vXJsonArray.length()];
             for(int i=0;i<vertices.length;i++){
                 vertices[i] = new Vector2(vXJsonArray.getInt(i),vYJsonArray.getInt(i));
                 vertices[i].mul(PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT);
             }
-            this.sx = object.getInt("sx")*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
-            this.sy = object.getInt("sy")*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
-
+            this.sx = pJSONObject.getInt("sx")*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+            this.sy = pJSONObject.getInt("sy")*PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
 
         }catch (Exception e){
             Log.d(TAG,e.getMessage());
@@ -43,6 +50,4 @@ public class GroundData implements IData {
     public Vector2[] getVertices(){
         return this.vertices;
     }
-
-
 }

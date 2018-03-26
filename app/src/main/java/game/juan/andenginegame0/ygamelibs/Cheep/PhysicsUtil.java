@@ -1,4 +1,4 @@
-package game.juan.andenginegame0.ygamelibs.Cheep.Physics;
+package game.juan.andenginegame0.ygamelibs.Cheep;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -16,8 +16,11 @@ import org.andengine.util.adt.list.ListUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
+import game.juan.andenginegame0.ygamelibs.Cheep.Entity.BodyData.BodyData;
+import game.juan.andenginegame0.ygamelibs.Cheep.Entity.ObjectType;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.ResourceManager;
+import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
+
 
 /**
  * Created by juan on 2018. 2. 24..
@@ -41,12 +44,11 @@ public class PhysicsUtil {
      * @param pX Body x 위치
      * @param pY Body y 위치
      * @param pRadius 반지름
-     * @param pObjectType 생성할 Body 의 Object Type
      * @return Body
      */
-    public static Body createCircleBody(GameScene scene,float pX, float pY, float pRadius , ObjectType pObjectType){
+    public static Body createCircleBody(GameScene scene, float pX, float pY, float pRadius,ObjectType pObjectType ){
         final FixtureDef fixtureDef = createFixtureDef(pObjectType);
-        return PhysicsFactory.createCircleBody(scene.getPhysicsWorld(),pX,pY,pRadius,getBodyTypeOf(pObjectType),fixtureDef);
+        return PhysicsFactory.createCircleBody(scene.getPhysicsWorld(),pX,pY,pRadius, getBodyTypeOf(pObjectType),fixtureDef);
     }
 
     /**
@@ -54,14 +56,13 @@ public class PhysicsUtil {
      * @param scene Body 를 생성할 Scene
      * @param pShape Body 를 생성할 Shape
      * @param pVertices Body 의 모양정보
-     * @param pObjectType 생성할 Body 의 Object Type
      * @return Body
      */
     public static Body createVerticesBody(GameScene scene, IShape pShape, Vector2[] pVertices, ObjectType pObjectType){
         final FixtureDef fixtureDef = createFixtureDef(pObjectType);
 
         return PhysicsFactory.createTrianglulatedBody(scene.getPhysicsWorld(),
-                pShape,createBodyShape(pVertices),getBodyTypeOf(pObjectType),fixtureDef);
+                pShape,createBodyShape(pVertices), getBodyTypeOf(pObjectType),fixtureDef);
     }
 
     /**
@@ -72,8 +73,8 @@ public class PhysicsUtil {
      * @param pVertices 몸체 모양 정보
      * @return Body
      */
-    public static Body createGroundBody(GameScene scene, float pX, float pY , Vector2[] pVertices){
-        final FixtureDef FIX = createFixtureDef(ObjectType.GROUND);
+    public static Body createGroundBody(GameScene scene, float pX, float pY , Vector2[] pVertices,ObjectType pObjectType){
+        final FixtureDef FIX = createFixtureDef(pObjectType);
 
         List<Vector2> UniqueBodyVertices = new ArrayList<Vector2>();
         UniqueBodyVertices.addAll(ListUtils.toList(pVertices));
@@ -94,12 +95,12 @@ public class PhysicsUtil {
                 BodyDef.BodyType.StaticBody, FIX);
         groundBody.setUserData(new BodyData(ObjectType.GROUND) {
             @Override
-            public void beginContactWith(ObjectType objectType) {
+            public void beginContactWith(ObjectType pObjectType) {
 
             }
 
             @Override
-            public void endContactWith(ObjectType objectType) {
+            public void endContactWith(ObjectType pObjectType) {
 
             }
         });
@@ -125,58 +126,23 @@ public class PhysicsUtil {
 
     /**
      * FixtureDef 생성
-     * @param pObjectType 에 해당하는 fixture def 를 반환
      * @return FixtureDef
      */
-    private static FixtureDef createFixtureDef(ObjectType pObjectType){
+    private static FixtureDef createFixtureDef(ObjectType objectType){
         FixtureDef fixtureDef= null;
         fixtureDef = PhysicsFactory.createFixtureDef(1,0,0);
-        switch (pObjectType){
-            case GROUND:
-                fixtureDef.isSensor = false;
-                fixtureDef.filter.maskBits = GROUND_MASK_BIT;
-                fixtureDef.filter.categoryBits = GROUND_CTG_BIT;
-                break;
-            case PLAYER_BODY:
-                fixtureDef.isSensor = false;
-                fixtureDef.filter.maskBits = PLAYER_MASK_BIT;
-                fixtureDef.filter.categoryBits = PLAYER_CTG_BIT;
-                break;
-            case PLAYER_FOOT:
-                fixtureDef.isSensor=true;
-                fixtureDef.filter.maskBits = PLAYER_MASK_BIT;
-                fixtureDef.filter.categoryBits = PLAYER_CTG_BIT;
-                break;
-            case PLAYER_ARM:
-            case PLAYER_HAND:
-                fixtureDef.filter.maskBits=0;
-                fixtureDef.filter.categoryBits=0;
-                break;
-            case AI_BODY:
-                fixtureDef.filter.maskBits = AI_MASK_BIT;
-                fixtureDef.filter.categoryBits = AI_CTG_BIT;
-                break;
-            case ITEM:
-                fixtureDef.filter.maskBits = ITEM_MASK_BIT;
-                fixtureDef.filter.categoryBits = ITEM_CTG_BIT;
-                break;
-
-        }
         return fixtureDef;
     }
 
-    /**
-     *  Object Type 에 따른 BodyType 반환
-     * @param pObjectType Object Type
-     * @return BodyType
-     */
     private static BodyDef.BodyType getBodyTypeOf(ObjectType pObjectType){
         switch (pObjectType){
+            case PLAYER:
             case GROUND:
                 return BodyDef.BodyType.StaticBody;
-            default:
+            case BULLET:
                 return BodyDef.BodyType.DynamicBody;
         }
+        return BodyDef.BodyType.StaticBody;
     }
 
 }

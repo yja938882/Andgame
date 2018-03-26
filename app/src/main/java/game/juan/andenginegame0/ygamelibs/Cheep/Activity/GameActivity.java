@@ -2,7 +2,6 @@ package game.juan.andenginegame0.ygamelibs.Cheep.Activity;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import org.andengine.engine.Engine;
@@ -15,19 +14,16 @@ import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.BaseGameActivity;
 
-
-import java.util.HashMap;
-
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.DBManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.DataManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.SceneManager;
 
+import static game.juan.andenginegame0.ygamelibs.Cheep.Scene.BaseScene.CAMERA_HEIGHT;
+import static game.juan.andenginegame0.ygamelibs.Cheep.Scene.BaseScene.CAMERA_WIDTH;
+
 
 public class GameActivity extends BaseGameActivity {
-    public static final int CAMERA_WIDTH = 1024;
-    public static final int CAMERA_HEIGHT= 600;
-
     boolean scheduleEngineStart;
 
     private BoundCamera mCamera;
@@ -36,7 +32,7 @@ public class GameActivity extends BaseGameActivity {
     private View decorView;
     private int	uiOption;
 
-    private  int dbVersion =180;
+    private static final int dbVersion =193;
     String dbName ="config.db";
 
     protected void onCreate(Bundle savedInstanceState) {

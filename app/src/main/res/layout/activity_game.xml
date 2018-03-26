@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ygamelibs.Cheep.Activity.GameActivity">
+    tools:context="game.juan.andenginegame0.ygamelibs.Cheep.GameActivity">
 
 </android.support.constraint.ConstraintLayout>
