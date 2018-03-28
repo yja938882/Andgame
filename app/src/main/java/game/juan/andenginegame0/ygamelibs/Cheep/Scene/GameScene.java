@@ -37,7 +37,7 @@ public class GameScene extends BaseScene{
     public void createScene() {
         this.setBackground(new Background(Color.BLACK));
     //    this.physicsWorld = new FixedStepPhysicsWorld(30,new Vector2(0,0),false);
-        this.physicsWorld = new PhysicsWorld(new Vector2(0,15),false);
+        this.physicsWorld = new PhysicsWorld(new Vector2(0,18),false);
         StaticManager.getInstance().createGround(this);
         EntityManager.getInstance().createPlayer(this);
         EntityManager.getInstance().createBullet(this);

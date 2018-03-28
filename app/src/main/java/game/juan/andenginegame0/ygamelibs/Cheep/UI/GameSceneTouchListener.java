@@ -16,24 +16,24 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Manager.EntityManager;
  */
 
 public class GameSceneTouchListener implements IOnSceneTouchListener {
+    private final static float FORCE_RATIO = 16f;
     float firstX, firstY;
     float lastX,lastY;
     float MAX_FORCE = 20f;
     Vector2 force = new Vector2();
+    int i=0;
     @Override
     public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
         if(pSceneTouchEvent.isActionDown()){
-            this.firstX = pSceneTouchEvent.getX();
-            this.firstY = pSceneTouchEvent.getY();
-        }else if(pSceneTouchEvent.isActionUp()){
-            this.lastX = pSceneTouchEvent.getX();
-            this.lastY = pSceneTouchEvent.getY();
-            force.set((lastX-firstX)/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,
-                    (lastY-firstY)/PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT);
-            force.mul(MAX_FORCE/force.len());
-
-            EntityManager.getInstance().playerBullet.shot(force);
+            lastX = pSceneTouchEvent.getX();
+            lastY = pSceneTouchEvent.getY();
+        }else if(pSceneTouchEvent.isActionMove()){
+            lastX = pSceneTouchEvent.getX();
+            lastY = pSceneTouchEvent.getY();
         }
+        EntityManager.getInstance().player.control(lastX/32f,lastY/32f);
+        firstX= lastX;
+        firstY = lastY;
         return false;
     }
 }

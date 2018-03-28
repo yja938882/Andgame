@@ -4,6 +4,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
+import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
+import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
 import org.andengine.entity.primitive.DrawMode;
 import org.andengine.entity.primitive.Mesh;
@@ -32,9 +35,12 @@ public class PhysicsUtil {
     public static final short PLAYER_CTG_BIT= 0x00000002;
     public static final short AI_CTG_BIT    = 0x00000004;
     public static final short ITEM_CTG_BIT  = 0x00000008;
+    public static final short BULLET_CTG_BIT =  0x00000010;
 
-    public static short GROUND_MASK_BIT = PLAYER_CTG_BIT|AI_CTG_BIT|ITEM_CTG_BIT;
-    public static short PLAYER_MASK_BIT = GROUND_CTG_BIT;
+
+    public static short GROUND_MASK_BIT = PLAYER_CTG_BIT|AI_CTG_BIT|ITEM_CTG_BIT|BULLET_CTG_BIT;
+    public static short PLAYER_MASK_BIT = GROUND_CTG_BIT|BULLET_CTG_BIT;
+    public static short BULLET_MASK_BIT = GROUND_CTG_BIT|PLAYER_CTG_BIT;
     public static  short AI_MASK_BIT = GROUND_CTG_BIT;
     public static short ITEM_MASK_BIT = GROUND_CTG_BIT;
 
@@ -130,19 +136,106 @@ public class PhysicsUtil {
      */
     private static FixtureDef createFixtureDef(ObjectType objectType){
         FixtureDef fixtureDef= null;
-        fixtureDef = PhysicsFactory.createFixtureDef(1,0,0);
+        float elastic = 0;
+        short cat=0;
+        short msk=0;
+        switch (objectType){
+            case GROUND:
+                cat=GROUND_CTG_BIT;
+                msk=GROUND_MASK_BIT;
+                break;
+            case PLAYER:
+                cat=PLAYER_CTG_BIT;
+                msk=PLAYER_MASK_BIT;
+                break;
+            case BULLET:
+                cat = BULLET_CTG_BIT;
+                msk = BULLET_MASK_BIT;
+                elastic=0.9f;
+                break;
+
+
+        }
+        fixtureDef = PhysicsFactory.createFixtureDef(1,elastic,1);
+        fixtureDef.filter.categoryBits = cat;
+        fixtureDef.filter.maskBits = msk;
         return fixtureDef;
     }
 
     private static BodyDef.BodyType getBodyTypeOf(ObjectType pObjectType){
         switch (pObjectType){
-            case PLAYER:
             case GROUND:
                 return BodyDef.BodyType.StaticBody;
+            case PLAYER:
             case BULLET:
                 return BodyDef.BodyType.DynamicBody;
         }
         return BodyDef.BodyType.StaticBody;
+    }
+
+
+    /**
+     * 회전 관절 생성
+     * @param pBodyA 메인 Body
+     * @param pBodyB 연결할 Body
+     * @param pAnchorA A 의 local anchor
+     * @param pAnchorB B 의 local anchor
+     * @return 관절 정의
+     */
+    public static RevoluteJointDef
+    createRevoluteJointDef(Body pBodyA,Body pBodyB,Vector2 pAnchorA, Vector2 pAnchorB){
+        pAnchorA.mul(1f/32f);
+        pAnchorB.mul(1f/32f);
+        final RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
+        revoluteJointDef.initialize(pBodyA,pBodyB,pBodyA.getWorldCenter());
+        revoluteJointDef.localAnchorA.set(pAnchorA);
+        revoluteJointDef.localAnchorB.set(pAnchorB);
+        revoluteJointDef.enableLimit = false;
+        return revoluteJointDef;
+    }
+
+    /**
+     * 회전 관절 생성
+     * @param pBodyA 메인 Body
+     * @param pBodyB 연결할 Body
+     * @param pAnchorA A 의 local anchor
+     * @param pAnchorB B 의 local anchor
+     * @param pLower 최소각
+     * @param pUpper 최대각
+     * @return 관절 정의
+     */
+    public static RevoluteJointDef
+    createRevoluteJointDef(Body pBodyA,Body pBodyB,Vector2 pAnchorA, Vector2 pAnchorB,
+                           float pLower, float pUpper){
+        pAnchorA.mul(1f/32f);
+        pAnchorB.mul(1f/32f);
+        final RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
+        revoluteJointDef.initialize(pBodyA,pBodyB,pBodyA.getWorldCenter());
+        revoluteJointDef.localAnchorA.set(pAnchorA);
+        revoluteJointDef.localAnchorB.set(pAnchorB);
+        revoluteJointDef.enableLimit = true;
+        revoluteJointDef.lowerAngle = pLower;
+        revoluteJointDef.upperAngle = pUpper;
+        return revoluteJointDef;
+    }
+
+    /**
+     * 용접 접합 생성
+     * @param pBodyA 메인 Body
+     * @param pBodyB 연결할 Body
+     * @param pAnchorA A 의 local anchor
+     * @param pAnchorB B 의 local anchor
+     * @return 접합 정의
+     */
+    public static WeldJointDef
+    createWeldJointDef(Body pBodyA, Body pBodyB, Vector2 pAnchorA, Vector2 pAnchorB){
+        pAnchorA.mul(1f/32f);
+        pAnchorB.mul(1f/32f);
+        final WeldJointDef weldJointDef = new WeldJointDef();
+        weldJointDef.initialize(pBodyA,pBodyB,pBodyA.getWorldCenter());
+        weldJointDef.localAnchorA.set(pAnchorA);
+        weldJointDef.localAnchorB.set(pAnchorB);
+        return weldJointDef;
     }
 
 }

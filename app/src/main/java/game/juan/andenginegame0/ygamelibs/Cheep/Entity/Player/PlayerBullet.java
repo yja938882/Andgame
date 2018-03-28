@@ -30,13 +30,15 @@ public class PlayerBullet extends Entity{
 
     public void createBullet(GameScene pGameScene){
         this.allocateBody(1);
-        this.createCircleBody(pGameScene,0,new BulletData(ObjectType.BULLET),1,1,1);
+        this.createCircleBody(pGameScene,0,new BulletData(ObjectType.BULLET),2,1,1);
         pGameScene.getPhysicsWorld().registerPhysicsConnector(new PhysicsConnector(this,mBodies[0]){
             @Override
             public void onUpdate(float pSecondsElapsed) {
                 super.onUpdate(pSecondsElapsed);
-                if(((BulletData)this.getBody().getUserData()).isContactWithGround())
-                    this.getBody().setLinearVelocity(0,0);
+                if(((BulletData)this.getBody().getUserData()).isContactWithGround()) {
+                    this.getBody().setLinearVelocity(0, 0);
+                    this.getBody().setAngularVelocity(0f);
+                }
             }
         });
         //this.mBodies[0].setAngularDamping(10f);
@@ -48,10 +50,10 @@ public class PlayerBullet extends Entity{
 
     public void shot(Vector2 force){
         ((BulletData)this.mBodies[0].getUserData()).setContactWithGround(false);
-        float dx = EntityManager.getInstance().playerUnit.getX()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
-        float dy = EntityManager.getInstance().playerUnit.getY()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+       // float dx = EntityManager.getInstance().playerUnit.getX()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
+        //float dy = EntityManager.getInstance().playerUnit.getY()/ PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
 
-        this.transform(dx,dy, (float)Math.atan(force.y/force.x));
+     //   this.transform(dx,dy, (float)Math.atan(force.y/force.x));
         this.mBodies[0].setLinearVelocity(force.x,force.y);
         this.mBodies[0].setAngularVelocity(1f);
     }
