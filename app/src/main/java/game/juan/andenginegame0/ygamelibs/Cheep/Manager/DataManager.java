@@ -2,6 +2,7 @@ package game.juan.andenginegame0.ygamelibs.Cheep.Manager;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -44,6 +45,7 @@ public class DataManager {
             case SHOP:
                 break;
             case GAME:
+                setPlayerConfig();
                 loadStage(0);
                 break;
         }
@@ -85,11 +87,68 @@ public class DataManager {
         configHashMap.put("theme_title",newConfigJSON("theme_title","ui/theme_title.png",233,63,1,1));
     }
 
+    private void setPlayerConfig(){
+        configHashMap.put("head",newConfigJSON("head","player/head.png",32,32,1,1));
+        configHashMap.put("body",newConfigJSON("body","player/body.png",32,56,1,1));
+        configHashMap.put("left_upper_arm",newConfigJSON("left_upper_arm","player/left_upper_arm.png",16,54,1,1));
+        configHashMap.put("left_fore_arm",newConfigJSON("left_fore_arm","player/left_fore_arm.png",16,54,1,1));
+        configHashMap.put("right_upper_arm",newConfigJSON("right_upper_arm","player/right_upper_arm.png",16,54,1,1));
+        configHashMap.put("right_fore_arm",newConfigJSON("right_fore_arm","player/right_fore_arm.png",16,54,1,1));
+        configHashMap.put("left_thigh",newConfigJSON("left_thigh","player/left_thigh.png",16,54,1,1));
+        configHashMap.put("left_shank",newConfigJSON("left_shank","player/left_shank.png",16,54,1,1));
+        configHashMap.put("right_thigh",newConfigJSON("right_thigh","player/right_thigh.png",16,54,1,1));
+        configHashMap.put("right_shank",newConfigJSON("right_shank","player/right_shank.png",16,54,1,1));
+        configHashMap.put("weapon",newConfigJSON("weapon","player/weapon.png",44,128,1,1));
+        configHashMap.put("power_point",newConfigJSON("power_point","player/power_point.png",16,16,1,1));
+    }
+
+    /**
+     *
+     * @param pStage
+     */
     private void loadStage(int pStage){
-        loadPlayerData();
+       // loadPlayerData();
         this.stageData = new StageData();
         JSONObject stageJSON = Utils.loadJSONFromAsset(ResourceManager.getInstance().gameActivity,"stage/stage"+pStage+".json");
         this.stageData.compose(stageJSON);
+        try{
+            JSONArray obstacleArray = stageJSON.getJSONArray("obstacle");
+            for(int i=0;i<obstacleArray.length();i++){
+                JSONObject object = obstacleArray.getJSONObject(i);
+                String id = object.getString("id");
+                configureObstacleData(id);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    private void configureObstacleData(String pId){
+        if(configHashMap.containsKey(pId)){
+            return;
+        }
+        SQLiteDatabase db = dbManager.getReadableDatabase();
+        JSONObject object = dbManager.getObsJSON(db,pId);
+        try{
+            object.put("id",pId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        configHashMap.put(pId,object);
+        try{
+            JSONArray addArray = object.getJSONArray("add_id");
+            for(int i=0;i<addArray.length();i++){
+                String addId = addArray.getString(i);
+                if(configHashMap.containsKey(addId)){
+                    continue;
+                }
+                JSONObject addObject = dbManager.getObsJSON(db,addId);
+                configHashMap.put(addId,addObject.put("id",addId));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**

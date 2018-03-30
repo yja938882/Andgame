@@ -32,7 +32,7 @@ public class GameActivity extends BaseGameActivity {
     private View decorView;
     private int	uiOption;
 
-    private static final int dbVersion =193;
+    private static final int dbVersion =196;
     String dbName ="config.db";
 
     protected void onCreate(Bundle savedInstanceState) {

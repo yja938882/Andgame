@@ -47,41 +47,17 @@ public class DBManager extends SQLiteOpenHelper{
      * @param db 테이블을 생성시킬 DataBase
      */
     private void createTable(SQLiteDatabase db){
-        //Ai 설정 파일 생성
-        db.execSQL("CREATE TABLE AI_TABLE ( key_name TEXT PRIMARY KEY , data TEXT)");
-        initAiTable(db);
-
         db.execSQL("CREATE TABLE OBS_TABLE ( key_name TEXT PRIMARY KEY , data TEXT)");
         initObstacleTable(db);
 
-        db.execSQL("CREATE TABLE PLAYER_TABLE ( key_name TEXT PRIMARY KEY , level INTEGER, exp INTEGER, " +
-                "play_count INTEGER , moeny INTEGER, stat TEXT, data TEXT)");
+        db.execSQL("CREATE TABLE PLAYER_TABLE ( key_name TEXT PRIMARY KEY ," +
+                "money INTEGER, last_stage INTEGER, " +
+                "head TEXT , body TEXT, " +
+                "left_upper_arm TEXT, left_fore_arm TEXT," +
+                "right_upper_arm TEXT, right_fore_arm TEXT," +
+                "left_thigh TEXT , right_thigh TEXT, " +
+                "left_shank TEXT , right_shank TEXT)");
         initPlayerTable(db);
-
-        db.execSQL("CREATE TABLE ITEM_TABLE ( key_name TEXT PRIMARY KEY, sell TEXT, data TEXT)");
-        loadItemData(db);
-
-        db.execSQL("CREATE TABLE INVENTORY_TABLE ( key_name INTEGER PRIMARY KEY AUTOINCREMENT, item_id TEXT , durability INTEGER)");
-    }
-
-
-    /**
-     * ai 설정 테이블 초기화
-     * @param db 데이터베이스
-     */
-    private void initAiTable(SQLiteDatabase db){
-        try{
-            JSONObject configObject = Utils.loadJSONFromAsset(c,"jdata/aiconfig.json");
-            JSONArray entityArray = configObject.getJSONArray("ai");
-            for(int i=0;i<entityArray.length();i++){
-                insertAiConfig(db,
-                        ((JSONObject)entityArray.get(i)).getString("id"),
-                        ((JSONObject)entityArray.get(i)).getJSONObject("data").toString());
-            }
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -90,7 +66,7 @@ public class DBManager extends SQLiteOpenHelper{
      */
     private void initObstacleTable(SQLiteDatabase db){
         try{
-            JSONObject configObject = Utils.loadJSONFromAsset(c,"jdata/obsconfig.json");
+            JSONObject configObject = Utils.loadJSONFromAsset(c,"init/obsconfig.json");
             if(configObject==null)
                 return;
             JSONArray entityArray = configObject.getJSONArray("obstacle");
@@ -112,43 +88,39 @@ public class DBManager extends SQLiteOpenHelper{
      */
     private void initPlayerTable(SQLiteDatabase db){
         try{
-            JSONObject configObject = Utils.loadJSONFromAsset(c,"jdata/player.json");
-            int level = configObject.getInt("level");
-            int exp = configObject.getInt("exp");
-            int play_count = configObject.getInt("play_count");
+            JSONObject configObject = Utils.loadJSONFromAsset(c,"init/player.json");
             int money = configObject.getInt("money");
-            String data = configObject.getJSONObject("data").toString();
-            String stat = configObject.getJSONObject("stat").toString();
-            db.execSQL("insert into PLAYER_TABLE values('player','"+level+"','"+exp+"','"+play_count+"','"+money+"','"+stat+"','"+data+"')");
+            int last_stage = configObject.getInt("las_stage");
+            String head = configObject.getString("head");
+            String body = configObject.getString("body");
+            String left_upper_arm = configObject.getString("left_upper_arm");
+            String left_fore_arm = configObject.getString("left_fore_arm");
+            String right_upper_arm = configObject.getString("right_upper_arm");
+            String right_fore_arm = configObject.getString("right_fore_arm");
+            String left_thigh = configObject.getString("left_thigh");
+            String left_shank = configObject.getString("left_shank");
+            String right_thigh = configObject.getString("right_thigh");
+            String right_shank = configObject.getString("right_shank");
+            db.execSQL("insert into PLAYER_TABLE values('player','"
+                    +money+"','"+
+                    last_stage+"','"+
+                    head+"','"+
+                    body+"','"+
+                    left_upper_arm+"','"+
+                    left_fore_arm+"','"+
+                    right_upper_arm+"','"+
+                    right_fore_arm+"','"+
+                    left_thigh+"','"+
+                    left_shank+"','"+
+                    right_thigh+"','"+
+                    right_shank+
+                    "')");
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    /**
-     *
-     * @param db
-     * @return
-     */
-    public JSONObject getPlayerStatData(SQLiteDatabase db){
-        JSONObject statObject=null;
-        try{
-            Cursor cursor = db.rawQuery("select stat from PLAYER_TABLE where key_name ='player';",null);
-            cursor.moveToFirst();
-            while(!cursor.isAfterLast()){
-                try {
-                    statObject = new JSONObject(cursor.getString(0));
-                    cursor.moveToNext();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-            cursor.close();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return statObject;
-    }
+
 
     /**
      * 아이템 데이터 db에 초기화
@@ -170,53 +142,7 @@ public class DBManager extends SQLiteOpenHelper{
         }
     }
 
-    static int LEVEL_D = 0;
-    static int EXP_D = 1;
-    static int PLAYER_COUNT_D = 2;
-    static int MONEY_D = 3;
 
-    int[] getPlayerGameData(SQLiteDatabase db){
-        Cursor result = db.rawQuery( "select * from PLAYER_TABLE where key_name ='player';",null);
-        result.moveToFirst();
-        int gamedata[] = new int[4];
-        gamedata[LEVEL_D] = result.getInt(1);
-        gamedata[EXP_D] = result.getInt(2);
-        gamedata[PLAYER_COUNT_D] = result.getInt(3);
-        gamedata[MONEY_D] = result.getInt(4);
-
-        return gamedata;
-    }
-
-    int getPlayerLevel(SQLiteDatabase db){
-        Cursor cursor = db.rawQuery("select level from PLAYER_TABLE where key_name ='player';",null);
-        cursor.moveToFirst();
-        int level = -1;
-        while(!cursor.isAfterLast()){
-            try{
-                level = cursor.getInt(0);
-                cursor.moveToNext();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        cursor.close();
-        return level;
-    }
-    int getPlayerMoney(SQLiteDatabase db){
-        Cursor cursor = db.rawQuery("select money from PLAYER_TABLE where key_name ='player';",null);
-        cursor.moveToFirst();
-        int money = -1;
-        while(!cursor.isAfterLast()){
-            try{
-                money = cursor.getInt(0);
-                cursor.moveToNext();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        cursor.close();
-        return money;
-    }
 
     /**
      * Player 설정 정보(JSON) 반환
@@ -298,94 +224,6 @@ public class DBManager extends SQLiteOpenHelper{
         return object;
     }
 
-    ArrayList<JSONObject> getAllSellingItem(SQLiteDatabase db){
-        ArrayList<JSONObject> array = new ArrayList<>();
-        Cursor cursor = db.rawQuery("select * from ITEM_TABLE where sell='yes;'",null);
-        cursor.moveToFirst();
-        while(!cursor.isAfterLast()){
-            try {
-                JSONObject object= new JSONObject(cursor.getString(2));
-                object.put("id",cursor.getString(0));
-                object.put("src","object/players/"+object.getString("src"));
-                array.add(object);
-                cursor.moveToNext();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        cursor.close();
-        return array;
-    }
-
-    /* Item data
-    * @param db
-    * @param pItemKey 추가할 아이템 이름
-    * @param number 구매 갯수
-    * @param max 내구도 최대치
-    * @param cur 내구도 현재치
-    * 해당아이템을 이미 소유중이라면 update, 소유하지 않았을 경우 insert
-    */
-    public void insertItemToInventoryTable(SQLiteDatabase db, String pItemKey,int durability){
-        db.execSQL("insert into INVENTORY_TABLE( item_id, durability) values('"+pItemKey+"','"+durability+"')");
-    }
-
-    public void deleteItemInInventoryTable(SQLiteDatabase db, int pKey){
-        db.execSQL("delete from INVENTORY_TABLE where key_name ="+pKey+";");
-    }
-
-    public JSONObject getItemInInventoryTable(SQLiteDatabase db, int key){
-
-        JSONObject object=null;
-        Cursor cursor = db.rawQuery("select * from INVENTORY_TABLE where key_name ="+key+";",null);
-        cursor.moveToFirst();
-        while(!cursor.isAfterLast()){
-            try {
-                object = getItemJSON(db,cursor.getString(1));
-                object.put("key",cursor.getInt(0));
-                object.put("id",cursor.getString(1));
-                object.put("remain_durability",cursor.getInt(2));
-                // object.put("src","object/players"+object.getString("src"));
-                cursor.moveToNext();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        cursor.close();
-        return object;
-    }
-
-    /* 인벤토리 테이블 내의 모든 데이터 반환
-     * @param db
-     */
-    public ArrayList<JSONObject> getAllItemInInventoryTable(SQLiteDatabase db){
-        Cursor cursor = db.rawQuery("select * from INVENTORY_TABLE",null);
-        cursor.moveToFirst();
-
-        ArrayList<JSONObject> arrayList = new ArrayList<JSONObject>();
-        while(!cursor.isAfterLast()){
-            try {
-                JSONObject object= new JSONObject();
-                int key = cursor.getInt(0);
-                String id = cursor.getString(1);
-                int durability = cursor.getInt(2);
-                object.put("key",key);
-                object.put("id",id);
-                object.put("durability",durability);
-                arrayList.add(object);
-                cursor.moveToNext();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        cursor.close();
-        return arrayList;
-    }
-
-
-
-    private void insertAiConfig(SQLiteDatabase db, String pKey, String pData){
-        db.execSQL("insert into AI_TABLE values('"+pKey+"','"+pData+"');");
-    }
     private void insertObsConfig(SQLiteDatabase db, String pKey, String pData){
         db.execSQL("insert into OBS_TABLE values('"+pKey+"','"+pData+"');");
     }

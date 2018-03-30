@@ -5,7 +5,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
-import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
 import org.andengine.entity.primitive.DrawMode;
@@ -18,9 +17,10 @@ import org.andengine.util.adt.list.ListUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-import game.juan.andenginegame0.ygamelibs.Cheep.Entity.BodyData.BodyData;
-import game.juan.andenginegame0.ygamelibs.Cheep.Entity.ObjectType;
+import game.juan.andenginegame0.ygamelibs.Cheep.BodyData.BodyData;
+import game.juan.andenginegame0.ygamelibs.Cheep.BodyData.ObjectType;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
 
@@ -36,14 +36,16 @@ public class PhysicsUtil {
     public static final short AI_CTG_BIT    = 0x00000004;
     public static final short ITEM_CTG_BIT  = 0x00000008;
     public static final short BULLET_CTG_BIT =  0x00000010;
+    public static final short WEAPON_CTG_BITS = 0x00000020;
+    public static final short PASSABLE_CTG_BITS = 0x00000040;
 
-
-    public static short GROUND_MASK_BIT = PLAYER_CTG_BIT|AI_CTG_BIT|ITEM_CTG_BIT|BULLET_CTG_BIT;
+    public static short GROUND_MASK_BIT = PLAYER_CTG_BIT|AI_CTG_BIT|ITEM_CTG_BIT|BULLET_CTG_BIT|WEAPON_CTG_BITS;
     public static short PLAYER_MASK_BIT = GROUND_CTG_BIT|BULLET_CTG_BIT;
     public static short BULLET_MASK_BIT = GROUND_CTG_BIT|PLAYER_CTG_BIT;
+    public static short WEAPON_MASK_BIT = GROUND_CTG_BIT|BULLET_CTG_BIT;
     public static  short AI_MASK_BIT = GROUND_CTG_BIT;
     public static short ITEM_MASK_BIT = GROUND_CTG_BIT;
-
+    public static short PASSABLE_MASK_BIT = 0x00000000;
     /**
      *  원형 Body 생성
      * @param scene Body 를 생성할 Scene
@@ -136,7 +138,9 @@ public class PhysicsUtil {
      */
     private static FixtureDef createFixtureDef(ObjectType objectType){
         FixtureDef fixtureDef= null;
+        float density =1;
         float elastic = 0;
+        float friction =1;
         short cat=0;
         short msk=0;
         switch (objectType){
@@ -148,15 +152,23 @@ public class PhysicsUtil {
                 cat=PLAYER_CTG_BIT;
                 msk=PLAYER_MASK_BIT;
                 break;
-            case BULLET:
+            case OBSTACLE:
                 cat = BULLET_CTG_BIT;
                 msk = BULLET_MASK_BIT;
-                elastic=0.9f;
+                friction = 0f;
+                elastic=1f;
+                break;
+            case WEAPON:
+                cat = WEAPON_CTG_BITS;
+                msk = WEAPON_MASK_BIT;
+                break;
+            case PASSABLE:
+                cat = PASSABLE_CTG_BITS;
+                msk = PASSABLE_MASK_BIT;
                 break;
 
-
         }
-        fixtureDef = PhysicsFactory.createFixtureDef(1,elastic,1);
+        fixtureDef = PhysicsFactory.createFixtureDef(1,elastic,friction);
         fixtureDef.filter.categoryBits = cat;
         fixtureDef.filter.maskBits = msk;
         return fixtureDef;
@@ -167,7 +179,9 @@ public class PhysicsUtil {
             case GROUND:
                 return BodyDef.BodyType.StaticBody;
             case PLAYER:
-            case BULLET:
+            case OBSTACLE:
+            case WEAPON:
+            case PASSABLE:
                 return BodyDef.BodyType.DynamicBody;
         }
         return BodyDef.BodyType.StaticBody;
@@ -238,4 +252,13 @@ public class PhysicsUtil {
         return weldJointDef;
     }
 
+
+    public static float getRandomFloat(float pMin, float pMax){
+        Random random = new Random();
+        int sign = random.nextInt(10);
+        if(sign%2==0)
+            return (float)(Math.random()*pMin);
+        else
+            return (float)(Math.random()*pMax);
+    }
 }

@@ -1,0 +1,45 @@
+{
+  "obstacle":
+  [
+    {
+      "id": "ball",
+      "data":
+      {
+        "src": "obstacle/ball.png","src_width": 128, "src_height":128,"row":1,"col":1,
+        "add_id":["ball_part_1","ball_part_2","ball_part_3","ball_part_4"],
+        "radius" :24,
+        "part_radius": 12,
+        "gravity": 9
+      }
+    },
+    {
+      "id": "ball_part_1",
+      "data":
+      {
+        "src": "obstacle/ball_part_1.png",      "src_width": 64, "src_height":64, "row":1,"col":1
+      }
+    },
+    {
+      "id": "ball_part_2",
+      "data":
+      {
+        "src": "obstacle/ball_part_2.png",      "src_width": 64, "src_height":64, "row":1,"col":1
+      }
+    },
+    {
+      "id": "ball_part_3",
+      "data":
+      {
+        "src": "obstacle/ball_part_4.png",      "src_width": 64, "src_height":64, "row":1,"col":1
+      }
+    },
+    {
+      "id": "ball_part_4",
+      "data":
+      {
+        "src": "obstacle/ball_part_4.png",      "src_width": 64, "src_height":64, "row":1,"col":1
+      }
+    }
+  ]
+
+}

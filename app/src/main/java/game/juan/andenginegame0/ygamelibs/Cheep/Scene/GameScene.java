@@ -8,16 +8,14 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
-import org.andengine.entity.scene.IOnSceneTouchListener;
-import org.andengine.entity.scene.Scene;
+import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
-import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.color.Color;
 
 import debugdraw.DebugRenderer;
-import game.juan.andenginegame0.ygamelibs.Cheep.Entity.BodyData.BodyData;
+import game.juan.andenginegame0.ygamelibs.Cheep.BodyData.BodyData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.EntityManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.SceneManager;
@@ -32,15 +30,17 @@ import game.juan.andenginegame0.ygamelibs.Cheep.UI.GameSceneTouchListener;
 
 public class GameScene extends BaseScene{
     PhysicsWorld physicsWorld;
+    GameSceneTouchListener gameSceneTouchListener;
 
     @Override
     public void createScene() {
         this.setBackground(new Background(Color.BLACK));
-    //    this.physicsWorld = new FixedStepPhysicsWorld(30,new Vector2(0,0),false);
-        this.physicsWorld = new PhysicsWorld(new Vector2(0,18),false);
+        this.physicsWorld = new FixedStepPhysicsWorld(30,new Vector2(0,15),false);
+       // this.physicsWorld = new PhysicsWorld(new Vector2(0,18),false);
         StaticManager.getInstance().createGround(this);
+
+       // EntityManager.getInstance().createBullet(this);
         EntityManager.getInstance().createPlayer(this);
-        EntityManager.getInstance().createBullet(this);
         this.registerUpdateHandler(physicsWorld);
         physicsWorld.setContactListener(new ContactListener() {
             @Override
@@ -82,14 +82,37 @@ public class GameScene extends BaseScene{
             }
         });
 
-        DebugRenderer debugRenderer = new DebugRenderer(physicsWorld, ResourceManager.getInstance().vbom);
-        debugRenderer.setColor(Color.RED);
-        debugRenderer.setDrawBodies(true);
-        this.attachChild(debugRenderer);
+       // DebugRenderer debugRenderer = new DebugRenderer(physicsWorld, ResourceManager.getInstance().vbom);
+       // debugRenderer.setColor(Color.RED);
+       // debugRenderer.setDrawBodies(true);
+      //  this.attachChild(debugRenderer);
+        gameSceneTouchListener = new GameSceneTouchListener();
+        this.setOnSceneTouchListener(gameSceneTouchListener);
+        this.registerUpdateHandler(new IUpdateHandler() {
+            @Override
+            public void onUpdate(float pSecondsElapsed) {
+                if(start){
+                    return;
+                }
+                e+=pSecondsElapsed;
+                if(e>=elpased){
+                  //  EntityManager.getInstance().createBullet(SceneManager.getInstance().getGameScene());
+                   EntityManager.getInstance().createObstacle(SceneManager.getInstance().getGameScene());
+                    start = true;
+                    gameSceneTouchListener.start=true;
+                }
+            }
 
-        this.setOnSceneTouchListener(new GameSceneTouchListener());
+            @Override
+            public void reset() {
+
+            }
+        });
 
     }
+    boolean start = false;
+    float elpased = 3f;
+    float e = 0f;
 
     @Override
     public void onBackKeyPressed() {

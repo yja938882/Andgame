@@ -1,6 +1,4 @@
-package game.juan.andenginegame0.ygamelibs.Cheep.Entity.BodyData;
-
-import game.juan.andenginegame0.ygamelibs.Cheep.Entity.ObjectType;
+package game.juan.andenginegame0.ygamelibs.Cheep.BodyData;
 
 /**
  * Created by juan on 2018. 3. 25..

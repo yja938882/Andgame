@@ -1,7 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Cheep.Manager;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.Data.GroundData;
-import game.juan.andenginegame0.ygamelibs.Cheep.Entity.Ground;
+import game.juan.andenginegame0.ygamelibs.Cheep.Physics.Ground;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
 
 /**

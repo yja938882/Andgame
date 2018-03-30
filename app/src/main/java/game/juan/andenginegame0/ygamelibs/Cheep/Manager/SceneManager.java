@@ -117,4 +117,7 @@ public class SceneManager {
 
     public static SceneManager getInstance(){return INSTANCE;}
 
+    public GameScene getGameScene(){
+        return (GameScene)gameScene;
+    }
 }

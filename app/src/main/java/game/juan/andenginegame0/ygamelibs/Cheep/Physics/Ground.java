@@ -1,8 +1,9 @@
-package game.juan.andenginegame0.ygamelibs.Cheep.Entity;
+package game.juan.andenginegame0.ygamelibs.Cheep.Physics;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
+import game.juan.andenginegame0.ygamelibs.Cheep.BodyData.ObjectType;
 import game.juan.andenginegame0.ygamelibs.Cheep.Data.GroundData;
 import game.juan.andenginegame0.ygamelibs.Cheep.PhysicsUtil;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
@@ -29,6 +30,6 @@ public class Ground {
      * @param scene Body 를 생성할 scene
      */
     public void createBody(GameScene scene){
-        this.mBody = PhysicsUtil.createGroundBody(scene,sx,sy,this.vertices,ObjectType.GROUND);
+        this.mBody = PhysicsUtil.createGroundBody(scene,sx,sy,this.vertices, ObjectType.GROUND);
     }
 }

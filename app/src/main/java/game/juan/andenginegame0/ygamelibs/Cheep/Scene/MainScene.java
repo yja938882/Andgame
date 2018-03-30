@@ -1,6 +1,9 @@
 package game.juan.andenginegame0.ygamelibs.Cheep.Scene;
 
+import org.andengine.entity.primitive.Rectangle;
+import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.util.color.Color;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.SceneManager;
@@ -14,45 +17,20 @@ import game.juan.andenginegame0.ygamelibs.Cheep.UI.TextContainer;
  */
 
 public class MainScene extends BaseScene{
-    private TextContainer settingButton;
-    private TextContainer shopButton;
-    private TextContainer levelContainer;
-    private TextContainer moneyContainer;
-    private TextContainer statusButton;
-    private StageContainer stageContainer;
+    Rectangle stage1R;
+    Text stage1T;
+
+    Rectangle stage2R;
+    Text stage2T;
 
 
     @Override
     public void createScene() {
-        settingButton = new TextContainer(0,0, ResourceManager.getInstance().gfxTextureRegionHashMap.get("setting_container"),ResourceManager.getInstance().vbom);
-        settingButton.setText(10,50,"setting");
-        settingButton.setPosition(CAMERA_WIDTH - settingButton.getWidth(),50);
-        settingButton.attachTo(this);
-
-        shopButton = new TextContainer(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("shop_container"),ResourceManager.getInstance().vbom);
-        shopButton.setText(10,80,"shop");
-        shopButton.setPosition(50,CAMERA_HEIGHT - shopButton.getHeight());
-        shopButton.attachTo(this);
-
-        statusButton = new TextContainer(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("status_container"),ResourceManager.getInstance().vbom);
-        statusButton.setText(10,80,"shop");
-        statusButton.setPosition(150,CAMERA_HEIGHT - statusButton.getHeight());
-        statusButton.attachTo(this);
-
-        levelContainer = new TextContainer(10,10,ResourceManager.getInstance().gfxTextureRegionHashMap.get("level_container"),ResourceManager.getInstance().vbom);
-        levelContainer.setText(50,12,"test");
-        levelContainer.attachTo(this);
-
-        moneyContainer = new TextContainer(140,10,ResourceManager.getInstance().gfxTextureRegionHashMap.get("money_container"),ResourceManager.getInstance().vbom);
-        moneyContainer.setText(50,12,"test");
-        moneyContainer.attachTo(this);
-
-        stageContainer = new StageContainer(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("theme_container"),ResourceManager.getInstance().vbom){
+        stage1R = new Rectangle(100,200,50,50,ResourceManager.getInstance().vbom){
             @Override
-            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+            public synchronized boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if(pSceneTouchEvent.isActionDown()){
-                   SceneManager.getInstance().loadScene(SceneManager.SceneType.GAME);
-
+                    SceneManager.getInstance().loadScene(SceneManager.SceneType.GAME);
                     SceneManager.getInstance().createScene(SceneManager.SceneType.GAME);
                     SceneManager.getInstance().setScene(SceneManager.SceneType.GAME);
                     SceneManager.getInstance().disposeScene(SceneManager.SceneType.MAIN);
@@ -60,12 +38,39 @@ public class MainScene extends BaseScene{
                 return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
             }
         };
-        stageContainer.setPosition(CAMERA_WIDTH/2 - stageContainer.getWidth()/2,CAMERA_HEIGHT/2 - stageContainer.getHeight()/2);
-        this.registerTouchArea(stageContainer);
-        this.attachChild(stageContainer);
+        this.stage1R.setColor(Color.BLUE);
+        this.attachChild(stage1R);
+        this.registerTouchArea(stage1R);
+        stage1T = new Text(100,200,ResourceManager.getInstance().mainFont,"1",ResourceManager.getInstance().vbom);
+        stage1T.setScale(2f);
+        this.attachChild(stage1T);
+
+
+
+        stage2R = new Rectangle(300,200,50,50,ResourceManager.getInstance().vbom){
+            @Override
+            public synchronized boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                if(pSceneTouchEvent.isActionDown()){
+                    SceneManager.getInstance().loadScene(SceneManager.SceneType.GAME);
+                    SceneManager.getInstance().createScene(SceneManager.SceneType.GAME);
+                    SceneManager.getInstance().setScene(SceneManager.SceneType.GAME);
+                    SceneManager.getInstance().disposeScene(SceneManager.SceneType.MAIN);
+                }
+                return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+            }
+        };
+        this.stage2R.setColor(Color.BLUE);
+        this.attachChild(stage2R);
+        this.registerTouchArea(stage2R);
+        stage2T = new Text(300,200,ResourceManager.getInstance().mainFont,"2스테이즈",ResourceManager.getInstance().vbom);
+        stage2T.setScale(2f);
+        this.attachChild(stage2T);
+
+
+
 
     }
-
+    boolean next = false;
     @Override
     public void onBackKeyPressed() {
 
@@ -78,23 +83,19 @@ public class MainScene extends BaseScene{
 
     @Override
     public void disposeScene() {
-        settingButton.detachSelf();
-        settingButton.dispose();
+        this.unregisterTouchArea(stage1R);
+        this.stage1R.detachSelf();
+        this.stage1R.dispose();
 
-        shopButton.detachSelf();
-        shopButton.dispose();
+        stage1T.detachSelf();
+        stage1T.dispose();
 
-        statusButton.detachSelf();
-        statusButton.dispose();
+        this.unregisterTouchArea(stage2R);
+        this.stage2R.detachSelf();
+        this.stage2R.dispose();
 
-        levelContainer.detachSelf();
-        levelContainer.dispose();
+        stage2T.detachSelf();
+        stage2T.dispose();
 
-        moneyContainer.detachSelf();
-        moneyContainer.dispose();
-
-        this.unregisterTouchArea(stageContainer);
-        stageContainer.detachSelf();
-        stageContainer.dispose();
     }
 }

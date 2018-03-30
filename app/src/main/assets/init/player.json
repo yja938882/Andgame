@@ -1,0 +1,14 @@
+{
+  "money" :0,
+  "last_stage":0,
+  "head" :"none",
+  "body" :"none",
+  "left_upper_arm":"none",
+  "left_fore_arm":"none",
+  "right_upper_arm":"none",
+  "right_fore_arm":"none",
+  "left_thigh":"none",
+  "right_thigh":"none",
+  "left_shank":"none",
+  "right_shank":"none"
+}

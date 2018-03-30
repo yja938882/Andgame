@@ -22,9 +22,12 @@ public class GameSceneTouchListener implements IOnSceneTouchListener {
     float MAX_FORCE = 20f;
     Vector2 force = new Vector2();
     int i=0;
+
+    public boolean start = false;
     @Override
     public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
-        if(pSceneTouchEvent.isActionDown()){
+        if(!start)return false;
+       /* if(pSceneTouchEvent.isActionDown()){
             lastX = pSceneTouchEvent.getX();
             lastY = pSceneTouchEvent.getY();
         }else if(pSceneTouchEvent.isActionMove()){
@@ -32,8 +35,16 @@ public class GameSceneTouchListener implements IOnSceneTouchListener {
             lastY = pSceneTouchEvent.getY();
         }
         EntityManager.getInstance().player.control(lastX/32f,lastY/32f);
-        firstX= lastX;
-        firstY = lastY;
+*/
+        if(pSceneTouchEvent.isActionDown()){
+            lastX = pSceneTouchEvent.getX();
+            lastX = pSceneTouchEvent.getY();
+        }else if( pSceneTouchEvent.isActionMove()){
+            lastX = pSceneTouchEvent.getX();
+            lastY = pSceneTouchEvent.getY();
+        }
+        EntityManager.getInstance().player.control((lastX)/32f,(lastY)/32f);
+
         return false;
     }
 }
