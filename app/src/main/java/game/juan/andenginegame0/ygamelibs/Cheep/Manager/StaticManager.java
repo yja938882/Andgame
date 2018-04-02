@@ -13,7 +13,7 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
 public class StaticManager {
     public static final StaticManager INSTANCE = new StaticManager();
 
-    Ground mGround[];
+    private Ground mGround[];
     public void createBackground(GameScene pGameScene){
 
     }
@@ -28,6 +28,7 @@ public class StaticManager {
         }
 
     }
+
 
     public static StaticManager getInstance(){return INSTANCE;}
 

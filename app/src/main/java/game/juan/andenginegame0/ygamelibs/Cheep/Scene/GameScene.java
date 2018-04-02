@@ -12,6 +12,7 @@ import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
+import org.andengine.input.touch.detector.ScrollDetector;
 import org.andengine.util.color.Color;
 
 import debugdraw.DebugRenderer;
@@ -21,6 +22,7 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Manager.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.SceneManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.StaticManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.UI.GameSceneTouchListener;
+import game.juan.andenginegame0.ygamelibs.Cheep.UI.OnHud;
 
 /**
  * Created by juan on 2018. 3. 25..
@@ -31,15 +33,19 @@ import game.juan.andenginegame0.ygamelibs.Cheep.UI.GameSceneTouchListener;
 public class GameScene extends BaseScene{
     PhysicsWorld physicsWorld;
     GameSceneTouchListener gameSceneTouchListener;
-
+    public OnHud onHud;
     @Override
     public void createScene() {
+        this.camera.setCenter(CAMERA_WIDTH/2, CAMERA_HEIGHT/2);
+        this.onHud = new OnHud();
+        onHud.createHUD();
+        this.camera.setHUD(onHud);
+
+
         this.setBackground(new Background(Color.BLACK));
-        this.physicsWorld = new FixedStepPhysicsWorld(30,new Vector2(0,15),false);
-       // this.physicsWorld = new PhysicsWorld(new Vector2(0,18),false);
+        this.physicsWorld = new FixedStepPhysicsWorld(30,new Vector2(0,0),false);
         StaticManager.getInstance().createGround(this);
 
-       // EntityManager.getInstance().createBullet(this);
         EntityManager.getInstance().createPlayer(this);
         this.registerUpdateHandler(physicsWorld);
         physicsWorld.setContactListener(new ContactListener() {
@@ -86,6 +92,8 @@ public class GameScene extends BaseScene{
        // debugRenderer.setColor(Color.RED);
        // debugRenderer.setDrawBodies(true);
       //  this.attachChild(debugRenderer);
+        //ScrollDetector scrollDetector = new ScrollDetector();
+        //this.setOnSceneTouchListener( scrollDetector);
         gameSceneTouchListener = new GameSceneTouchListener();
         this.setOnSceneTouchListener(gameSceneTouchListener);
         this.registerUpdateHandler(new IUpdateHandler() {
@@ -96,8 +104,8 @@ public class GameScene extends BaseScene{
                 }
                 e+=pSecondsElapsed;
                 if(e>=elpased){
-                  //  EntityManager.getInstance().createBullet(SceneManager.getInstance().getGameScene());
-                   EntityManager.getInstance().createObstacle(SceneManager.getInstance().getGameScene());
+                    EntityManager.getInstance().createObstacle(SceneManager.getInstance().getGameScene());
+
                     start = true;
                     gameSceneTouchListener.start=true;
                 }
@@ -109,11 +117,16 @@ public class GameScene extends BaseScene{
             }
         });
 
+
     }
     boolean start = false;
     float elpased = 3f;
     float e = 0f;
 
+    public void gameOver(){
+        EntityManager.getInstance().destroyPlayer(this);
+        EntityManager.getInstance().destroyObstacle(this);
+    }
     @Override
     public void onBackKeyPressed() {
 
@@ -128,6 +141,7 @@ public class GameScene extends BaseScene{
     public void disposeScene() {
 
     }
+
 
     public PhysicsWorld getPhysicsWorld(){
         return physicsWorld;

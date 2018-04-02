@@ -7,6 +7,7 @@ import android.view.View;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.WakeLockOptions;
@@ -21,20 +22,25 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Manager.SceneManager;
 
 import static game.juan.andenginegame0.ygamelibs.Cheep.Scene.BaseScene.CAMERA_HEIGHT;
 import static game.juan.andenginegame0.ygamelibs.Cheep.Scene.BaseScene.CAMERA_WIDTH;
-
-
+/**
+ * Created by juan on 2018. 3. 25..
+ * @author juan
+ * @version 1.0
+ */
 public class GameActivity extends BaseGameActivity {
+    /*=====================================
+    * Fields
+    *======================================*/
+    private static final String dbName ="config.db";
     boolean scheduleEngineStart;
-
-    private BoundCamera mCamera;
-
-
+    private SmoothCamera mCamera;
     private View decorView;
     private int	uiOption;
+    private static final int dbVersion =197;
 
-    private static final int dbVersion =196;
-    String dbName ="config.db";
-
+    /*=====================================
+    * Methods
+    *======================================*/
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -52,7 +58,7 @@ public class GameActivity extends BaseGameActivity {
 
     @Override
     public EngineOptions onCreateEngineOptions() {
-        mCamera = new BoundCamera(0,0,CAMERA_WIDTH,CAMERA_HEIGHT);
+        mCamera = new SmoothCamera(0,0,CAMERA_WIDTH,CAMERA_HEIGHT,500f,500f,50f);
         EngineOptions engineOptions = new EngineOptions(true
                 , ScreenOrientation.LANDSCAPE_FIXED,
                 new RatioResolutionPolicy(2560,1440),mCamera);
@@ -124,5 +130,4 @@ public class GameActivity extends BaseGameActivity {
     public void onResume(){
         super.onResume();
     }
-    public Camera getCamera(){return mCamera;}
 }

@@ -85,6 +85,17 @@ public class ResourceManager {
             }
         }
     }
+    void unloadGFX(){
+        for(int i=0;i<gfxTextureAtlas.size();i++){
+            gfxTextureAtlas.get(i).unload();
+            gfxTextureAtlas.set(i,null);
+            gfxTextureRegions.set(i,null);
+        }
+        gfxTextureAtlas.clear();
+        gfxTextureRegions.clear();
+        gfxTextureRegionHashMap.clear();
+
+    }
 
     /*=====================================
     * Statics

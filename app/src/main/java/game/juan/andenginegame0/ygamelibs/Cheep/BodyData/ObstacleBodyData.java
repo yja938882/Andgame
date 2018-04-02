@@ -2,15 +2,28 @@ package game.juan.andenginegame0.ygamelibs.Cheep.BodyData;
 
 /**
  * Created by juan on 2018. 3. 31..
+ * @author juan
+ * @version 1.0
  */
 
 public class ObstacleBodyData extends BodyData {
-    boolean isHit= false;
-    boolean isAttacked = false;
+    /*=====================================
+    * Fields
+    *======================================*/
+    private boolean isHit= false;
+    private boolean isAttacked = false;
+
+    /*=====================================
+    * Constructor
+    *======================================*/
     public ObstacleBodyData(ObjectType pObjectType) {
         super(pObjectType);
     }
 
+
+    /*=====================================
+    * Methods
+    *======================================*/
     @Override
     public void beginContactWith(ObjectType pObjectType) {
         if(pObjectType == ObjectType.PLAYER)

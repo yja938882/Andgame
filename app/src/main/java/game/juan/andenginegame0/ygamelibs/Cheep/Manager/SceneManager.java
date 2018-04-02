@@ -75,14 +75,19 @@ public class SceneManager {
                 ResourceManager.getInstance().loadGFX();
                 break;
             case MAIN:
-                DataManager.getInstance().loadScene(sceneType);
-                ResourceManager.getInstance().loadGFX();
-                break;
-            case GAME:
+
+                ResourceManager.getInstance().unloadGFX();
                 DataManager.getInstance().loadScene(sceneType);
                 ResourceManager.getInstance().loadGFX();
                 break;
         }
+    }
+
+    public void loadGameScene(int pStage){
+
+        ResourceManager.getInstance().unloadGFX();
+        DataManager.getInstance().loadGameScene(pStage);
+        ResourceManager.getInstance().loadGFX();
     }
 
     public void createScene(SceneType sceneType){

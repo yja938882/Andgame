@@ -1,5 +1,6 @@
 {
   "background": "0_0.png",
+  "gravity":7,
   "ground":
   [
     {
@@ -21,13 +22,16 @@
   "obstacle":
   [
     {
-      "id":"ball" , "x" : 5 , "y" : 5
+      "id":"ball" , "x" : 5 , "y" : 5 ,"speed" : 5
     },
     {
-      "id":"ball" , "x" : 10 , "y" : 5
+      "id":"ball" , "x" : 10 , "y" : 5 , "speed" : -5
     },
     {
-      "id":"ball" , "x" : 15 , "y" : 5
+      "id":"ball" , "x" : 15 , "y" : 5  , "speed" : 5
+    },
+    {
+      "id":"fall" ,"x": 10 ,"y": 5,"speed" : 5, "time": 5
     }
   ]
 }

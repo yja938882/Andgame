@@ -44,11 +44,12 @@ public class DataManager {
                 break;
             case SHOP:
                 break;
-            case GAME:
-                setPlayerConfig();
-                loadStage(0);
-                break;
+
         }
+    }
+    public void loadGameScene(int pStage){
+        setPlayerConfig();
+        loadStage(pStage);
     }
     public void prepareManager(DBManager dbManager){
         getInstance().dbManager = dbManager;

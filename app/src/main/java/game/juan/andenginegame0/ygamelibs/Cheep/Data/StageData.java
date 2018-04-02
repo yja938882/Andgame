@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Cheep.Data;
 
+import com.badlogic.gdx.math.Vector2;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -12,14 +14,29 @@ import java.util.ArrayList;
  */
 
 public class StageData implements IData {
+    /*====================================
+    * Fields
+    *====================================*/
+    private float gravity;
     private GroundData[] mGroundData;
-    ArrayList<ObstacleData> obstacleDataArrayList;
+    private ArrayList<ObstacleData> obstacleDataArrayList;
 
+    /*====================================
+    * Methods
+    *====================================*/
     @Override
     public void compose(JSONObject pJSONObject) {
         try{
+            composeStageConfig(pJSONObject);
             composeGroundData(pJSONObject.getJSONArray("ground"));
             composeObstacleData(pJSONObject.getJSONArray("obstacle"));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    private void composeStageConfig(JSONObject pJSONObject){
+        try{
+            this.gravity = (float)pJSONObject.getDouble("gravity");
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -49,6 +66,11 @@ public class StageData implements IData {
                         obstacleBallData.compose(object);
                         obstacleDataArrayList.add(obstacleBallData);
                         break;
+                    case "fall":
+                        ObstacleFallData obstacleFallData = new ObstacleFallData();
+                        obstacleFallData.compose(object);
+                        obstacleDataArrayList.add(obstacleFallData);
+                        break;
                 }
             }
 
@@ -63,5 +85,8 @@ public class StageData implements IData {
     }
     public ArrayList<ObstacleData> getObstacleDataArrayList(){
         return this.obstacleDataArrayList;
+    }
+    public float getGravity(){
+        return gravity;
     }
 }

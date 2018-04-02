@@ -10,6 +10,7 @@ import game.juan.andenginegame0.ygamelibs.Cheep.BodyData.UnitData;
 import game.juan.andenginegame0.ygamelibs.Cheep.BodyData.ObjectType;
 import game.juan.andenginegame0.ygamelibs.Cheep.BodyData.WeaponData;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.ResourceManager;
+import game.juan.andenginegame0.ygamelibs.Cheep.Manager.SceneManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.PhysicsUtil;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
 
@@ -56,6 +57,7 @@ public class Player {
 
     private static final float START_X = 400;
     private static final float START_Y = 200;
+    private Vector2 gravity = new Vector2(0,8);
 
     /*======================================
     * Fields
@@ -71,8 +73,6 @@ public class Player {
     */
     public void setup(){
         this.mPartsSprites = new Sprite[PARTS_NUM];
-//        for(int i=0;i<mPartsSprites.length;i++)
-  //          mPartsSprites[i] = new Sprite(0,0, ResourceManager.getInstance().gfxTextureRegionHashMap.get("player"),ResourceManager.getInstance().vbom);
         this.mPartsSprites[HEAD] =
                 new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("head"),ResourceManager.getInstance().vbom);
         this.mPartsSprites[BODY] =
@@ -179,11 +179,28 @@ public class Player {
 
     public void control(float x, float y){
         Vector2 c = new Vector2(x- this.mPartsBodies[POWER_POINT].getPosition().x, y- this.mPartsBodies[POWER_POINT].getPosition().y);
-       // Vector2 c = new Vector2(x,y);
         c.mul(150f/c.len());
         this.mPartsBodies[POWER_POINT].applyForce(c,
                 this.mPartsBodies[POWER_POINT].getWorldCenter());
-      //  this.mPartsBodies[POWER_POINT].applyLinearImpulse(c,mPartsBodies[POWER_POINT].getWorldCenter());
+    }
+    public void destroyBody(GameScene pGameScene){
+        for(int i=0;i<mPartsBodies.length;i++){
+            mPartsBodies[i].setActive(false);
+            pGameScene.getPhysicsWorld().destroyBody(mPartsBodies[i]);
+        }
+    }
+
+    public void detachThis(){
+        for(int i=0;i<mPartsSprites.length;i++){
+            mPartsSprites[i].detachSelf();
+        }
+    }
+
+    public void disposeThis(){
+        for(int i=0;i<mPartsSprites.length;i++) {
+            mPartsSprites[i].dispose();
+            mPartsSprites[i] = null;
+        }
     }
 
     /*======================================
@@ -196,14 +213,33 @@ public class Player {
      * @param pRadius 반지름
      * @param pObjectType 설정할 오브젝트 종류
      */
-    private void createCircleParts(GameScene pGameScene, int pIndex,float pRadius,ObjectType pObjectType){
-        this.mPartsBodies[pIndex] = PhysicsUtil.createCircleBody(pGameScene,START_X,START_Y,pRadius,ObjectType.PLAYER);
-        if(pObjectType ==ObjectType.WEAPON)
+    private void createCircleParts(GameScene pGameScene, int pIndex,float pRadius,ObjectType pObjectType) {
+        this.mPartsBodies[pIndex] = PhysicsUtil.createCircleBody(pGameScene, START_X, START_Y, pRadius, ObjectType.PLAYER);
+        if (pObjectType == ObjectType.WEAPON){
             this.mPartsBodies[pIndex].setUserData(new WeaponData(pObjectType));
+            pGameScene.getPhysicsWorld().registerPhysicsConnector(new PhysicsConnector(mPartsSprites[pIndex],mPartsBodies[pIndex]){
+                @Override
+                public void onUpdate(float pSecondsElapsed) {
+                    super.onUpdate(pSecondsElapsed);
+                    this.getBody().applyForce(gravity,getBody().getWorldCenter());
+
+                }
+            });
+
+        }
         else {
             this.mPartsBodies[pIndex].setUserData(new UnitData(pObjectType));
+            pGameScene.getPhysicsWorld().registerPhysicsConnector(new PhysicsConnector(mPartsSprites[pIndex],mPartsBodies[pIndex]){
+                @Override
+                public void onUpdate(float pSecondsElapsed) {
+                    super.onUpdate(pSecondsElapsed);
+                    this.getBody().applyForce(gravity,getBody().getWorldCenter());
+                    if((((UnitData)getBody().getUserData()).isBeAttacked()))
+                        SceneManager.getInstance().getGameScene().gameOver();
+                }
+            });
+
         }
-        pGameScene.getPhysicsWorld().registerPhysicsConnector(new PhysicsConnector(mPartsSprites[pIndex],mPartsBodies[pIndex]));
 
     }
 
@@ -217,11 +253,29 @@ public class Player {
      */
     private void createRectParts(GameScene pGameScene, int pIndex, float pWidth, float pHeight,ObjectType pObjectType){
         this.mPartsBodies[pIndex] = PhysicsUtil.createVerticesBody(pGameScene,mPartsSprites[pIndex],getRectVertices(pWidth,pHeight),ObjectType.PLAYER);
-        if(pObjectType ==ObjectType.WEAPON)
+        if(pObjectType ==ObjectType.WEAPON) {
             this.mPartsBodies[pIndex].setUserData(new WeaponData(pObjectType));
-        else
+            pGameScene.getPhysicsWorld().registerPhysicsConnector(new PhysicsConnector(mPartsSprites[pIndex],mPartsBodies[pIndex]){
+                @Override
+                public void onUpdate(float pSecondsElapsed) {
+                    super.onUpdate(pSecondsElapsed);
+                    this.getBody().applyForce(gravity,getBody().getWorldCenter());
+                }
+            });
+
+        }else {
             this.mPartsBodies[pIndex].setUserData(new UnitData(pObjectType));
-        pGameScene.getPhysicsWorld().registerPhysicsConnector(new PhysicsConnector(mPartsSprites[pIndex],mPartsBodies[pIndex]));
+            pGameScene.getPhysicsWorld().registerPhysicsConnector(new PhysicsConnector(mPartsSprites[pIndex],mPartsBodies[pIndex]){
+                @Override
+                public void onUpdate(float pSecondsElapsed) {
+                    super.onUpdate(pSecondsElapsed);
+                    this.getBody().applyForce(gravity,getBody().getWorldCenter());
+                    if((((UnitData)getBody().getUserData()).isBeAttacked()))
+                        SceneManager.getInstance().getGameScene().gameOver();
+                }
+            });
+
+        }
 
     }
 

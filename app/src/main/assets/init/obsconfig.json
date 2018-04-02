@@ -39,6 +39,47 @@
       {
         "src": "obstacle/ball_part_4.png",      "src_width": 64, "src_height":64, "row":1,"col":1
       }
+    },
+
+    {
+      "id": "fall",
+      "data":
+      {
+        "src": "obstacle/fall.png","src_width": 128, "src_height":128,"row":1,"col":1,
+        "add_id":["fall_part_1","fall_part_2","fall_part_3","fall_part_4"],
+        "width": 10,
+        "height" :10,
+        "part_width":5,
+        "part_height":5
+      }
+    },
+    {
+      "id": "fall_part_1",
+      "data":
+      {
+        "src": "obstacle/fall_part_1.png",      "src_width": 64, "src_height":64, "row":1,"col":1
+      }
+    },
+    {
+      "id": "fall_part_2",
+      "data":
+      {
+        "src": "obstacle/fall_part_2.png",      "src_width": 64, "src_height":64, "row":1,"col":1
+      }
+    },
+    {
+      "id": "fall_part_3",
+      "data":
+      {
+        "src": "obstacle/fall_part_3.png",      "src_width": 64, "src_height":64, "row":1,"col":1
+      }
+    },
+    {
+      "id": "fall_part_4",
+      "data":
+      {
+        "src": "obstacle/fall_part_4.png",      "src_width": 64, "src_height":64, "row":1,"col":1
+      }
     }
   ]
 
