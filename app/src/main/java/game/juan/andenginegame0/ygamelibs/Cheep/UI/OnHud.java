@@ -23,10 +23,12 @@ public class OnHud extends HUD {
         this.scoreText = new Text(remainText.getX()+remainText.getWidth(),40,ResourceManager.getInstance().mainFont,"0",ResourceManager.getInstance().vbom);
         this.attachChild(scoreText);
     }
+
     public void setRemain(int pRemain){
         this.remain = pRemain;
         this.scoreText.setText( ""+remain);
     }
+
     public void decreaseRemain(){
         this.remain--;
         this.scoreText.setText(""+remain);
