@@ -12,7 +12,9 @@ import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
+import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.detector.ScrollDetector;
+import org.andengine.opengl.texture.bitmap.ResourceBitmapTexture;
 import org.andengine.util.color.Color;
 
 import debugdraw.DebugRenderer;
@@ -23,6 +25,7 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Manager.SceneManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.StaticManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.UI.GameSceneTouchListener;
 import game.juan.andenginegame0.ygamelibs.Cheep.UI.OnHud;
+import game.juan.andenginegame0.ygamelibs.Cheep.UI.PauseButton;
 
 /**
  * Created by juan on 2018. 3. 25..
@@ -31,9 +34,21 @@ import game.juan.andenginegame0.ygamelibs.Cheep.UI.OnHud;
  */
 
 public class GameScene extends BaseScene{
+    // ===========================================================
+    // Fields
+    // ===========================================================
     PhysicsWorld physicsWorld;
     GameSceneTouchListener gameSceneTouchListener;
     public OnHud onHud;
+    private PauseButton pauseButton;
+
+    boolean start = false;
+    float elpased = 3f;
+    float e = 0f;
+
+    // ===========================================================
+    // Methods
+    // ===========================================================
     @Override
     public void createScene() {
         this.camera.setCenter(CAMERA_WIDTH/2, CAMERA_HEIGHT/2);
@@ -41,6 +56,20 @@ public class GameScene extends BaseScene{
         onHud.createHUD();
         this.camera.setHUD(onHud);
 
+        this.pauseButton = new PauseButton(0,0, ResourceManager.getInstance().gfxTextureRegionHashMap.get("pause"), vbom){
+            @Override
+            public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+                if(pSceneTouchEvent.isActionDown()){
+                    GameScene.this.setIgnoreUpdate(false);
+                    SceneManager.getInstance().createChildScene(SceneManager.ChildSceneType.PAUSE);
+                    SceneManager.getInstance().setChildScene(SceneManager.ChildSceneType.PAUSE);
+                }
+                return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+            }
+        };
+        this.pauseButton.setPosition(CAMERA_WIDTH - pauseButton.getWidth(), 0);
+        this.attachChild(pauseButton);
+        this.registerTouchArea(pauseButton);
 
         this.setBackground(new Background(Color.BLACK));
         this.physicsWorld = new FixedStepPhysicsWorld(30,new Vector2(0,0),false);
@@ -92,8 +121,6 @@ public class GameScene extends BaseScene{
        // debugRenderer.setColor(Color.RED);
        // debugRenderer.setDrawBodies(true);
       //  this.attachChild(debugRenderer);
-        //ScrollDetector scrollDetector = new ScrollDetector();
-        //this.setOnSceneTouchListener( scrollDetector);
         gameSceneTouchListener = new GameSceneTouchListener();
         this.setOnSceneTouchListener(gameSceneTouchListener);
         this.registerUpdateHandler(new IUpdateHandler() {
@@ -119,13 +146,11 @@ public class GameScene extends BaseScene{
 
 
     }
-    boolean start = false;
-    float elpased = 3f;
-    float e = 0f;
 
     public void gameOver(){
-        EntityManager.getInstance().destroyPlayer(this);
-        EntityManager.getInstance().destroyObstacle(this);
+        setIgnoreUpdate(true);
+        //EntityManager.getInstance().destroyPlayer(this);
+        //EntityManager.getInstance().destroyObstacle(this);
     }
     @Override
     public void onBackKeyPressed() {

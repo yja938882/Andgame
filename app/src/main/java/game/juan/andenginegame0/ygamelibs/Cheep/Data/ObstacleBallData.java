@@ -11,8 +11,14 @@ import game.juan.andenginegame0.ygamelibs.Cheep.BodyData.ObjectType;
  */
 
 public class ObstacleBallData extends ObstacleData{
+    // ===========================================================
+    // Fields
+    // ===========================================================
     private float speed;
 
+    // ===========================================================
+    // Methods
+    // ===========================================================
     @Override
     public void compose(JSONObject pJSONObject) {
         super.compose(pJSONObject);

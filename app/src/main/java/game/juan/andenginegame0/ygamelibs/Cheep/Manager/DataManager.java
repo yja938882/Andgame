@@ -17,23 +17,21 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Utils;
  */
 
 public class DataManager {
-    /*=====================================
-    * Constants
-    *======================================*/
+    // ===========================================================
+    // Constants
+    // ===========================================================
     public static final DataManager INSTANCE = new DataManager();
 
-
-    /*=====================================
-    * Fields
-    *======================================*/
+    // ===========================================================
+    // Fields
+    // ===========================================================
     private DBManager dbManager;
     public StageData stageData;
     public HashMap<String , JSONObject> configHashMap;
 
-
-    /*=====================================
-    * Methods
-    *======================================*/
+    // ===========================================================
+    // Methods
+    // ===========================================================
     public void loadScene(SceneManager.SceneType pSceneType){
         switch (pSceneType){
             case SPLASH:
@@ -47,10 +45,13 @@ public class DataManager {
 
         }
     }
+
     public void loadGameScene(int pStage){
         setPlayerConfig();
+        setGameSceneUIConfig();
         loadStage(pStage);
     }
+
     public void prepareManager(DBManager dbManager){
         getInstance().dbManager = dbManager;
         getInstance().configHashMap = new HashMap<>();
@@ -77,15 +78,6 @@ public class DataManager {
      * Main 화면 구성에 필요한 설정 세팅
      */
     private void setMainConfig(){
-        configHashMap.put("theme_container",newConfigJSON("theme_container","ui/theme_container.png",712,328,1,1));
-        configHashMap.put("level_container",newConfigJSON("level_container","ui/level_container.png",136,41,1,1));
-        configHashMap.put("money_container",newConfigJSON("money_container","ui/coin_container.png",133,39,1,1));
-        configHashMap.put("setting_container",newConfigJSON("setting_container","ui/setting_container.png",104,81,1,1));
-        configHashMap.put("shop_container",newConfigJSON("shop_container","ui/shop_container.png",83,106,1,1));
-        configHashMap.put("status_container",newConfigJSON("status_container","ui/status_container.png",84,106,1,1));
-        configHashMap.put("next_theme",newConfigJSON("next_theme", "ui/next_theme.png",29,73,1,1));
-        configHashMap.put("prev_theme",newConfigJSON("prev_theme","ui/prev_theme.png",29,73,1,1));
-        configHashMap.put("theme_title",newConfigJSON("theme_title","ui/theme_title.png",233,63,1,1));
     }
 
     private void setPlayerConfig(){
@@ -101,6 +93,10 @@ public class DataManager {
         configHashMap.put("right_shank",newConfigJSON("right_shank","player/right_shank.png",16,54,1,1));
         configHashMap.put("weapon",newConfigJSON("weapon","player/weapon.png",44,128,1,1));
         configHashMap.put("power_point",newConfigJSON("power_point","player/power_point.png",16,16,1,1));
+    }
+
+    private void setGameSceneUIConfig(){
+        configHashMap.put("pause", newConfigJSON("pause","ui/pause_button.png",32,32,1,1));
     }
 
     /**
@@ -122,7 +118,6 @@ public class DataManager {
         }catch (Exception e){
             e.printStackTrace();
         }
-
     }
 
     private void configureObstacleData(String pId){
@@ -169,9 +164,6 @@ public class DataManager {
         configHashMap.put("spear",object);
     }
 
-    /*=====================================
-    * Statics
-    *======================================*/
     public static DataManager getInstance(){return INSTANCE;}
 
     /**

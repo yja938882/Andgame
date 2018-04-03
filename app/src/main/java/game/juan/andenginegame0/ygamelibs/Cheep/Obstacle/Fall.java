@@ -21,10 +21,17 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
  */
 
 public class Fall extends Obstacle{
+    // ===========================================================
+    // Constants
+    // ===========================================================
     private static final int BODY_NUM = 5;
     private static final int SPRITE_NUM = 4;
     private static final float FALL_WIDTH = 24f;
     private static final float FALL_HEIGHT = 24f;
+
+    // ===========================================================
+    // Fields
+    // ===========================================================
     private float[] randomsX;
     private float[] randomsY;
     private float speed;
@@ -35,10 +42,17 @@ public class Fall extends Obstacle{
     boolean isAttacked = false;
     float end=0;
     float max_wnd = 1f;
+
+    // ===========================================================
+    // Constructor
+    // ===========================================================
     public Fall(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
 
+    // ===========================================================
+    // Methods
+    // ===========================================================
     @Override
     public void setup(float pX, float pY) {
         this.init(pX,pY,BODY_NUM,SPRITE_NUM);

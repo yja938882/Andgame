@@ -31,6 +31,7 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
  */
 
 public class PhysicsUtil {
+
     public static final short GROUND_CTG_BIT= 0x00000001;
     public static final short PLAYER_CTG_BIT= 0x00000002;
     public static final short AI_CTG_BIT    = 0x00000004;
@@ -104,7 +105,6 @@ public class PhysicsUtil {
         groundBody.setUserData(new BodyData(ObjectType.GROUND) {
             @Override
             public void beginContactWith(ObjectType pObjectType) {
-
             }
 
             @Override
@@ -187,7 +187,6 @@ public class PhysicsUtil {
         return BodyDef.BodyType.StaticBody;
     }
 
-
     /**
      * 회전 관절 생성
      * @param pBodyA 메인 Body
@@ -251,7 +250,6 @@ public class PhysicsUtil {
         weldJointDef.localAnchorB.set(pAnchorB);
         return weldJointDef;
     }
-
 
     public static float getRandomFloat(float pMin, float pMax){
         Random random = new Random();

@@ -14,11 +14,16 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
  */
 
 public class Ground {
+    // ===========================================================
+    // Fields
+    // ===========================================================
     private Vector2[] vertices;
     private float sx,sy;
     private Body mBody;
 
-
+    // ===========================================================
+    // Methods
+    // ===========================================================
     public void configure(GroundData groundData){
         this.vertices = groundData.getVertices();
         this.sx = groundData.sx;

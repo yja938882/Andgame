@@ -12,19 +12,31 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
 
 /**
  * Created by juan on 2018. 3. 25..
- *
+ * @author juan
+ * @version 1.0
  */
 
 public class EntityManager {
+    // ===========================================================
+    // Constants
+    // ===========================================================
     public static final EntityManager INSTANCE = new EntityManager();
 
+    // ===========================================================
+    // Fields
+    // ===========================================================
     public Player player;
     private Obstacle obstacles[];
+
+    // ===========================================================
+    // Methods
+    // ===========================================================
     public void createPlayer(GameScene pGameScene){
         player = new Player();
         player.setup();
         player.createParts(pGameScene);
     }
+
     public void createObstacle(GameScene pGameScene){
         ArrayList<ObstacleData> obstacleDataArrayList = DataManager.getInstance().stageData.getObstacleDataArrayList();
         this.obstacles = new Obstacle[obstacleDataArrayList.size()];
@@ -39,6 +51,7 @@ public class EntityManager {
         player.detachThis();
         player.disposeThis();
     }
+
     public void destroyObstacle(GameScene pGameScene){
         for(int i=0;i<obstacles.length;i++){
             obstacles[i].destroyBody(pGameScene);

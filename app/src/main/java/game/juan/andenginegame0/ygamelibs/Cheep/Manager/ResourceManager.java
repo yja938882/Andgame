@@ -21,18 +21,20 @@ import java.util.Set;
 
 /**
  * Created by juan on 2018. 3. 25..
+ * @author juan
+ * @version 1.0
  */
 
 public class ResourceManager {
-    /*=====================================
-    * Fields
-    *======================================*/
+    // ===========================================================
+    // Constants
+    // ===========================================================
     public static final ResourceManager INSTANCE = new ResourceManager();
-    public Font mainFont;
 
-    /*=====================================
-    * Fields
-    *======================================*/
+    // ===========================================================
+    // Fields
+    // ===========================================================
+    public Font mainFont;
     public Engine engine;
     public BaseGameActivity gameActivity;
     public Camera camera;
@@ -43,9 +45,9 @@ public class ResourceManager {
     private ArrayList<BitmapTextureAtlas> gfxTextureAtlas = null;
 
 
-    /*=====================================
-    * Methods
-    *======================================*/
+    // ===========================================================
+    // Methods
+    // ===========================================================
     /**
      * 폰트 로딩
      */
@@ -97,9 +99,9 @@ public class ResourceManager {
 
     }
 
-    /*=====================================
-    * Statics
-    *======================================*/
+    // ===========================================================
+    // Statics
+    // ===========================================================
     public static void prepareManager(Engine engine, BaseGameActivity activity, Camera camera, VertexBufferObjectManager vbom){
         getInstance().engine = engine;
         getInstance().gameActivity = activity;

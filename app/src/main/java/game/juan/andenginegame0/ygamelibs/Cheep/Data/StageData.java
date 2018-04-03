@@ -14,16 +14,16 @@ import java.util.ArrayList;
  */
 
 public class StageData implements IData {
-    /*====================================
-    * Fields
-    *====================================*/
+    // ===========================================================
+    // Fields
+    // ===========================================================
     private float gravity;
     private GroundData[] mGroundData;
     private ArrayList<ObstacleData> obstacleDataArrayList;
 
-    /*====================================
-    * Methods
-    *====================================*/
+    // ===========================================================
+    // Methods
+    // ===========================================================
     @Override
     public void compose(JSONObject pJSONObject) {
         try{
@@ -34,6 +34,7 @@ public class StageData implements IData {
             e.printStackTrace();
         }
     }
+
     private void composeStageConfig(JSONObject pJSONObject){
         try{
             this.gravity = (float)pJSONObject.getDouble("gravity");
@@ -83,9 +84,11 @@ public class StageData implements IData {
     public GroundData[] getGroundData(){
         return this.mGroundData;
     }
+
     public ArrayList<ObstacleData> getObstacleDataArrayList(){
         return this.obstacleDataArrayList;
     }
+
     public float getGravity(){
         return gravity;
     }

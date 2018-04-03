@@ -25,18 +25,35 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
  */
 
 public class Ball extends Obstacle{
+    // ===========================================================
+    // Constants
+    // ===========================================================
     private static final int BODY_NUM = 5;
     private static final int SPRITE_NUM = 4;
     private static final float BALL_RADIUS = 24f;
     private static final float BALL_PART_RADIUS = 12f;
+
+    // ===========================================================
+    // Fields
+    // ===========================================================
     private float[] randomsX;
     private float[] randomsY;
-    boolean fin= false;
-    boolean isAttacked = false;
+    private boolean fin= false;
+    private boolean isAttacked = false;
     private float initSpeed;
+    float end=0;
+    float max_wnd = 1f;
+
+    // ===========================================================
+    // Constructor
+    // ===========================================================
     public Ball(float pX, float pY, ITiledTextureRegion pTiledTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
         super(pX, pY, pTiledTextureRegion, pVertexBufferObjectManager);
     }
+
+    // ===========================================================
+    // Methods
+    // ===========================================================
     public void setSpeed(float speed){
         this.initSpeed = speed;
     }
@@ -53,10 +70,8 @@ public class Ball extends Obstacle{
         sprites[1] = new Sprite(0,0, ResourceManager.getInstance().gfxTextureRegionHashMap.get("ball_part_2"),ResourceManager.getInstance().vbom);
         sprites[2] = new Sprite(0,0, ResourceManager.getInstance().gfxTextureRegionHashMap.get("ball_part_3"),ResourceManager.getInstance().vbom);
         sprites[3] = new Sprite(0,0, ResourceManager.getInstance().gfxTextureRegionHashMap.get("ball_part_4"),ResourceManager.getInstance().vbom);
-
     }
-    float end=0;
-    float max_wnd = 1f;
+
     public void createBody(GameScene pGameScene){
         bodies[0] =PhysicsUtil.createCircleBody(pGameScene,initX ,initY,BALL_RADIUS, ObjectType.OBSTACLE);
         bodies[0].setUserData(new ObstacleBodyData(ObjectType.OBSTACLE));

@@ -11,12 +11,23 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
  */
 
 public class StaticManager {
+    // ===========================================================
+    // Constants
+    // ===========================================================
     public static final StaticManager INSTANCE = new StaticManager();
 
+    // ===========================================================
+    // Fields
+    // ===========================================================
     private Ground mGround[];
+
+    // ===========================================================
+    // Methods
+    // ===========================================================
     public void createBackground(GameScene pGameScene){
 
     }
+
     public void createGround(GameScene pGameScene){
         GroundData[] groundData = DataManager.getInstance().stageData.getGroundData();
         this.mGround = new Ground[groundData.length];
@@ -28,7 +39,6 @@ public class StaticManager {
         }
 
     }
-
 
     public static StaticManager getInstance(){return INSTANCE;}
 

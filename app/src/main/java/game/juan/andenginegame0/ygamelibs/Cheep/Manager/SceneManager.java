@@ -3,6 +3,8 @@ package game.juan.andenginegame0.ygamelibs.Cheep.Manager;
 import org.andengine.engine.Engine;
 import org.andengine.ui.IGameInterface;
 
+import game.juan.andenginegame0.ygamelibs.Cheep.ChildScene.ChildBaseScene;
+import game.juan.andenginegame0.ygamelibs.Cheep.ChildScene.PauseScene;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.BaseScene;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.MainScene;
@@ -10,13 +12,14 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Scene.SplashScene;
 
 /**
  * Created by juan on 2018. 3. 25..
- *
+ * @author juan
+ * @version 2.0
  */
 
 public class SceneManager {
-    /*=====================================
-    * Constants
-    *======================================*/
+    // ===========================================================
+    // Constants
+    // ===========================================================
     public static final SceneManager INSTANCE = new SceneManager();
     public enum SceneType
     {
@@ -29,16 +32,25 @@ public class SceneManager {
         LOADING,
         PREPARE
     }
+    public enum ChildSceneType
+    {
+        PAUSE
+    }
 
-    /*=====================================
-    * Fields
-    *======================================*/
+    // ===========================================================
+    // Fields
+    // ===========================================================
     private Engine engine = ResourceManager.getInstance().engine;
     private SceneType currentSceneType = SceneType.SPLASH;
+
+    //Scenes
     private BaseScene currentScene;
     private BaseScene splashScene;
     private BaseScene mainScene;
     private BaseScene gameScene;
+
+    //Child Scenes
+    private ChildBaseScene pauseScene;
 
 
     /*=====================================
@@ -49,6 +61,12 @@ public class SceneManager {
         currentScene = scene;
         currentSceneType = scene.getSceneType();
     }
+
+    public void setChildScene(ChildBaseScene scene){
+        currentScene.setChildScene(scene);
+        currentScene.setIgnoreUpdate(true);
+    }
+
     public void setScene(SceneType sceneType) {
         switch (sceneType){
             case SPLASH:
@@ -59,6 +77,15 @@ public class SceneManager {
                 break;
             case GAME:
                 setScene(gameScene);
+                break;
+        }
+    }
+
+    public void setChildScene(ChildSceneType sceneType){
+        switch (sceneType){
+            case PAUSE:
+                currentScene.setIgnoreUpdate(true);
+                setChildScene(pauseScene);
                 break;
         }
     }
@@ -75,13 +102,13 @@ public class SceneManager {
                 ResourceManager.getInstance().loadGFX();
                 break;
             case MAIN:
-
                 ResourceManager.getInstance().unloadGFX();
                 DataManager.getInstance().loadScene(sceneType);
                 ResourceManager.getInstance().loadGFX();
                 break;
         }
     }
+
 
     public void loadGameScene(int pStage){
 
@@ -101,6 +128,13 @@ public class SceneManager {
         }
 
     }
+    public void createChildScene(ChildSceneType sceneType){
+        switch (sceneType){
+            case PAUSE:
+                pauseScene = new PauseScene();
+                break;
+        }
+    }
 
     public void disposeScene(SceneType sceneType){
         switch (sceneType){
@@ -109,6 +143,16 @@ public class SceneManager {
                 break;
             case MAIN:
                 mainScene.disposeScene();
+                break;
+        }
+    }
+
+    public void disposeChildScene(ChildSceneType sceneType){
+        switch (sceneType){
+            case PAUSE:
+                pauseScene.disposeScene();
+                currentScene.clearChildScene();
+                currentScene.setIgnoreUpdate(false);
                 break;
         }
     }

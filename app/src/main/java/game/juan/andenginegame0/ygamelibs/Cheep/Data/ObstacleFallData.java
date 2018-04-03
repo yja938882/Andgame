@@ -9,15 +9,15 @@ import org.json.JSONObject;
  */
 
 public class ObstacleFallData extends ObstacleData{
-    /*====================================
-    * Fields
-    *====================================*/
+    // ===========================================================
+    // Fields
+    // ===========================================================
     private float time;
     private float speed;
 
-    /*====================================
-    * Methods
-    *====================================*/
+    // ===========================================================
+    // Methods
+    // ===========================================================
     @Override
     public void compose(JSONObject pJSONObject) {
         super.compose(pJSONObject);
@@ -32,6 +32,7 @@ public class ObstacleFallData extends ObstacleData{
     public float getSpeed(){
             return this.speed;
         }
+
     public float getTime(){
             return this.time;
         }
