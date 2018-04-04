@@ -1,9 +1,13 @@
 package game.juan.andenginegame0.ygamelibs.Cheep.Manager;
 
+import android.util.Log;
+
 import org.andengine.engine.Engine;
 import org.andengine.ui.IGameInterface;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.ChildScene.ChildBaseScene;
+import game.juan.andenginegame0.ygamelibs.Cheep.ChildScene.GameClearScene;
+import game.juan.andenginegame0.ygamelibs.Cheep.ChildScene.GameFailScene;
 import game.juan.andenginegame0.ygamelibs.Cheep.ChildScene.PauseScene;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.BaseScene;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
@@ -34,7 +38,9 @@ public class SceneManager {
     }
     public enum ChildSceneType
     {
-        PAUSE
+        PAUSE,
+        FAIL,
+        CLEAR
     }
 
     // ===========================================================
@@ -51,7 +57,8 @@ public class SceneManager {
 
     //Child Scenes
     private ChildBaseScene pauseScene;
-
+    private ChildBaseScene failScene;
+    private ChildBaseScene clearScene;
 
     /*=====================================
     * Methods
@@ -84,8 +91,13 @@ public class SceneManager {
     public void setChildScene(ChildSceneType sceneType){
         switch (sceneType){
             case PAUSE:
-                currentScene.setIgnoreUpdate(true);
                 setChildScene(pauseScene);
+                break;
+            case FAIL:
+                setChildScene(failScene);
+                break;
+            case CLEAR:
+                setChildScene(clearScene);
                 break;
         }
     }
@@ -109,9 +121,7 @@ public class SceneManager {
         }
     }
 
-
     public void loadGameScene(int pStage){
-
         ResourceManager.getInstance().unloadGFX();
         DataManager.getInstance().loadGameScene(pStage);
         ResourceManager.getInstance().loadGFX();
@@ -133,6 +143,12 @@ public class SceneManager {
             case PAUSE:
                 pauseScene = new PauseScene();
                 break;
+            case FAIL:
+                failScene = new GameFailScene();
+                break;
+            case CLEAR:
+                clearScene = new GameClearScene();
+                break;
         }
     }
 
@@ -144,6 +160,9 @@ public class SceneManager {
             case MAIN:
                 mainScene.disposeScene();
                 break;
+            case GAME:
+                gameScene.disposeScene();
+                break;
         }
     }
 
@@ -151,6 +170,16 @@ public class SceneManager {
         switch (sceneType){
             case PAUSE:
                 pauseScene.disposeScene();
+                currentScene.clearChildScene();
+                currentScene.setIgnoreUpdate(false);
+                break;
+            case FAIL:
+                failScene.disposeScene();
+                currentScene.clearChildScene();
+                currentScene.setIgnoreUpdate(false);
+                break;
+            case CLEAR:
+                clearScene.disposeScene();
                 currentScene.clearChildScene();
                 currentScene.setIgnoreUpdate(false);
                 break;
@@ -162,7 +191,6 @@ public class SceneManager {
         currentScene = splashScene;
         pOnCreateSceneCallback.onCreateSceneFinished(splashScene);
     }
-
 
     public static SceneManager getInstance(){return INSTANCE;}
 

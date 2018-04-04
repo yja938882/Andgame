@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Cheep.Scene;
 
+import android.util.Log;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -72,7 +74,7 @@ public class GameScene extends BaseScene{
         this.registerTouchArea(pauseButton);
 
         this.setBackground(new Background(Color.BLACK));
-        this.physicsWorld = new FixedStepPhysicsWorld(30,new Vector2(0,0),false);
+        this.physicsWorld = new FixedStepPhysicsWorld(60,new Vector2(0,0),false);
         StaticManager.getInstance().createGround(this);
 
         EntityManager.getInstance().createPlayer(this);
@@ -148,9 +150,11 @@ public class GameScene extends BaseScene{
     }
 
     public void gameOver(){
-        setIgnoreUpdate(true);
-        //EntityManager.getInstance().destroyPlayer(this);
-        //EntityManager.getInstance().destroyObstacle(this);
+        SceneManager.getInstance().createChildScene(SceneManager.ChildSceneType.FAIL);
+    }
+
+    public void gameClear(){
+       // SceneManager.getInstance().cre
     }
     @Override
     public void onBackKeyPressed() {
@@ -164,7 +168,9 @@ public class GameScene extends BaseScene{
 
     @Override
     public void disposeScene() {
-
+        this.onHud.detachSelf();
+        this.onHud.dispose();
+        this.onHud = null;
     }
 
 

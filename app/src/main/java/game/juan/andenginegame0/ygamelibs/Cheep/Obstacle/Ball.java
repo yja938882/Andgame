@@ -14,6 +14,7 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.BodyData.ObjectType;
 import game.juan.andenginegame0.ygamelibs.Cheep.BodyData.ObstacleBodyData;
 import game.juan.andenginegame0.ygamelibs.Cheep.BodyData.UnitData;
+import game.juan.andenginegame0.ygamelibs.Cheep.Manager.EntityManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.SceneManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.PhysicsUtil;
@@ -111,7 +112,7 @@ public class Ball extends Obstacle{
                 if(isAttacked && !fin){
                     end+=pSecondsElapsed;
                     if(end>=max_wnd) {
-                        SceneManager.getInstance().getGameScene().onHud.decreaseRemain();
+                        EntityManager.getInstance().decreaseRemain();
                         for (int i = 1; i < BODY_NUM; i++) {
                             bodies[i].setActive(false);
                         }

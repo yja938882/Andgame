@@ -138,6 +138,7 @@ public class SplashScene extends BaseScene{
 
     @Override
     public void disposeScene() {
+      //  this.clearTouchAreas();
         this.autoParallaxBackground.detachParallaxEntity(layer0);
         this.autoParallaxBackground.detachParallaxEntity(layer1);
         this.unregisterUpdateHandler(autoParallaxBackground);

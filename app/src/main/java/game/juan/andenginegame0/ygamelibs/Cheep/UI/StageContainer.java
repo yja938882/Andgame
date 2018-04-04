@@ -8,6 +8,7 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import game.juan.andenginegame0.ygamelibs.Cheep.Manager.ResourceManager;
 import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
+import game.juan.andenginegame0.ygamelibs.Cheep.Scene.MainScene;
 
 import static game.juan.andenginegame0.ygamelibs.Cheep.Scene.BaseScene.CAMERA_HEIGHT;
 import static game.juan.andenginegame0.ygamelibs.Cheep.Scene.BaseScene.CAMERA_WIDTH;
@@ -35,9 +36,27 @@ public class StageContainer {
             stageUI[i].attachThis(pScene);
         }
     }
-    public void registerTouchArea(Scene pScene){
+    public void registerTouchArea(MainScene pScene){
         for(int i=0;i<stageUI.length;i++){
             stageUI[i].registerTouchArea(pScene);
+        }
+    }
+
+    public void unregisterTouchArea(MainScene pScene){
+        for(int i=0;i<stageUI.length;i++){
+            stageUI[i].unregisterTouchArea(pScene);
+        }
+    }
+
+    public void detachSelf(){
+        for(int i=0;i<stageUI.length;i++){
+            stageUI[i].detachSelf();
+        }
+    }
+
+    public void dispose(){
+        for(int i=0;i<stageUI.length;i++){
+            stageUI[i].dispose();
         }
     }
 }

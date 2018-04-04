@@ -57,9 +57,6 @@ public class DataManager {
         getInstance().configHashMap = new HashMap<>();
     }
 
-    /*=====================================
-    * Private Methods
-    *======================================*/
     /**
      * Splash 화면 구성에 필요한 설정 세팅
      */
@@ -81,16 +78,12 @@ public class DataManager {
     }
 
     private void setPlayerConfig(){
-        configHashMap.put("head",newConfigJSON("head","player/head.png",32,32,1,1));
-        configHashMap.put("body",newConfigJSON("body","player/body.png",32,56,1,1));
-        configHashMap.put("left_upper_arm",newConfigJSON("left_upper_arm","player/left_upper_arm.png",16,54,1,1));
-        configHashMap.put("left_fore_arm",newConfigJSON("left_fore_arm","player/left_fore_arm.png",16,54,1,1));
-        configHashMap.put("right_upper_arm",newConfigJSON("right_upper_arm","player/right_upper_arm.png",16,54,1,1));
-        configHashMap.put("right_fore_arm",newConfigJSON("right_fore_arm","player/right_fore_arm.png",16,54,1,1));
-        configHashMap.put("left_thigh",newConfigJSON("left_thigh","player/left_thigh.png",16,54,1,1));
-        configHashMap.put("left_shank",newConfigJSON("left_shank","player/left_shank.png",16,54,1,1));
-        configHashMap.put("right_thigh",newConfigJSON("right_thigh","player/right_thigh.png",16,54,1,1));
-        configHashMap.put("right_shank",newConfigJSON("right_shank","player/right_shank.png",16,54,1,1));
+        configHashMap.put("head",newConfigJSON("head","player/head.png",32,41,1,1));
+        configHashMap.put("body",newConfigJSON("body","player/body.png",32,81,1,1));
+        configHashMap.put("upper_arm",newConfigJSON("upper_arm","player/upper_arm.png",12,49,1,1));
+        configHashMap.put("fore_arm",newConfigJSON("fore_arm","player/fore_arm.png",12,43,1,1));
+        configHashMap.put("thigh",newConfigJSON("thigh","player/thigh.png",12,43,1,1));
+        configHashMap.put("shank",newConfigJSON("shank","player/shank.png",16,49,1,1));
         configHashMap.put("weapon",newConfigJSON("weapon","player/weapon.png",44,128,1,1));
         configHashMap.put("power_point",newConfigJSON("power_point","player/power_point.png",16,16,1,1));
     }

@@ -34,4 +34,21 @@ public class OnHud extends HUD {
         this.scoreText.setText(""+remain);
     }
 
+    @Override
+    public boolean detachSelf(){
+        this.remainText.detachSelf();
+        this.scoreText.detachSelf();
+        return super.detachSelf();
+    }
+
+    @Override
+    public void dispose(){
+        this.remainText.dispose();
+        this.remainText = null;
+
+        this.scoreText.dispose();
+        this.scoreText = null;
+        super.dispose();
+    }
+
 }

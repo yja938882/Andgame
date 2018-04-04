@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Cheep.Scene;
 
+import android.util.Log;
+
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
@@ -29,6 +31,7 @@ public class MainScene extends BaseScene implements ScrollDetector.IScrollDetect
         stageContainer.init(4);
         stageContainer.attachThis(this);
         stageContainer.registerTouchArea(this);
+
         scrollDetector = new ScrollDetector(this);
         this.setOnSceneTouchListener(this);
         this.setTouchAreaBindingOnActionDownEnabled(true);
@@ -48,7 +51,10 @@ public class MainScene extends BaseScene implements ScrollDetector.IScrollDetect
 
     @Override
     public void disposeScene() {
-
+      //  this.setOnSceneTouchListener(null);
+       // this.stageContainer.unregisterTouchArea(this);
+        this.stageContainer.detachSelf();
+        this.stageContainer.dispose();
     }
 
     @Override

@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Cheep.Player;
 
+import android.util.Log;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
@@ -39,16 +41,16 @@ public class Player {
     private static final int POWER_POINT = 11;
 
     private static final float HEAD_RADIUS = 16f;
-    private static final float BODY_WIDTH  = 28f;
-    private static final float BODY_HEIGHT = 48f;
-    private static final float UPPER_ARM_WIDTH = 8f;
-    private static final float UPPER_ARM_HEIGHT = 28f;
-    private static final float FORE_ARM_WIDTH = 8f;
-    private static final float FORE_ARM_HEIGHT = 28f;
-    private static final float THIGH_WIDTH = 10f;
-    private static final float THIGH_HEIGHT  = 28f;
-    private static final float SHANK_WIDTH = 8f;
-    private static final float SHANK_HEIGHT = 30f;
+    private static final float BODY_WIDTH  = 32f;
+    private static final float BODY_HEIGHT = 81f;
+    private static final float UPPER_ARM_WIDTH = 12f;
+    private static final float UPPER_ARM_HEIGHT = 49f-10f;
+    private static final float FORE_ARM_WIDTH = 12f;
+    private static final float FORE_ARM_HEIGHT = 43f-10f;
+    private static final float THIGH_WIDTH = 12f;
+    private static final float THIGH_HEIGHT  = 43-4f;
+    private static final float SHANK_WIDTH = 16f;
+    private static final float SHANK_HEIGHT = 49f-5f;
 
     private static final float WEAPON_WIDTH = 10f;
     private static final float WEAPON_HEIGHT = 128f;
@@ -78,21 +80,21 @@ public class Player {
         this.mPartsSprites[BODY] =
                 new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("body"),ResourceManager.getInstance().vbom);
         this.mPartsSprites[LEFT_UPPER_ARM] =
-                new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("left_upper_arm"),ResourceManager.getInstance().vbom);
+                new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("upper_arm"),ResourceManager.getInstance().vbom);
         this.mPartsSprites[LEFT_FORE_ARM] =
-                new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("left_fore_arm"),ResourceManager.getInstance().vbom);
+                new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("fore_arm"),ResourceManager.getInstance().vbom);
         this.mPartsSprites[RIGHT_UPPER_ARM] =
-                new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("right_upper_arm"),ResourceManager.getInstance().vbom);
+                new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("upper_arm"),ResourceManager.getInstance().vbom);
         this.mPartsSprites[RIGHT_FORE_ARM] =
-                new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("right_fore_arm"),ResourceManager.getInstance().vbom);
+                new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("fore_arm"),ResourceManager.getInstance().vbom);
         this.mPartsSprites[LEFT_THIGH] =
-                new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("left_thigh"),ResourceManager.getInstance().vbom);
+                new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("thigh"),ResourceManager.getInstance().vbom);
         this.mPartsSprites[LEFT_SHANK] =
-                new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("left_shank"),ResourceManager.getInstance().vbom);
+                new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("shank"),ResourceManager.getInstance().vbom);
         this.mPartsSprites[RIGHT_THIGH] =
-                new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("right_thigh"),ResourceManager.getInstance().vbom);
+                new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("thigh"),ResourceManager.getInstance().vbom);
         this.mPartsSprites[RIGHT_SHANK] =
-                new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("right_shank"),ResourceManager.getInstance().vbom);
+                new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("shank"),ResourceManager.getInstance().vbom);
         this.mPartsSprites[WEAPON] =
                 new Sprite(0,0,ResourceManager.getInstance().gfxTextureRegionHashMap.get("weapon"),ResourceManager.getInstance().vbom);
         this.mPartsSprites[POWER_POINT] =
@@ -123,7 +125,7 @@ public class Player {
 
         pGameScene.getPhysicsWorld().createJoint( //왼쪽 상박 & 몸
                 PhysicsUtil.createRevoluteJointDef(mPartsBodies[BODY],mPartsBodies[LEFT_UPPER_ARM],
-                        new Vector2(-BODY_WIDTH/2f,-BODY_HEIGHT/2f),new Vector2(0,-UPPER_ARM_HEIGHT/2f)));
+                        new Vector2(-BODY_WIDTH/2f,-BODY_HEIGHT/2f+5f),new Vector2(0,-UPPER_ARM_HEIGHT/2f)));
 
 
         createRectParts(pGameScene,LEFT_FORE_ARM,FORE_ARM_WIDTH,FORE_ARM_HEIGHT,ObjectType.PLAYER); // 왼쪽 하박
@@ -134,7 +136,7 @@ public class Player {
         createRectParts(pGameScene,RIGHT_UPPER_ARM,UPPER_ARM_WIDTH,UPPER_ARM_HEIGHT,ObjectType.PLAYER); //오른쪽 상박
         pGameScene.getPhysicsWorld().createJoint( //오른쪽 상박 & 몸
                 PhysicsUtil.createRevoluteJointDef(mPartsBodies[BODY],mPartsBodies[RIGHT_UPPER_ARM],
-                        new Vector2(BODY_WIDTH/2f,-BODY_HEIGHT/2f),new Vector2(0,-UPPER_ARM_HEIGHT/2f)));
+                        new Vector2(BODY_WIDTH/2f,-BODY_HEIGHT/2f+5f),new Vector2(0,-UPPER_ARM_HEIGHT/2f)));
 
         createRectParts(pGameScene,RIGHT_FORE_ARM,FORE_ARM_WIDTH,FORE_ARM_HEIGHT,ObjectType.PLAYER);//오른쪽 하박
         pGameScene.getPhysicsWorld().createJoint( //오른쪽 상박 & 하박
@@ -144,7 +146,7 @@ public class Player {
         createRectParts(pGameScene,LEFT_THIGH,THIGH_WIDTH,THIGH_HEIGHT,ObjectType.PLAYER); //왼쪽 허벅지
         pGameScene.getPhysicsWorld().createJoint( //왼쪽 허벅지 & 몸
                 PhysicsUtil.createRevoluteJointDef(mPartsBodies[BODY],mPartsBodies[LEFT_THIGH],
-                        new Vector2(-BODY_WIDTH*2f/5f,BODY_HEIGHT/2f),new Vector2(0,-THIGH_HEIGHT/2f),-0.7f,0.7f));
+                        new Vector2(-BODY_WIDTH*2f/7f,BODY_HEIGHT/2f-10f),new Vector2(0,-THIGH_HEIGHT/2f),-0.7f,0.7f));
 
         createRectParts(pGameScene,LEFT_SHANK,SHANK_WIDTH,SHANK_HEIGHT,ObjectType.PLAYER); //왼쪽 정강이
         pGameScene.getPhysicsWorld().createJoint( //왼쪽 정강이 & 왼쪽 허벅지
@@ -154,7 +156,7 @@ public class Player {
         createRectParts(pGameScene,RIGHT_THIGH,THIGH_WIDTH,THIGH_HEIGHT,ObjectType.PLAYER); //오른쪽 허벅지
         pGameScene.getPhysicsWorld().createJoint( //왼쪽 허벅지 & 몸
                 PhysicsUtil.createRevoluteJointDef(mPartsBodies[BODY],mPartsBodies[RIGHT_THIGH],
-                        new Vector2(BODY_WIDTH*2f/5f,BODY_HEIGHT/2f),new Vector2(0,-THIGH_HEIGHT/2f),-0.7f,0.7f));
+                        new Vector2(BODY_WIDTH*2f/7f,BODY_HEIGHT/2f-10f),new Vector2(0,-THIGH_HEIGHT/2f),-0.7f,0.7f));
 
         createRectParts(pGameScene,RIGHT_SHANK,SHANK_WIDTH,SHANK_HEIGHT,ObjectType.PLAYER); //오른쪾 정강이
         pGameScene.getPhysicsWorld().createJoint( //오른쪽 정강이 & 오른쪽 허벅지
@@ -179,10 +181,11 @@ public class Player {
 
     public void control(float x, float y){
         Vector2 c = new Vector2(x- this.mPartsBodies[POWER_POINT].getPosition().x, y- this.mPartsBodies[POWER_POINT].getPosition().y);
-        c.mul(150f/c.len());
+        c.mul(200f/c.len());
         this.mPartsBodies[POWER_POINT].applyForce(c,
                 this.mPartsBodies[POWER_POINT].getWorldCenter());
     }
+
     public void destroyBody(GameScene pGameScene){
         for(int i=0;i<mPartsBodies.length;i++){
             mPartsBodies[i].setActive(false);
@@ -270,16 +273,16 @@ public class Player {
                 public void onUpdate(float pSecondsElapsed) {
                     super.onUpdate(pSecondsElapsed);
                     this.getBody().applyForce(gravity,getBody().getWorldCenter());
-                    if((((UnitData)getBody().getUserData()).isBeAttacked()))
+                    if((((UnitData)getBody().getUserData()).isBeAttacked())) {
+                        Log.d("DEG","hiiitti");
                         SceneManager.getInstance().getGameScene().gameOver();
+                    }
                 }
             });
 
         }
 
     }
-
-
 
     /**
      * 직사각형을 생성하는 Vertices 반환

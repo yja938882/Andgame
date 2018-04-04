@@ -2,6 +2,7 @@ package game.juan.andenginegame0.ygamelibs.Cheep.ChildScene;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.BaseGameActivity;
@@ -29,6 +30,7 @@ public abstract class ChildBaseScene extends Scene{
     protected ResourceManager resourcesManager;
     protected VertexBufferObjectManager vbom;
     protected Camera camera;
+    protected Rectangle overlay;
 
     // ===========================================================
     // Constructor
@@ -40,6 +42,15 @@ public abstract class ChildBaseScene extends Scene{
         this.vbom =  ResourceManager.getInstance().vbom;
         this.camera =  ResourceManager.getInstance().camera;
         createScene();
+    }
+
+    // ===========================================================
+    // Methods
+    // ===========================================================
+    public void createOverlay(float pRed, float pGreen, float pBlue, float pAlpha){
+        overlay = new Rectangle(0,0,CAMERA_WIDTH,CAMERA_HEIGHT, ResourceManager.getInstance().vbom);
+        overlay.setColor(pRed,pGreen,pBlue,pAlpha);
+        this.attachChild(overlay);
     }
 
     // ===========================================================

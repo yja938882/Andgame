@@ -1,5 +1,7 @@
 package game.juan.andenginegame0.ygamelibs.Cheep.UI;
 
+import android.util.Log;
+
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
@@ -15,15 +17,15 @@ import game.juan.andenginegame0.ygamelibs.Cheep.Scene.GameScene;
  */
 
 public class StageUI {
-    /*======================================
-    * Fields
-    *======================================*/
+    // ===========================================================
+    // Fields
+    // ===========================================================
     private int mStage;
     private Text mStageText;
 
-    /*======================================
-    * Constructor
-    *======================================*/
+    // ===========================================================
+    // Constructor
+    // ===========================================================
     public StageUI(int pStage, float pX, float pY){
         this.mStage = pStage;
         this.mStageText = new Text(pX,pY, ResourceManager.getInstance().mainFont,""+pStage,ResourceManager.getInstance().vbom){
@@ -35,21 +37,30 @@ public class StageUI {
                     SceneManager.getInstance().setScene(SceneManager.SceneType.GAME);
                     SceneManager.getInstance().disposeScene(SceneManager.SceneType.MAIN);
                 }
-                return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+                return false;
             }
         };
         this.mStageText.setScale(2f);
     }
 
-    /*======================================
-    * Public Methods
-    *======================================*/
+    // ===========================================================
+    // Methods
+    // ===========================================================
     public void attachThis(Scene pScene){
         pScene.attachChild(mStageText);
     }
     public void registerTouchArea(Scene pScene){
         pScene.registerTouchArea(this.mStageText);
     }
+    public void unregisterTouchArea(Scene pScene){
+        pScene.unregisterTouchArea(this.mStageText);
+    }
+    public void detachSelf(){
+        this.mStageText.detachSelf();
+    }
 
-
+    public void dispose(){
+        this.mStageText.dispose();
+        this.mStageText = null;
+    }
 }

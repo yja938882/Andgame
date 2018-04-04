@@ -27,6 +27,7 @@ public class EntityManager {
     // ===========================================================
     public Player player;
     private Obstacle obstacles[];
+    private int remain = 0;
 
     // ===========================================================
     // Methods
@@ -43,7 +44,8 @@ public class EntityManager {
         for(int i=0;i<obstacleDataArrayList.size();i++){
             obstacles[i] = ObstacleFactory.createObstacle(obstacleDataArrayList.get(i),pGameScene);
         }
-        pGameScene.onHud.setRemain(this.obstacles.length);
+        remain = obstacles.length;
+        pGameScene.onHud.setRemain(remain);
     }
 
     public void destroyPlayer(GameScene pGameScene){
@@ -58,6 +60,16 @@ public class EntityManager {
             obstacles[i].detachThis();
             obstacles[i].disposeThis();
         }
+    }
+
+    public void decreaseRemain(){
+        this.remain--;
+        SceneManager.getInstance().getGameScene().onHud.setRemain(remain);
+        if(remain<=0){
+            SceneManager.getInstance().createChildScene(SceneManager.ChildSceneType.CLEAR);
+            SceneManager.getInstance().setChildScene(SceneManager.ChildSceneType.CLEAR);
+        }
+
     }
 
 
